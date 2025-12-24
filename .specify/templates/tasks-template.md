@@ -54,7 +54,7 @@ description: "Task list template for feature implementation"
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-**Purpose**: Project initialization and basic structure
+**目的**: プロジェクトの初期化と基本構造
 
 - [ ] T001 Create project structure per implementation plan
 - [ ] T002 Initialize [language] project with [framework] dependencies
@@ -64,11 +64,11 @@ description: "Task list template for feature implementation"
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
+**目的**: すべてのユーザーストーリーを実装する前に完了していなければならないコアインフラストラクチャ
 
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete
+**⚠️ 重要**: このフェーズが完了するまで、ユーザーストーリーの作業を開始できません
 
-Examples of foundational tasks (adjust based on your project):
+基礎タスクの例（プロジェクトに応じて調整）:
 
 - [ ] T004 Setup database schema and migrations framework
 - [ ] T005 [P] Implement authentication/authorization framework
@@ -77,19 +77,19 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
 
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
+**チェックポイント**: 基礎の準備完了 - ユーザーストーリーの実装を並行して開始可能
 
 ---
 
 ## Phase 3: User Story 1 - [Title] (Priority: P1) 🎯 MVP
 
-**Goal**: [Brief description of what this story delivers]
+**目標**: [このストーリーが提供するものの簡単な説明]
 
-**Independent Test**: [How to verify this story works on its own]
+**独立テスト**: [このストーリーが単独で動作することを確認する方法]
 
 ### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **注意: これらのテストを最初に書き、実装前に失敗することを確認してください**
 
 - [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
@@ -103,15 +103,15 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T016 [US1] Add validation and error handling
 - [ ] T017 [US1] Add logging for user story 1 operations
 
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
+**チェックポイント**: この時点で、ユーザーストーリー 1 は完全に機能し、独立してテスト可能であるべきです
 
 ---
 
 ## Phase 4: User Story 2 - [Title] (Priority: P2)
 
-**Goal**: [Brief description of what this story delivers]
+**目標**: [このストーリーが提供するものの簡単な説明]
 
-**Independent Test**: [How to verify this story works on its own]
+**独立テスト**: [このストーリーが単独で動作することを確認する方法]
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
@@ -125,15 +125,15 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
 - [ ] T023 [US2] Integrate with User Story 1 components (if needed)
 
-**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
+**チェックポイント**: この時点で、ユーザーストーリー 1 と 2 の両方が独立して動作するべきです
 
 ---
 
 ## Phase 5: User Story 3 - [Title] (Priority: P3)
 
-**Goal**: [Brief description of what this story delivers]
+**目標**: [このストーリーが提供するものの簡単な説明]
 
-**Independent Test**: [How to verify this story works on its own]
+**独立テスト**: [このストーリーが単独で動作することを確認する方法]
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
@@ -146,17 +146,17 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] T027 [US3] Implement [Service] in src/services/[service].py
 - [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
 
-**Checkpoint**: All user stories should now be independently functional
+**チェックポイント**: すべてのユーザーストーリーが独立して機能するようになりました
 
 ---
 
-[Add more user story phases as needed, following the same pattern]
+[必要に応じて同じパターンでユーザーストーリーフェーズを追加]
 
 ---
 
 ## Phase N: Polish & Cross-Cutting Concerns
 
-**Purpose**: Improvements that affect multiple user stories
+**目的**: 複数のユーザーストーリーに影響する改善
 
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring
@@ -203,41 +203,41 @@ Examples of foundational tasks (adjust based on your project):
 
 ---
 
-## Parallel Example: User Story 1
+## 並行実行の例: ユーザーストーリー 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
+# ユーザーストーリー 1 のすべてのテストを一緒に起動 (テストが要求された場合):
 Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
 Task: "Integration test for [user journey] in tests/integration/test_[name].py"
 
-# Launch all models for User Story 1 together:
+# ユーザーストーリー 1 のすべてのモデルを一緒に起動:
 Task: "Create [Entity1] model in src/models/[entity1].py"
 Task: "Create [Entity2] model in src/models/[entity2].py"
 ```
 
 ---
 
-## Implementation Strategy
+## 実装戦略
 
-### MVP First (User Story 1 Only)
+### MVP 優先 (ユーザーストーリー 1 のみ)
 
-1. Complete Phase 1: Setup
-2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
-3. Complete Phase 3: User Story 1
-4. **STOP and VALIDATE**: Test User Story 1 independently
-5. Deploy/demo if ready
+1. Phase 1: Setup を完了
+2. Phase 2: Foundational を完了 (重要 - すべてのストーリーをブロック)
+3. Phase 3: User Story 1 を完了
+4. **停止して検証**: ユーザーストーリー 1 を独立してテスト
+5. 準備ができたらデプロイ/デモ
 
-### Incremental Delivery
+### 段階的な提供
 
-1. Complete Setup + Foundational → Foundation ready
-2. Add User Story 1 → Test independently → Deploy/Demo (MVP!)
-3. Add User Story 2 → Test independently → Deploy/Demo
-4. Add User Story 3 → Test independently → Deploy/Demo
-5. Each story adds value without breaking previous stories
+1. Setup + Foundational を完了 → 基礎の準備完了
+2. ユーザーストーリー 1 を追加 → 独立してテスト → デプロイ/デモ (MVP!)
+3. ユーザーストーリー 2 を追加 → 独立してテスト → デプロイ/デモ
+4. ユーザーストーリー 3 を追加 → 独立してテスト → デプロイ/デモ
+5. 各ストーリーは、以前のストーリーを壊すことなく価値を追加します
 
-### Parallel Team Strategy
+### 並行チーム戦略
 
-With multiple developers:
+複数の開発者がいる場合:
 
 1. Team completes Setup + Foundational together
 2. Once Foundational is done:
