@@ -28,6 +28,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Install Git
+        run: |
+          echo "Installing git (required by devcontainer features)..."
+          apt-get update && apt-get install -y git
+      
       - name: Run devcontainer setup
         run: |
           echo "Running setup from devcontainer configuration..."
@@ -40,6 +45,7 @@ jobs:
           echo "🚀 Environment ready for spec-kit usage:"
           echo "  ✓ Python $(python --version | cut -d' ' -f2)"
           echo "  ✓ uv $(uv --version | cut -d' ' -f2)"
+          echo "  ✓ git $(git --version | cut -d' ' -f3)"
           echo "  ✓ spec-kit CLI installed"
           echo ""
           echo "Available workflow commands:"
