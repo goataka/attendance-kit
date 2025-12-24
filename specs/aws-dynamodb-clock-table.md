@@ -78,6 +78,7 @@
   - Partition Key: `date` (String) - 日付 (YYYY-MM-DD形式)
   - Sort Key: `timestamp` (String) - タイムスタンプ
   - 用途: 特定日の全打刻記録を効率的に取得
+  - **注意**: `date` 属性はアプリケーション側で `timestamp` から導出して設定する必要があります（例: "2025-12-24"）
 
 #### FR-2: CDKスタック構成
 AWS CDKを使用したInfrastructure as Code：

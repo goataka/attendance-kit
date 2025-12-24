@@ -30,6 +30,8 @@ export class SpecKitDevStack extends cdk.Stack {
     cdk.Tags.of(clockTable).add('Project', 'spec-kit-attendance');
 
     // Add GSI for querying by date
+    // Note: The 'date' attribute will be populated by the application
+    // as a derived value from 'timestamp' (e.g., "2025-12-24")
     clockTable.addGlobalSecondaryIndex({
       indexName: 'DateIndex',
       partitionKey: {

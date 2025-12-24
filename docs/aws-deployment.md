@@ -36,6 +36,7 @@ Amazon DynamoDB
   - Partition Key: `date` (String) - 日付 (YYYY-MM-DD)
   - Sort Key: `timestamp` (String) - タイムスタンプ
   - 用途: 特定日の全打刻記録を効率的に取得
+  - **重要**: `date` 属性はアプリケーションで `timestamp` から導出して保存する必要があります
 
 **属性例**:
 ```json
