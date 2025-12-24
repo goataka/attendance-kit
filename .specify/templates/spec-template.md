@@ -1,9 +1,9 @@
 # 機能仕様: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
-**Input**: User description: "$ARGUMENTS"
+**機能ブランチ**: `[###-feature-name]`  
+**作成日**: [DATE]  
+**ステータス**: 下書き  
+**入力**: ユーザー説明: "$ARGUMENTS"
 
 <!--
   🌏 言語ポリシー:

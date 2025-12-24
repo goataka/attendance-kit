@@ -1,9 +1,9 @@
 # 実装計画: [FEATURE]
 
-**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
-**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
+**ブランチ**: `[###-feature-name]` | **日付**: [DATE] | **仕様**: [link]
+**入力**: 機能仕様 `/specs/[###-feature-name]/spec.md`
 
-**Note**: このテンプレートは `/speckit.plan` コマンドで記入されます。実行ワークフローは `.specify/templates/commands/plan.md` を参照してください。
+**注記**: このテンプレートは `/speckit.plan` コマンドで記入されます。実行ワークフローは `.specify/templates/commands/plan.md` を参照してください。
 
 <!--
   🌏 言語ポリシー:
@@ -41,7 +41,7 @@
 
 ## Project Structure
 
-### Documentation (this feature)
+### ドキュメント（この機能）
 
 ```text
 specs/[###-feature]/
@@ -96,14 +96,13 @@ ios/ or android/
 └── [プラットフォーム固有の構造: 機能モジュール, UI フロー, プラットフォームテスト]
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**構造の決定**: [選択した構造を文書化し、上記で記載した実際のディレクトリを参照してください]
 
-## Complexity Tracking
+## 複雑性の追跡
 
-> **Fill ONLY if Constitution Check has violations that must be justified**
+> **Constitution Check で違反がある場合のみ記入してください**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| 違反 | 必要な理由 | シンプルな代替案が却下された理由 |
+|------|-----------|-------------------------------|
+| [例: 4つ目のプロジェクト] | [現在の必要性] | [なぜ3つのプロジェクトでは不十分か] |
+| [例: Repository パターン] | [具体的な問題] | [なぜ直接的なDB アクセスでは不十分か] |
