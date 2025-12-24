@@ -1,27 +1,27 @@
 ---
-description: Identify underspecified areas in the current feature spec by asking up to 5 highly targeted clarification questions and encoding answers back into the spec.
+description: 対話的な明確化質問（最大5つ）によって現在の機能仕様の不十分な指定領域を特定し、回答を仕様にエンコードバックします。
 handoffs: 
-  - label: Build Technical Plan
+  - label: 技術計画を構築
     agent: speckit.plan
-    prompt: Create a plan for the spec. I am building with...
+    prompt: 仕様の計画を作成します。私は以下で構築しています...
 scripts:
    sh: scripts/bash/check-prerequisites.sh --json --paths-only
    ps: scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 ---
 
-## User Input
+## ユーザー入力
 
 ```text
 $ARGUMENTS
 ```
 
-You **MUST** consider the user input before proceeding (if not empty).
+空でない場合、続行する前にユーザー入力を **必ず** 考慮してください。
 
-## Outline
+## 概要
 
-Goal: Detect and reduce ambiguity or missing decision points in the active feature specification and record the clarifications directly in the spec file.
+目標: アクティブな機能仕様における曖昧さまたは欠落している決定ポイントを検出して削減し、明確化を仕様ファイルに直接記録します。
 
-Note: This clarification workflow is expected to run (and be completed) BEFORE invoking `/speckit.plan`. If the user explicitly states they are skipping clarification (e.g., exploratory spike), you may proceed, but must warn that downstream rework risk increases.
+注記: この明確化ワークフローは、`/speckit.plan`を呼び出す前に実行（および完了）されることが期待されます。ユーザーが明確化をスキップすることを明示的に述べている場合（例：探索的スパイク）、続行できますが、下流の再作業リスクが増加することを警告する必要があります。
 
 Execution steps:
 
