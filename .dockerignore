@@ -1,0 +1,21 @@
+# Git
+.git
+.gitignore
+.github
+
+# Documentation (not needed in container)
+*.md
+docs/
+
+# IDE
+.vscode/
+.idea/
+
+# DevContainer config (not needed in production container)
+.devcontainer/devcontainer.json
+
+# Temporary files
+*.log
+*.tmp
+tmp/
+.DS_Store

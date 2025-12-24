@@ -44,6 +44,12 @@
 
 エージェントは `.devcontainer/devcontainer.json` の設定を参照し、自動的に同じ環境を構築します。
 
+### AWS Deployment
+
+開発環境をAWSにデプロイするためのCI/CDワークフローを提供しています。
+
+詳細は [docs/aws-deployment.md](docs/aws-deployment.md) を参照してください。
+
 ### 自動セットアップの内容
 
 `.devcontainer/devcontainer.json` と `.github/workflows/copilot-setup-steps.yml` により：

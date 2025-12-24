@@ -11,6 +11,12 @@ DevContainerを使用することで、以下のメリットがあります：
 - ✅ ローカル開発とCopilot Agentの両方で使用可能
 - ✅ 将来の依存関係も簡単に追加可能
 
+## ファイル構成
+
+- `devcontainer.json` - DevContainer設定ファイル
+- `Dockerfile` - AWS deploymentで使用するDockerイメージのビルド定義
+- `README.md` - このファイル
+
 ## 設定内容
 
 ### ベースイメージ
@@ -41,6 +47,16 @@ ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 - `memory/` - 憲法
 - `specs/` - 仕様書
 - `docs/` - ドキュメント
+
+## Dockerfile
+
+AWS deployment用のDockerfileも含まれています。このDockerfileは：
+
+- DevContainer設定と同じベースイメージを使用
+- spec-kit CLIを自動インストール
+- GitHub Actionsから自動的にビルド・デプロイされます
+
+詳細は [docs/aws-deployment.md](../docs/aws-deployment.md) を参照してください。
 
 ## 使用方法
 
