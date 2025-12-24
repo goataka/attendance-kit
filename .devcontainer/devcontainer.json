@@ -26,13 +26,6 @@
     "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.local/bin"
   },
   
-  "mounts": [
-    "source=${localWorkspaceFolder}/.specify,target=${containerWorkspaceFolder}/.specify,type=bind,consistency=cached",
-    "source=${localWorkspaceFolder}/memory,target=${containerWorkspaceFolder}/memory,type=bind,consistency=cached",
-    "source=${localWorkspaceFolder}/specs,target=${containerWorkspaceFolder}/specs,type=bind,consistency=cached",
-    "source=${localWorkspaceFolder}/docs,target=${containerWorkspaceFolder}/docs,type=bind,consistency=cached"
-  ],
-  
   "forwardPorts": [],
   
   "postStartCommand": "echo '🚀 Spec-Kit Development Container is ready! Use spec-kit workflow commands: /constitution, /specify, /plan, /tasks, /implement'",
