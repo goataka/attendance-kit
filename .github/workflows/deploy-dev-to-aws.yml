@@ -64,7 +64,7 @@ jobs:
 
       - name: CDK Deploy
         working-directory: ./infrastructure
-        run: npm run deploy -- --require-approval never
+        run: npm run deploy -- --require-approval broadening
 
       - name: Deployment Summary
         run: |
