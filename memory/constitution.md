@@ -1,6 +1,6 @@
 # Project Constitution: 勤怠管理システム
 
-**Version**: 1.0.0  
+**Version**: 1.1.0  
 **Ratified**: 2025-12-24  
 **Last Amended**: 2025-12-24
 
@@ -166,6 +166,14 @@
 - `/tasks`: 実装タスクの作成
 - `/implement`: タスクの実装
 
+**Agent Operation Rule**:
+
+**原則として、指示はspec-kitのコマンドを利用して実行すること**
+
+- Agentへのタスク指示は、可能な限りspec-kitワークフローコマンド（`/specify`, `/plan`, `/tasks`, `/implement`）を使用する
+- 直接実装を行わず、まず仕様化・計画化してから実装に進む
+- これにより、仕様駆動開発の原則が保たれ、ドキュメントと実装の整合性が確保される
+
 ### Documentation Structure
 
 ```
@@ -182,6 +190,14 @@ memory/            # プロジェクト記憶と憲法
 specs/             # 機能仕様書（ブランチごと）
 docs/              # 確定した仕様と実装ドキュメント
 ```
+
+### Specification Consolidation Rule
+
+**実装時に確定仕様をdocsにまとめること**
+
+- 機能の実装が完了し、テストに合格した時点で、`specs/` ディレクトリの仕様書を `docs/` ディレクトリに移動またはコピーする
+- これにより、確定した仕様が一元管理され、将来の参照が容易になる
+- 実装ドキュメント、アーキテクチャ図、APIドキュメントなども併せて `docs/` に配置する
 
 ### Future Migration
 
