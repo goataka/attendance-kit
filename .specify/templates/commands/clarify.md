@@ -23,162 +23,162 @@ $ARGUMENTS
 
 注記: この明確化ワークフローは、`/speckit.plan`を呼び出す前に実行（および完了）されることが期待されます。ユーザーが明確化をスキップすることを明示的に述べている場合（例：探索的スパイク）、続行できますが、下流の再作業リスクが増加することを警告する必要があります。
 
-Execution steps:
+実行ステップ:
 
-1. Run `{SCRIPT}` from repo root **once** (combined `--json --paths-only` mode / `-Json -PathsOnly`). Parse minimal JSON payload fields:
+1. リポジトリルートから`{SCRIPT}`を **一度** 実行（結合`--json --paths-only`モード / `-Json -PathsOnly`）。最小JSONペイロードフィールドを解析：
    - `FEATURE_DIR`
    - `FEATURE_SPEC`
-   - (Optionally capture `IMPL_PLAN`, `TASKS` for future chained flows.)
-   - If JSON parsing fails, abort and instruct user to re-run `/speckit.specify` or verify feature branch environment.
-   - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
+   - (将来の連鎖フローのために`IMPL_PLAN`、`TASKS`をオプションでキャプチャ)
+   - JSON解析に失敗した場合は中止し、ユーザーに`/speckit.specify`を再実行するか機能ブランチ環境を確認するよう指示
+   - 引数内のシングルクォート（例: "I'm Groot"）の場合、エスケープ構文を使用: 例 'I'\''m Groot' (または可能であれば二重引用符: "I'm Groot")
 
-2. Load the current spec file. Perform a structured ambiguity & coverage scan using this taxonomy. For each category, mark status: Clear / Partial / Missing. Produce an internal coverage map used for prioritization (do not output raw map unless no questions will be asked).
+2. 現在の仕様ファイルを読み込みます。この分類法を使用して構造化された曖昧さとカバレッジスキャンを実行。各カテゴリについて、ステータスをマーク: Clear / Partial / Missing。優先順位付けに使用される内部カバレッジマップを作成（質問がない場合を除き、生のマップを出力しない）。
 
-   Functional Scope & Behavior:
-   - Core user goals & success criteria
-   - Explicit out-of-scope declarations
-   - User roles / personas differentiation
+   機能スコープと動作:
+   - コアユーザー目標と成功基準
+   - 明示的なスコープ外宣言
+   - ユーザーロール/ペルソナの区別
 
-   Domain & Data Model:
-   - Entities, attributes, relationships
-   - Identity & uniqueness rules
-   - Lifecycle/state transitions
-   - Data volume / scale assumptions
+   ドメインとデータモデル:
+   - エンティティ、属性、関係
+   - IDと一意性ルール
+   - ライフサイクル/状態遷移
+   - データ量/スケールの前提条件
 
-   Interaction & UX Flow:
-   - Critical user journeys / sequences
-   - Error/empty/loading states
-   - Accessibility or localization notes
+   対話とUXフロー:
+   - 重要なユーザージャーニー/シーケンス
+   - エラー/空/読み込み状態
+   - アクセシビリティまたはローカライゼーションのメモ
 
-   Non-Functional Quality Attributes:
-   - Performance (latency, throughput targets)
-   - Scalability (horizontal/vertical, limits)
-   - Reliability & availability (uptime, recovery expectations)
-   - Observability (logging, metrics, tracing signals)
-   - Security & privacy (authN/Z, data protection, threat assumptions)
-   - Compliance / regulatory constraints (if any)
+   非機能品質属性:
+   - パフォーマンス（レイテンシ、スループット目標）
+   - スケーラビリティ（水平/垂直、制限）
+   - 信頼性と可用性（稼働時間、回復期待値）
+   - 可観測性（ログ、メトリクス、トレーシングシグナル）
+   - セキュリティとプライバシー（authN/Z、データ保護、脅威の前提条件）
+   - コンプライアンス/規制制約（ある場合）
 
-   Integration & External Dependencies:
-   - External services/APIs and failure modes
-   - Data import/export formats
-   - Protocol/versioning assumptions
+   統合と外部依存関係:
+   - 外部サービス/APIと障害モード
+   - データインポート/エクスポート形式
+   - プロトコル/バージョニングの前提条件
 
-   Edge Cases & Failure Handling:
-   - Negative scenarios
-   - Rate limiting / throttling
-   - Conflict resolution (e.g., concurrent edits)
+   エッジケースと障害処理:
+   - ネガティブシナリオ
+   - レート制限/スロットリング
+   - 競合解決（例：同時編集）
 
-   Constraints & Tradeoffs:
-   - Technical constraints (language, storage, hosting)
-   - Explicit tradeoffs or rejected alternatives
+   制約とトレードオフ:
+   - 技術的制約（言語、ストレージ、ホスティング）
+   - 明示的なトレードオフまたは却下された代替案
 
-   Terminology & Consistency:
-   - Canonical glossary terms
-   - Avoided synonyms / deprecated terms
+   用語と一貫性:
+   - 標準用語集の用語
+   - 回避された同義語/非推奨の用語
 
-   Completion Signals:
-   - Acceptance criteria testability
-   - Measurable Definition of Done style indicators
+   完了シグナル:
+   - 受け入れ基準のテスト可能性
+   - 測定可能な完了の定義スタイルの指標
 
-   Misc / Placeholders:
-   - TODO markers / unresolved decisions
-   - Ambiguous adjectives ("robust", "intuitive") lacking quantification
+   その他/プレースホルダー:
+   - TODOマーカー/未解決の決定
+   - 定量化を欠く曖昧な形容詞（"robust"、"intuitive"）
 
-   For each category with Partial or Missing status, add a candidate question opportunity unless:
-   - Clarification would not materially change implementation or validation strategy
-   - Information is better deferred to planning phase (note internally)
+   PartialまたはMissingステータスのある各カテゴリについて、次の場合を除き、候補質問の機会を追加：
+   - 明確化が実装または検証戦略を実質的に変更しない
+   - 情報は計画フェーズに延期する方が良い（内部的にメモ）
 
-3. Generate (internally) a prioritized queue of candidate clarification questions (maximum 5). Do NOT output them all at once. Apply these constraints:
-    - Maximum of 10 total questions across the whole session.
-    - Each question must be answerable with EITHER:
-       - A short multiple‑choice selection (2–5 distinct, mutually exclusive options), OR
-       - A one-word / short‑phrase answer (explicitly constrain: "Answer in <=5 words").
-    - Only include questions whose answers materially impact architecture, data modeling, task decomposition, test design, UX behavior, operational readiness, or compliance validation.
-    - Ensure category coverage balance: attempt to cover the highest impact unresolved categories first; avoid asking two low-impact questions when a single high-impact area (e.g., security posture) is unresolved.
-    - Exclude questions already answered, trivial stylistic preferences, or plan-level execution details (unless blocking correctness).
-    - Favor clarifications that reduce downstream rework risk or prevent misaligned acceptance tests.
-    - If more than 5 categories remain unresolved, select the top 5 by (Impact * Uncertainty) heuristic.
+3. 候補明確化質問の優先順位付けキューを（内部的に）生成します（最大5つ）。一度にすべてを出力しないでください。以下の制約を適用：
+    - セッション全体で最大10の質問
+    - 各質問は以下のいずれかで回答可能である必要があります：
+       - 短い多肢選択（2〜5の明確で相互に排他的なオプション）、または
+       - 一語/短いフレーズの回答（明示的に制約："5単語以下で回答"）
+    - アーキテクチャ、データモデリング、タスク分解、テスト設計、UX動作、運用準備、またはコンプライアンス検証に実質的に影響する回答のみを含める
+    - カテゴリカバレッジのバランスを確保：最も影響の大きい未解決カテゴリを最初にカバーすることを試み、単一の高影響エリア（例：セキュリティ態勢）が未解決の場合に2つの低影響質問を避ける
+    - すでに回答された質問、些細なスタイルの好み、または計画レベルの実行詳細（正確性をブロックしない限り）を除外
+    - 下流の再作業リスクを減らすか、不整合な受け入れテストを防ぐ明確化を優先
+    - 5つ以上のカテゴリが未解決のままの場合、（影響 * 不確実性）ヒューリスティックで上位5つを選択
 
-4. Sequential questioning loop (interactive):
-    - Present EXACTLY ONE question at a time.
-    - For multiple‑choice questions:
-       - **Analyze all options** and determine the **most suitable option** based on:
-          - Best practices for the project type
-          - Common patterns in similar implementations
-          - Risk reduction (security, performance, maintainability)
-          - Alignment with any explicit project goals or constraints visible in the spec
-       - Present your **recommended option prominently** at the top with clear reasoning (1-2 sentences explaining why this is the best choice).
-       - Format as: `**Recommended:** Option [X] - <reasoning>`
-       - Then render all options as a Markdown table:
+4. 順次質問ループ（対話的）:
+    - 一度に正確に1つの質問を提示
+    - 多肢選択質問の場合：
+       - **すべてのオプションを分析**し、以下に基づいて**最も適切なオプション**を決定：
+          - プロジェクトタイプのベストプラクティス
+          - 類似実装の一般的なパターン
+          - リスク削減（セキュリティ、パフォーマンス、保守性）
+          - 仕様に見られる明示的なプロジェクト目標または制約との整合性
+       - 明確な理由（これが最良の選択である理由を説明する1-2文）を伴って、**推奨オプションを目立つように**上部に提示
+       - 形式: `**推奨:** オプション [X] - <理由>`
+       - 次にすべてのオプションをMarkdownテーブルとしてレンダリング：
 
-       | Option | Description |
+       | オプション | 説明 |
        |--------|-------------|
-       | A | <Option A description> |
-       | B | <Option B description> |
-       | C | <Option C description> (add D/E as needed up to 5) |
-       | Short | Provide a different short answer (<=5 words) (Include only if free-form alternative is appropriate) |
+       | A | <オプションAの説明> |
+       | B | <オプションBの説明> |
+       | C | <オプションCの説明> (必要に応じてD/Eを最大5つまで追加) |
+       | Short | 異なる短い回答を提供（<=5単語）（自由形式の代替が適切な場合のみ含める） |
 
-       - After the table, add: `You can reply with the option letter (e.g., "A"), accept the recommendation by saying "yes" or "recommended", or provide your own short answer.`
-    - For short‑answer style (no meaningful discrete options):
-       - Provide your **suggested answer** based on best practices and context.
-       - Format as: `**Suggested:** <your proposed answer> - <brief reasoning>`
-       - Then output: `Format: Short answer (<=5 words). You can accept the suggestion by saying "yes" or "suggested", or provide your own answer.`
-    - After the user answers:
-       - If the user replies with "yes", "recommended", or "suggested", use your previously stated recommendation/suggestion as the answer.
-       - Otherwise, validate the answer maps to one option or fits the <=5 word constraint.
-       - If ambiguous, ask for a quick disambiguation (count still belongs to same question; do not advance).
-       - Once satisfactory, record it in working memory (do not yet write to disk) and move to the next queued question.
-    - Stop asking further questions when:
-       - All critical ambiguities resolved early (remaining queued items become unnecessary), OR
-       - User signals completion ("done", "good", "no more"), OR
-       - You reach 5 asked questions.
-    - Never reveal future queued questions in advance.
-    - If no valid questions exist at start, immediately report no critical ambiguities.
+       - テーブルの後に追加: `オプションレター（例："A"）で返信するか、"yes"または"recommended"と言って推奨を受け入れるか、または独自の短い回答を提供できます。`
+    - 短い回答スタイルの場合（意味のある個別オプションがない）:
+       - ベストプラクティスとコンテキストに基づいて**提案された回答**を提供
+       - 形式: `**提案:** <提案された回答> - <簡単な理由>`
+       - 次に出力: `形式: 短い回答（<=5単語）。"yes"または"suggested"と言って提案を受け入れるか、または独自の回答を提供できます。`
+    - ユーザーが回答した後：
+       - ユーザーが"yes"、"recommended"、または"suggested"と返信した場合、以前に述べた推奨/提案を回答として使用
+       - それ以外の場合、回答が1つのオプションにマッピングされるか、<=5単語制約に適合するかを検証
+       - 曖昧な場合は、簡単な曖昧さ除去を求める（カウントは依然として同じ質問に属します。進めないでください）
+       - 満足のいくものであれば、作業メモリに記録し（まだディスクに書き込まない）、次のキューされた質問に移動
+    - さらなる質問を停止する時期：
+       - すべてのクリティカルな曖昧さが早期に解決（残りのキューされた項目が不要になる）、または
+       - ユーザーが完了を示す（"done"、"good"、"no more"）、または
+       - 5つの質問に達する
+    - 将来のキューされた質問を事前に明らかにしない
+    - 開始時に有効な質問が存在しない場合は、すぐにクリティカルな曖昧さがないことを報告
 
-5. Integration after EACH accepted answer (incremental update approach):
-    - Maintain in-memory representation of the spec (loaded once at start) plus the raw file contents.
-    - For the first integrated answer in this session:
-       - Ensure a `## Clarifications` section exists (create it just after the highest-level contextual/overview section per the spec template if missing).
-       - Under it, create (if not present) a `### Session YYYY-MM-DD` subheading for today.
-    - Append a bullet line immediately after acceptance: `- Q: <question> → A: <final answer>`.
-    - Then immediately apply the clarification to the most appropriate section(s):
-       - Functional ambiguity → Update or add a bullet in Functional Requirements.
-       - User interaction / actor distinction → Update User Stories or Actors subsection (if present) with clarified role, constraint, or scenario.
-       - Data shape / entities → Update Data Model (add fields, types, relationships) preserving ordering; note added constraints succinctly.
-       - Non-functional constraint → Add/modify measurable criteria in Non-Functional / Quality Attributes section (convert vague adjective to metric or explicit target).
-       - Edge case / negative flow → Add a new bullet under Edge Cases / Error Handling (or create such subsection if template provides placeholder for it).
-       - Terminology conflict → Normalize term across spec; retain original only if necessary by adding `(formerly referred to as "X")` once.
-    - If the clarification invalidates an earlier ambiguous statement, replace that statement instead of duplicating; leave no obsolete contradictory text.
-    - Save the spec file AFTER each integration to minimize risk of context loss (atomic overwrite).
-    - Preserve formatting: do not reorder unrelated sections; keep heading hierarchy intact.
-    - Keep each inserted clarification minimal and testable (avoid narrative drift).
+5. 各受け入れられた回答後の統合（段階的更新アプローチ）:
+    - 仕様のメモリ内表現（開始時に一度ロード）と生ファイルコンテンツを維持
+    - このセッションの最初の統合回答の場合：
+       - `## Clarifications`セクションが存在することを確認（欠落している場合は仕様テンプレートに従って最高レベルのコンテキスト/概要セクションの直後に作成）
+       - その下に、今日の`### Session YYYY-MM-DD`サブ見出しを作成（存在しない場合）
+    - 受け入れ直後に箇条書き行を追加: `- Q: <質問> → A: <最終回答>`
+    - 次に、最も適切なセクションに明確化を即座に適用：
+       - 機能的曖昧さ → 機能要件に箇条書きを更新または追加
+       - ユーザー対話/アクターの区別 → ユーザーストーリーまたはアクターサブセクション（存在する場合）を明確化されたロール、制約、またはシナリオで更新
+       - データ形状/エンティティ → データモデルを更新（フィールド、タイプ、関係を追加）順序を保持。追加された制約を簡潔にメモ
+       - 非機能制約 → 非機能/品質属性セクションに測定可能な基準を追加/変更（曖昧な形容詞をメトリクスまたは明示的な目標に変換）
+       - エッジケース/ネガティブフロー → エッジケース/エラー処理の下に新しい箇条書きを追加（またはテンプレートがプレースホルダーを提供する場合はそのようなサブセクションを作成）
+       - 用語の競合 → 仕様全体で用語を正規化。必要な場合のみ元の用語を保持し、`(formerly referred to as "X")`を一度追加
+    - 明確化が以前の曖昧なステートメントを無効にする場合、重複するのではなく、そのステートメントを置き換えます。時代遅れの矛盾するテキストを残さない
+    - コンテキスト喪失のリスクを最小限に抑えるために、各統合後に仕様ファイルを保存（アトミックな上書き）
+    - フォーマットを保持: 無関係なセクションを並べ替えない。見出し階層を保持
+    - 挿入された各明確化を最小限でテスト可能に保つ（ナラティブドリフトを避ける）
 
-6. Validation (performed after EACH write plus final pass):
-   - Clarifications session contains exactly one bullet per accepted answer (no duplicates).
-   - Total asked (accepted) questions ≤ 5.
-   - Updated sections contain no lingering vague placeholders the new answer was meant to resolve.
-   - No contradictory earlier statement remains (scan for now-invalid alternative choices removed).
-   - Markdown structure valid; only allowed new headings: `## Clarifications`, `### Session YYYY-MM-DD`.
-   - Terminology consistency: same canonical term used across all updated sections.
+6. 検証（各書き込み後と最終パスで実行）:
+   - 明確化セッションには受け入れられた回答ごとに正確に1つの箇条書きが含まれる（重複なし）
+   - 合計質問数（受け入れられた）≤ 5
+   - 更新されたセクションには、新しい回答が解決するはずだった曖昧なプレースホルダーが残っていない
+   - 矛盾する以前のステートメントが残っていない（削除された無効な代替選択肢をスキャン）
+   - Markdown構造が有効。許可される新しい見出しのみ: `## Clarifications`、`### Session YYYY-MM-DD`
+   - 用語の一貫性: すべての更新されたセクション全体で同じ標準用語が使用される
 
-7. Write the updated spec back to `FEATURE_SPEC`.
+7. 更新された仕様を`FEATURE_SPEC`に書き戻します。
 
-8. Report completion (after questioning loop ends or early termination):
-   - Number of questions asked & answered.
-   - Path to updated spec.
-   - Sections touched (list names).
-   - Coverage summary table listing each taxonomy category with Status: Resolved (was Partial/Missing and addressed), Deferred (exceeds question quota or better suited for planning), Clear (already sufficient), Outstanding (still Partial/Missing but low impact).
-   - If any Outstanding or Deferred remain, recommend whether to proceed to `/speckit.plan` or run `/speckit.clarify` again later post-plan.
-   - Suggested next command.
+8. 完了を報告（質問ループ終了または早期終了後）:
+   - 質問された＆回答された数
+   - 更新された仕様へのパス
+   - 触れたセクション（名前をリスト）
+   - 各分類カテゴリのステータスをリストするカバレッジ概要テーブル: Resolved（PartialまたはMissingで対処済み）、Deferred（質問クォータを超えるか計画により適している）、Clear（すでに十分）、Outstanding（まだPartialまたはMissingだが影響が低い）
+   - OutstandingまたはDeferredが残っている場合、`/speckit.plan`に進むか、計画後に`/speckit.clarify`を再度実行するかを推奨
+   - 提案された次のコマンド
 
-Behavior rules:
+動作ルール:
 
-- If no meaningful ambiguities found (or all potential questions would be low-impact), respond: "No critical ambiguities detected worth formal clarification." and suggest proceeding.
-- If spec file missing, instruct user to run `/speckit.specify` first (do not create a new spec here).
-- Never exceed 5 total asked questions (clarification retries for a single question do not count as new questions).
-- Avoid speculative tech stack questions unless the absence blocks functional clarity.
-- Respect user early termination signals ("stop", "done", "proceed").
-- If no questions asked due to full coverage, output a compact coverage summary (all categories Clear) then suggest advancing.
-- If quota reached with unresolved high-impact categories remaining, explicitly flag them under Deferred with rationale.
+- 意味のある曖昧さが見つからない場合（またはすべての潜在的な質問が低影響の場合）、"正式な明確化の価値があるクリティカルな曖昧さは検出されませんでした。"と応答し、続行を提案
+- 仕様ファイルが欠落している場合、ユーザーに最初に`/speckit.specify`を実行するよう指示（ここで新しい仕様を作成しない）
+- 合計5つの質問を超えないでください（単一の質問の明確化リトライは新しい質問としてカウントされません）
+- 不在が機能的明確性をブロックしない限り、推測的な技術スタック質問を避ける
+- ユーザーの早期終了シグナル（"stop"、"done"、"proceed"）を尊重
+- 完全カバレッジのために質問がない場合、コンパクトなカバレッジ概要（すべてのカテゴリClear）を出力し、次に進むことを提案
+- 未解決の高影響カテゴリが残っているクォータに達した場合、理由とともにDeferredの下で明示的にフラグを立てる
 
-Context for prioritization: {ARGS}
+優先順位付けのコンテキスト: {ARGS}
