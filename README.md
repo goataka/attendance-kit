@@ -46,7 +46,7 @@
 
 ### AWS Deployment
 
-開発環境をAWSにデプロイするためのCI/CDワークフローを提供しています。
+AWS CDKを使用してDynamoDBテーブルをデプロイできます。
 
 詳細は [docs/aws-deployment.md](docs/aws-deployment.md) を参照してください。
 

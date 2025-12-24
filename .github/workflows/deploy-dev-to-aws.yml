@@ -1,4 +1,4 @@
-name: Deploy Development Environment to AWS
+name: Deploy DynamoDB to AWS with CDK
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ on:
     branches:
       - main
     paths:
-      - '.devcontainer/**'
+      - 'infrastructure/**'
       - '.github/workflows/deploy-dev-to-aws.yml'
 
 permissions:
@@ -24,15 +24,11 @@ permissions:
 
 env:
   AWS_REGION: ap-northeast-1
-  ECR_REPOSITORY: spec-kit-dev-environment
-  ECS_SERVICE: spec-kit-dev-service
-  ECS_CLUSTER: spec-kit-dev-cluster
-  ECS_TASK_DEFINITION: spec-kit-dev-task
-  CONTAINER_NAME: spec-kit-dev-container
+  NODE_VERSION: '20'
 
 jobs:
   deploy:
-    name: Deploy to AWS
+    name: Deploy to AWS with CDK
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.event.inputs.environment || 'dev' }}
@@ -41,60 +37,40 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: infrastructure/package-lock.json
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Install dependencies
+        working-directory: ./infrastructure
+        run: npm ci
 
-      - name: Build Docker image
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          # Build the Docker image based on devcontainer configuration
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest \
-            -f .devcontainer/Dockerfile \
-            .
-          
-          # Push images to ECR
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-          
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      - name: Build CDK project
+        working-directory: ./infrastructure
+        run: npm run build
 
-      - name: Download task definition
-        run: |
-          aws ecs describe-task-definition \
-            --task-definition ${{ env.ECS_TASK_DEFINITION }} \
-            --query taskDefinition > task-definition.json
+      - name: CDK Synth
+        working-directory: ./infrastructure
+        run: npm run synth
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: CDK Deploy
+        working-directory: ./infrastructure
+        run: npm run deploy -- --require-approval never
 
       - name: Deployment Summary
         run: |
           echo "🚀 Deployment completed successfully!"
-          echo "📦 Image: ${{ steps.build-image.outputs.image }}"
+          echo "📦 Stack: SpecKitDevStack"
           echo "🌏 Region: ${{ env.AWS_REGION }}"
-          echo "📋 ECS Cluster: ${{ env.ECS_CLUSTER }}"
-          echo "🔧 ECS Service: ${{ env.ECS_SERVICE }}"
+          echo "📋 DynamoDB tables deployed:"
+          echo "  - spec-kit-dev-attendance"
+          echo "  - spec-kit-dev-leave-requests"

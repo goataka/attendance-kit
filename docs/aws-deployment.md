@@ -1,93 +1,104 @@
-# AWS Development Environment Deployment
+# AWS DynamoDB Deployment with CDK
 
-このドキュメントでは、開発環境をAWSにデプロイするためのCI/CDワークフローについて説明します。
+このドキュメントでは、AWS CDKを使用してDynamoDBテーブルをデプロイする方法について説明します。
 
 ## 概要
 
-開発環境のDockerコンテナをAmazon ECS (Elastic Container Service)にデプロイするGitHub Actionsワークフローを提供します。
+勤怠管理システムのためのDynamoDBテーブルを、AWS CDKを使用してデプロイします。
 
 ## アーキテクチャ
 
 ```
 GitHub Actions
     ↓
-  [Build Docker Image]
+  [CDK Synth]
     ↓
-Amazon ECR (Container Registry)
+  [CDK Deploy]
     ↓
-Amazon ECS (Fargate)
+AWS CloudFormation
     ↓
-  [Development Environment]
+Amazon DynamoDB
+  - 出退勤記録テーブル
+  - 休暇申請テーブル
 ```
 
-## 前提条件
+## DynamoDBテーブル設計
 
-### 1. AWS Resources
+### 1. 出退勤記録テーブル (`spec-kit-dev-attendance`)
 
-以下のAWSリソースを事前に作成する必要があります：
+**用途**: 従業員の出退勤記録を管理
 
-#### ECR Repository
-```bash
-aws ecr create-repository \
-  --repository-name spec-kit-dev-environment \
-  --region ap-northeast-1
-```
+**キー構造**:
+- Partition Key: `userId` (String) - ユーザーID
+- Sort Key: `timestamp` (String) - タイムスタンプ (ISO 8601形式)
 
-#### ECS Cluster
-```bash
-aws ecs create-cluster \
-  --cluster-name spec-kit-dev-cluster \
-  --region ap-northeast-1
-```
+**Global Secondary Index**:
+- **DateIndex**
+  - Partition Key: `date` (String) - 日付 (YYYY-MM-DD)
+  - Sort Key: `timestamp` (String) - タイムスタンプ
 
-#### ECS Task Definition
-タスク定義を作成します。以下はサンプルです：
-
+**属性例**:
 ```json
 {
-  "family": "spec-kit-dev-task",
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "cpu": "256",
-  "memory": "512",
-  "containerDefinitions": [
-    {
-      "name": "spec-kit-dev-container",
-      "image": "<AWS_ACCOUNT_ID>.dkr.ecr.ap-northeast-1.amazonaws.com/spec-kit-dev-environment:latest",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 8080,
-          "protocol": "tcp"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/spec-kit-dev",
-          "awslogs-region": "ap-northeast-1",
-          "awslogs-stream-prefix": "ecs"
-        }
-      }
-    }
-  ],
-  "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecsTaskExecutionRole"
+  "userId": "user-001",
+  "timestamp": "2025-12-24T09:00:00Z",
+  "date": "2025-12-24",
+  "type": "clock-in",
+  "location": "Tokyo Office"
 }
 ```
 
-#### ECS Service
-```bash
-aws ecs create-service \
-  --cluster spec-kit-dev-cluster \
-  --service-name spec-kit-dev-service \
-  --task-definition spec-kit-dev-task \
-  --desired-count 1 \
-  --launch-type FARGATE \
-  --network-configuration "awsvpcConfiguration={subnets=[subnet-xxxxx],securityGroups=[sg-xxxxx],assignPublicIp=ENABLED}" \
-  --region ap-northeast-1
+**クエリパターン**:
+1. ユーザーごとの出退勤履歴取得
+2. 特定日の全従業員の出退勤記録取得
+
+### 2. 休暇申請テーブル (`spec-kit-dev-leave-requests`)
+
+**用途**: 休暇申請と承認状態を管理
+
+**キー構造**:
+- Partition Key: `requestId` (String) - 申請ID
+- Sort Key: `userId` (String) - ユーザーID
+
+**Global Secondary Index**:
+- **UserIndex**
+  - Partition Key: `userId` (String) - ユーザーID
+  - Sort Key: `status` (String) - ステータス (pending/approved/rejected)
+
+**属性例**:
+```json
+{
+  "requestId": "req-12345",
+  "userId": "user-001",
+  "status": "pending",
+  "startDate": "2025-12-25",
+  "endDate": "2025-12-27",
+  "leaveType": "annual",
+  "reason": "Family vacation",
+  "createdAt": "2025-12-24T10:00:00Z"
+}
 ```
 
-### 2. GitHub OIDC Configuration
+**クエリパターン**:
+1. 申請IDによる詳細取得
+2. ユーザーごとの申請一覧取得
+3. ステータスによる申請フィルタリング
+
+## 前提条件
+
+### 1. AWS環境
+
+- AWS アカウント
+- AWS CLI インストール済み
+- AWS 認証情報設定済み
+
+### 2. 開発環境
+
+- Node.js 20以上
+- npm
+- Git
+
+### 3. GitHub OIDC設定
 
 GitHub ActionsからAWSへの認証にOIDC (OpenID Connect)を使用します。
 
@@ -104,10 +115,10 @@ aws iam create-open-id-connect-provider \
 ```
 
 #### IAM Role作成
+
 以下のポリシーを持つIAMロールを作成します：
 
-**Trust Policy:**
-**注意**: `goataka/spec-kit-with-coding-agent` は例です。実際のリポジトリ名に置き換えてください。
+**Trust Policy**:
 
 ```json
 {
@@ -132,7 +143,8 @@ aws iam create-open-id-connect-provider \
 }
 ```
 
-**Permissions Policy:**
+**Permissions Policy**:
+
 ```json
 {
   "Version": "2012-10-17",
@@ -140,39 +152,21 @@ aws iam create-open-id-connect-provider \
     {
       "Effect": "Allow",
       "Action": [
-        "ecr:GetAuthorizationToken",
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage",
-        "ecr:PutImage",
-        "ecr:InitiateLayerUpload",
-        "ecr:UploadLayerPart",
-        "ecr:CompleteLayerUpload"
+        "cloudformation:*",
+        "dynamodb:*",
+        "iam:GetRole",
+        "iam:PassRole",
+        "ssm:GetParameter"
       ],
       "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ecs:DescribeTaskDefinition",
-        "ecs:RegisterTaskDefinition",
-        "ecs:UpdateService",
-        "ecs:DescribeServices"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "iam:PassRole"
-      ],
-      "Resource": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecsTaskExecutionRole"
     }
   ]
 }
 ```
 
-### 3. GitHub Secrets設定
+**注意**: 本番環境では、より厳密なリソース制限を設定してください。
+
+### 4. GitHub Secrets設定
 
 GitHubリポジトリに以下のSecretsを設定します：
 
@@ -180,12 +174,47 @@ Settings → Secrets and variables → Actions → New repository secret
 
 - `AWS_ROLE_TO_ASSUME`: IAMロールのARN (例: `arn:aws:iam::123456789012:role/GitHubActionsRole`)
 
-## ワークフローの使用方法
+## ローカルでのセットアップ
+
+### 1. 依存関係のインストール
+
+```bash
+cd infrastructure
+npm install
+```
+
+### 2. AWS認証情報の設定
+
+```bash
+# AWS CLIで認証情報を設定
+aws configure
+
+# または環境変数で設定
+export AWS_ACCESS_KEY_ID=your_access_key
+export AWS_SECRET_ACCESS_KEY=your_secret_key
+export AWS_DEFAULT_REGION=ap-northeast-1
+```
+
+### 3. CDKのブートストラップ（初回のみ）
+
+```bash
+cd infrastructure
+npx cdk bootstrap aws://<ACCOUNT_ID>/ap-northeast-1
+```
+
+### 4. スタックのデプロイ
+
+```bash
+cd infrastructure
+npm run deploy
+```
+
+## GitHub Actionsでのデプロイ
 
 ### 手動実行
 
 1. GitHubリポジトリのActionsタブを開く
-2. "Deploy Development Environment to AWS"ワークフローを選択
+2. "Deploy DynamoDB to AWS with CDK"ワークフローを選択
 3. "Run workflow"をクリック
 4. 環境を選択 (dev または staging)
 5. "Run workflow"を実行
@@ -193,62 +222,152 @@ Settings → Secrets and variables → Actions → New repository secret
 ### 自動実行
 
 以下の条件で自動的に実行されます：
-- `main`ブランチに`.devcontainer/**`または`.github/workflows/deploy-dev-to-aws.yml`の変更がpushされた時
+- `main`ブランチに`infrastructure/**`または`.github/workflows/deploy-dev-to-aws.yml`の変更がpushされた時
 
 ## ワークフロー詳細
 
 ### ステップ
 
 1. **Checkout code**: ソースコードをチェックアウト
-2. **Configure AWS credentials**: OIDCを使用してAWS認証情報を取得
-3. **Login to Amazon ECR**: ECRにログイン
-4. **Build Docker image**: DevContainerベースのDockerイメージをビルド
-5. **Push to ECR**: イメージをECRにプッシュ
-6. **Update ECS task definition**: タスク定義を更新
-7. **Deploy to ECS**: ECSサービスにデプロイ
+2. **Setup Node.js**: Node.js環境をセットアップ
+3. **Configure AWS credentials**: OIDCを使用してAWS認証情報を取得
+4. **Install dependencies**: NPMパッケージをインストール
+5. **Build CDK project**: TypeScriptコードをビルド
+6. **CDK Synth**: CloudFormationテンプレートを生成
+7. **CDK Deploy**: スタックをデプロイ
 
-### 環境変数
+## CDK コマンド
 
-ワークフローファイル内で以下の環境変数を設定できます：
+### スタックの合成
 
-- `AWS_REGION`: AWSリージョン (デフォルト: ap-northeast-1)
-- `ECR_REPOSITORY`: ECRリポジトリ名
-- `ECS_SERVICE`: ECSサービス名
-- `ECS_CLUSTER`: ECSクラスター名
-- `ECS_TASK_DEFINITION`: タスク定義名
-- `CONTAINER_NAME`: コンテナ名
+CloudFormationテンプレートを生成します：
+
+```bash
+cd infrastructure
+npm run synth
+```
+
+### デプロイ前の差分確認
+
+```bash
+cd infrastructure
+npm run diff
+```
+
+### デプロイ
+
+```bash
+cd infrastructure
+npm run deploy
+```
+
+### スタックの削除
+
+```bash
+cd infrastructure
+npm run destroy
+```
+
+## テーブル設定の詳細
+
+### 課金モード
+
+**Pay-per-request (On-Demand)**を使用しています。
+
+**メリット**:
+- 使用量に応じた自動スケーリング
+- キャパシティプランニング不要
+- 予測不可能なワークロードに最適
+
+### データ保護
+
+1. **Point-in-Time Recovery (PITR)**
+   - 過去35日間の任意の時点へのリストアが可能
+   - データ損失のリスクを最小化
+
+2. **暗号化**
+   - AWS管理キー (AWS_MANAGED) による暗号化
+   - 保存時および転送中のデータを保護
+
+3. **削除保護**
+   - `removalPolicy: RETAIN`により、スタック削除時もテーブルは保持
 
 ## トラブルシューティング
 
-### ECR Login Failed
-- IAMロールのポリシーを確認
-- OIDCプロバイダーが正しく設定されているか確認
+### CDK Deploy Failed
 
-### ECS Deployment Failed
-- タスク定義が存在するか確認
-- セキュリティグループとサブネットの設定を確認
-- ECSタスク実行ロールの権限を確認
+**原因**: CloudFormation権限不足
 
-### Docker Build Failed
-- `.devcontainer/Dockerfile`のビルドログを確認
-- ベースイメージのpull制限に達していないか確認
+**解決方法**: IAMロールに適切な権限を付与
 
-## セキュリティ考慮事項
+```bash
+# エラーログを確認
+aws cloudformation describe-stack-events --stack-name SpecKitDevStack
+```
 
-1. **OIDC使用**: AWS Access Keyを使用せず、OIDCベースの認証を推奨
-2. **最小権限の原則**: IAMロールには必要最小限の権限のみを付与
-3. **環境変数の保護**: GitHub Secretsを使用して機密情報を管理
-4. **イメージスキャン**: ECRのイメージスキャン機能を有効化することを推奨
+### DynamoDB Table Already Exists
+
+**原因**: 同名のテーブルが既に存在
+
+**解決方法**: 
+1. テーブル名を変更
+2. または既存テーブルを削除してから再デプロイ
+
+### OIDC Authentication Failed
+
+**原因**: Trust Policyの設定ミス
+
+**解決方法**: 
+1. リポジトリ名が正しいか確認
+2. OIDCプロバイダーが正しく設定されているか確認
 
 ## コスト最適化
 
-1. **Fargate Spot**: 開発環境にはFargate Spotの使用を検討
-2. **自動停止**: 使用していない時間帯は自動的にタスク数を0にするスケジューリングを設定
-3. **リソース最適化**: CPUとメモリの使用量を監視し、適切なサイズに調整
+### DynamoDB料金
+
+**On-Demand課金**:
+- リクエスト単位の課金
+- ストレージ: $0.25/GB/月 (ap-northeast-1)
+- 読み取りリクエスト: $0.285/100万リクエスト
+- 書き込みリクエスト: $1.4265/100万リクエスト
+
+**コスト削減のヒント**:
+1. 不要なデータの定期的な削除
+2. GSIの適切な設計でスキャンを最小化
+3. バッチ操作の活用
+
+### 開発環境での節約
+
+1. **テスト完了後のスタック削除**
+   ```bash
+   npm run destroy
+   ```
+
+2. **必要な時だけデプロイ**
+   - 手動トリガーを活用
+   - 自動デプロイの条件を制限
+
+## セキュリティベストプラクティス
+
+1. **最小権限の原則**
+   - IAMロールには必要最小限の権限のみを付与
+
+2. **暗号化の有効化**
+   - データベースレベルの暗号化
+   - 転送時の暗号化 (HTTPS)
+
+3. **監査ログ**
+   - CloudTrailでAPI呼び出しを記録
+   - DynamoDB Streamsで変更を追跡
+
+4. **アクセス制御**
+   - VPCエンドポイントの使用を検討
+   - IAMポリシーで細かいアクセス制御
 
 ## 参考資料
 
-- [GitHub Actions - AWS認証](https://github.com/aws-actions/configure-aws-credentials)
-- [Amazon ECR - ドキュメント](https://docs.aws.amazon.com/ecr/)
-- [Amazon ECS - ドキュメント](https://docs.aws.amazon.com/ecs/)
+- [AWS CDK Documentation](https://docs.aws.amazon.com/cdk/)
+- [AWS CDK TypeScript Reference](https://docs.aws.amazon.com/cdk/api/v2/docs/aws-construct-library.html)
+- [DynamoDB Developer Guide](https://docs.aws.amazon.com/dynamodb/)
+- [DynamoDB Best Practices](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/best-practices.html)
 - [GitHub OIDC - AWS連携](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
