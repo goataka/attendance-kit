@@ -92,7 +92,11 @@ aws ecs create-service \
 GitHub ActionsからAWSへの認証にOIDC (OpenID Connect)を使用します。
 
 #### IAM Identity Provider作成
+
+**注意**: GitHub ActionsのOIDCサムプリントは変更される可能性があります。最新のサムプリントは[GitHubのドキュメント](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)で確認してください。
+
 ```bash
+# 現在のサムプリント（2024年12月時点）
 aws iam create-open-id-connect-provider \
   --url https://token.actions.githubusercontent.com \
   --client-id-list sts.amazonaws.com \
@@ -103,6 +107,8 @@ aws iam create-open-id-connect-provider \
 以下のポリシーを持つIAMロールを作成します：
 
 **Trust Policy:**
+**注意**: `goataka/spec-kit-with-coding-agent` は例です。実際のリポジトリ名に置き換えてください。
+
 ```json
 {
   "Version": "2012-10-17",
@@ -118,7 +124,7 @@ aws iam create-open-id-connect-provider \
           "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
         },
         "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:goataka/spec-kit-with-coding-agent:*"
+          "token.actions.githubusercontent.com:sub": "repo:<YOUR_ORG>/<YOUR_REPO>:*"
         }
       }
     }

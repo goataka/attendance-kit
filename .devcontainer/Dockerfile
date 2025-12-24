@@ -27,4 +27,3 @@ RUN echo '🚀 Spec-Kit Development Container image built successfully!' && \
 
 # Default command - keep container running for development
 CMD ["/bin/bash", "-c", "echo 'Development environment is running' && tail -f /dev/null"]
-
