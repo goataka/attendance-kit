@@ -170,9 +170,9 @@ infrastructure/
 ├── bin/
 │   └── app.ts                    # CDKアプリエントリーポイント
 ├── lib/
-│   └── spec-kit-dev-stack.ts     # DynamoDBスタック定義
+│   └── spec-kit-stack.ts         # DynamoDBスタック定義（環境パラメータ対応）
 ├── test/
-│   └── spec-kit-dev-stack.test.ts # ユニットテスト
+│   └── spec-kit-stack.test.ts    # ユニットテスト
 ├── cdk.json                       # CDK設定
 ├── package.json                   # 依存関係
 ├── tsconfig.json                  # TypeScript設定
@@ -186,9 +186,12 @@ infrastructure/
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { SpecKitDevStack } from '../lib/spec-kit-dev-stack';
+import { SpecKitStack } from '../lib/spec-kit-stack';
 
 const app = new cdk.App();
+
+// 環境パラメータ（コンテキストまたは環境変数から取得）
+const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
 
 // 環境設定
 const env = {
@@ -196,12 +199,13 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
-// Stackインスタンス作成
-new SpecKitDevStack(app, 'SpecKitDevStack', {
+// Stackインスタンス作成（環境をパラメータとして渡す）
+new SpecKitStack(app, `SpecKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`, {
   env,
-  description: 'DynamoDB clock table for spec-kit attendance system (dev environment)',
+  environment,
+  description: `DynamoDB clock table for spec-kit attendance system (${environment} environment)`,
   tags: {
-    Environment: 'dev',
+    Environment: environment,
     Project: 'spec-kit',
     ManagedBy: 'CDK',
   },
@@ -210,19 +214,25 @@ new SpecKitDevStack(app, 'SpecKitDevStack', {
 app.synth();
 ```
 
-#### lib/spec-kit-dev-stack.ts
+#### lib/spec-kit-stack.ts
 ```typescript
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 
-export class SpecKitDevStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+export interface SpecKitStackProps extends cdk.StackProps {
+  environment: string; // 'dev' | 'staging'
+}
+
+export class SpecKitStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props: SpecKitStackProps) {
     super(scope, id, props);
 
-    // DynamoDB Clock Table
+    const { environment } = props;
+
+    // DynamoDB Clock Table（環境ごとに異なるテーブル名）
     const clockTable = new dynamodb.Table(this, 'ClockTable', {
-      tableName: 'spec-kit-dev-clock',
+      tableName: `spec-kit-${environment}-clock`,
       partitionKey: {
         name: 'userId',
         type: dynamodb.AttributeType.STRING,
@@ -251,17 +261,17 @@ export class SpecKitDevStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
-    // CloudFormation Outputs
+    // CloudFormation Outputs（環境ごとに異なるExport名）
     new cdk.CfnOutput(this, 'TableName', {
       value: clockTable.tableName,
-      description: 'DynamoDB clock table name',
-      exportName: 'SpecKitDevClockTableName',
+      description: `DynamoDB clock table name (${environment})`,
+      exportName: `SpecKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableName`,
     });
 
     new cdk.CfnOutput(this, 'TableArn', {
       value: clockTable.tableArn,
-      description: 'DynamoDB clock table ARN',
-      exportName: 'SpecKitDevClockTableArn',
+      description: `DynamoDB clock table ARN (${environment})`,
+      exportName: `SpecKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableArn`,
     });
   }
 }
@@ -298,10 +308,10 @@ export class SpecKitDevStack extends cdk.Stack {
 
 ## 4. GitHub Actions ワークフロー設計
 
-### 4.1 Deploy Workflow (.github/workflows/deploy-dev-to-aws.yml)
+### 4.1 Deploy Workflow (.github/workflows/deploy-to-aws.yml)
 
 ```yaml
-name: Deploy Dev to AWS
+name: Deploy to AWS
 
 on:
   push:
@@ -354,92 +364,42 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
+      - name: CDK Bootstrap
+        working-directory: infrastructure
+        env:
+          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+        run: |
+          echo "Running CDK bootstrap (idempotent operation)..."
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 \
+            --context environment=${ENVIRONMENT}
+
       - name: CDK Synth
         working-directory: infrastructure
-        run: npx cdk synth
+        env:
+          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+        run: npx cdk synth --context environment=${ENVIRONMENT}
 
       - name: CDK Deploy
         working-directory: infrastructure
-        run: npx cdk deploy --require-approval broadening --all
+        env:
+          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+        run: npx cdk deploy --require-approval broadening --all --context environment=${ENVIRONMENT}
 
       - name: Output deployment results
+        env:
+          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
         run: |
-          echo "Deployment completed successfully"
+          echo "Deployment completed successfully for environment: ${ENVIRONMENT}"
+          STACK_NAME="SpecKit-$(echo ${ENVIRONMENT} | sed 's/.*/\u&/')-Stack"
           echo "Stack outputs:"
           aws cloudformation describe-stacks \
-            --stack-name SpecKitDevStack \
+            --stack-name ${STACK_NAME} \
             --query 'Stacks[0].Outputs' \
             --output table
 ```
 
-### 4.2 Bootstrap Workflow (.github/workflows/cdk-bootstrap.yml)
-
-```yaml
-name: CDK Bootstrap
-
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment (dev/staging)'
-        required: true
-        type: choice
-        options:
-          - dev
-          - staging
-      region:
-        description: 'AWS Region'
-        required: true
-        default: 'ap-northeast-1'
-        type: string
-
-permissions:
-  id-token: write
-  contents: read
-
-jobs:
-  bootstrap:
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: infrastructure/package-lock.json
-
-      - name: Install dependencies
-        working-directory: infrastructure
-        run: npm ci
-
-      - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          aws-region: ${{ inputs.region }}
-
-      - name: CDK Bootstrap
-        working-directory: infrastructure
-        run: |
-          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          npx cdk bootstrap aws://${ACCOUNT_ID}/${{ inputs.region }}
-
-      - name: Verify bootstrap
-        run: |
-          echo "Bootstrap completed for account/region:"
-          aws sts get-caller-identity
-          aws cloudformation describe-stacks \
-            --stack-name CDKToolkit \
-            --region ${{ inputs.region }} \
-            --query 'Stacks[0].StackStatus'
-```
-
-### 4.3 Synth Workflow (.github/workflows/cdk-synth.yml)
+### 4.2 Synth Workflow (.github/workflows/cdk-synth.yml)
 
 ```yaml
 name: CDK Synth
@@ -484,7 +444,9 @@ jobs:
 
       - name: CDK Synth
         working-directory: infrastructure
-        run: npx cdk synth --output ./cdk.out
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: npx cdk synth --context environment=${ENVIRONMENT} --output ./cdk.out
 
       - name: Upload CloudFormation templates
         uses: actions/upload-artifact@v4
