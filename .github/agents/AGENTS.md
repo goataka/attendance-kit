@@ -72,5 +72,5 @@ Commit: [be9f233](https://github.com/goataka/spec-kit-with-coding-agent/commit/b
 
 ## 参考資料
 
-- [プロジェクト憲法](../memory/constitution.md)
+- [プロジェクト憲法](./memory/constitution.md)
 - [Spec-Kit GitHubリポジトリ](https://github.com/github/spec-kit)

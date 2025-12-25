@@ -18,7 +18,7 @@ description: "Task list template for feature implementation"
   - ファイルパスやコード要素は英語のまま
   - 技術的な詳細は英語も併記して構いません
   - PRのサマリー、コミットメッセージ、Agentのセッション内のやり取りも日本語で行ってください
-  - 開発ガイドライン: ../../.github/agents/agent.md を参照
+  - 開発ガイドライン: ../../.github/agents/AGENTS.md を参照
 -->
 
 ## フォーマット: `[ID] [P?] [Story] 説明`
@@ -263,7 +263,7 @@ Task: "src/models/[entity2].py に[Entity2]モデルを作成"
 ## 関連ドキュメント
 
 ### 開発ガイドライン
-- [Agent開発ガイドライン](../../.github/agents/agent.md) - Spec-Kitワークフロー、言語ポリシー、コミット規約
+- [Agent開発ガイドライン](../../.github/agents/AGENTS.md) - Spec-Kitワークフロー、言語ポリシー、コミット規約
 
 ### プロジェクト文書
 - [機能仕様](./spec.md) - ユーザーストーリーと要件定義
