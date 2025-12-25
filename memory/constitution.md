@@ -1,6 +1,6 @@
 # Project Constitution: 勤怠管理システム
 
-**Version**: 1.3.0  
+**Version**: 1.4.0  
 **Ratified**: 2025-12-24  
 **Last Amended**: 2025-12-25
 
@@ -108,6 +108,22 @@
 
 - **Rule**: 文章はできるだけ箇条書きで簡潔に記述
 - **Rationale**: 可読性が向上し、重要な情報が把握しやすい
+
+### Principle 7: Mermaidによる図表作成
+
+- **Rule**: Markdown内の図はMermaidを使用して作成
+- **Rationale**: 
+  - テキストベースでバージョン管理可能
+  - レビューが容易
+  - 保守性が高い
+  - GitHubで直接レンダリング可能
+- **Diagram Types**: 
+  - システムアーキテクチャ: `graph` または `flowchart`
+  - シーケンス図: `sequenceDiagram`
+  - ER図: `erDiagram`
+  - 状態遷移図: `stateDiagram-v2`
+  - クラス図: `classDiagram`
+  - ガントチャート: `gantt`
 
 ## Governance
 
