@@ -1,348 +1,348 @@
-# Implementation Tasks: DynamoDB Clock Table CI/CD Deployment
+# 実装タスク: DynamoDB Clock Table CI/CD デプロイ
 
-**Specification**: [spec.md](./spec.md)  
-**Implementation Plan**: [plan.md](./plan.md)  
-**Status**: Ready for Implementation  
-**Created**: 2025-12-25
+**仕様書**: [spec.md](./spec.md)  
+**実装計画**: [plan.md](./plan.md)  
+**ステータス**: 実装準備完了  
+**作成日**: 2025-12-25
 
-## Task Breakdown
+## タスク内訳
 
-### Phase 1: Project Setup & CDK Foundation (P1)
+### フェーズ1: プロジェクトセットアップ & CDK基盤 (P1)
 
-#### Task 1.1: Initialize CDK Project Structure
-**Priority**: P1  
-**Estimated Effort**: 1 hour  
-**Dependencies**: None
+#### タスク 1.1: CDK プロジェクト構造の初期化
+**優先度**: P1  
+**見積工数**: 1時間  
+**依存関係**: なし
 
-**Actions**:
-- [ ] Create `infrastructure/` directory
-- [ ] Initialize CDK TypeScript project with `cdk init app --language typescript`
-- [ ] Update `package.json` with Node.js 22 engine requirement
-- [ ] Install dependencies: `aws-cdk-lib@^2.x`, `constructs@^10.x`, `@types/node@22.x`
-- [ ] Configure `cdk.json` with environment context variables
-- [ ] Create `.gitignore` for CDK artifacts (`cdk.out/`, `node_modules/`)
+**実施内容**:
+- [ ] `infrastructure/` ディレクトリを作成
+- [ ] `cdk init app --language typescript` でCDK TypeScriptプロジェクトを初期化
+- [ ] `package.json` にNode.js 22のエンジン要件を追加
+- [ ] 依存関係をインストール: `aws-cdk-lib@^2.x`, `constructs@^10.x`, `@types/node@22.x`
+- [ ] `cdk.json` に環境コンテキスト変数を設定
+- [ ] CDK成果物用の `.gitignore` を作成 (`cdk.out/`, `node_modules/`)
 
-**Acceptance Criteria**:
-- CDK project initializes without errors
-- `package.json` specifies Node.js 22
-- `cdk synth` runs successfully (empty stack)
-
----
-
-#### Task 1.2: Create Environment-Agnostic CDK Stack
-**Priority**: P1  
-**Estimated Effort**: 2 hours  
-**Dependencies**: Task 1.1
-
-**Actions**:
-- [ ] Create `lib/spec-kit-stack.ts` with environment parameter support
-- [ ] Implement context parameter reading: `environment = app.node.tryGetContext('environment')`
-- [ ] Add environment validation (must be 'dev' or 'staging')
-- [ ] Generate dynamic stack name: `SpecKit-${environment}-Stack`
-- [ ] Configure stack props (environment, region, description)
-
-**Acceptance Criteria**:
-- Stack accepts `--context environment=dev` parameter
-- Stack name changes based on environment
-- Stack fails gracefully with invalid environment
-- `cdk synth --context environment=dev` succeeds
+**受入条件**:
+- CDKプロジェクトがエラーなく初期化される
+- `package.json` がNode.js 22を指定している
+- `cdk synth` が正常に実行される（空のスタック）
 
 ---
 
-#### Task 1.3: Implement DynamoDB Clock Table
-**Priority**: P1  
-**Estimated Effort**: 2 hours  
-**Dependencies**: Task 1.2
+#### タスク 1.2: 環境非依存のCDKスタックを作成
+**優先度**: P1  
+**見積工数**: 2時間  
+**依存関係**: タスク 1.1
 
-**Actions**:
-- [ ] Add DynamoDB Table construct to stack
-- [ ] Configure table name: `spec-kit-${environment}-clock`
-- [ ] Set partition key: `userId` (String)
-- [ ] Set sort key: `timestamp` (Number)
-- [ ] Configure billing mode: `PAY_PER_REQUEST`
-- [ ] Enable point-in-time recovery
-- [ ] Set removal policy: `RETAIN`
-- [ ] Add server-side encryption (AWS managed)
-- [ ] Create Global Secondary Index (GSI):
-  - Name: `DateIndex`
-  - Partition Key: `date` (String)
-  - Sort Key: `timestamp` (Number)
-  - Projection: `ALL`
+**実施内容**:
+- [ ] 環境パラメータ対応の `lib/spec-kit-stack.ts` を作成
+- [ ] コンテキストパラメータの読み取りを実装: `environment = app.node.tryGetContext('environment')`
+- [ ] 環境の検証を追加（'dev' または 'staging' のみ許可）
+- [ ] 動的なスタック名を生成: `SpecKit-${environment}-Stack`
+- [ ] スタックprops（環境、リージョン、説明）を設定
 
-**Acceptance Criteria**:
-- Table created with correct partition and sort keys
-- GSI configured correctly
-- Point-in-time recovery enabled
-- Removal policy set to RETAIN
-- `cdk synth` shows table resource in CloudFormation template
+**受入条件**:
+- スタックが `--context environment=dev` パラメータを受け付ける
+- 環境に応じてスタック名が変更される
+- 無効な環境でグレースフルに失敗する
+- `cdk synth --context environment=dev` が成功する
 
 ---
 
-#### Task 1.4: Add CloudFormation Stack Outputs
-**Priority**: P1  
-**Estimated Effort**: 30 minutes  
-**Dependencies**: Task 1.3
+#### タスク 1.3: DynamoDB Clock Tableの実装
+**優先度**: P1  
+**見積工数**: 2時間  
+**依存関係**: タスク 1.2
 
-**Actions**:
-- [ ] Add CfnOutput for table name
-- [ ] Add CfnOutput for table ARN
-- [ ] Add CfnOutput for GSI name
-- [ ] Add CfnOutput for environment
-- [ ] Set export names with environment prefix
+**実施内容**:
+- [ ] スタックにDynamoDB Tableコンストラクトを追加
+- [ ] テーブル名を設定: `spec-kit-${environment}-clock`
+- [ ] パーティションキーを設定: `userId` (String)
+- [ ] ソートキーを設定: `timestamp` (Number)
+- [ ] 課金モードを設定: `PAY_PER_REQUEST`
+- [ ] ポイントインタイムリカバリを有効化
+- [ ] 削除ポリシーを設定: `RETAIN`
+- [ ] サーバーサイド暗号化を追加（AWS管理）
+- [ ] Global Secondary Index (GSI) を作成:
+  - 名前: `DateIndex`
+  - パーティションキー: `date` (String)
+  - ソートキー: `timestamp` (Number)
+  - プロジェクション: `ALL`
 
-**Acceptance Criteria**:
-- All outputs visible in CloudFormation stack
-- Export names include environment
-- `cdk synth` shows outputs section
-
----
-
-### Phase 2: GitHub Actions CI/CD Workflows (P1)
-
-#### Task 2.1: Create CDK Deployment Workflow
-**Priority**: P1  
-**Estimated Effort**: 3 hours  
-**Dependencies**: Task 1.4
-
-**Actions**:
-- [ ] Create `.github/workflows/deploy-dev-to-aws.yml`
-- [ ] Configure workflow trigger: push to `main` branch, path filter: `infrastructure/**`
-- [ ] Add manual workflow dispatch with environment input (default: 'dev')
-- [ ] Set up Node.js 22 environment
-- [ ] Configure AWS credentials with OIDC
-- [ ] Install CDK dependencies: `npm ci`
-- [ ] Run CDK bootstrap: `cdk bootstrap --context environment=$ENVIRONMENT`
-- [ ] Run CDK deploy: `cdk deploy --context environment=$ENVIRONMENT --require-approval never`
-- [ ] Add step to capture and display stack outputs
-
-**Acceptance Criteria**:
-- Workflow file validates with GitHub Actions schema
-- Manual dispatch allows environment selection
-- OIDC authentication configured correctly
-- Bootstrap runs before deploy
-- Deploy executes without manual approval
+**受入条件**:
+- 正しいパーティションキーとソートキーでテーブルが作成される
+- GSIが正しく設定される
+- ポイントインタイムリカバリが有効化される
+- 削除ポリシーがRETAINに設定される
+- `cdk synth` でCloudFormationテンプレートにテーブルリソースが表示される
 
 ---
 
-#### Task 2.2: Create CDK Synth Workflow for Initial Setup
-**Priority**: P1  
-**Estimated Effort**: 2 hours  
-**Dependencies**: Task 1.4
+#### タスク 1.4: CloudFormation スタック出力を追加
+**優先度**: P1  
+**見積工数**: 30分  
+**依存関係**: タスク 1.3
 
-**Actions**:
-- [ ] Create `.github/workflows/cdk-synth.yml`
-- [ ] Configure manual workflow dispatch only
-- [ ] Add environment input parameter
-- [ ] Set up Node.js 22 environment
-- [ ] Install CDK dependencies: `npm ci`
-- [ ] Run CDK synth: `cdk synth --context environment=$ENVIRONMENT`
-- [ ] Upload CloudFormation template as artifact (retention: 90 days)
-- [ ] Add workflow summary with download instructions
+**実施内容**:
+- [ ] テーブル名のCfnOutputを追加
+- [ ] テーブルARNのCfnOutputを追加
+- [ ] GSI名のCfnOutputを追加
+- [ ] 環境のCfnOutputを追加
+- [ ] 環境プレフィックス付きのエクスポート名を設定
 
-**Acceptance Criteria**:
-- Workflow triggered manually only
-- CloudFormation template uploaded as artifact
-- Template downloadable from GitHub Actions UI
-- Workflow completes in under 2 minutes
+**受入条件**:
+- すべての出力がCloudFormationスタックで表示される
+- エクスポート名に環境が含まれる
+- `cdk synth` で出力セクションが表示される
 
 ---
 
-### Phase 3: Testing & Validation (P1)
+### フェーズ2: GitHub Actions CI/CD ワークフロー (P1)
 
-#### Task 3.1: Create CDK Unit Tests
-**Priority**: P1  
-**Estimated Effort**: 2 hours  
-**Dependencies**: Task 1.4
+#### タスク 2.1: CDK デプロイワークフローを作成
+**優先度**: P1  
+**見積工数**: 3時間  
+**依存関係**: タスク 1.4
 
-**Actions**:
-- [ ] Install testing dependencies: `jest`, `@types/jest`, `ts-jest`
-- [ ] Configure Jest in `package.json`
-- [ ] Create `test/spec-kit-stack.test.ts`
-- [ ] Test: Stack creates DynamoDB table
-- [ ] Test: Table has correct partition and sort keys
-- [ ] Test: GSI configured correctly
-- [ ] Test: Point-in-time recovery enabled
-- [ ] Test: Removal policy is RETAIN
-- [ ] Test: Table name includes environment
-- [ ] Add test script to `package.json`: `npm test`
+**実施内容**:
+- [ ] `.github/workflows/deploy-dev-to-aws.yml` を作成
+- [ ] ワークフロートリガーを設定: `main` ブランチへのpush、パスフィルタ: `infrastructure/**`
+- [ ] 環境入力付きの手動ワークフローディスパッチを追加（デフォルト: 'dev'）
+- [ ] Node.js 22環境をセットアップ
+- [ ] OIDCでAWS認証情報を設定
+- [ ] CDK依存関係をインストール: `npm ci`
+- [ ] CDK bootstrapを実行: `cdk bootstrap --context environment=$ENVIRONMENT`
+- [ ] CDK deployを実行: `cdk deploy --context environment=$ENVIRONMENT --require-approval never`
+- [ ] スタック出力をキャプチャして表示するステップを追加
 
-**Acceptance Criteria**:
-- All tests pass
-- Test coverage > 80%
-- Tests run in CI workflow
-
----
-
-#### Task 3.2: Add CDK Synth Validation to CI
-**Priority**: P1  
-**Estimated Effort**: 1 hour  
-**Dependencies**: Task 3.1
-
-**Actions**:
-- [ ] Update deploy workflow to run `npm test` before deploy
-- [ ] Add `cdk synth` validation step for both dev and staging
-- [ ] Add CloudFormation template linting (cfn-lint)
-- [ ] Fail workflow if synth produces errors
-
-**Acceptance Criteria**:
-- Tests run automatically on push
-- Synth validates for multiple environments
-- Workflow fails on invalid CloudFormation
+**受入条件**:
+- ワークフローファイルがGitHub Actionsスキーマで検証される
+- 手動ディスパッチで環境選択が可能
+- OIDC認証が正しく設定される
+- デプロイ前にbootstrapが実行される
+- 手動承認なしでデプロイが実行される
 
 ---
 
-### Phase 4: Documentation (P2)
+#### タスク 2.2: 初期セットアップ用のCDK Synthワークフローを作成
+**優先度**: P1  
+**見積工数**: 2時間  
+**依存関係**: タスク 1.4
 
-#### Task 4.1: Create Architecture Documentation
-**Priority**: P2  
-**Estimated Effort**: 2 hours  
-**Dependencies**: Task 2.2
+**実施内容**:
+- [ ] `.github/workflows/cdk-synth.yml` を作成
+- [ ] 手動ワークフローディスパッチのみに設定
+- [ ] 環境入力パラメータを追加
+- [ ] Node.js 22環境をセットアップ
+- [ ] CDK依存関係をインストール: `npm ci`
+- [ ] CDK synthを実行: `cdk synth --context environment=$ENVIRONMENT`
+- [ ] CloudFormationテンプレートをアーティファクトとしてアップロード（保持期間: 90日）
+- [ ] ダウンロード手順付きのワークフローサマリーを追加
 
-**Actions**:
-- [ ] Create `docs/architecture/dynamodb-clock-table.md`
-- [ ] Document table schema with Mermaid ER diagram
-- [ ] Document access patterns and query examples
-- [ ] Document GSI usage and benefits
-- [ ] Include CloudFormation stack structure
-- [ ] Add deployment architecture diagram
-
-**Acceptance Criteria**:
-- Documentation includes all table attributes
-- Access patterns clearly documented
-- Diagrams use Mermaid syntax
-- Examples include TypeScript/JavaScript code
-
----
-
-#### Task 4.2: Create Business Documentation
-**Priority**: P2  
-**Estimated Effort**: 1 hour  
-**Dependencies**: Task 4.1
-
-**Actions**:
-- [ ] Create `docs/business/clock-table-requirements.md`
-- [ ] Document business use cases
-- [ ] Define data retention policies
-- [ ] Document user stories and acceptance criteria
-- [ ] Include cost analysis and projections
-
-**Acceptance Criteria**:
-- Business requirements clearly stated
-- Use cases documented with examples
-- Cost projections included
+**受入条件**:
+- ワークフローが手動でのみトリガーされる
+- CloudFormationテンプレートがアーティファクトとしてアップロードされる
+- GitHub Actions UIからテンプレートがダウンロード可能
+- ワークフローが2分以内に完了する
 
 ---
 
-#### Task 4.3: Create Setup and Operations Guide
-**Priority**: P2  
-**Estimated Effort**: 2 hours  
-**Dependencies**: Task 2.2
+### フェーズ3: テスト & 検証 (P1)
 
-**Actions**:
-- [ ] Create `infrastructure/README.md`
-- [ ] Document prerequisites (AWS account, OIDC setup)
-- [ ] Document initial setup steps (synth, manual OIDC creation)
-- [ ] Document deployment process
-- [ ] Document troubleshooting common issues
-- [ ] Add rollback procedures
-- [ ] Include monitoring and alerting setup
+#### タスク 3.1: CDK ユニットテストを作成
+**優先度**: P1  
+**見積工数**: 2時間  
+**依存関係**: タスク 1.4
 
-**Acceptance Criteria**:
-- Setup guide enables new user to deploy
-- All prerequisites documented
-- Troubleshooting section covers common errors
-- Examples use real commands
+**実施内容**:
+- [ ] テスト依存関係をインストール: `jest`, `@types/jest`, `ts-jest`
+- [ ] `package.json` でJestを設定
+- [ ] `test/spec-kit-stack.test.ts` を作成
+- [ ] テスト: スタックがDynamoDBテーブルを作成する
+- [ ] テスト: テーブルが正しいパーティションキーとソートキーを持つ
+- [ ] テスト: GSIが正しく設定される
+- [ ] テスト: ポイントインタイムリカバリが有効化される
+- [ ] テスト: 削除ポリシーがRETAINである
+- [ ] テスト: テーブル名に環境が含まれる
+- [ ] `package.json` にテストスクリプトを追加: `npm test`
 
----
-
-### Phase 5: Operational Excellence (P2)
-
-#### Task 5.1: Add CloudWatch Alarms
-**Priority**: P2  
-**Estimated Effort**: 1.5 hours  
-**Dependencies**: Task 1.3
-
-**Actions**:
-- [ ] Add CloudWatch alarm for read throttle events
-- [ ] Add CloudWatch alarm for write throttle events
-- [ ] Add CloudWatch alarm for system errors
-- [ ] Configure SNS topic for alarm notifications (optional)
-- [ ] Set appropriate thresholds and evaluation periods
-
-**Acceptance Criteria**:
-- Alarms created in CloudFormation
-- Alarms trigger on actual throttle events
-- Alarm configuration documented
+**受入条件**:
+- すべてのテストがパスする
+- テストカバレッジが80%以上
+- テストがCIワークフローで実行される
 
 ---
 
-#### Task 5.2: Add Cost Monitoring Tags
-**Priority**: P2  
-**Estimated Effort**: 30 minutes  
-**Dependencies**: Task 1.3
+#### タスク 3.2: CIにCDK Synth検証を追加
+**優先度**: P1  
+**見積工数**: 1時間  
+**依存関係**: タスク 3.1
 
-**Actions**:
-- [ ] Add cost allocation tags to DynamoDB table
-- [ ] Tags: `Environment`, `Project`, `ManagedBy`, `CostCenter`
-- [ ] Document tagging strategy in architecture docs
+**実施内容**:
+- [ ] デプロイワークフローを更新してデプロイ前に `npm test` を実行
+- [ ] devとstagingの両方で `cdk synth` 検証ステップを追加
+- [ ] CloudFormationテンプレートのリンティング（cfn-lint）を追加
+- [ ] synthがエラーを出力した場合はワークフローを失敗させる
 
-**Acceptance Criteria**:
-- Tags visible in AWS Cost Explorer
-- Tags applied to all resources
-- Tagging strategy documented
+**受入条件**:
+- pushで自動的にテストが実行される
+- 複数環境でsynthが検証される
+- 無効なCloudFormationでワークフローが失敗する
 
 ---
 
-## Task Summary
+### フェーズ4: ドキュメント (P2)
 
-**Total Tasks**: 14  
-**Priority P1 Tasks**: 10  
-**Priority P2 Tasks**: 4  
+#### タスク 4.1: アーキテクチャドキュメントを作成
+**優先度**: P2  
+**見積工数**: 2時間  
+**依存関係**: タスク 2.2
 
-**Estimated Total Effort**: ~20 hours
+**実施内容**:
+- [ ] `docs/architecture/dynamodb-clock-table.md` を作成
+- [ ] MermaidのER図でテーブルスキーマを文書化
+- [ ] アクセスパターンとクエリ例を文書化
+- [ ] GSIの使用方法と利点を文書化
+- [ ] CloudFormationスタック構造を含める
+- [ ] デプロイアーキテクチャ図を追加
 
-### Task Dependencies Graph
+**受入条件**:
+- ドキュメントにすべてのテーブル属性が含まれる
+- アクセスパターンが明確に文書化される
+- 図がMermaid構文を使用する
+- 例にTypeScript/JavaScriptコードが含まれる
+
+---
+
+#### タスク 4.2: ビジネスドキュメントを作成
+**優先度**: P2  
+**見積工数**: 1時間  
+**依存関係**: タスク 4.1
+
+**実施内容**:
+- [ ] `docs/business/clock-table-requirements.md` を作成
+- [ ] ビジネスユースケースを文書化
+- [ ] データ保持ポリシーを定義
+- [ ] ユーザーストーリーと受入条件を文書化
+- [ ] コスト分析と予測を含める
+
+**受入条件**:
+- ビジネス要件が明確に記載される
+- ユースケースが例付きで文書化される
+- コスト予測が含まれる
+
+---
+
+#### タスク 4.3: セットアップと運用ガイドを作成
+**優先度**: P2  
+**見積工数**: 2時間  
+**依存関係**: タスク 2.2
+
+**実施内容**:
+- [ ] `infrastructure/README.md` を作成
+- [ ] 前提条件を文書化（AWSアカウント、OIDCセットアップ）
+- [ ] 初期セットアップ手順を文書化（synth、手動OIDC作成）
+- [ ] デプロイプロセスを文書化
+- [ ] よくある問題のトラブルシューティングを文書化
+- [ ] ロールバック手順を追加
+- [ ] モニタリングとアラート設定を含める
+
+**受入条件**:
+- セットアップガイドで新規ユーザーがデプロイ可能
+- すべての前提条件が文書化される
+- トラブルシューティングセクションが一般的なエラーをカバーする
+- 例が実際のコマンドを使用する
+
+---
+
+### フェーズ5: 運用の卓越性 (P2)
+
+#### タスク 5.1: CloudWatch アラームを追加
+**優先度**: P2  
+**見積工数**: 1.5時間  
+**依存関係**: タスク 1.3
+
+**実施内容**:
+- [ ] 読み取りスロットルイベント用のCloudWatchアラームを追加
+- [ ] 書き込みスロットルイベント用のCloudWatchアラームを追加
+- [ ] システムエラー用のCloudWatchアラームを追加
+- [ ] アラーム通知用のSNSトピックを設定（オプション）
+- [ ] 適切な閾値と評価期間を設定
+
+**受入条件**:
+- アラームがCloudFormationで作成される
+- 実際のスロットルイベントでアラームがトリガーされる
+- アラーム設定が文書化される
+
+---
+
+#### タスク 5.2: コストモニタリングタグを追加
+**優先度**: P2  
+**見積工数**: 30分  
+**依存関係**: タスク 1.3
+
+**実施内容**:
+- [ ] DynamoDBテーブルにコスト配分タグを追加
+- [ ] タグ: `Environment`, `Project`, `ManagedBy`, `CostCenter`
+- [ ] タグ戦略をアーキテクチャドキュメントに文書化
+
+**受入条件**:
+- タグがAWS Cost Explorerで表示される
+- すべてのリソースにタグが適用される
+- タグ戦略が文書化される
+
+---
+
+## タスクサマリー
+
+**総タスク数**: 14  
+**優先度P1タスク**: 10  
+**優先度P2タスク**: 4  
+
+**見積総工数**: 約20時間
+
+### タスク依存関係グラフ
 
 ```mermaid
 graph TD
-    T1.1[1.1: Initialize CDK] --> T1.2[1.2: Create Stack]
-    T1.2 --> T1.3[1.3: DynamoDB Table]
-    T1.3 --> T1.4[1.4: Stack Outputs]
-    T1.4 --> T2.1[2.1: Deploy Workflow]
-    T1.4 --> T2.2[2.2: Synth Workflow]
-    T1.4 --> T3.1[3.1: Unit Tests]
-    T3.1 --> T3.2[3.2: CI Validation]
-    T2.2 --> T4.1[4.1: Architecture Docs]
-    T4.1 --> T4.2[4.2: Business Docs]
-    T2.2 --> T4.3[4.3: Setup Guide]
-    T1.3 --> T5.1[5.1: CloudWatch Alarms]
-    T1.3 --> T5.2[5.2: Cost Tags]
+    T1.1[1.1: CDK初期化] --> T1.2[1.2: スタック作成]
+    T1.2 --> T1.3[1.3: DynamoDBテーブル]
+    T1.3 --> T1.4[1.4: スタック出力]
+    T1.4 --> T2.1[2.1: デプロイワークフロー]
+    T1.4 --> T2.2[2.2: Synthワークフロー]
+    T1.4 --> T3.1[3.1: ユニットテスト]
+    T3.1 --> T3.2[3.2: CI検証]
+    T2.2 --> T4.1[4.1: アーキテクチャドキュメント]
+    T4.1 --> T4.2[4.2: ビジネスドキュメント]
+    T2.2 --> T4.3[4.3: セットアップガイド]
+    T1.3 --> T5.1[5.1: CloudWatchアラーム]
+    T1.3 --> T5.2[5.2: コストタグ]
 ```
 
-## Implementation Order
+## 実装順序
 
-### Sprint 1: Core Infrastructure (P1)
-1. Task 1.1 → 1.2 → 1.3 → 1.4 (Foundation)
-2. Task 2.1 → 2.2 (CI/CD)
-3. Task 3.1 → 3.2 (Testing)
+### スプリント1: コアインフラストラクチャ (P1)
+1. タスク 1.1 → 1.2 → 1.3 → 1.4 (基盤)
+2. タスク 2.1 → 2.2 (CI/CD)
+3. タスク 3.1 → 3.2 (テスト)
 
-### Sprint 2: Documentation & Operations (P2)
-1. Task 4.1 → 4.2 → 4.3 (Documentation)
-2. Task 5.1 → 5.2 (Operations)
+### スプリント2: ドキュメント & 運用 (P2)
+1. タスク 4.1 → 4.2 → 4.3 (ドキュメント)
+2. タスク 5.1 → 5.2 (運用)
 
-## Success Metrics
+## 成功指標
 
-- [ ] All P1 tasks completed
-- [ ] CDK stack deploys successfully to dev environment
-- [ ] All tests pass
-- [ ] GitHub Actions workflows execute without errors
-- [ ] Documentation complete and reviewed
-- [ ] CloudWatch alarms configured
-- [ ] Cost tags applied
+- [ ] すべてのP1タスクが完了
+- [ ] CDKスタックがdev環境に正常にデプロイされる
+- [ ] すべてのテストがパスする
+- [ ] GitHub Actionsワークフローがエラーなく実行される
+- [ ] ドキュメントが完成しレビューされる
+- [ ] CloudWatchアラームが設定される
+- [ ] コストタグが適用される
 
-## Notes
+## 注意事項
 
-- Bootstrap is integrated into deployment workflow (runs before each deploy)
-- Single CDK stack file supports multiple environments via context parameter
-- No manual approval required for deployments (fully automated)
-- CloudFormation review removed per requirements
+- Bootstrapはデプロイワークフローに統合（各デプロイ前に実行）
+- 単一のCDKスタックファイルがコンテキストパラメータで複数環境に対応
+- デプロイに手動承認は不要（完全自動化）
+- 要件に従いCloudFormationレビューを削除
