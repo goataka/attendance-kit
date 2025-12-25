@@ -1,8 +1,8 @@
 # Project Constitution: 勤怠管理システム
 
-**Version**: 1.0.0  
+**Version**: 1.4.0  
 **Ratified**: 2025-12-24  
-**Last Amended**: 2025-12-24
+**Last Amended**: 2025-12-25
 
 ## Purpose
 
@@ -78,37 +78,52 @@
 
 ### Principle 1: 仕様駆動開発
 
-**Rule**: すべての機能実装は、事前に承認された仕様書から開始すること。
-
-**Rationale**: 仕様書を先に作成することで、開発の方向性を明確にし、手戻りを最小限に抑える。
+- **Rule**: すべての機能実装は承認された仕様書から開始
+- **Rationale**: 開発の方向性を明確にし、手戻りを最小化
 
 ### Principle 2: 段階的な実装
 
-**Rule**: 機能は独立してテスト可能な単位で実装すること。
-
-**Rationale**: 各機能を独立して開発・テスト・デプロイできることで、リスクを軽減し、フィードバックサイクルを短縮する。
+- **Rule**: 機能は独立してテスト可能な単位で実装
+- **Rationale**: リスクを軽減し、フィードバックサイクルを短縮
 
 ### Principle 3: ドキュメントファースト
 
-**Rule**: コードを書く前に、必ずドキュメントを作成すること。
-
-- 仕様書: ユーザーシナリオと要件
-- 計画書: 技術的なアプローチとアーキテクチャ
-- タスク: 実装可能な作業項目
-
-**Rationale**: ドキュメントを先に作成することで、設計の質が向上し、チーム全体の理解が深まる。
+- **Rule**: コードを書く前に必ずドキュメントを作成
+  - 仕様書: ユーザーシナリオと要件
+  - 計画書: 技術的アプローチとアーキテクチャ
+  - タスク: 実装可能な作業項目
+- **Rationale**: 設計の質が向上し、チーム全体の理解が深まる
 
 ### Principle 4: テスト可能性
 
-**Rule**: すべての機能は自動テスト可能な形で実装すること。
-
-**Rationale**: 自動テストにより、品質を保ちながら開発速度を維持できる。
+- **Rule**: すべての機能は自動テスト可能な形で実装
+- **Rationale**: 品質を保ちながら開発速度を維持
 
 ### Principle 5: シンプルさの追求
 
-**Rule**: 必要最小限の複雑さで実装すること。
+- **Rule**: 必要最小限の複雑さで実装
+- **Rationale**: シンプルなシステムは理解しやすく保守しやすい
 
-**Rationale**: シンプルなシステムは理解しやすく、保守しやすい。
+### Principle 6: 箇条書きの活用
+
+- **Rule**: 文章はできるだけ箇条書きで簡潔に記述
+- **Rationale**: 可読性が向上し、重要な情報が把握しやすい
+
+### Principle 7: Mermaidによる図表作成
+
+- **Rule**: Markdown内の図はMermaidを使用して作成
+- **Rationale**: 
+  - テキストベースでバージョン管理可能
+  - レビューが容易
+  - 保守性が高い
+  - GitHubで直接レンダリング可能
+- **Diagram Types**: 
+  - システムアーキテクチャ: `graph` または `flowchart`
+  - シーケンス図: `sequenceDiagram`
+  - ER図: `erDiagram`
+  - 状態遷移図: `stateDiagram-v2`
+  - クラス図: `classDiagram`
+  - ガントチャート: `gantt`
 
 ## Governance
 
@@ -160,32 +175,53 @@
 このプロジェクトでは、GitHub Copilot Coding Agent経由でspec-kitを使用します。
 
 **Workflow Commands**:
+
+コアワークフロー:
 - `/constitution`: プロジェクト憲法の作成・更新
 - `/specify`: 機能仕様の作成
 - `/plan`: 技術計画の作成
 - `/tasks`: 実装タスクの作成
 - `/implement`: タスクの実装
 
+補助コマンド:
+- `/clarify`: 仕様の不明瞭な部分を対話的に明確化
+- `/analyze`: spec/plan/tasksの一貫性と品質を分析
+- `/checklist`: カスタムチェックリストを生成
+- `/taskstoissues`: タスクをGitHub Issueに変換
+
+**Agent Operation Rule**:
+
+- 指示はspec-kitコマンドを使用
+- 直接実装を行わず、仕様化・計画化してから実装
+- 仕様駆動開発の原則を維持し、ドキュメントと実装の整合性を確保
+
 ### Documentation Structure
 
 ```
 .devcontainer/      # DevContainer設定
-  devcontainer.json # 開発環境定義
-  README.md         # DevContainer使用ガイド
 .github/
-  workflows/
-    copilot-setup-steps.yml  # Copilot Agent自動セットアップ
+  agents/           # Agent開発ガイドライン
+  workflows/        # CI/CDワークフロー
 .specify/           # spec-kit設定とテンプレート
-  templates/        # ドキュメントテンプレート
-  commands/         # ワークフローコマンド定義
-memory/            # プロジェクト記憶と憲法
-specs/             # 機能仕様書（ブランチごと）
-docs/              # 確定した仕様と実装ドキュメント
+memory/             # プロジェクト記憶と憲法
+specs/              # 機能仕様書（開発中、ブランチごと）
+docs/
+  architecture/     # アーキテクチャ仕様（技術設計、システム構成）
+  business/         # ビジネス仕様（要件、ユースケース、ドメインモデル）
 ```
+
+### Documentation Integration Rule
+
+- 実装時に `docs/` 配下に統合仕様書を作成・更新
+- コード変更と同時にドキュメントを更新（実装完了後の移動ではなく）
+- アーキテクチャ仕様は `docs/architecture/` に配置
+- ビジネス仕様は `docs/business/` に配置
+- `specs/` はブランチ作業用、`docs/` は確定仕様の保管場所
 
 ### Future Migration
 
-将来的にローカル環境（CLI/VSCode）への切り替えを考慮し、確定した仕様は実装時に`docs/`フォルダに保存すること。
+- 確定した仕様は実装時に `docs/` フォルダに保存
+- ローカル環境（CLI/VSCode）への切り替えを考慮
 
 ## Project Scope
 
