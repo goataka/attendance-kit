@@ -25,7 +25,7 @@
 - **GitHub Actions**: ワークフロー実行環境
   - 理由: GitHub統合、OIDC対応、無料枠で十分
   - ランナー: ubuntu-latest
-  - Node.js: v20 (LTS)
+  - Node.js: v22 (LTS)
 
 - **OIDC認証**: AWS認証方式
   - 理由: 認証情報保存不要、セキュリティベストプラクティス
@@ -35,7 +35,7 @@
 
 - **TypeScript**: v5.x
 - **AWS CDK CLI**: グローバルまたはnpx経由
-- **Node.js**: v20 LTS
+- **Node.js**: v22 LTS
 
 ## 2. アーキテクチャ設計
 
@@ -59,7 +59,7 @@
 │                      GitHub Actions                          │
 │  ┌────────────────────────────────────────────────────────┐ │
 │  │  1. Checkout code                                       │ │
-│  │  2. Setup Node.js 20                                    │ │
+│  │  2. Setup Node.js 22                                    │ │
 │  │  3. Install dependencies (npm ci)                       │ │
 │  │  4. Build TypeScript (npm run build)                    │ │
 │  │  5. Authenticate via OIDC                               │ │
@@ -111,7 +111,7 @@ infrastructure/ 変更検知
   ↓
 GitHub Actions トリガー
   ↓
-Node.js セットアップ
+**Node.js セットアップ (v22)**
   ↓
 依存関係インストール
   ↓
@@ -278,7 +278,7 @@ export class SpecKitDevStack extends cdk.Stack {
   },
   "devDependencies": {
     "@types/jest": "^29.5.0",
-    "@types/node": "20.x",
+    "@types/node": "22.x",
     "aws-cdk": "^2.x",
     "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
@@ -330,10 +330,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: infrastructure/package-lock.json
 
@@ -403,10 +403,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: infrastructure/package-lock.json
 
@@ -464,10 +464,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: infrastructure/package-lock.json
 

@@ -126,7 +126,7 @@
 - **FR-007**: テーブルはREMOVAL_POLICY: RETAINが設定され、CloudFormationスタック削除時もテーブルが保持されなければならない
 - **FR-008**: GitHub ActionsワークフローはOIDC認証を使用してAWSに接続しなければならない
 - **FR-009**: ワークフローは手動トリガー (workflow_dispatch) と自動トリガー (infrastructure/配下の変更時) をサポートしなければならない
-- **FR-010**: ワークフローはNode.js 20環境でCDKプロジェクトをビルドおよびデプロイしなければならない
+- **FR-010**: ワークフローはNode.js 22環境でCDKプロジェクトをビルドおよびデプロイしなければならない
 - **FR-011**: デプロイ前にCloudFormation変更セットのレビューが可能でなければならない (--require-approval broadening)
 - **FR-012**: CloudFormationの出力として、テーブル名とテーブルARNが提供されなければならない
 - **FR-013**: CDK bootstrapを手動で実行できるGitHub Actionsワークフローが提供されなければならない
@@ -185,7 +185,7 @@
 
 - AWSアカウントが存在し、適切な権限を持つIAMロールが設定されている
 - GitHub ActionsがOIDC経由でAWSに接続するための設定（OIDCプロバイダー、IAMロール）が完了している
-- Node.js 20がGitHub Actionsランナーで利用可能である
+- Node.js 22がGitHub Actionsランナーで利用可能である
 - CDKがブートストラップされている（初回デプロイ前にbootstrapワークフローまたは `cdk bootstrap` が実行済み）
 
 ## スコープ内
