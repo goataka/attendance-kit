@@ -44,29 +44,40 @@
 ```mermaid
 graph TB
     subgraph GitHub["GitHub Repository"]
-        infra["infrastructure/<br/>├─ bin/app.ts<br/>├─ lib/stack.ts<br/>└─ cdk.json"]
-        workflows[".github/workflows/<br/>├─ deploy-dev-to-aws.yml<br/>├─ cdk-bootstrap.yml<br/>└─ cdk-synth.yml"]
+        infra["infrastructure/"]
+        infra_files["CDK Files:<br/>• bin/app.ts<br/>• lib/stack.ts<br/>• cdk.json"]
+        workflows[".github/workflows/"]
+        workflow_files["Workflows:<br/>• deploy-dev-to-aws.yml<br/>• cdk-bootstrap.yml<br/>• cdk-synth.yml"]
     end
     
     subgraph Actions["GitHub Actions"]
-        steps["1. Checkout code<br/>2. Setup Node.js 22<br/>3. Install dependencies<br/>4. Build TypeScript<br/>5. Authenticate via OIDC<br/>6. Execute CDK command<br/>&nbsp;&nbsp;&nbsp;- deploy: cdk deploy<br/>&nbsp;&nbsp;&nbsp;- bootstrap: cdk bootstrap<br/>&nbsp;&nbsp;&nbsp;- synth: cdk synth"]
+        step1["Checkout code"]
+        step2["Setup Node.js 22"]
+        step3["Install dependencies"]
+        step4["Build TypeScript"]
+        step5["Authenticate via OIDC"]
+        step6["Execute CDK command"]
+        step1 --> step2 --> step3 --> step4 --> step5 --> step6
     end
     
     subgraph AWS["AWS Account"]
-        oidc["IAM OIDC Provider<br/>Provider: token.actions.githubusercontent.com<br/>Audience: sts.amazonaws.com<br/>Role: GitHubActionsDeployRole"]
+        oidc["IAM OIDC Provider"]
+        oidc_detail["Provider: token.actions.githubusercontent.com<br/>Audience: sts.amazonaws.com"]
         
-        subgraph Stack1["CloudFormation Stack: SpecKitDevStack"]
-            dynamo["DynamoDB Table: spec-kit-dev-clock<br/>├─ Partition Key: userId<br/>├─ Sort Key: timestamp<br/>├─ GSI: DateIndex<br/>├─ Billing: PAY_PER_REQUEST<br/>├─ PITR: Enabled<br/>└─ Encryption: AWS Managed<br/>Outputs: TableName, TableArn"]
+        subgraph Stack1["CloudFormation: SpecKitDevStack"]
+            dynamo["DynamoDB Table"]
+            dynamo_detail["Table: spec-kit-dev-clock<br/>Keys: userId + timestamp<br/>GSI: DateIndex<br/>Billing: PAY_PER_REQUEST<br/>PITR: Enabled"]
         end
         
-        subgraph Stack2["CloudFormation Stack: CDKToolkit"]
-            toolkit["├─ S3 Bucket: Asset storage<br/>├─ ECR Repository<br/>└─ IAM Roles: Deployment roles"]
+        subgraph Stack2["CloudFormation: CDKToolkit"]
+            toolkit["CDK Bootstrap Resources"]
+            toolkit_detail["S3 Bucket<br/>ECR Repository<br/>IAM Roles"]
         end
     end
     
-    infra -->|Git Push to main<br/>or Manual Trigger| Actions
-    workflows -->|Manual Trigger| Actions
-    Actions -->|OIDC Authentication<br/>No stored credentials| oidc
+    infra --> Actions
+    workflows --> Actions
+    Actions --> oidc
     oidc --> Stack1
     oidc --> Stack2
 ```
@@ -80,31 +91,44 @@ flowchart TD
     B --> C[Node.js セットアップ v22]
     C --> D[依存関係インストール]
     D --> E[TypeScript ビルド]
-    E --> F[OIDC認証<br/>一時認証情報取得]
-    F --> G[CDK Synth<br/>CloudFormation生成]
-    G --> H[CDK Deploy<br/>--require-approval broadening]
+    E --> F[OIDC認証]
+    F --> G[CDK Synth]
+    G --> H[CDK Deploy]
     H --> I[CloudFormation スタック更新]
     I --> J[DynamoDB テーブル作成/更新]
     J --> K[出力: TableName, TableArn]
+    
+    F -.-> F1[一時認証情報取得]
+    G -.-> G1[CloudFormation生成]
+    H -.-> H1[require-approval broadening]
 ```
 
 #### 手動Bootstrap (cdk-bootstrap.yml)
 ```mermaid
 flowchart TD
-    A[手動トリガー<br/>環境・リージョン指定] --> B[OIDC認証]
-    B --> C[cdk bootstrap<br/>aws://{ACCOUNT}/{REGION}]
+    A[手動トリガー] --> A1[環境・リージョン指定]
+    A1 --> B[OIDC認証]
+    B --> C[cdk bootstrap]
     C --> D[CDKToolkit スタック作成]
-    D --> E[S3バケット・IAMロール<br/>準備完了]
+    D --> E[準備完了]
+    
+    C -.-> C1[aws://ACCOUNT/REGION]
+    E -.-> E1[S3バケット]
+    E -.-> E2[IAMロール]
 ```
 
 #### 手動Synth (cdk-synth.yml)
 ```mermaid
 flowchart TD
-    A[手動トリガー<br/>環境指定] --> B[TypeScript ビルド]
+    A[手動トリガー] --> A1[環境指定]
+    A1 --> B[TypeScript ビルド]
     B --> C[cdk synth]
-    C --> D[CloudFormation<br/>テンプレート生成]
-    D --> E[成果物アップロード<br/>JSON]
+    C --> D[CloudFormation テンプレート生成]
+    D --> E[成果物アップロード]
     E --> F[手動ダウンロード可能]
+    
+    E -.-> E1[JSON形式]
+    E -.-> E2[30日間保持]
 ```
 
 ## 3. CDKスタック構造
