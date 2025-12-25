@@ -45,7 +45,39 @@
 
 ---
 
-### ユーザーストーリー 3 - テーブル設計の理解 (優先度: P2)
+### ユーザーストーリー 3 - CDK Bootstrap の手動実行 (優先度: P1)
+
+システム管理者として、CDK bootstrapを手動ワークフローで実行できるようにしたい。これにより、新しいAWS環境やリージョンでCDKを使用する準備を安全に行える。
+
+**この優先度の理由**: CDK bootstrapは初回デプロイの前提条件であり、環境セットアップの必須ステップ。手動実行により、意図しない環境への実行を防止できる。
+
+**独立テスト**: GitHub Actionsの手動トリガーでbootstrapワークフローを実行し、AWS CloudFormationでCDKToolkitスタックが作成されることを確認することでテスト可能。
+
+**受け入れシナリオ**:
+
+1. **前提** 新しいAWSアカウント/リージョンでCDKを初めて使用する, **実行** GitHub Actionsでbootstrapワークフローを手動実行する, **結果** CDKToolkitスタックが作成され、S3バケットとIAMロールが準備される
+2. **前提** 既にbootstrap済みの環境である, **実行** bootstrapワークフローを再実行する, **結果** 既存のリソースが検出され、必要に応じて更新される
+3. **前提** GitHub Actionsの手動トリガー画面を開く, **実行** 環境とリージョンを選択してbootstrapを実行する, **結果** 指定した環境・リージョンでbootstrapが成功する
+
+---
+
+### ユーザーストーリー 4 - CloudFormation テンプレートの出力 (優先度: P2)
+
+システム管理者として、CDK synthを手動ワークフローで実行してCloudFormationテンプレートを出力したい。これにより、デプロイ前にインフラストラクチャの変更内容を確認できる。
+
+**この優先度の理由**: デプロイ前の確認は重要だが、実際のデプロイの前提条件ではないため、P2とする。レビューと監査に有用。
+
+**独立テスト**: GitHub Actionsでsynthワークフローを手動実行し、成果物としてCloudFormationテンプレートJSONファイルがダウンロード可能であることを確認することでテスト可能。
+
+**受け入れシナリオ**:
+
+1. **前提** インフラストラクチャコードが更新されている, **実行** GitHub Actionsでsynthワークフローを手動実行する, **結果** CloudFormationテンプレートが生成され、成果物としてダウンロード可能になる
+2. **前提** synthワークフローが完了している, **実行** 成果物のCloudFormationテンプレートを開く, **結果** DynamoDBテーブルリソース定義が確認できる
+3. **前提** CDKコードに構文エラーがある, **実行** synthワークフローを実行する, **結果** ワークフローが失敗し、エラーメッセージが明確に表示される
+
+---
+
+### ユーザーストーリー 5 - テーブル設計の理解 (優先度: P2)
 
 アプリケーション開発者として、打刻テーブルのスキーマ、クエリパターン、制約を理解したい。これにより、効率的にデータの読み書きを実装できる。
 
@@ -75,6 +107,12 @@
 - GSI用のdate属性が設定されていないアイテムが書き込まれた場合は？
   → DynamoDBはスパースインデックスとして扱い、date属性を持つアイテムのみがGSIに含まれる。アプリケーションはdate属性を必ず設定する責任がある。
 
+- CDK bootstrapを複数回実行した場合は？
+  → CloudFormationが既存のCDKToolkitスタックを検出し、必要に応じて更新する。冪等性が保証される。
+
+- CDK synthでエラーが発生した場合は？
+  → TypeScriptのコンパイルエラーまたはCDK構文エラーがログに出力され、ワークフローが失敗する。テンプレートは生成されない。
+
 ## 要件 *(mandatory)*
 
 ### 機能要件
@@ -91,6 +129,14 @@
 - **FR-010**: ワークフローはNode.js 20環境でCDKプロジェクトをビルドおよびデプロイしなければならない
 - **FR-011**: デプロイ前にCloudFormation変更セットのレビューが可能でなければならない (--require-approval broadening)
 - **FR-012**: CloudFormationの出力として、テーブル名とテーブルARNが提供されなければならない
+- **FR-013**: CDK bootstrapを手動で実行できるGitHub Actionsワークフローが提供されなければならない
+- **FR-014**: Bootstrap ワークフローは環境 (dev/staging) とリージョンを入力パラメータとして受け取らなければならない
+- **FR-015**: Bootstrap ワークフローはOIDC認証を使用してAWSに接続しなければならない
+- **FR-016**: Bootstrap ワークフローは `cdk bootstrap aws://{ACCOUNT}/{REGION}` コマンドを実行しなければならない
+- **FR-017**: CDK synthを手動で実行してCloudFormationテンプレートを出力するGitHub Actionsワークフローが提供されなければならない
+- **FR-018**: Synth ワークフローは生成されたCloudFormationテンプレートをGitHub Actions成果物としてアップロードしなければならない
+- **FR-019**: Synth ワークフローはTypeScriptのビルドエラーやCDK構文エラーを明確に報告しなければならない
+- **FR-020**: Synth ワークフローは環境 (dev/staging) を入力パラメータとして受け取らなければならない
 
 ### 主要エンティティ
 
@@ -108,6 +154,18 @@
   - Resources: DynamoDB Table
   - Outputs: Table Name, Table ARN
 
+- **Bootstrap Workflow**: CDK環境を初期化するワークフロー
+  - 手動トリガー専用 (workflow_dispatch)
+  - 入力: 環境 (dev/staging)、リージョン
+  - 実行: cdk bootstrap
+  - 出力: CDKToolkitスタック作成結果
+
+- **Synth Workflow**: CloudFormationテンプレートを生成するワークフロー
+  - 手動トリガー専用 (workflow_dispatch)
+  - 入力: 環境 (dev/staging)
+  - 実行: cdk synth
+  - 出力: CloudFormationテンプレート (JSON形式、成果物)
+
 ## 成功基準 *(mandatory)*
 
 ### 測定可能な成果
@@ -118,13 +176,26 @@
 - **SC-004**: OIDCを使用することで、永続的なAWSアクセスキーがGitHubリポジトリに保存されない（セキュリティスキャンで検証）
 - **SC-005**: CDKコードの変更をmainブランチにマージすると、10分以内に自動デプロイが完了する
 - **SC-006**: ドキュメントを読むことで、開発者がテーブルスキーマとクエリパターンを30分以内に理解できる
+- **SC-007**: CDK bootstrapワークフローを手動実行してから3分以内にCDKToolkitスタックが作成される
+- **SC-008**: CDK synthワークフローを手動実行してから2分以内にCloudFormationテンプレートが成果物としてダウンロード可能になる
+- **SC-009**: Bootstrap ワークフローは冪等性があり、同じ環境で複数回実行しても安全である
+- **SC-010**: Synth ワークフローで生成されたCloudFormationテンプレートは手動レビューが可能な形式（JSON）である
 
 ## 前提条件
 
 - AWSアカウントが存在し、適切な権限を持つIAMロールが設定されている
 - GitHub ActionsがOIDC経由でAWSに接続するための設定（OIDCプロバイダー、IAMロール）が完了している
 - Node.js 20がGitHub Actionsランナーで利用可能である
-- CDKがブートストラップされている（初回デプロイ前に `cdk bootstrap` が実行済み）
+- CDKがブートストラップされている（初回デプロイ前にbootstrapワークフローまたは `cdk bootstrap` が実行済み）
+
+## スコープ内
+
+- DynamoDBの打刻テーブル（clock）のみ
+- dev および staging 環境
+- GitHub Actions経由の自動デプロイ
+- 手動実行可能なbootstrapワークフロー
+- 手動実行可能なsynthワークフロー（CloudFormationテンプレート出力）
+- OIDC認証によるセキュアなAWS接続
 
 ## スコープ外
 
