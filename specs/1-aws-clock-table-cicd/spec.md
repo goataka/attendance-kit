@@ -111,14 +111,13 @@
 - **FR-008**: GitHub ActionsワークフローはOIDC認証を使用してAWSに接続しなければならない
 - **FR-009**: ワークフローは手動トリガー (workflow_dispatch) と自動トリガー (infrastructure/配下の変更時) をサポートしなければならない
 - **FR-010**: ワークフローはNode.js 22環境でCDKプロジェクトをビルドおよびデプロイしなければならない
-- **FR-011**: デプロイ前にCloudFormation変更セットのレビューが可能でなければならない (--require-approval broadening)
-- **FR-012**: CloudFormationの出力として、テーブル名とテーブルARNが提供されなければならない
-- **FR-013**: デプロイワークフローはCDK bootstrapを自動実行しなければならない（環境が未初期化の場合に対応）
-- **FR-014**: Bootstrap処理は冪等性を持ち、既にbootstrap済みの環境でも安全に実行できなければならない
-- **FR-015**: CDK synthを手動で実行してCloudFormationテンプレートを出力するGitHub Actionsワークフローが提供されなければならない
-- **FR-016**: Synth ワークフローは生成されたCloudFormationテンプレートをGitHub Actions成果物としてアップロードしなければならない
-- **FR-017**: Synth ワークフローはTypeScriptのビルドエラーやCDK構文エラーを明確に報告しなければならない
-- **FR-018**: Synth ワークフローは環境 (dev/staging) を入力パラメータとして受け取らなければならない
+- **FR-011**: CloudFormationの出力として、テーブル名とテーブルARNが提供されなければならない
+- **FR-012**: デプロイワークフローはCDK bootstrapを自動実行しなければならない（環境が未初期化の場合に対応）
+- **FR-013**: Bootstrap処理は冪等性を持ち、既にbootstrap済みの環境でも安全に実行できなければならない
+- **FR-014**: CDK synthを手動で実行してCloudFormationテンプレートを出力するGitHub Actionsワークフローが提供されなければならない
+- **FR-015**: Synth ワークフローは生成されたCloudFormationテンプレートをGitHub Actions成果物としてアップロードしなければならない
+- **FR-016**: Synth ワークフローはTypeScriptのビルドエラーやCDK構文エラーを明確に報告しなければならない
+- **FR-017**: Synth ワークフローは環境 (dev/staging) を入力パラメータとして受け取らなければならない
 
 ### 主要エンティティ
 

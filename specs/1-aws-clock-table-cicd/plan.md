@@ -384,7 +384,7 @@ jobs:
         working-directory: infrastructure
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
-        run: npx cdk deploy --require-approval broadening --all --context environment=${ENVIRONMENT}
+        run: npx cdk deploy --require-approval never --all --context environment=${ENVIRONMENT}
 
       - name: Output deployment results
         env:
