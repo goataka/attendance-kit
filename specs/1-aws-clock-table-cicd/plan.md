@@ -528,49 +528,127 @@ jobs:
 
 ## 5. OIDC認証フロー
 
-### 5.1 初回セットアップ（手動 - CDK管理へ移行）
+### 5.1 初回セットアップ（CloudFormation - CDK管理へ移行）
 
-#### ステップ1: 初回のみ手動でOIDCプロバイダーとIAMロールを作成
+#### ステップ1: 初回のみCloudFormationでOIDCプロバイダーとIAMロールを作成
 
-初回のみ、AWS CLIまたはAWSコンソールを使用してOIDCプロバイダーとIAMロールを手動で作成します。
+初回のみ、CloudFormationテンプレートを使用してOIDCプロバイダーとIAMロールを作成します。
 
-```bash
-# IAM OIDC Provider作成（初回のみ）
-aws iam create-open-id-connect-provider \
-  --url https://token.actions.githubusercontent.com \
-  --client-id-list sts.amazonaws.com \
-  --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1
+**CloudFormationテンプレート (bootstrap-oidc.yaml)**:
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'GitHub Actions OIDC Provider and IAM Role for initial bootstrap'
 
-# IAM Role作成（初回のみ - Trust Policyを含む）
-# Trust Policy JSONファイルを作成後、以下を実行
-aws iam create-role \
-  --role-name GitHubActionsDeployRole \
-  --assume-role-policy-document file://trust-policy.json
+Parameters:
+  GitHubOrg:
+    Type: String
+    Default: goataka
+    Description: GitHub organization or username
+  
+  GitHubRepo:
+    Type: String
+    Default: spec-kit-with-coding-agent
+    Description: GitHub repository name
+  
+  RoleName:
+    Type: String
+    Default: GitHubActionsDeployRole-Initial
+    Description: Name of the IAM role for GitHub Actions
+
+Resources:
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+  
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOIDCProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+      Policies:
+        - PolicyName: AdditionalIAMPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:DeleteRole
+                  - iam:AttachRolePolicy
+                  - iam:DetachRolePolicy
+                  - iam:PutRolePolicy
+                  - iam:DeleteRolePolicy
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:ListRolePolicies
+                  - iam:ListAttachedRolePolicies
+                  - iam:TagRole
+                  - iam:UntagRole
+                  - iam:CreateOpenIDConnectProvider
+                  - iam:DeleteOpenIDConnectProvider
+                  - iam:GetOpenIDConnectProvider
+                  - iam:TagOpenIDConnectProvider
+                  - iam:UntagOpenIDConnectProvider
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+      Description: Role for GitHub Actions to deploy infrastructure (initial bootstrap)
+
+Outputs:
+  OIDCProviderArn:
+    Description: ARN of the GitHub OIDC Provider
+    Value: !GetAtt GitHubOIDCProvider.Arn
+  
+  RoleArn:
+    Description: ARN of the GitHub Actions IAM Role
+    Value: !GetAtt GitHubActionsRole.Arn
+  
+  RoleName:
+    Description: Name of the GitHub Actions IAM Role
+    Value: !Ref GitHubActionsRole
+  
+  GitHubSecretValue:
+    Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
+    Value: !GetAtt GitHubActionsRole.Arn
+  
+  NextSteps:
+    Description: Next steps after deploying this stack
+    Value: |
+      1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
+      2. Run CDK bootstrap
+      3. Deploy the CDK stack (which will create CDK-managed OIDC and IAM role)
+      4. Update GitHub Secret AWS_ROLE_TO_ASSUME with the CDK-managed role ARN
+      5. Delete this CloudFormation stack to remove bootstrap resources
 ```
 
-#### Trust Policy (初回手動設定用)
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Federated": "arn:aws:iam::{ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com"
-      },
-      "Action": "sts:AssumeRoleWithWebIdentity",
-      "Condition": {
-        "StringEquals": {
-          "token.actions.githubusercontent.com:aud": "sts.amazonaws.com"
-        },
-        "StringLike": {
-          "token.actions.githubusercontent.com:sub": "repo:goataka/spec-kit-with-coding-agent:*"
-        }
-      }
-    }
-  ]
-}
-```
+**デプロイ方法**:
+
+AWSコンソールから:
+1. CloudFormationサービスを開く
+2. 新しいスタックを作成
+3. `bootstrap-oidc.yaml` をアップロード
+4. パラメータを確認・調整（必要に応じて）
+5. スタックを作成
+6. Outputs タブから `GitHubSecretValue` をコピーし、GitHub Secretsに設定
 
 #### ステップ2: CDKでOIDCとIAMロールを管理
 
@@ -610,18 +688,17 @@ githubActionsRole.addManagedPolicy(
 );
 ```
 
-#### ステップ3: 手動設定を削除
+#### ステップ3: Bootstrap CloudFormationスタックを削除
 
-CDKでOIDCとIAMロールがデプロイされた後、初回に手動作成したリソースを削除します。
+CDKでOIDCとIAMロールがデプロイされた後、初回に作成したCloudFormationスタックを削除します。
 
-```bash
-# 手動作成したIAMロールを削除
-aws iam delete-role --role-name GitHubActionsDeployRole
+AWSコンソールから:
+1. CloudFormationサービスを開く
+2. Bootstrap用のスタック（例: `github-oidc-bootstrap`）を選択
+3. 「削除」をクリック
+4. 確認後、スタックが削除されることを確認
 
-# 手動作成したOIDCプロバイダーを削除（CDK管理版が存在することを確認後）
-aws iam delete-open-id-connect-provider \
-  --open-id-connect-provider-arn arn:aws:iam::{ACCOUNT_ID}:oidc-provider/token.actions.githubusercontent.com
-```
+これにより、以降はCDK管理のOIDCとIAMロールのみが使用されます。
 
 ### 5.2 IAM Policy (最小権限)
 ```json
@@ -834,52 +911,44 @@ const params = {
 
 ## 8. デプロイメント戦略
 
-### 8.1 初回セットアップ手順（手動OIDC → CDK管理へ移行）
+### 8.1 初回セットアップ手順（CloudFormation Bootstrap → CDK管理へ移行）
 
-#### フェーズ1: 初回手動セットアップ
+#### フェーズ1: CloudFormationでBootstrap
 
-1. **AWS OIDCプロバイダー作成** (手動 - 初回のみ)
-   ```bash
-   aws iam create-open-id-connect-provider \
-     --url https://token.actions.githubusercontent.com \
-     --client-id-list sts.amazonaws.com \
-     --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1
-   ```
+1. **CloudFormationスタックデプロイ** (初回のみ)
+   - AWSコンソールでCloudFormationサービスを開く
+   - 新しいスタックを作成
+   - `bootstrap-oidc.yaml` テンプレートをアップロード
+   - パラメータを確認（GitHubOrg、GitHubRepo、RoleName）
+   - スタックを作成
 
-2. **IAMロール作成** (手動 - 初回のみ)
-   - Trust Policy設定
-   - 必要なIAMポリシーをアタッチ（PowerUserAccess + IAM権限）
+2. **GitHub Secrets設定**
+   - CloudFormationのOutputsタブから `GitHubSecretValue` をコピー
+   - GitHub リポジトリのSettings > Secrets and variables > Actionsを開く
+   - `AWS_ROLE_TO_ASSUME` に取得したロールARNを設定
 
-3. **GitHub Secrets設定** (手動)
-   - `AWS_ROLE_TO_ASSUME`に手動作成したロールARNを設定
-
-4. **CDK Bootstrap実行** (GitHub Actions手動トリガー)
+3. **CDK Bootstrap実行** (GitHub Actions手動トリガー)
    - ワークフロー: デプロイワークフロー内で自動実行
    - 環境: dev
 
 #### フェーズ2: CDKデプロイとOIDC管理移行
 
-5. **初回デプロイ実行** (GitHub Actions手動トリガー)
+4. **初回デプロイ実行** (GitHub Actions手動トリガー)
    - ワークフロー: `deploy-dev-to-aws.yml`
    - 入力: dev
    - このデプロイでCDK管理のOIDCプロバイダーとIAMロールが作成される
 
-6. **GitHub Secretsの更新**
-   - CloudFormation出力から新しいロールARNを取得
+5. **GitHub Secretsの更新**
+   - CloudFormation出力から新しいCDK管理ロールARNを取得
    - `AWS_ROLE_TO_ASSUME`をCDK管理のロールARNに更新
 
-7. **手動作成したOIDCとロールの削除**
-   ```bash
-   # 手動作成したIAMロールを削除
-   aws iam detach-role-policy --role-name GitHubActionsDeployRole --policy-arn <policy-arn>
-   aws iam delete-role --role-name GitHubActionsDeployRole
-   
-   # 手動作成したOIDCプロバイダーを削除
-   aws iam delete-open-id-connect-provider \
-     --open-id-connect-provider-arn <手動作成したOIDC ARN>
-   ```
+6. **Bootstrap CloudFormationスタックの削除**
+   - AWSコンソールでCloudFormationサービスを開く
+   - Bootstrap用のスタック（例: `github-oidc-bootstrap`）を選択
+   - 「削除」をクリック
+   - スタックが削除されることを確認
 
-8. **動作確認**
+7. **動作確認**
    - 再度デプロイワークフローを実行し、CDK管理のOIDCで認証できることを確認
 
 ### 8.2 通常運用時のデプロイ（CDK管理後）
