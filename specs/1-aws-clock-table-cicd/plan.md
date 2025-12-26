@@ -51,16 +51,12 @@ graph TB
         infra_config["cdk.json"]
         workflows[".github/workflows/"]
         wf_deploy["deploy-dev-to-aws.yml"]
-        wf_bootstrap["cdk-bootstrap.yml"]
-        wf_synth["cdk-synth.yml"]
         
         infra --> infra_files
         infra_files --> infra_bin
         infra_files --> infra_lib
         infra_files --> infra_config
         workflows --> wf_deploy
-        workflows --> wf_bootstrap
-        workflows --> wf_synth
     end
     
     subgraph Actions["GitHub Actions"]
@@ -145,20 +141,6 @@ flowchart TD
     C -.-> C1[aws://ACCOUNT/REGION]
     E -.-> E1[S3バケット]
     E -.-> E2[IAMロール]
-```
-
-#### 手動Synth (cdk-synth.yml)
-```mermaid
-flowchart TD
-    A[手動トリガー] --> A1[環境指定]
-    A1 --> B[TypeScript ビルド]
-    B --> C[cdk synth]
-    C --> D[CloudFormation テンプレート生成]
-    D --> E[成果物アップロード]
-    E --> F[手動ダウンロード可能]
-    
-    E -.-> E1[JSON形式]
-    E -.-> E2[30日間保持]
 ```
 
 ## 3. CDKスタック構造
@@ -467,69 +449,6 @@ jobs:
             --stack-name ${STACK_NAME} \
             --query 'Stacks[0].Outputs' \
             --output table
-```
-
-### 4.2 Synth Workflow (.github/workflows/cdk-synth.yml)
-
-```yaml
-name: CDK Synth
-
-on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment (dev/staging)'
-        required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - staging
-
-permissions:
-  contents: read
-
-jobs:
-  synth:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-          cache-dependency-path: infrastructure/package-lock.json
-
-      - name: Install dependencies
-        working-directory: infrastructure
-        run: npm ci
-
-      - name: Build TypeScript
-        working-directory: infrastructure
-        run: npm run build
-
-      - name: CDK Synth
-        working-directory: infrastructure
-        env:
-          ENVIRONMENT: ${{ inputs.environment }}
-        run: npx cdk synth --context environment=${ENVIRONMENT} --output ./cdk.out
-
-      - name: Upload CloudFormation templates
-        uses: actions/upload-artifact@v4
-        with:
-          name: cloudformation-templates-${{ inputs.environment }}
-          path: infrastructure/cdk.out/*.template.json
-          retention-days: 30
-
-      - name: Summary
-        run: |
-          echo "✅ CloudFormation templates generated successfully"
-          echo "📦 Templates available as artifacts for manual review"
-          echo "Environment: ${{ inputs.environment }}"
 ```
 
 ## 5. OIDC認証フロー
@@ -1054,9 +973,7 @@ test('Global Secondary Index Created', () => {
 
 ### 9.3 GitHub Actions ワークフローテスト
 
-1. **Synth Workflow**: 手動実行してテンプレート生成を確認
-2. **Bootstrap Workflow**: テスト環境で手動実行
-3. **Deploy Workflow**: PR作成してdry-run確認後、mainマージで実行
+1. **Deploy Workflow**: PR作成してdry-run確認後、mainマージで実行
 
 ## 10. モニタリング・運用（コスト最小化版）
 
@@ -1128,8 +1045,6 @@ test('Global Secondary Index Created', () => {
 
 ### Phase 2: GitHub Actionsワークフロー (P1)
 - Deploy ワークフロー作成
-- Bootstrap ワークフロー作成
-- Synth ワークフロー作成
 - OIDC認証設定
 
 ### Phase 3: ドキュメント (P1-P2)
@@ -1153,9 +1068,7 @@ test('Global Secondary Index Created', () => {
 | SC-005: 10分以内自動デプロイ | mainマージ後の自動実行時間計測 |
 | SC-006: 30分で理解可能 | 開発者にドキュメントレビュー依頼 |
 | SC-007: 3分以内bootstrap | GitHub Actions bootstrap実行時間計測 |
-| SC-008: 2分以内synth | GitHub Actions synth実行時間計測 |
-| SC-009: Bootstrap冪等性 | 同環境で複数回実行テスト |
-| SC-010: JSON形式テンプレート | 成果物ダウンロード確認 |
+| SC-008: Bootstrap冪等性 | 同環境で複数回実行テスト |
 
 ## 15. 次のステップ
 

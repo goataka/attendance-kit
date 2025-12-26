@@ -32,84 +32,10 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 1. AWSコンソールでCloudFormationサービスを開く
 2. 新しいスタックを作成
-3. 以下のテンプレートを使用（または `docs/setup/bootstrap-oidc.yaml` を参照）
-
-```yaml
-AWSTemplateFormatVersion: '2010-09-09'
-Description: 'GitHub Actions OIDC Provider and IAM Role for initial bootstrap'
-
-Parameters:
-  GitHubOrg:
-    Type: String
-    Default: goataka
-  GitHubRepo:
-    Type: String
-    Default: spec-kit-with-coding-agent
-  RoleName:
-    Type: String
-    Default: GitHubActionsDeployRole-Initial
-
-Resources:
-  GitHubOIDCProvider:
-    Type: AWS::IAM::OIDCProvider
-    Properties:
-      Url: https://token.actions.githubusercontent.com
-      ClientIdList:
-        - sts.amazonaws.com
-      ThumbprintList:
-        - 6938fd4d98bab03faadb97b34396831e3780aea1
-  
-  GitHubActionsRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Ref RoleName
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Federated: !GetAtt GitHubOIDCProvider.Arn
-            Action: sts:AssumeRoleWithWebIdentity
-            Condition:
-              StringEquals:
-                token.actions.githubusercontent.com:aud: sts.amazonaws.com
-              StringLike:
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/PowerUserAccess
-      Policies:
-        - PolicyName: AdditionalIAMPermissions
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - iam:CreateRole
-                  - iam:DeleteRole
-                  - iam:AttachRolePolicy
-                  - iam:DetachRolePolicy
-                  - iam:PutRolePolicy
-                  - iam:DeleteRolePolicy
-                  - iam:GetRole
-                  - iam:PassRole
-                  - iam:TagRole
-                  - iam:CreateOpenIDConnectProvider
-                  - iam:DeleteOpenIDConnectProvider
-                  - iam:GetOpenIDConnectProvider
-                  - iam:TagOpenIDConnectProvider
-                Resource:
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-*'
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
-
-Outputs:
-  RoleArn:
-    Description: ARN of the GitHub Actions IAM Role
-    Value: !GetAtt GitHubActionsRole.Arn
-```
-
-4. スタックを作成
-5. OutputsタブからロールARNをコピー
+3. `infrastructure/bootstrap-oidc.yaml` テンプレートをアップロード
+4. パラメータを確認・調整（必要に応じて）
+5. スタックを作成
+6. OutputsタブからロールARNをコピー
 
 ### ステップ2: GitHub Secretsを設定
 
@@ -198,15 +124,6 @@ npx cdk deploy --context environment=dev
 1. GitHub Actions タブを開く
 2. "Deploy to AWS" ワークフローを選択
 3. "Run workflow" をクリックして環境を選択
-
-## 📦 CDK Synth（手動テンプレート生成）
-
-CloudFormationテンプレートを確認したい場合：
-
-1. GitHub Actions タブを開く
-2. "CDK Synth" ワークフローを選択
-3. "Run workflow" をクリックして環境を選択
-4. 完了後、Artifacts からテンプレートをダウンロード
 
 ## 🧪 テスト
 
