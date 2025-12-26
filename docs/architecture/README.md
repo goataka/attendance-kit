@@ -2,6 +2,10 @@
 
 このディレクトリには、システムのアーキテクチャに関する仕様を配置します。
 
+## 実装済みドキュメント
+
+- [DynamoDB Clock Table アーキテクチャ](./dynamodb-clock-table.md) - 打刻テーブルの詳細設計
+
 ## 内容
 
 - システム構成図
@@ -21,3 +25,10 @@
 - `{feature-name}-architecture.md` - 機能別アーキテクチャ
 - `{system-name}-infrastructure.md` - インフラストラクチャ設計
 - `{component-name}-api.md` - API設計
+
+## 関連ドキュメント
+
+- [ビジネス要件](../business/)
+- [インフラストラクチャREADME](../../infrastructure/README.md)
+- [仕様書](../../specs/)
+
