@@ -1,0 +1,65 @@
+name: CDK Synth
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment (dev/staging)'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - staging
+
+permissions:
+  contents: read
+
+jobs:
+  synth:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: infrastructure/package-lock.json
+
+      - name: Install dependencies
+        working-directory: infrastructure
+        run: npm ci
+
+      - name: Build TypeScript
+        working-directory: infrastructure
+        run: npm run build
+
+      - name: CDK Synth
+        working-directory: infrastructure
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+        run: npx cdk synth --context environment=${ENVIRONMENT} --output ./cdk.out
+
+      - name: Upload CloudFormation templates
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudformation-templates-${{ inputs.environment }}
+          path: infrastructure/cdk.out/*.template.json
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "✅ CloudFormation templates generated successfully" >> $GITHUB_STEP_SUMMARY
+          echo "📦 Templates available as artifacts for manual review" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Environment:** ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Download Instructions" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to the Actions tab" >> $GITHUB_STEP_SUMMARY
+          echo "2. Click on this workflow run" >> $GITHUB_STEP_SUMMARY
+          echo "3. Scroll down to Artifacts section" >> $GITHUB_STEP_SUMMARY
+          echo "4. Download 'cloudformation-templates-${{ inputs.environment }}'" >> $GITHUB_STEP_SUMMARY
