@@ -2,7 +2,7 @@
 
 ## 概要
 
-このドキュメントでは、attendance-kyt（勤怠管理キット）のDynamoDB Clock Tableの設計について説明します。
+このドキュメントでは、DynamoDB Clock Tableの設計について説明します。
 
 ## データベース構成図
 
