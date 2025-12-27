@@ -10,7 +10,7 @@ describe('SpecKitStack', () => {
     app = new App();
     const stack = new SpecKitStack(app, 'TestStack', {
       environment: 'dev',
-      githubRepository: 'goataka/spec-kit-with-coding-agent',
+      githubRepository: 'goataka/attendance-kit',
     });
     template = Template.fromStack(stack);
   });
@@ -154,7 +154,7 @@ describe('SpecKitStack - Staging Environment', () => {
     const app = new App();
     const stack = new SpecKitStack(app, 'TestStackStaging', {
       environment: 'staging',
-      githubRepository: 'goataka/spec-kit-with-coding-agent',
+      githubRepository: 'goataka/attendance-kit',
     });
     const template = Template.fromStack(stack);
 

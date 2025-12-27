@@ -212,7 +212,7 @@ export class SpecKitStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: SpecKitStackProps) {
     super(scope, id, props);
 
-    const { environment, githubRepository = 'goataka/spec-kit-with-coding-agent' } = props;
+    const { environment, githubRepository = 'goataka/attendance-kit' } = props;
 
     // OIDC Provider for GitHub Actions
     const githubProvider = new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
@@ -472,7 +472,7 @@ Parameters:
   
   GitHubRepo:
     Type: String
-    Default: spec-kit-with-coding-agent
+    Default: attendance-kit
     Description: GitHub repository name
   
   RoleName:
@@ -598,7 +598,7 @@ const githubActionsRole = new iam.Role(this, 'GitHubActionsRole', {
         'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
       },
       StringLike: {
-        'token.actions.githubusercontent.com:sub': `repo:goataka/spec-kit-with-coding-agent:*`,
+        'token.actions.githubusercontent.com:sub': `repo:goataka/attendance-kit:*`,
       },
     },
     'sts:AssumeRoleWithWebIdentity'

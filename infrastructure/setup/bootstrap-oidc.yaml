@@ -9,7 +9,7 @@ Parameters:
   
   GitHubRepo:
     Type: String
-    Default: spec-kit-with-coding-agent
+    Default: attendance-kit
     Description: GitHub repository name
   
   RoleName:

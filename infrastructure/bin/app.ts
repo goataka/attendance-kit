@@ -21,7 +21,7 @@ const env = {
 };
 
 // GitHub repository (can be overridden via context)
-const githubRepository = app.node.tryGetContext('githubRepository') || 'goataka/spec-kit-with-coding-agent';
+const githubRepository = app.node.tryGetContext('githubRepository') || 'goataka/attendance-kit';
 
 // Create stack with environment-specific name
 const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
