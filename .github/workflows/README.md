@@ -15,9 +15,3 @@ AWS CDKを使用してDynamoDBインフラストラクチャをデプロイす�
 - **認証**: OIDC
 
 詳細は [deploy-to-aws.md](./deploy-to-aws.md) を参照してください。
-
-## 関連ドキュメント
-
-- [デプロイメント戦略](../../docs/architecture/cicd-deployment-strategy.md) - 全体的なCI/CD戦略
-- [運用ガイド](../../infrastructure/DEPLOYMENT.md) - デプロイ手順
-

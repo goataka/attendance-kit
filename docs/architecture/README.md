@@ -1,7 +1,5 @@
 # アーキテクチャドキュメント
 
-このディレクトリには、attendance-kyt（勤怠管理キット）のアーキテクチャドキュメントが含まれています。
-
 - [DynamoDB Clock Table](./dynamodb-clock-table.md) - 打刻テーブルの詳細設計
 - [CI/CD デプロイメント戦略](./cicd-deployment-strategy.md) - デプロイ戦略とセキュリティアーキテクチャ
 
