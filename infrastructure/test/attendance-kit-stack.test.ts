@@ -1,14 +1,14 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { SpecKitStack } from '../lib/spec-kit-stack';
+import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
-describe('SpecKitStack', () => {
+describe('AttendanceKitStack', () => {
   let app: App;
   let template: Template;
 
   beforeEach(() => {
     app = new App();
-    const stack = new SpecKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, 'TestStack', {
       environment: 'dev',
       githubRepository: 'goataka/attendance-kit',
     });
@@ -149,10 +149,10 @@ describe('SpecKitStack', () => {
   });
 });
 
-describe('SpecKitStack - Staging Environment', () => {
+describe('AttendanceKitStack - Staging Environment', () => {
   test('Staging environment creates correct table name', () => {
     const app = new App();
-    const stack = new SpecKitStack(app, 'TestStackStaging', {
+    const stack = new AttendanceKitStack(app, 'TestStackStaging', {
       environment: 'staging',
       githubRepository: 'goataka/attendance-kit',
     });

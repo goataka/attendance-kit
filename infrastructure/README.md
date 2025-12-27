@@ -32,7 +32,7 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 1. AWSコンソールでCloudFormationサービスを開く
 2. 新しいスタックを作成
-3. `infrastructure/setup/bootstrap-oidc.yaml` テンプレートをアップロード
+3. `infrastructure/setup/setup-oidc-temporarily.yaml` テンプレートをアップロード
 4. パラメータを確認・調整（必要に応じて）
 5. スタックを作成
 6. OutputsタブからロールARNをコピー

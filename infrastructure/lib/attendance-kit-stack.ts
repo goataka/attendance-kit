@@ -3,17 +3,17 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
-export interface SpecKitStackProps extends cdk.StackProps {
+export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
   githubRepository: string; // GitHub repository name for OIDC
 }
 
-export class SpecKitStack extends cdk.Stack {
+export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
   public readonly githubActionsRole: iam.Role;
   public readonly githubProvider: iam.OpenIdConnectProvider;
 
-  constructor(scope: Construct, id: string, props: SpecKitStackProps) {
+  constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
 
     const { environment, githubRepository } = props;

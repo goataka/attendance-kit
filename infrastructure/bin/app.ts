@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { SpecKitStack } from '../lib/spec-kit-stack';
+import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
 const app = new cdk.App();
 
@@ -26,7 +26,7 @@ const githubRepository = app.node.tryGetContext('githubRepository') || 'goataka/
 // Create stack with environment-specific name
 const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
 
-new SpecKitStack(app, stackName, {
+new AttendanceKitStack(app, stackName, {
   env,
   environment,
   githubRepository,
