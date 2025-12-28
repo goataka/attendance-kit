@@ -32,17 +32,17 @@
 
 ### ユーザーストーリー 2 - セキュアなAWS認証 (優先度: P1)
 
-システム管理者として、AWSアクセスキーをGitHubに保存せずに、CDK内でOIDCプロバイダーとIAMロールを管理してGitHub ActionsからAWSに安全に接続したい。これにより、認証情報の漏洩リスクを最小化し、インフラストラクチャとして一元管理できる。
+システム管理者として、AWSアクセスキーをGitHubに保存せずに、CloudFormationでOIDCプロバイダーとIAMロールを管理してGitHub ActionsからAWSに安全に接続したい。これにより、認証情報の漏洩リスクを最小化し、インフラストラクチャとして一元管理できる。
 
-**この優先度の理由**: セキュリティは最優先事項であり、認証情報の漏洩は重大なセキュリティインシデントにつながる可能性がある。CDKで管理することで、OIDC設定の再現性と保守性が向上する。
+**この優先度の理由**: セキュリティは最優先事項であり、認証情報の漏洩は重大なセキュリティインシデントにつながる可能性がある。OIDC Providerは同じURLで複数作成できないため、CloudFormationで管理し続けることで、安定した運用を実現する。
 
-**独立テスト**: CDKでOIDCプロバイダーとIAMロールをデプロイし、GitHub Actionsワークフローを実行してAWSリソースにアクセスできることを確認することでテスト可能。
+**独立テスト**: CloudFormationでOIDCプロバイダーとIAMロールをデプロイし、GitHub Actionsワークフローを実行してAWSリソースにアクセスできることを確認することでテスト可能。
 
 **受け入れシナリオ**:
 
-1. **前提** CDKでOIDCプロバイダーとIAMロールがデプロイされている, **実行** GitHub Actionsワークフローを実行する, **結果** 一時的な認証情報でAWSに接続し、デプロイが成功する
-2. **前提** CDKスタックの出力にロールARNが含まれている, **実行** ワークフローがOIDC認証を試みる, **結果** 正常に認証され、永続的な認証情報は使用されない
-3. **前提** 初回はCloudFormationでOIDCを設定, **実行** CDKでOIDCとロールをデプロイ, **結果** CloudFormationスタックを削除し、以降はCDK管理のOIDCを使用
+1. **前提** CloudFormationでOIDCプロバイダーとIAMロールがデプロイされている, **実行** GitHub Actionsワークフローを実行する, **結果** 一時的な認証情報でAWSに接続し、デプロイが成功する
+2. **前提** CloudFormationスタックの出力にロールARNが含まれている, **実行** ワークフローがOIDC認証を試みる, **結果** 正常に認証され、永続的な認証情報は使用されない
+3. **前提** CloudFormationテンプレートをリポジトリに配置, **実行** リポジトリ同期を設定してスタックを更新, **結果** 手動アップロードなしでCloudFormationが更新される
 
 ---
 
@@ -94,8 +94,8 @@
 - **FR-006**: テーブルはAWS管理キーによる暗号化が設定されていなければならない
 - **FR-007**: テーブルはREMOVAL_POLICY: RETAINが設定され、CloudFormationスタック削除時もテーブルが保持されなければならない
 - **FR-008**: GitHub ActionsワークフローはOIDC認証を使用してAWSに接続しなければならない
-- **FR-008a**: CDKはIAM OIDCプロバイダーとGitHub Actions用のIAMロールを管理しなければならない
-- **FR-008b**: 初回セットアップはCloudFormationテンプレートを使用してOIDCを設定し、CDKデプロイ後はCDK管理のOIDCを使用し、CloudFormationスタックを削除しなければならない
+- **FR-008a**: IAM OIDCプロバイダーとGitHub Actions用のIAMロールはCloudFormationで管理しなければならない（OIDC Providerの制約のため）
+- **FR-008b**: CloudFormationテンプレートはリポジトリ同期機能を使用して自動更新されなければならない（手動アップロード不要）
 - **FR-009**: ワークフローは手動トリガー (workflow_dispatch) と自動トリガー (infrastructure/配下の変更時) をサポートしなければならない
 - **FR-010**: ワークフローはNode.js 22環境でCDKプロジェクトをビルドおよびデプロイしなければならない
 - **FR-011**: CloudFormationの出力として、テーブル名、テーブルARN、およびIAMロールARNが提供されなければならない
@@ -134,7 +134,8 @@
 ## 前提条件
 
 - AWSアカウントが存在する
-- 初回セットアップ時に、CloudFormationを使用してOIDCプロバイダーとIAMロールを設定する権限がある（その後CDKで管理）
+- CloudFormationを使用してOIDCプロバイダーとIAMロールを設定する権限がある
+- CloudFormation StackSetsまたはリポジトリ同期を設定する権限がある
 - Node.js 22がGitHub Actionsランナーで利用可能である
 
 ## スコープ内
@@ -142,7 +143,7 @@
 - DynamoDBの打刻テーブル（clock）のみ
 - dev および staging 環境
 - GitHub Actions経由の自動デプロイ（bootstrap含む）
-- CDK管理によるOIDC認証（初回のみCloudFormationでセットアップ、以降はCDK管理）
+- CloudFormation管理によるOIDC認証（リポジトリ同期を使用）
 - コスト削減のための監視機能の最小化（CloudWatchアラームなし）
 
 ## スコープ外

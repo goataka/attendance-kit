@@ -49,25 +49,44 @@
 
 ---
 
-#### タスク 1.2a: CDK管理のOIDCプロバイダーとIAMロールを実装
+#### タスク 1.2a: CloudFormation OIDC設定ファイルの作成
 **優先度**: P1  
-**見積工数**: 3時間  
+**見積工数**: 2時間  
 **依存関係**: タスク 1.2
 
 **実施内容**:
-- [ ] IAM OpenIdConnectProviderをCDKスタックに追加
-- [ ] GitHub Actions用のIAMロールを作成（OIDC経由の信頼関係）
+- [ ] `infrastructure/cloudformation/` ディレクトリを作成
+- [ ] `oidc-provider.yaml` テンプレートを作成
+- [ ] IAM OIDCプロバイダーの定義を追加
+- [ ] GitHub Actions用のIAMロールを定義（OIDC経由の信頼関係）
 - [ ] 必要なIAMポリシーをロールにアタッチ（PowerUserAccess + IAM権限）
-- [ ] リポジトリ名をパラメータとして受け取る
-- [ ] Trust PolicyにGitHubリポジトリの制約を設定
-- [ ] CloudFormation出力にロールARNとOIDC Provider ARNを追加
+- [ ] パラメータ設定（GitHubOrg、GitHubRepo、Environment）
+- [ ] CloudFormation出力を定義（RoleARN、OIDCProviderARN、GitHubSecretValue）
+- [ ] READMEにリポジトリ同期設定手順を追加
 
 **受入条件**:
-- OIDCプロバイダーがCDKで作成される
-- IAMロールがOIDC経由で引き受け可能
-- ロールが必要な権限を持つ
-- CloudFormation出力にロールARNが含まれる
-- `cdk synth` でOIDCとロールリソースが確認できる
+- CloudFormationテンプレートが有効なYAMLフォーマットである
+- パラメータが適切に設定されている
+- 出力が定義されている
+- リポジトリ同期設定手順が文書化されている
+
+---
+
+#### タスク 1.2b: CDKスタックからOIDC/IAMロール作成を削除
+**優先度**: P1  
+**見積工数**: 30分  
+**依存関係**: タスク 1.2a
+
+**実施内容**:
+- [ ] CDKスタックから`OpenIdConnectProvider`の作成を削除
+- [ ] CDKスタックから`IAMRole`の作成を削除
+- [ ] CloudFormation出力から`GitHubActionsRoleArn`と`OIDCProviderArn`を削除
+- [ ] コメントを追加してOIDCがCloudFormationで管理されることを説明
+
+**受入条件**:
+- CDKスタックにOIDC/IAMロール関連のコードが含まれない
+- `cdk synth`がエラーなく実行される
+- 出力にOIDC関連の項目が含まれない
 
 ---
 
@@ -156,19 +175,21 @@
 **実施内容**:
 - [ ] テスト依存関係をインストール: `jest`, `@types/jest`, `ts-jest`
 - [ ] `package.json` でJestを設定
-- [ ] `test/spec-kit-stack.test.ts` を作成
+- [ ] `test/attendance-kit-stack.test.ts` を作成
 - [ ] テスト: スタックがDynamoDBテーブルを作成する
 - [ ] テスト: テーブルが正しいパーティションキーとソートキーを持つ
 - [ ] テスト: GSIが正しく設定される
 - [ ] テスト: ポイントインタイムリカバリが有効化される
 - [ ] テスト: 削除ポリシーがRETAINである
 - [ ] テスト: テーブル名に環境が含まれる
+- [ ] **削除**: OIDC/IAMロール関連のテストを削除
 - [ ] `package.json` にテストスクリプトを追加: `npm test`
 
 **受入条件**:
 - すべてのテストがパスする
 - テストカバレッジが80%以上
 - テストがCIワークフローで実行される
+- OIDC/IAMロール関連のテストが含まれない
 
 ---
 
@@ -238,9 +259,11 @@
 **依存関係**: タスク 2.1
 
 **実施内容**:
-- [ ] `infrastructure/README.md` を作成
-- [ ] 前提条件を文書化（AWSアカウント、初回CloudFormationでのOIDC設定、CDK管理への移行）
-- [ ] 初期セットアップ手順を文書化（CloudFormation OIDC作成 → CDKデプロイ → CloudFormationスタック削除）
+- [ ] `infrastructure/README.md` を更新
+- [ ] 前提条件を文書化（AWSアカウント、CloudFormationでのOIDC設定、リポジトリ同期）
+- [ ] 初期セットアップ手順を文書化（CloudFormation OIDC作成 → リポジトリ同期設定 → CDKデプロイ）
+- [ ] CloudFormation管理によるOIDC設定の説明を追加
+- [ ] リポジトリ同期の設定手順を追加
 - [ ] デプロイプロセスを文書化
 - [ ] よくある問題のトラブルシューティングを文書化
 - [ ] ロールバック手順を追加
@@ -249,7 +272,8 @@
 **受入条件**:
 - セットアップガイドで新規ユーザーがデプロイ可能
 - すべての前提条件が文書化される
-- OIDC移行手順が明確に記載される
+- CloudFormation継続管理の理由が明確に記載される
+- リポジトリ同期設定手順が詳細に記載される
 - トラブルシューティングセクションが一般的なエラーをカバーする
 - 例が実際のコマンドを使用する
 
@@ -278,19 +302,20 @@
 
 ## タスクサマリー
 
-**総タスク数**: 12  
-**優先度P1タスク**: 9  
+**総タスク数**: 13  
+**優先度P1タスク**: 10  
 **優先度P2タスク**: 3  
 
-**見積総工数**: 約17.5時間
+**見積総工数**: 約17時間
 
 ### タスク依存関係グラフ
 
 ```mermaid
 graph TD
     T1.1[1.1: CDK初期化] --> T1.2[1.2: スタック作成]
-    T1.2 --> T1.2a[1.2a: OIDC/IAMロール実装]
-    T1.2a --> T1.3[1.3: DynamoDBテーブル]
+    T1.2 --> T1.2a[1.2a: CFn OIDCファイル作成]
+    T1.2a --> T1.2b[1.2b: CDKからOIDC削除]
+    T1.2b --> T1.3[1.3: DynamoDBテーブル]
     T1.3 --> T1.4[1.4: スタック出力]
     T1.4 --> T2.1[2.1: デプロイワークフロー]
     T1.4 --> T3.1[3.1: ユニットテスト]
@@ -304,7 +329,7 @@ graph TD
 ## 実装順序
 
 ### スプリント1: コアインフラストラクチャ (P1)
-- タスク 1.1 → 1.2 → 1.2a → 1.3 → 1.4 (基盤 + OIDC管理)
+- タスク 1.1 → 1.2 → 1.2a → 1.2b → 1.3 → 1.4 (基盤 + CloudFormation OIDC)
 - タスク 2.1 (CI/CD)
 - タスク 3.1 → 3.2 (テスト)
 
@@ -315,11 +340,11 @@ graph TD
 ## 成功指標
 
 - [ ] すべてのP1タスクが完了
-- [ ] CDK管理のOIDCプロバイダーとIAMロールがデプロイされる
+- [ ] CloudFormation OIDCプロバイダーとIAMロールがデプロイされる
+- [ ] リポジトリ同期が設定される
 - [ ] CDKスタックがdev環境に正常にデプロイされる
 - [ ] すべてのテストがパスする
 - [ ] GitHub Actionsワークフローがエラーなく実行される
-- [ ] CloudFormation OIDCスタックからCDK管理への移行が完了する
 - [ ] ドキュメントが完成しレビューされる
 - [ ] コストタグが適用される
 - [ ] CloudWatchアラームなどの有料監視は初期段階で実装されない（コスト削減）
@@ -329,6 +354,6 @@ graph TD
 - Bootstrapはデプロイワークフローに統合（各デプロイ前に実行）
 - 単一のCDKスタックファイルがコンテキストパラメータで複数環境に対応
 - デプロイに手動承認は不要（完全自動化）
-- **OIDC管理**: 初回はCloudFormationテンプレートを使用してOIDCとIAMロールを設定し、CDKデプロイ後はCDK管理に移行。CloudFormationスタックは削除する
+- **OIDC管理の方針変更**: OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理する。リポジトリ同期を使用して自動更新を実現する
 - **コスト削減**: CloudWatchアラーム（スロットルなど）や有料監視機能は初期段階では実装しない
 - **基本監視のみ**: CloudWatchの基本メトリクス（無料）のみを使用
