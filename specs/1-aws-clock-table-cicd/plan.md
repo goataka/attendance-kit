@@ -201,74 +201,21 @@ app.synth();
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as iam from 'aws-cdk-lib/aws-iam';
 
 export interface SpecKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
-  githubRepository?: string; // GitHub repository name for OIDC
 }
 
 export class SpecKitStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: SpecKitStackProps) {
     super(scope, id, props);
 
-    const { environment, githubRepository = 'goataka/attendance-kit' } = props;
+    const { environment } = props;
 
-    // OIDC Provider for GitHub Actions
-    const githubProvider = new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
-      url: 'https://token.actions.githubusercontent.com',
-      clientIds: ['sts.amazonaws.com'],
-    });
-
-    // IAM Role for GitHub Actions with OIDC
-    const githubActionsRole = new iam.Role(this, 'GitHubActionsRole', {
-      assumedBy: new iam.FederatedPrincipal(
-        githubProvider.openIdConnectProviderArn,
-        {
-          StringEquals: {
-            'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
-          },
-          StringLike: {
-            'token.actions.githubusercontent.com:sub': `repo:${githubRepository}:*`,
-          },
-        },
-        'sts:AssumeRoleWithWebIdentity'
-      ),
-      description: `Role for GitHub Actions to deploy infrastructure (${environment})`,
-      roleName: `GitHubActionsDeployRole-${environment}`,
-      maxSessionDuration: cdk.Duration.hours(1),
-    });
-
-    // Attach necessary policies for deployment
-    // NOTE: PowerUserAccessを使用（初期段階では簡易設定、本番環境では最小権限に変更すべき）
-    githubActionsRole.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('PowerUserAccess')
-    );
-    
-    // Additional IAM permissions for CDK operations
-    // セキュリティ要件: リソースを特定のパターンにスコープし、ワイルドカードを回避
-    githubActionsRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'iam:CreateRole',
-        'iam:DeleteRole',
-        'iam:AttachRolePolicy',
-        'iam:DetachRolePolicy',
-        'iam:PutRolePolicy',
-        'iam:DeleteRolePolicy',
-        'iam:GetRole',
-        'iam:PassRole',
-        'iam:CreateOpenIDConnectProvider',
-        'iam:DeleteOpenIDConnectProvider',
-        'iam:GetOpenIDConnectProvider',
-        'iam:TagOpenIDConnectProvider',
-      ],
-      resources: [
-        'arn:aws:iam::*:role/cdk-*',
-        `arn:aws:iam::*:role/GitHubActionsDeployRole-${environment}`,
-        'arn:aws:iam::*:oidc-provider/token.actions.githubusercontent.com',
-      ],
-    }));
+    // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
+    // (infrastructure/setup/attendance-kit-setup.yaml)
+    // This is because OIDC Provider cannot be created with the same URL multiple times,
+    // preventing migration from CloudFormation to CDK.
 
     // DynamoDB Clock Table（環境ごとに異なるテーブル名）
     const clockTable = new dynamodb.Table(this, 'ClockTable', {
@@ -314,16 +261,16 @@ export class SpecKitStack extends cdk.Stack {
       exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableArn`,
     });
 
-    new cdk.CfnOutput(this, 'GitHubActionsRoleArn', {
-      value: githubActionsRole.roleArn,
-      description: `IAM Role ARN for GitHub Actions (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-GitHubActionsRoleArn`,
+    new cdk.CfnOutput(this, 'GSIName', {
+      value: 'DateIndex',
+      description: `Global Secondary Index name (${environment})`,
+      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-GSIName`,
     });
 
-    new cdk.CfnOutput(this, 'OIDCProviderArn', {
-      value: githubProvider.openIdConnectProviderArn,
-      description: `OIDC Provider ARN for GitHub Actions (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-OIDCProviderArn`,
+    new cdk.CfnOutput(this, 'Environment', {
+      value: environment,
+      description: 'Deployment environment',
+      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Environment`,
     });
   }
 }
@@ -453,32 +400,15 @@ jobs:
 
 ## 5. OIDC認証フロー
 
-### 5.1 初回セットアップ（CloudFormation - CDK管理へ移行）
+### 5.1 CloudFormation管理によるOIDC設定
 
-#### ステップ1: 初回のみCloudFormationでOIDCプロバイダーとIAMロールを作成
+OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理します。
 
-初回のみ、CloudFormationテンプレートを使用してOIDCプロバイダーとIAMロールを作成します。
+#### CloudFormationテンプレート (infrastructure/setup/attendance-kit-setup.yaml)
 
-**CloudFormationテンプレート (bootstrap-oidc.yaml)**:
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'GitHub Actions OIDC Provider and IAM Role for initial bootstrap'
-
-Parameters:
-  GitHubOrg:
-    Type: String
-    Default: goataka
-    Description: GitHub organization or username
-  
-  GitHubRepo:
-    Type: String
-    Default: attendance-kit
-    Description: GitHub repository name
-  
-  RoleName:
-    Type: String
-    Default: GitHubActionsDeployRole-Initial
-    Description: Name of the IAM role for GitHub Actions
+Description: 'GitHub Actions OIDC Provider and IAM Role'
 
 Resources:
   GitHubOIDCProvider:
@@ -493,7 +423,7 @@ Resources:
   GitHubActionsRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Ref RoleName
+      RoleName: GitHubActionsDeployRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -505,7 +435,7 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+                token.actions.githubusercontent.com:sub: 'repo:goataka/attendance-kit:*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/PowerUserAccess
       Policies:
@@ -534,7 +464,7 @@ Resources:
                   - iam:UntagOpenIDConnectProvider
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
       Description: Role for GitHub Actions to deploy infrastructure (initial bootstrap)
 
@@ -555,77 +485,36 @@ Outputs:
     Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
     Value: !GetAtt GitHubActionsRole.Arn
   
-  NextSteps:
+  SetupInstructions:
     Description: Next steps after deploying this stack
     Value: |
       1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
-      2. Run CDK bootstrap
-      3. Deploy the CDK stack (which will create CDK-managed OIDC and IAM role)
-      4. Update GitHub Secret AWS_ROLE_TO_ASSUME with the CDK-managed role ARN
-      5. Delete this CloudFormation stack to remove bootstrap resources
+      2. Run GitHub Actions workflow to deploy the CDK stack
 ```
 
-**デプロイ方法**:
+### 5.2 セットアップ手順
 
-AWSコンソールから:
-1. CloudFormationサービスを開く
-2. 新しいスタックを作成
-3. `bootstrap-oidc.yaml` をアップロード
-4. パラメータを確認・調整（必要に応じて）
-5. スタックを作成
-6. Outputs タブから `GitHubSecretValue` をコピーし、GitHub Secretsに設定
+**設定手順**:
 
-#### ステップ2: CDKでOIDCとIAMロールを管理
+1. **初回デプロイ**: AWSコンソールから手動でスタックを作成
+   - CloudFormationサービスを開く
+   - 新しいスタックを作成
+   - テンプレートをアップロード: `infrastructure/setup/attendance-kit-setup.yaml`
+   - スタック名: `AttendanceKit-Setup-Stack`
+   - スタックを作成
 
-初回デプロイ後は、CDKでOIDCプロバイダーとIAMロールを管理します。
+2. **GitHub Secretsを設定**:
+   - CloudFormationのOutputsタブから`GitHubSecretValue`をコピー
+   - GitHubリポジトリのSettings > Secrets and variables > Actionsを開く
+   - 新しいリポジトリシークレットを作成
+   - 名前: `AWS_ROLE_TO_ASSUME`
+   - 値: コピーしたロールARNを貼り付け
 
-**CDKスタックでの実装**:
-```typescript
-import * as iam from 'aws-cdk-lib/aws-iam';
+3. **テンプレートの更新**: テンプレートファイルを変更した場合は、AWSコンソールでCloudFormationスタックを手動更新してください（スタックを更新 → 既存テンプレートを置き換える）
 
-// OIDC Provider for GitHub Actions
-const githubProvider = new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
-  url: 'https://token.actions.githubusercontent.com',
-  clientIds: ['sts.amazonaws.com'],
-});
+### 5.3 GitHub Secrets設定
 
-// IAM Role for GitHub Actions
-const githubActionsRole = new iam.Role(this, 'GitHubActionsRole', {
-  assumedBy: new iam.FederatedPrincipal(
-    githubProvider.openIdConnectProviderArn,
-    {
-      StringEquals: {
-        'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
-      },
-      StringLike: {
-        'token.actions.githubusercontent.com:sub': `repo:goataka/attendance-kit:*`,
-      },
-    },
-    'sts:AssumeRoleWithWebIdentity'
-  ),
-  description: 'Role for GitHub Actions to deploy infrastructure',
-  roleName: `GitHubActionsDeployRole-${environment}`,
-});
-
-// 必要な権限をアタッチ
-githubActionsRole.addManagedPolicy(
-  iam.ManagedPolicy.fromAwsManagedPolicyName('PowerUserAccess')
-);
-```
-
-#### ステップ3: Bootstrap CloudFormationスタックを削除
-
-CDKでOIDCとIAMロールがデプロイされた後、初回に作成したCloudFormationスタックを削除します。
-
-AWSコンソールから:
-1. CloudFormationサービスを開く
-2. Bootstrap用のスタック（例: `github-oidc-bootstrap`）を選択
-3. 「削除」をクリック
-4. 確認後、スタックが削除されることを確認
-
-これにより、以降はCDK管理のOIDCとIAMロールのみが使用されます。
-
-### 5.2 IAM Policy (最小権限)
+CloudFormationスタックの出力から取得したIAMロールARNを設定します。
 ```json
 {
   "Version": "2012-10-17",
@@ -714,11 +603,19 @@ AWSコンソールから:
 
 ### 5.3 GitHub Secrets設定
 
-初回セットアップ時のみ、手動作成したIAMロールのARNを設定します。CDKデプロイ後は、CDK管理のロールARNに更新します。
+CloudFormationスタックの出力から取得したIAMロールARNを設定します。
 
 | Secret名 | 値 | 説明 |
 |----------|-----|------|
-| `AWS_ROLE_TO_ASSUME` | 初回: `arn:aws:iam::{ACCOUNT_ID}:role/GitHubActionsDeployRole`<br/>CDK管理後: CloudFormation出力から取得 | OIDCで引き受けるIAMロールARN |
+| `AWS_ROLE_TO_ASSUME` | `arn:aws:iam::{ACCOUNT_ID}:role/GitHubActionsDeployRole` | CloudFormation出力から取得したIAMロールARN |
+
+**設定手順**:
+1. CloudFormationスタックのOutputsタブを開く
+2. `GitHubSecretValue`の値をコピー
+3. GitHubリポジトリのSettings > Secrets and variables > Actionsを開く
+4. 新しいリポジトリシークレットを作成
+5. 名前: `AWS_ROLE_TO_ASSUME`
+6. 値: コピーしたロールARNを貼り付け
 
 ## 6. DynamoDB設計詳細
 
@@ -836,15 +733,15 @@ const params = {
 
 ## 8. デプロイメント戦略
 
-### 8.1 初回セットアップ手順（CloudFormation Bootstrap → CDK管理へ移行）
+### 8.1 初回セットアップ手順
 
-#### フェーズ1: CloudFormationでBootstrap
+#### フェーズ1: CloudFormationでOIDC設定
 
 1. **CloudFormationスタックデプロイ** (初回のみ)
    - AWSコンソールでCloudFormationサービスを開く
    - 新しいスタックを作成
-   - `bootstrap-oidc.yaml` テンプレートをアップロード
-   - パラメータを確認（GitHubOrg、GitHubRepo、RoleName）
+   - `infrastructure/setup/attendance-kit-setup.yaml` テンプレートをアップロード
+   - スタック名: `AttendanceKit-Setup-Stack`
    - スタックを作成
 
 2. **GitHub Secrets設定**
@@ -852,33 +749,27 @@ const params = {
    - GitHub リポジトリのSettings > Secrets and variables > Actionsを開く
    - `AWS_ROLE_TO_ASSUME` に取得したロールARNを設定
 
-3. **CDK Bootstrap実行** (GitHub Actions手動トリガー)
-   - ワークフロー: デプロイワークフロー内で自動実行
-   - 環境: dev
+#### フェーズ2: CDKデプロイ
 
-#### フェーズ2: CDKデプロイとOIDC管理移行
-
-4. **初回デプロイ実行** (GitHub Actions手動トリガー)
-   - ワークフロー: `deploy-dev-to-aws.yml`
+3. **CDK Bootstrap & 初回デプロイ実行** (GitHub Actions手動トリガー)
+   - ワークフロー: `deploy-to-aws.yml`
    - 入力: dev
-   - このデプロイでCDK管理のOIDCプロバイダーとIAMロールが作成される
+   - ワークフロー内でbootstrapとdeployが自動実行される
 
-5. **GitHub Secretsの更新**
-   - CloudFormation出力から新しいCDK管理ロールARNを取得
-   - `AWS_ROLE_TO_ASSUME`をCDK管理のロールARNに更新
+4. **動作確認**
+   - DynamoDBテーブルがAWSコンソールで確認できる
+   - CloudFormation出力が正しく取得できる
 
-6. **Bootstrap CloudFormationスタックの削除**
-   - AWSコンソールでCloudFormationサービスを開く
-   - Bootstrap用のスタック（例: `github-oidc-bootstrap`）を選択
-   - 「削除」をクリック
-   - スタックが削除されることを確認
+### 8.2 通常運用時のデプロイ
 
-7. **動作確認**
-   - 再度デプロイワークフローを実行し、CDK管理のOIDCで認証できることを確認
+#### OIDC設定の更新（CloudFormation）
+1. **`infrastructure/setup/attendance-kit-setup.yaml` を変更**
+2. **PRを作成し、レビュー**
+3. **mainブランチにマージ**
+4. **AWSコンソールでCloudFormationスタックを手動更新**（スタックを更新 → 既存テンプレートを置き換える → 更新されたテンプレートをアップロード）
 
-### 8.2 通常運用時のデプロイ（CDK管理後）
-
-1. **開発者がinfrastructure/配下を変更**
+#### DynamoDBテーブルの更新（CDK）
+1. **`infrastructure/` 配下のCDKコードを変更**
 2. **PRを作成し、レビュー**
 3. **mainブランチにマージ**
 4. **GitHub Actionsが自動実行**

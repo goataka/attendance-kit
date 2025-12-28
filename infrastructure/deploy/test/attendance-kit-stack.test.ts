@@ -10,7 +10,6 @@ describe('AttendanceKitStack', () => {
     app = new App();
     const stack = new AttendanceKitStack(app, 'TestStack', {
       environment: 'dev',
-      githubRepository: 'goataka/attendance-kit',
     });
     template = Template.fromStack(stack);
   });
@@ -95,35 +94,6 @@ describe('AttendanceKitStack', () => {
     });
   });
 
-  test('OIDC Provider Created', () => {
-    template.resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 1);
-  });
-
-  test('GitHub Actions IAM Role Created', () => {
-    template.hasResourceProperties('AWS::IAM::Role', {
-      RoleName: 'GitHubActionsDeployRole-dev',
-    });
-  });
-
-  test('IAM Role has PowerUserAccess policy', () => {
-    template.hasResourceProperties('AWS::IAM::Role', {
-      ManagedPolicyArns: [
-        {
-          'Fn::Join': [
-            '',
-            [
-              'arn:',
-              {
-                Ref: 'AWS::Partition',
-              },
-              ':iam::aws:policy/PowerUserAccess',
-            ],
-          ],
-        },
-      ],
-    });
-  });
-
   test('Stack outputs include TableName', () => {
     const outputs = template.findOutputs('TableName');
     expect(outputs).toBeDefined();
@@ -136,16 +106,24 @@ describe('AttendanceKitStack', () => {
     expect(Object.keys(outputs).length).toBe(1);
   });
 
-  test('Stack outputs include GitHubActionsRoleArn', () => {
-    const outputs = template.findOutputs('GitHubActionsRoleArn');
+  test('Stack outputs include GSIName', () => {
+    const outputs = template.findOutputs('GSIName');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
   });
 
-  test('Stack outputs include OIDCProviderArn', () => {
-    const outputs = template.findOutputs('OIDCProviderArn');
+  test('Stack outputs include Environment', () => {
+    const outputs = template.findOutputs('Environment');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
+  });
+
+  test('OIDC Provider is NOT created (managed by CloudFormation)', () => {
+    template.resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 0);
+  });
+
+  test('GitHub Actions IAM Role is NOT created (managed by CloudFormation)', () => {
+    template.resourceCountIs('AWS::IAM::Role', 0);
   });
 });
 
@@ -154,7 +132,6 @@ describe('AttendanceKitStack - Staging Environment', () => {
     const app = new App();
     const stack = new AttendanceKitStack(app, 'TestStackStaging', {
       environment: 'staging',
-      githubRepository: 'goataka/attendance-kit',
     });
     const template = Template.fromStack(stack);
 

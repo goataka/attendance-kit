@@ -2,13 +2,14 @@
 
 ## ステップ1: OIDCプロバイダーとIAMロールの作成
 
-初回のみ、CloudFormationを使用してOIDCプロバイダーとIAMロールを手動で作成します。
+CloudFormationを使用してOIDCプロバイダーとIAMロールを作成します。
 
 1. AWSコンソールでCloudFormationサービスを開く
 2. 新しいスタックを作成
-3. `setup-oidc-temporarily.yaml`テンプレートをアップロード
-4. スタックを作成
-5. OutputsタブからロールARNをコピー
+3. `attendance-kit-setup.yaml`テンプレートをアップロード
+4. スタック名: `AttendanceKit-Setup-Stack`
+5. スタックを作成
+6. OutputsタブからロールARNをコピー
 
 ## ステップ2: GitHub Secretsの設定
 
@@ -19,19 +20,15 @@
 
 1. GitHub Actionsタブを開く
 2. "Deploy to AWS"ワークフローを実行
-3. 環境として"dev"を選択
 
-このデプロイでCDK管理のOIDCプロバイダーとIAMロールが作成されます。
+これでDynamoDBテーブルなどのインフラストラクチャがデプロイされます。
 
-## ステップ4: GitHub Secretsの更新
+## テンプレートの更新
 
-1. デプロイ完了後、CloudFormationコンソールで`AttendanceKit-Dev-Stack`のOutputsを確認
-2. `GitHubActionsRoleArn`の値をコピー
-3. GitHub Secretsの`AWS_ROLE_TO_ASSUME`を新しいARNに更新
+`attendance-kit-setup.yaml`を変更した場合は、AWSコンソールでCloudFormationスタックを手動更新してください。
 
-## ステップ5: 初回CloudFormationスタックの削除
-
-1. CloudFormationコンソールで初回に作成したスタックを選択
-2. "削除"をクリック
-
-以降はCDK管理のOIDCとIAMロールが使用されます。
+1. CloudFormationコンソールで `AttendanceKit-Setup-Stack` を選択
+2. 「スタックアクション」→「スタックを更新」
+3. 「既存テンプレートを置き換える」を選択
+4. 更新された`attendance-kit-setup.yaml`をアップロード
+5. 変更セットを確認して実行

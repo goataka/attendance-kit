@@ -4,15 +4,17 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 ## 📋 前提条件
 
-- Node.js 20以上
+- Node.js 22以上
 - AWS CLI v2
-- AWS CDKアカウント（初回のみCloudFormationでOIDCとIAMロールをセットアップ）
+- AWSアカウント
+- CloudFormationでOIDCとIAMロールを設定する権限
 - GitHub Actions用のAWS IAMロール設定（OIDC経由）
 
 ## 🏗️ 構成
 
 このインフラストラクチャには以下が含まれます：
 
+### CDK管理（deploy/ディレクトリ）
 - **DynamoDB Table**: `attendance-kit-{environment}-clock`
   - Partition Key: `userId` (String)
   - Sort Key: `timestamp` (String, ISO 8601形式)
@@ -21,57 +23,29 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
   - Point-in-Time Recovery有効
   - AWS管理キー暗号化
 
-- **OIDC Provider**: GitHub Actions用
+### CloudFormation管理（setup/ディレクトリ）
+- **OIDC Provider**: GitHub Actions用（`infrastructure/setup/attendance-kit-setup.yaml`）
 - **IAM Role**: GitHub ActionsがAWSリソースにアクセスするためのロール
+
+**注意**: OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理します。
+テンプレートファイルの変更後は、手動でCloudFormationスタックを更新してください。
 
 ## 🚀 初回セットアップ手順
 
-### ステップ1: CloudFormationでOIDCプロバイダーとIAMロールを作成（初回のみ）
+詳細なセットアップ手順は [setup/README.md](setup/README.md) を参照してください。
 
-初回のみ、CloudFormationを使用してOIDCプロバイダーとIAMロールを手動で作成します。
-
-1. AWSコンソールでCloudFormationサービスを開く
-2. 新しいスタックを作成
-3. `infrastructure/setup/setup-oidc-temporarily.yaml` テンプレートをアップロード
-4. パラメータを確認・調整（必要に応じて）
-5. スタックを作成
-6. OutputsタブからロールARNをコピー
-
-### ステップ2: GitHub Secretsを設定
-
-1. GitHubリポジトリの Settings > Secrets and variables > Actions を開く
-2. New repository secret をクリック
-3. `AWS_ROLE_TO_ASSUME` という名前で、ステップ1で取得したロールARNを設定
-
-### ステップ3: CDKをデプロイ（GitHub Actions使用）
-
-1. GitHub Actions タブを開く
-2. "Deploy to AWS" ワークフローを選択
-3. "Run workflow" をクリック
-4. 環境として "dev" を選択して実行
-
-このデプロイで、CDK管理のOIDCプロバイダーとIAMロールが作成されます。
-
-### ステップ4: GitHub Secretsを更新
-
-1. デプロイ完了後、AWS CloudFormationコンソールで `AttendanceKit-Dev-Stack` の Outputs を確認
-2. `GitHubActionsRoleArn` の値をコピー
-3. GitHub Secrets の `AWS_ROLE_TO_ASSUME` を新しいARNに更新
-
-### ステップ5: 初回CloudFormationスタックを削除
-
-1. AWS CloudFormationコンソールを開く
-2. 初回に作成したスタックを選択
-3. "削除" をクリック
-
-これ以降は、CDK管理のOIDCとIAMロールが使用されます。
+**概要**:
+1. CloudFormationでOIDCプロバイダーとIAMロールを作成（[setup/](setup/)ディレクトリ）
+   - スタック名: `AttendanceKit-Setup-Stack`
+2. GitHub SecretsにロールARNを設定
+3. GitHub ActionsでCDKをデプロイ
 
 ## 💻 ローカル開発
 
 ### 依存関係のインストール
 
 ```bash
-cd infrastructure
+cd infrastructure/deploy
 npm install
 ```
 
@@ -114,10 +88,16 @@ npx cdk deploy --context environment=dev
 
 ## 🔄 通常運用時のデプロイフロー
 
-1. `infrastructure/` 配下のファイルを変更
+### CDK管理のリソース（DynamoDBテーブル）
+
+1. `infrastructure/lib/` や `infrastructure/bin/` 配下のファイルを変更
 2. PRを作成してレビュー
 3. `main` ブランチにマージ
 4. GitHub Actionsが自動的にデプロイを実行
+
+### CloudFormation管理のリソース（OIDC、IAMロール）
+
+CloudFormationテンプレートの更新手順は [setup/README.md](setup/README.md#テンプレートの更新) を参照してください。
 
 または、手動でデプロイを実行：
 
@@ -137,7 +117,7 @@ npm test
 - Global Secondary Indexが存在する
 - Point-in-Time Recoveryが有効
 - RETAIN削除ポリシーが設定される
-- OIDCプロバイダーとIAMロールが作成される
+- OIDCプロバイダーとIAMロールはCDKで作成されない（CloudFormation管理）
 
 ## 📊 スタック出力
 

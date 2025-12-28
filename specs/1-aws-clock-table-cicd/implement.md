@@ -33,7 +33,7 @@ AWS CDKを使用したDynamoDB Clock TableのCI/CDインフラストラクチャ
   - PITR有効、AWS管理キー暗号化
   - 削除ポリシー: RETAIN
 - OIDC Provider: GitHub Actions用
-- IAM Role: `GitHubActionsDeployRole-{environment}`
+- IAM Role: `GitHubActionsDeployRole`
   - PowerUserAccess + 追加IAM権限
   - リポジトリ制限付き信頼ポリシー
 - CloudFormation Outputs: Table名、ARN、Role ARN、OIDC Provider ARN
