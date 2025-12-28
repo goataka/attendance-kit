@@ -74,6 +74,30 @@ Resources:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-*'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+        - PolicyName: CDKBootstrapPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # SSM Parameter Store for CDK context
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:GetParameters
+                  - ssm:PutParameter
+                  - ssm:DeleteParameter
+                Resource:
+                  - !Sub 'arn:aws:ssm:*:${AWS::AccountId}:parameter/cdk-bootstrap/*'
+              # Organizations for CDK
+              - Effect: Allow
+                Action:
+                  - organizations:DescribeOrganization
+                Resource: '*'
+              # STS for CDK assume role
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
       Description: Role for GitHub Actions to deploy infrastructure (initial bootstrap)
 
 Outputs:
