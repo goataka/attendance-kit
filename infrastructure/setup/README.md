@@ -6,7 +6,7 @@
 
 1. AWSコンソールでCloudFormationサービスを開く
 2. 新しいスタックを作成
-3. `setup-oidc-temporarily.yaml`テンプレートをアップロード
+3. `attendance-kit-setup.yaml`テンプレートをアップロード
 4. スタックを作成
 5. OutputsタブからロールARNをコピー
 

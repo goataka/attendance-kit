@@ -133,5 +133,5 @@ Outputs:
          - Go to Stack details > Stack actions > Enable repository sync
          - Repository: goataka/attendance-kit
          - Branch: main
-         - Template path: infrastructure/setup/setup-oidc-temporarily.yaml
+         - Template path: infrastructure/setup/attendance-kit-setup.yaml
       3. Run GitHub Actions workflow to deploy the CDK stack

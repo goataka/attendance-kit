@@ -213,7 +213,7 @@ export class SpecKitStack extends cdk.Stack {
     const { environment } = props;
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
-    // (infrastructure/setup/setup-oidc-temporarily.yaml)
+    // (infrastructure/setup/attendance-kit-setup.yaml)
     // This is because OIDC Provider cannot be created with the same URL multiple times,
     // preventing migration from CloudFormation to CDK.
     // Use repository sync to automatically update the CloudFormation stack.
@@ -406,7 +406,7 @@ jobs:
 OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理します。
 リポジトリ同期機能を使用することで、手動アップロードなしで自動更新されます。
 
-#### CloudFormationテンプレート (infrastructure/setup/setup-oidc-temporarily.yaml)
+#### CloudFormationテンプレート (infrastructure/setup/attendance-kit-setup.yaml)
 
 **注意**: このテンプレートはリポジトリに配置し、リポジトリ同期を設定することで、
 手動アップロードなしで自動的に更新されます。
@@ -526,7 +526,7 @@ CloudFormationのリポジトリ同期機能を使用することで、テンプ
 1. **初回デプロイ**: AWSコンソールから手動でスタックを作成
    - CloudFormationサービスを開く
    - 新しいスタックを作成
-   - テンプレートをアップロード: `infrastructure/setup/setup-oidc-temporarily.yaml`
+   - テンプレートをアップロード: `infrastructure/setup/attendance-kit-setup.yaml`
    - パラメータを設定（Environment: dev または staging）
    - スタックを作成
 
@@ -534,7 +534,7 @@ CloudFormationのリポジトリ同期機能を使用することで、テンプ
    - スタック詳細画面で「スタックアクション」→「リポジトリ同期を有効化」
    - GitHubリポジトリを指定: `goataka/attendance-kit`
    - ブランチを指定: `main`
-   - テンプレートパスを指定: `infrastructure/setup/setup-oidc-temporarily.yaml`
+   - テンプレートパスを指定: `infrastructure/setup/attendance-kit-setup.yaml`
    - 同期を有効化
 
 3. **以降の更新**: テンプレートファイルをmainブランチにマージすると、自動的にCloudFormationスタックが更新されます
@@ -773,7 +773,7 @@ const params = {
 1. **CloudFormationスタックデプロイ** (初回のみ)
    - AWSコンソールでCloudFormationサービスを開く
    - 新しいスタックを作成
-   - `infrastructure/setup/setup-oidc-temporarily.yaml` テンプレートをアップロード
+   - `infrastructure/setup/attendance-kit-setup.yaml` テンプレートをアップロード
    - パラメータを確認（GitHubOrg、GitHubRepo、Environment）
    - スタックを作成
 
@@ -781,7 +781,7 @@ const params = {
    - スタック詳細画面で「スタックアクション」→「リポジトリ同期を有効化」
    - GitHubリポジトリを指定: `goataka/attendance-kit`
    - ブランチを指定: `main`
-   - テンプレートパスを指定: `infrastructure/setup/setup-oidc-temporarily.yaml`
+   - テンプレートパスを指定: `infrastructure/setup/attendance-kit-setup.yaml`
    - 同期を有効化
 
 3. **GitHub Secrets設定**
@@ -803,7 +803,7 @@ const params = {
 ### 8.2 通常運用時のデプロイ
 
 #### OIDC設定の更新（CloudFormation）
-1. **`infrastructure/setup/setup-oidc-temporarily.yaml` を変更**
+1. **`infrastructure/setup/attendance-kit-setup.yaml` を変更**
 2. **PRを作成し、レビュー**
 3. **mainブランチにマージ**
 4. **リポジトリ同期により自動的にCloudFormationスタックが更新される**
