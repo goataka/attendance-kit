@@ -436,27 +436,10 @@ Resources:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
                 token.actions.githubusercontent.com:sub: 'repo:goataka/attendance-kit:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
       Policies:
-        - PolicyName: CDKDeploymentPermissions
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              # Minimal permissions for CDK deployment
-              # CloudFormation, S3 assets, DynamoDB, CloudWatch Logs, ECR (if needed)
-              - Effect: Allow
-                Action:
-                  - cloudformation:*
-                  - s3:*
-                  - dynamodb:*
-                  - logs:*
-                  - ssm:GetParameter
-                  - ssm:PutParameter
-                  - ecr:GetAuthorizationToken
-                Resource: '*'
-                Condition:
-                  StringLike:
-                    'aws:ResourceTag/Project': 'attendance-kit'
-        - PolicyName: IAMPermissionsForCDKRoles
+        - PolicyName: AdditionalIAMPermissions
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -483,7 +466,7 @@ Resources:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
-      Description: Role for GitHub Actions to deploy infrastructure with least privilege permissions
+      Description: Role for GitHub Actions to deploy infrastructure (initial bootstrap)
 
 Outputs:
   OIDCProviderArn:
