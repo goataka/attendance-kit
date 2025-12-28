@@ -34,7 +34,7 @@ AWS CDKを使用したDynamoDB Clock TableのCI/CDインフラストラクチャ
   - 削除ポリシー: RETAIN
 - OIDC Provider: GitHub Actions用
 - IAM Role: `GitHubActionsDeployRole`
-  - PowerUserAccess + 追加IAM権限
+  - CDKデプロイに必要な最小権限のみを付与したカスタムポリシー（CloudFormation, S3 asset, DynamoDB, CloudWatch Logs等に限定）
   - リポジトリ制限付き信頼ポリシー
 - CloudFormation Outputs: Table名、ARN、Role ARN、OIDC Provider ARN
 
