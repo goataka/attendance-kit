@@ -1,16 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'GitHub Actions OIDC Provider and IAM Role (managed by repository sync)'
-
-Parameters:
-  GitHubOrg:
-    Type: String
-    Default: goataka
-    Description: GitHub organization or username
-  
-  GitHubRepo:
-    Type: String
-    Default: attendance-kit
-    Description: GitHub repository name
+Description: 'GitHub Actions OIDC Provider and IAM Role'
 
 Resources:
   GitHubOIDCProvider:
@@ -42,7 +31,7 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+                token.actions.githubusercontent.com:sub: 'repo:goataka/attendance-kit:*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/PowerUserAccess
       Policies:
@@ -117,9 +106,4 @@ Outputs:
     Description: Next steps after deploying this stack
     Value: |
       1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
-      2. Configure repository sync to keep this stack automatically updated:
-         - Go to Stack details > Stack actions > Enable repository sync
-         - Repository: goataka/attendance-kit
-         - Branch: main
-         - Template path: infrastructure/setup/attendance-kit-setup.yaml
-      3. Run GitHub Actions workflow to deploy the CDK stack
+      2. Run GitHub Actions workflow to deploy the CDK stack

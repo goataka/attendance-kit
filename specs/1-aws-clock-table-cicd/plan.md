@@ -216,7 +216,6 @@ export class SpecKitStack extends cdk.Stack {
     // (infrastructure/setup/attendance-kit-setup.yaml)
     // This is because OIDC Provider cannot be created with the same URL multiple times,
     // preventing migration from CloudFormation to CDK.
-    // Use repository sync to automatically update the CloudFormation stack.
 
     // DynamoDB Clock Table（環境ごとに異なるテーブル名）
     const clockTable = new dynamodb.Table(this, 'ClockTable', {
@@ -404,27 +403,12 @@ jobs:
 ### 5.1 CloudFormation管理によるOIDC設定
 
 OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理します。
-リポジトリ同期機能を使用することで、手動アップロードなしで自動更新されます。
 
 #### CloudFormationテンプレート (infrastructure/setup/attendance-kit-setup.yaml)
 
-**注意**: このテンプレートはリポジトリに配置し、リポジトリ同期を設定することで、
-手動アップロードなしで自動的に更新されます。
-
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'GitHub Actions OIDC Provider and IAM Role (managed by repository sync)'
-
-Parameters:
-  GitHubOrg:
-    Type: String
-    Default: goataka
-    Description: GitHub organization or username
-  
-  GitHubRepo:
-    Type: String
-    Default: attendance-kit
-    Description: GitHub repository name
+Description: 'GitHub Actions OIDC Provider and IAM Role'
 
 Resources:
   GitHubOIDCProvider:
@@ -451,7 +435,7 @@ Resources:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
               StringLike:
-                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+                token.actions.githubusercontent.com:sub: 'repo:goataka/attendance-kit:*'
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/PowerUserAccess
       Policies:
@@ -501,17 +485,14 @@ Outputs:
     Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
     Value: !GetAtt GitHubActionsRole.Arn
   
-  NextSteps:
+  SetupInstructions:
     Description: Next steps after deploying this stack
     Value: |
       1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
-      2. Configure repository sync in CloudFormation to keep this stack updated automatically
-      3. Run CDK bootstrap and deploy the CDK stack for DynamoDB
+      2. Run GitHub Actions workflow to deploy the CDK stack
 ```
 
-### 5.2 リポジトリ同期の設定
-
-CloudFormationのリポジトリ同期機能を使用することで、テンプレートファイルの変更が自動的にスタックに反映されます。
+### 5.2 セットアップ手順
 
 **設定手順**:
 
@@ -519,23 +500,16 @@ CloudFormationのリポジトリ同期機能を使用することで、テンプ
    - CloudFormationサービスを開く
    - 新しいスタックを作成
    - テンプレートをアップロード: `infrastructure/setup/attendance-kit-setup.yaml`
-   - パラメータを確認（GitHubOrg、GitHubRepo）
    - スタックを作成
 
-2. **リポジトリ同期を設定**:
-   - スタック詳細画面で「スタックアクション」→「リポジトリ同期を有効化」
-   - GitHubリポジトリを指定: `goataka/attendance-kit`
-   - ブランチを指定: `main`
-   - テンプレートパスを指定: `infrastructure/setup/attendance-kit-setup.yaml`
-   - 同期を有効化
+2. **GitHub Secretsを設定**:
+   - CloudFormationのOutputsタブから`GitHubSecretValue`をコピー
+   - GitHubリポジトリのSettings > Secrets and variables > Actionsを開く
+   - 新しいリポジトリシークレットを作成
+   - 名前: `AWS_ROLE_TO_ASSUME`
+   - 値: コピーしたロールARNを貼り付け
 
-3. **以降の更新**: テンプレートファイルをmainブランチにマージすると、自動的にCloudFormationスタックが更新されます
-
-**メリット**:
-- 手動アップロード不要
-- Infrastructure as Codeの実現
-- 変更履歴の追跡が容易
-- レビュープロセスの適用が可能
+3. **テンプレートの更新**: テンプレートファイルを変更した場合は、AWSコンソールでCloudFormationスタックを手動更新してください（スタックを更新 → 既存テンプレートを置き換える）
 
 ### 5.3 GitHub Secrets設定
 
@@ -769,26 +743,19 @@ const params = {
    - パラメータを確認（GitHubOrg、GitHubRepo、Environment）
    - スタックを作成
 
-2. **リポジトリ同期を設定**
-   - スタック詳細画面で「スタックアクション」→「リポジトリ同期を有効化」
-   - GitHubリポジトリを指定: `goataka/attendance-kit`
-   - ブランチを指定: `main`
-   - テンプレートパスを指定: `infrastructure/setup/attendance-kit-setup.yaml`
-   - 同期を有効化
-
-3. **GitHub Secrets設定**
+2. **GitHub Secrets設定**
    - CloudFormationのOutputsタブから `GitHubSecretValue` をコピー
    - GitHub リポジトリのSettings > Secrets and variables > Actionsを開く
    - `AWS_ROLE_TO_ASSUME` に取得したロールARNを設定
 
 #### フェーズ2: CDKデプロイ
 
-4. **CDK Bootstrap & 初回デプロイ実行** (GitHub Actions手動トリガー)
+3. **CDK Bootstrap & 初回デプロイ実行** (GitHub Actions手動トリガー)
    - ワークフロー: `deploy-to-aws.yml`
    - 入力: dev
    - ワークフロー内でbootstrapとdeployが自動実行される
 
-5. **動作確認**
+4. **動作確認**
    - DynamoDBテーブルがAWSコンソールで確認できる
    - CloudFormation出力が正しく取得できる
 
@@ -798,7 +765,7 @@ const params = {
 1. **`infrastructure/setup/attendance-kit-setup.yaml` を変更**
 2. **PRを作成し、レビュー**
 3. **mainブランチにマージ**
-4. **リポジトリ同期により自動的にCloudFormationスタックが更新される**
+4. **AWSコンソールでCloudFormationスタックを手動更新**（スタックを更新 → 既存テンプレートを置き換える → 更新されたテンプレートをアップロード）
 
 #### DynamoDBテーブルの更新（CDK）
 1. **`infrastructure/` 配下のCDKコードを変更**

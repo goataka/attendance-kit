@@ -28,7 +28,7 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 - **IAM Role**: GitHub ActionsがAWSリソースにアクセスするためのロール
 
 **注意**: OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理します。
-リポジトリ同期機能を使用して、テンプレートファイルの変更が自動的にスタックに反映されます。
+テンプレートファイルの変更後は、手動でCloudFormationスタックを更新してください。
 
 ## 🚀 初回セットアップ手順
 
@@ -37,40 +37,20 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 1. AWSコンソールでCloudFormationサービスを開く
 2. 新しいスタックを作成
 3. `infrastructure/setup/attendance-kit-setup.yaml` テンプレートをアップロード
-4. パラメータを設定:
-   - `GitHubOrg`: goataka
-   - `GitHubRepo`: attendance-kit
-5. スタックを作成
-6. OutputsタブからロールARNをコピー
+4. スタックを作成
+5. OutputsタブからロールARNをコピー
 
-### ステップ2: リポジトリ同期を設定
-
-CloudFormationスタックを自動更新するため、リポジトリ同期を設定します。
-
-1. スタック詳細画面で「スタックアクション」→「リポジトリ同期を有効化」
-2. 以下の設定を入力:
-   - リポジトリ: `goataka/attendance-kit`
-   - ブランチ: `main`
-   - テンプレートパス: `infrastructure/setup/attendance-kit-setup.yaml`
-3. 同期を有効化
-
-**メリット**:
-- テンプレートファイルをmainブランチにマージすると、自動的にCloudFormationスタックが更新される
-- 手動アップロード不要
-- 変更履歴の追跡が容易
-
-### ステップ3: GitHub Secretsを設定
+### ステップ2: GitHub Secretsを設定
 
 1. GitHubリポジトリの Settings > Secrets and variables > Actions を開く
 2. New repository secret をクリック
 3. `AWS_ROLE_TO_ASSUME` という名前で、ステップ1で取得したロールARNを設定
 
-### ステップ4: CDKをデプロイ（GitHub Actions使用）
+### ステップ3: CDKをデプロイ（GitHub Actions使用）
 
 1. GitHub Actions タブを開く
 2. "Deploy to AWS" ワークフローを選択
 3. "Run workflow" をクリック
-4. 環境として "dev" を選択して実行
 
 デプロイ完了後、DynamoDBテーブルが作成されます。
 
@@ -134,7 +114,7 @@ npx cdk deploy --context environment=dev
 1. `infrastructure/setup/attendance-kit-setup.yaml` を変更
 2. PRを作成してレビュー
 3. `main` ブランチにマージ
-4. リポジトリ同期により自動的にCloudFormationスタックが更新される
+4. AWSコンソールでCloudFormationスタックを手動更新（変更セットを作成してテンプレートをアップロード）
 
 または、手動でデプロイを実行：
 
