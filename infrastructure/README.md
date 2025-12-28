@@ -32,27 +32,12 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 ## 🚀 初回セットアップ手順
 
-### ステップ1: CloudFormationでOIDCプロバイダーとIAMロールを作成
+詳細なセットアップ手順は [setup/README.md](setup/README.md) を参照してください。
 
-1. AWSコンソールでCloudFormationサービスを開く
-2. 新しいスタックを作成
-3. `infrastructure/setup/attendance-kit-setup.yaml` テンプレートをアップロード
-4. スタックを作成
-5. OutputsタブからロールARNをコピー
-
-### ステップ2: GitHub Secretsを設定
-
-1. GitHubリポジトリの Settings > Secrets and variables > Actions を開く
-2. New repository secret をクリック
-3. `AWS_ROLE_TO_ASSUME` という名前で、ステップ1で取得したロールARNを設定
-
-### ステップ3: CDKをデプロイ（GitHub Actions使用）
-
-1. GitHub Actions タブを開く
-2. "Deploy to AWS" ワークフローを選択
-3. "Run workflow" をクリック
-
-デプロイ完了後、DynamoDBテーブルが作成されます。
+**概要**:
+1. CloudFormationでOIDCプロバイダーとIAMロールを作成（[setup/](setup/)ディレクトリ）
+2. GitHub SecretsにロールARNを設定
+3. GitHub ActionsでCDKをデプロイ
 
 ## 💻 ローカル開発
 
@@ -111,10 +96,7 @@ npx cdk deploy --context environment=dev
 
 ### CloudFormation管理のリソース（OIDC、IAMロール）
 
-1. `infrastructure/setup/attendance-kit-setup.yaml` を変更
-2. PRを作成してレビュー
-3. `main` ブランチにマージ
-4. AWSコンソールでCloudFormationスタックを手動更新（変更セットを作成してテンプレートをアップロード）
+CloudFormationテンプレートの更新手順は [setup/README.md](setup/README.md#テンプレートの更新) を参照してください。
 
 または、手動でデプロイを実行：
 
