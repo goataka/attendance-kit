@@ -14,7 +14,7 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 このインフラストラクチャには以下が含まれます：
 
-### CDK管理
+### CDK管理（deploy/ディレクトリ）
 - **DynamoDB Table**: `attendance-kit-{environment}-clock`
   - Partition Key: `userId` (String)
   - Sort Key: `timestamp` (String, ISO 8601形式)
@@ -23,8 +23,8 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
   - Point-in-Time Recovery有効
   - AWS管理キー暗号化
 
-### CloudFormation管理
-- **OIDC Provider**: GitHub Actions用（`infrastructure/cloudformation/oidc-provider.yaml`）
+### CloudFormation管理（setup/ディレクトリ）
+- **OIDC Provider**: GitHub Actions用（`infrastructure/setup/setup-oidc-temporarily.yaml`）
 - **IAM Role**: GitHub ActionsがAWSリソースにアクセスするためのロール
 
 **注意**: OIDC Providerは同じURLで複数作成できないため、CloudFormationで継続的に管理します。
@@ -36,7 +36,7 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 1. AWSコンソールでCloudFormationサービスを開く
 2. 新しいスタックを作成
-3. `infrastructure/cloudformation/oidc-provider.yaml` テンプレートをアップロード
+3. `infrastructure/setup/setup-oidc-temporarily.yaml` テンプレートをアップロード
 4. パラメータを設定:
    - `GitHubOrg`: goataka
    - `GitHubRepo`: attendance-kit
@@ -52,7 +52,7 @@ CloudFormationスタックを自動更新するため、リポジトリ同期を
 2. 以下の設定を入力:
    - リポジトリ: `goataka/attendance-kit`
    - ブランチ: `main`
-   - テンプレートパス: `infrastructure/cloudformation/oidc-provider.yaml`
+   - テンプレートパス: `infrastructure/setup/setup-oidc-temporarily.yaml`
 3. 同期を有効化
 
 **メリット**:
@@ -80,7 +80,7 @@ CloudFormationスタックを自動更新するため、リポジトリ同期を
 ### 依存関係のインストール
 
 ```bash
-cd infrastructure
+cd infrastructure/deploy
 npm install
 ```
 
@@ -132,7 +132,7 @@ npx cdk deploy --context environment=dev
 
 ### CloudFormation管理のリソース（OIDC、IAMロール）
 
-1. `infrastructure/cloudformation/oidc-provider.yaml` を変更
+1. `infrastructure/setup/setup-oidc-temporarily.yaml` を変更
 2. PRを作成してレビュー
 3. `main` ブランチにマージ
 4. リポジトリ同期により自動的にCloudFormationスタックが更新される
@@ -155,7 +155,7 @@ npm test
 - Global Secondary Indexが存在する
 - Point-in-Time Recoveryが有効
 - RETAIN削除ポリシーが設定される
-- OIDCプロバイダーとIAMロールが作成される
+- OIDCプロバイダーとIAMロールはCDKで作成されない（CloudFormation管理）
 
 ## 📊 スタック出力
 

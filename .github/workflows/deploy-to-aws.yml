@@ -35,18 +35,18 @@ jobs:
         with:
           node-version: '22'
           cache: 'npm'
-          cache-dependency-path: infrastructure/package-lock.json
+          cache-dependency-path: infrastructure/deploy/package-lock.json
 
       - name: Install dependencies
-        working-directory: infrastructure
+        working-directory: infrastructure/deploy
         run: npm ci
 
       - name: Build TypeScript
-        working-directory: infrastructure
+        working-directory: infrastructure/deploy
         run: npm run build
 
       - name: Run tests
-        working-directory: infrastructure
+        working-directory: infrastructure/deploy
         run: npm test
 
       - name: Configure AWS credentials via OIDC
@@ -56,7 +56,7 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: CDK Bootstrap
-        working-directory: infrastructure
+        working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
         run: |
@@ -66,7 +66,7 @@ jobs:
             --context environment=${ENVIRONMENT}
 
       - name: CDK Deploy
-        working-directory: infrastructure
+        working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
         run: npx cdk deploy --require-approval never --all --context environment=${ENVIRONMENT}

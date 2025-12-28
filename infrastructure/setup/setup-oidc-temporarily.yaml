@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'GitHub Actions OIDC Provider and IAM Role for initial bootstrap'
+Description: 'GitHub Actions OIDC Provider and IAM Role (managed by repository sync)'
 
 Parameters:
   GitHubOrg:
@@ -12,10 +12,13 @@ Parameters:
     Default: attendance-kit
     Description: GitHub repository name
   
-  RoleName:
+  Environment:
     Type: String
-    Default: GitHubActionsDeployRole-Initial
-    Description: Name of the IAM role for GitHub Actions
+    Default: dev
+    Description: Environment name (dev or staging)
+    AllowedValues:
+      - dev
+      - staging
 
 Resources:
   GitHubOIDCProvider:
@@ -26,11 +29,18 @@ Resources:
         - sts.amazonaws.com
       ThumbprintList:
         - 6938fd4d98bab03faadb97b34396831e3780aea1
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: attendance-kit
+        - Key: ManagedBy
+          Value: CloudFormation
   
   GitHubActionsRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Ref RoleName
+      RoleName: !Sub 'GitHubActionsDeployRole-${Environment}'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -85,16 +95,27 @@ Resources:
                   - sts:AssumeRole
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
-      Description: Role for GitHub Actions to deploy infrastructure (initial bootstrap)
+      Description: !Sub 'Role for GitHub Actions to deploy infrastructure (${Environment} environment)'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: attendance-kit
+        - Key: ManagedBy
+          Value: CloudFormation
 
 Outputs:
   OIDCProviderArn:
     Description: ARN of the GitHub OIDC Provider
     Value: !GetAtt GitHubOIDCProvider.Arn
+    Export:
+      Name: !Sub 'AttendanceKit-${Environment}-OIDCProviderArn'
   
   RoleArn:
     Description: ARN of the GitHub Actions IAM Role
     Value: !GetAtt GitHubActionsRole.Arn
+    Export:
+      Name: !Sub 'AttendanceKit-${Environment}-GitHubActionsRoleArn'
   
   RoleName:
     Description: Name of the GitHub Actions IAM Role
@@ -104,11 +125,13 @@ Outputs:
     Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
     Value: !GetAtt GitHubActionsRole.Arn
   
-  NextSteps:
+  SetupInstructions:
     Description: Next steps after deploying this stack
     Value: |
       1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
-      2. Run CDK bootstrap
-      3. Deploy the CDK stack (which will create CDK-managed OIDC and IAM role)
-      4. Update GitHub Secret AWS_ROLE_TO_ASSUME with the CDK-managed role ARN
-      5. Delete this CloudFormation stack to remove bootstrap resources
+      2. Configure repository sync to keep this stack automatically updated:
+         - Go to Stack details > Stack actions > Enable repository sync
+         - Repository: goataka/attendance-kit
+         - Branch: main
+         - Template path: infrastructure/setup/setup-oidc-temporarily.yaml
+      3. Run GitHub Actions workflow to deploy the CDK stack

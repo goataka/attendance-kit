@@ -15,7 +15,7 @@ export class AttendanceKitStack extends cdk.Stack {
     const { environment } = props;
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
-    // (infrastructure/cloudformation/oidc-provider.yaml)
+    // (infrastructure/setup/setup-oidc-temporarily.yaml)
     // This is because OIDC Provider cannot be created with the same URL multiple times,
     // preventing migration from CloudFormation to CDK.
     // Use repository sync to automatically update the CloudFormation stack.
