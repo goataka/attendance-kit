@@ -216,17 +216,7 @@ export class SpecKitStack extends cdk.Stack {
     // (infrastructure/cloudformation/oidc-provider.yaml)
     // This is because OIDC Provider cannot be created with the same URL multiple times,
     // preventing migration from CloudFormation to CDK.
-          StringLike: {
-            'token.actions.githubusercontent.com:sub': `repo:${githubRepository}:*`,
-          },
-        },
-        'sts:AssumeRoleWithWebIdentity'
-      ),
-      description: `Role for GitHub Actions to deploy infrastructure (${environment})`,
-      roleName: `GitHubActionsDeployRole-${environment}`,
-      maxSessionDuration: cdk.Duration.hours(1),
-    });
-
+    // Use repository sync to automatically update the CloudFormation stack.
 
     // DynamoDB Clock Table（環境ごとに異なるテーブル名）
     const clockTable = new dynamodb.Table(this, 'ClockTable', {
