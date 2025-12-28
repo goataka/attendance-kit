@@ -500,6 +500,7 @@ Outputs:
    - CloudFormationサービスを開く
    - 新しいスタックを作成
    - テンプレートをアップロード: `infrastructure/setup/attendance-kit-setup.yaml`
+   - スタック名: `AttendanceKit-Setup-Stack`
    - スタックを作成
 
 2. **GitHub Secretsを設定**:
@@ -740,7 +741,7 @@ const params = {
    - AWSコンソールでCloudFormationサービスを開く
    - 新しいスタックを作成
    - `infrastructure/setup/attendance-kit-setup.yaml` テンプレートをアップロード
-   - パラメータを確認（GitHubOrg、GitHubRepo、Environment）
+   - スタック名: `AttendanceKit-Setup-Stack`
    - スタックを作成
 
 2. **GitHub Secrets設定**

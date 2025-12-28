@@ -105,5 +105,6 @@ Outputs:
   SetupInstructions:
     Description: Next steps after deploying this stack
     Value: |
+      Stack Name: AttendanceKit-Setup-Stack
       1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
       2. Run GitHub Actions workflow to deploy the CDK stack

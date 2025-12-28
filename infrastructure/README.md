@@ -36,6 +36,7 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 **概要**:
 1. CloudFormationでOIDCプロバイダーとIAMロールを作成（[setup/](setup/)ディレクトリ）
+   - スタック名: `AttendanceKit-Setup-Stack`
 2. GitHub SecretsにロールARNを設定
 3. GitHub ActionsでCDKをデプロイ
 
