@@ -1,85 +1,24 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import * as iam from 'aws-cdk-lib/aws-iam';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
-  githubRepository: string; // GitHub repository name for OIDC
 }
 
 export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
-  public readonly githubActionsRole: iam.Role;
-  public readonly githubProvider: iam.OpenIdConnectProvider;
 
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
 
-    const { environment, githubRepository } = props;
+    const { environment } = props;
 
-    // OIDC Provider for GitHub Actions
-    this.githubProvider = new iam.OpenIdConnectProvider(this, 'GitHubProvider', {
-      url: 'https://token.actions.githubusercontent.com',
-      clientIds: ['sts.amazonaws.com'],
-      thumbprints: ['6938fd4d98bab03faadb97b34396831e3780aea1'],
-    });
-
-    // IAM Role for GitHub Actions with OIDC
-    this.githubActionsRole = new iam.Role(this, 'GitHubActionsRole', {
-      assumedBy: new iam.FederatedPrincipal(
-        this.githubProvider.openIdConnectProviderArn,
-        {
-          StringEquals: {
-            'token.actions.githubusercontent.com:aud': 'sts.amazonaws.com',
-          },
-          StringLike: {
-            'token.actions.githubusercontent.com:sub': `repo:${githubRepository}:*`,
-          },
-        },
-        'sts:AssumeRoleWithWebIdentity'
-      ),
-      description: `Role for GitHub Actions to deploy infrastructure (${environment})`,
-      roleName: `GitHubActionsDeployRole-${environment}`,
-      maxSessionDuration: cdk.Duration.hours(1),
-    });
-
-    // Attach PowerUserAccess for deployment permissions
-    // NOTE: For production, this should be replaced with more restrictive permissions
-    this.githubActionsRole.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('PowerUserAccess')
-    );
-    
-    // Additional IAM permissions for CDK operations
-    // Security requirement: Scope resources to specific patterns, avoid wildcards
-    this.githubActionsRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'iam:CreateRole',
-        'iam:DeleteRole',
-        'iam:AttachRolePolicy',
-        'iam:DetachRolePolicy',
-        'iam:PutRolePolicy',
-        'iam:DeleteRolePolicy',
-        'iam:GetRole',
-        'iam:GetRolePolicy',
-        'iam:ListRolePolicies',
-        'iam:ListAttachedRolePolicies',
-        'iam:PassRole',
-        'iam:TagRole',
-        'iam:UntagRole',
-        'iam:CreateOpenIDConnectProvider',
-        'iam:DeleteOpenIDConnectProvider',
-        'iam:GetOpenIDConnectProvider',
-        'iam:TagOpenIDConnectProvider',
-        'iam:UntagOpenIDConnectProvider',
-      ],
-      resources: [
-        `arn:aws:iam::${this.account}:role/cdk-*`,
-        `arn:aws:iam::${this.account}:role/GitHubActionsDeployRole-${environment}`,
-        `arn:aws:iam::${this.account}:oidc-provider/token.actions.githubusercontent.com`,
-      ],
-    }));
+    // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
+    // (infrastructure/cloudformation/oidc-provider.yaml)
+    // This is because OIDC Provider cannot be created with the same URL multiple times,
+    // preventing migration from CloudFormation to CDK.
+    // Use repository sync to automatically update the CloudFormation stack.
 
     // DynamoDB Clock Table
     this.clockTable = new dynamodb.Table(this, 'ClockTable', {
@@ -144,18 +83,6 @@ export class AttendanceKitStack extends cdk.Stack {
       value: environment,
       description: 'Deployment environment',
       exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Environment`,
-    });
-
-    new cdk.CfnOutput(this, 'GitHubActionsRoleArn', {
-      value: this.githubActionsRole.roleArn,
-      description: `IAM Role ARN for GitHub Actions (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-GitHubActionsRoleArn`,
-    });
-
-    new cdk.CfnOutput(this, 'OIDCProviderArn', {
-      value: this.githubProvider.openIdConnectProviderArn,
-      description: `OIDC Provider ARN for GitHub Actions (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-OIDCProviderArn`,
     });
   }
 }

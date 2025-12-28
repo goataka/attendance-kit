@@ -20,16 +20,12 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
-// GitHub repository (can be overridden via context)
-const githubRepository = app.node.tryGetContext('githubRepository') || 'goataka/attendance-kit';
-
 // Create stack with environment-specific name
 const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
 
 new AttendanceKitStack(app, stackName, {
   env,
   environment,
-  githubRepository,
   description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
   tags: {
     Environment: environment,

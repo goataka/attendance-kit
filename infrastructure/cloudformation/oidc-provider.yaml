@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'GitHub Actions OIDC Provider and IAM Role (managed by repository sync)'
+
+Parameters:
+  GitHubOrg:
+    Type: String
+    Default: goataka
+    Description: GitHub organization or username
+  
+  GitHubRepo:
+    Type: String
+    Default: attendance-kit
+    Description: GitHub repository name
+  
+  Environment:
+    Type: String
+    Default: dev
+    Description: Environment name (dev or staging)
+    AllowedValues:
+      - dev
+      - staging
+
+Resources:
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: attendance-kit
+        - Key: ManagedBy
+          Value: CloudFormation
+  
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'GitHubActionsDeployRole-${Environment}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOIDCProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/PowerUserAccess
+      Policies:
+        - PolicyName: AdditionalIAMPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:CreateRole
+                  - iam:DeleteRole
+                  - iam:AttachRolePolicy
+                  - iam:DetachRolePolicy
+                  - iam:PutRolePolicy
+                  - iam:DeleteRolePolicy
+                  - iam:GetRole
+                  - iam:GetRolePolicy
+                  - iam:ListRolePolicies
+                  - iam:ListAttachedRolePolicies
+                  - iam:PassRole
+                  - iam:TagRole
+                  - iam:UntagRole
+                  - iam:CreateOpenIDConnectProvider
+                  - iam:DeleteOpenIDConnectProvider
+                  - iam:GetOpenIDConnectProvider
+                  - iam:TagOpenIDConnectProvider
+                  - iam:UntagOpenIDConnectProvider
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-${Environment}'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
+        - PolicyName: CDKAssumeRolePermission
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              # STS AssumeRole for CDK execution roles
+              # CDK creates execution roles (cdk-*) and the deployment role must assume them
+              - Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                Resource:
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
+      Description: !Sub 'Role for GitHub Actions to deploy infrastructure (${Environment} environment)'
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: attendance-kit
+        - Key: ManagedBy
+          Value: CloudFormation
+
+Outputs:
+  OIDCProviderArn:
+    Description: ARN of the GitHub OIDC Provider
+    Value: !GetAtt GitHubOIDCProvider.Arn
+    Export:
+      Name: !Sub 'AttendanceKit-${Environment}-OIDCProviderArn'
+  
+  RoleArn:
+    Description: ARN of the GitHub Actions IAM Role
+    Value: !GetAtt GitHubActionsRole.Arn
+    Export:
+      Name: !Sub 'AttendanceKit-${Environment}-GitHubActionsRoleArn'
+  
+  RoleName:
+    Description: Name of the GitHub Actions IAM Role
+    Value: !Ref GitHubActionsRole
+  
+  GitHubSecretValue:
+    Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
+    Value: !GetAtt GitHubActionsRole.Arn
+  
+  SetupInstructions:
+    Description: Next steps after deploying this stack
+    Value: |
+      1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
+      2. Configure repository sync to keep this stack automatically updated:
+         - Go to Stack details > Stack actions > Enable repository sync
+         - Repository: goataka/attendance-kit
+         - Branch: main
+         - Template path: infrastructure/cloudformation/oidc-provider.yaml
+      3. Run GitHub Actions workflow to deploy the CDK stack
