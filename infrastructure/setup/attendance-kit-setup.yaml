@@ -11,14 +11,6 @@ Parameters:
     Type: String
     Default: attendance-kit
     Description: GitHub repository name
-  
-  Environment:
-    Type: String
-    Default: dev
-    Description: Environment name (dev or staging)
-    AllowedValues:
-      - dev
-      - staging
 
 Resources:
   GitHubOIDCProvider:
@@ -30,8 +22,6 @@ Resources:
       ThumbprintList:
         - 6938fd4d98bab03faadb97b34396831e3780aea1
       Tags:
-        - Key: Environment
-          Value: !Ref Environment
         - Key: Project
           Value: attendance-kit
         - Key: ManagedBy
@@ -40,7 +30,7 @@ Resources:
   GitHubActionsRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub 'GitHubActionsDeployRole-${Environment}'
+      RoleName: GitHubActionsDeployRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -82,7 +72,7 @@ Resources:
                   - iam:UntagOpenIDConnectProvider
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
         - PolicyName: CDKAssumeRolePermission
           PolicyDocument:
@@ -95,10 +85,8 @@ Resources:
                   - sts:AssumeRole
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
-      Description: !Sub 'Role for GitHub Actions to deploy infrastructure (${Environment} environment)'
+      Description: Role for GitHub Actions to deploy infrastructure
       Tags:
-        - Key: Environment
-          Value: !Ref Environment
         - Key: Project
           Value: attendance-kit
         - Key: ManagedBy
@@ -109,13 +97,13 @@ Outputs:
     Description: ARN of the GitHub OIDC Provider
     Value: !GetAtt GitHubOIDCProvider.Arn
     Export:
-      Name: !Sub 'AttendanceKit-${Environment}-OIDCProviderArn'
+      Name: AttendanceKit-OIDCProviderArn
   
   RoleArn:
     Description: ARN of the GitHub Actions IAM Role
     Value: !GetAtt GitHubActionsRole.Arn
     Export:
-      Name: !Sub 'AttendanceKit-${Environment}-GitHubActionsRoleArn'
+      Name: AttendanceKit-GitHubActionsRoleArn
   
   RoleName:
     Description: Name of the GitHub Actions IAM Role

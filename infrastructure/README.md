@@ -40,7 +40,6 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 4. パラメータを設定:
    - `GitHubOrg`: goataka
    - `GitHubRepo`: attendance-kit
-   - `Environment`: dev (または staging)
 5. スタックを作成
 6. OutputsタブからロールARNをコピー
 

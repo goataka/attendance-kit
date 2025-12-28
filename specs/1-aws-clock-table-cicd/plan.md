@@ -425,14 +425,6 @@ Parameters:
     Type: String
     Default: attendance-kit
     Description: GitHub repository name
-  
-  Environment:
-    Type: String
-    Default: dev
-    Description: Environment name (dev or staging)
-    AllowedValues:
-      - dev
-      - staging
 
 Resources:
   GitHubOIDCProvider:
@@ -447,7 +439,7 @@ Resources:
   GitHubActionsRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub 'GitHubActionsDeployRole-${Environment}'
+      RoleName: GitHubActionsDeployRole
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -488,7 +480,7 @@ Resources:
                   - iam:UntagOpenIDConnectProvider
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
-                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole-*'
+                  - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
       Description: Role for GitHub Actions to deploy infrastructure (initial bootstrap)
 
@@ -527,7 +519,7 @@ CloudFormationのリポジトリ同期機能を使用することで、テンプ
    - CloudFormationサービスを開く
    - 新しいスタックを作成
    - テンプレートをアップロード: `infrastructure/setup/attendance-kit-setup.yaml`
-   - パラメータを設定（Environment: dev または staging）
+   - パラメータを確認（GitHubOrg、GitHubRepo）
    - スタックを作成
 
 2. **リポジトリ同期を設定**:
@@ -640,7 +632,7 @@ CloudFormationスタックの出力から取得したIAMロールARNを設定し
 
 | Secret名 | 値 | 説明 |
 |----------|-----|------|
-| `AWS_ROLE_TO_ASSUME` | `arn:aws:iam::{ACCOUNT_ID}:role/GitHubActionsDeployRole-{environment}` | CloudFormation出力から取得したIAMロールARN |
+| `AWS_ROLE_TO_ASSUME` | `arn:aws:iam::{ACCOUNT_ID}:role/GitHubActionsDeployRole` | CloudFormation出力から取得したIAMロールARN |
 
 **設定手順**:
 1. CloudFormationスタックのOutputsタブを開く
