@@ -2,6 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
+import { AttendanceKitAccountStack } from '../lib/attendance-kit-account-stack';
 
 const app = new cdk.App();
 
@@ -20,7 +21,26 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
-// Create stack with environment-specific name
+// Account-level resources (deployed once per AWS account)
+const alertEmail = process.env.COST_ALERT_EMAIL;
+if (!alertEmail) {
+  throw new Error('COST_ALERT_EMAIL environment variable must be set');
+}
+
+new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
+  env,
+  budgetAmountYen: 1000,
+  alertEmail,
+  description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
+  tags: {
+    Project: 'attendance-kit',
+    ManagedBy: 'CDK',
+    CostCenter: 'Engineering',
+    ResourceLevel: 'Account',
+  },
+});
+
+// Environment-level resources (deployed per environment: dev, staging)
 const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
 
 new AttendanceKitStack(app, stackName, {
