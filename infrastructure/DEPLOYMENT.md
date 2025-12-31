@@ -2,48 +2,74 @@
 
 ## 自動デプロイ
 
-1. `infrastructure/`配下のファイルを変更
+### 環境スタック（Environment-Level）
+
+環境レベルリソース（DynamoDBテーブル等）は、関連ファイルが変更されると自動的にデプロイされます。
+
+**トリガーファイル**:
+- `infrastructure/deploy/lib/attendance-kit-stack.ts`
+- `infrastructure/deploy/test/attendance-kit-stack.test.ts`
+- `infrastructure/deploy/bin/app.ts`
+- `infrastructure/deploy/package*.json`
+
+**デプロイフロー**:
+1. 上記ファイルを変更
 2. PRを作成してレビュー
 3. `main`ブランチにマージ
-4. GitHub Actionsが自動的にデプロイを実行
+4. GitHub Actions (`deploy-environment-stack.yml`) が自動的に dev 環境にデプロイ
+
+### アカウントスタック（Account-Level）
+
+アカウントレベルリソース（AWS Budget, SNS）は、関連ファイルが変更されると自動的にデプロイされます。
+
+**トリガーファイル**:
+- `infrastructure/deploy/lib/attendance-kit-account-stack.ts`
+- `infrastructure/deploy/lib/constructs/cost-budget.ts`
+- `infrastructure/deploy/test/attendance-kit-account-stack.test.ts`
+- `infrastructure/deploy/test/cost-budget.test.ts`
+
+**デプロイフロー**:
+1. 上記ファイルを変更
+2. PRを作成してレビュー
+3. `main`ブランチにマージ
+4. GitHub Actions (`deploy-account-stack.yml`) が自動的にデプロイ
+
+**前提条件**: GitHub Secretsに `COST_ALERT_EMAIL` が設定されている必要があります。
 
 ## 手動デプロイ
 
 ### 環境スタックのデプロイ
 
+GitHub Actions経由:
 1. GitHub Actionsタブを開く
-2. "Deploy to AWS"ワークフローを選択
-3. "Run workflow"をクリックして環境を選択
+2. "Deploy Environment Stack to AWS"ワークフローを選択
+3. "Run workflow"をクリックして環境（dev/staging）を選択
+
+ローカル環境から:
+```bash
+cd infrastructure/deploy
+npm install
+npm run build
+npm test
+ENVIRONMENT=dev npx cdk deploy AttendanceKit-Dev-Stack
+```
 
 ### アカウントスタックのデプロイ（コストアラート）
 
-アカウント単位のリソース（AWS Budget, SNS）をデプロイする場合:
+GitHub Actions経由:
+1. GitHub Actionsタブを開く
+2. "Deploy Account Stack to AWS"ワークフローを選択
+3. "Run workflow"をクリック
 
-#### 前提条件
+**注意**: GitHub Secretsに `COST_ALERT_EMAIL` が設定されている必要があります。
 
-GitHub Secretsに以下を設定:
-```
-COST_ALERT_EMAIL=your-email@example.com
-```
-
-#### デプロイ手順
-
+ローカル環境から:
 ```bash
-# リポジトリをクローン
-git clone https://github.com/goataka/attendance-kit.git
-cd attendance-kit/infrastructure/deploy
-
-# 依存関係をインストール
+cd infrastructure/deploy
 npm install
-
-# ビルド
 npm run build
-
-# テスト（オプション）
 npm test
-
-# デプロイ
-COST_ALERT_EMAIL=your-email@example.com npm run cdk deploy AttendanceKit-Account-Stack
+COST_ALERT_EMAIL=your-email@example.com npx cdk deploy AttendanceKit-Account-Stack
 ```
 
 #### デプロイ後の確認

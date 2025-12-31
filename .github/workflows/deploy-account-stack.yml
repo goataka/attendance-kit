@@ -1,0 +1,81 @@
+name: Deploy Account Stack to AWS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'infrastructure/deploy/lib/attendance-kit-account-stack.ts'
+      - 'infrastructure/deploy/lib/constructs/cost-budget.ts'
+      - 'infrastructure/deploy/test/attendance-kit-account-stack.test.ts'
+      - 'infrastructure/deploy/test/cost-budget.test.ts'
+      - '.github/workflows/deploy-account-stack.yml'
+  workflow_dispatch:
+
+permissions:
+  id-token: write   # OIDC認証に必要
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production  # アカウントレベルリソースは本番環境として扱う
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: infrastructure/deploy/package-lock.json
+
+      - name: Install dependencies
+        working-directory: infrastructure/deploy
+        run: npm ci
+
+      - name: Build TypeScript
+        working-directory: infrastructure/deploy
+        run: npm run build
+
+      - name: Run tests
+        working-directory: infrastructure/deploy
+        run: npm test
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+
+      - name: CDK Bootstrap
+        working-directory: infrastructure/deploy
+        run: |
+          echo "Running CDK bootstrap (idempotent operation)..."
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1
+
+      - name: CDK Deploy Account Stack
+        working-directory: infrastructure/deploy
+        env:
+          COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
+        run: |
+          echo "Deploying account stack: AttendanceKit-Account-Stack"
+          npx cdk deploy AttendanceKit-Account-Stack --require-approval never
+
+      - name: Output deployment results
+        run: |
+          echo "Deployment completed successfully for account stack"
+          echo "Stack outputs:"
+          aws cloudformation describe-stacks \
+            --stack-name AttendanceKit-Account-Stack \
+            --query 'Stacks[0].Outputs' \
+            --output table
+
+      - name: Verify SNS subscription
+        run: |
+          echo "⚠️  Important: Check your email for SNS subscription confirmation"
+          echo "Email address: ${{ secrets.COST_ALERT_EMAIL }}"
+          echo "You must click the confirmation link to receive cost alerts"

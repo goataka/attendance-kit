@@ -364,24 +364,56 @@ test('Budget with Actual and Forecasted Alerts', () => {
 
 ## デプロイ手順
 
-### 既存ワークフローへの統合
+### GitHub Actions による自動デプロイ
 
-`.github/workflows/deploy-to-aws.yml` は変更不要。既存のデプロイプロセスで自動的にデプロイされる。
+#### 環境スタック（Environment-Level）
 
-### 環境変数の追加
+環境レベルリソース（DynamoDBテーブル等）のデプロイ:
+
+**ワークフロー**: `.github/workflows/deploy-environment-stack.yml`
+
+**トリガー**:
+- `infrastructure/deploy/lib/attendance-kit-stack.ts` の変更
+- `infrastructure/deploy/test/attendance-kit-stack.test.ts` の変更
+- `infrastructure/deploy/bin/app.ts` の変更
+- `infrastructure/deploy/package*.json` の変更
+- 手動実行（workflow_dispatch）
+
+**デプロイ先**: `AttendanceKit-Dev-Stack` または `AttendanceKit-Staging-Stack`
+
+#### アカウントスタック（Account-Level）
+
+アカウントレベルリソース（AWS Budget, SNS）のデプロイ:
+
+**ワークフロー**: `.github/workflows/deploy-account-stack.yml`
+
+**トリガー**:
+- `infrastructure/deploy/lib/attendance-kit-account-stack.ts` の変更
+- `infrastructure/deploy/lib/constructs/cost-budget.ts` の変更
+- `infrastructure/deploy/test/attendance-kit-account-stack.test.ts` の変更
+- `infrastructure/deploy/test/cost-budget.test.ts` の変更
+- 手動実行（workflow_dispatch）
+
+**デプロイ先**: `AttendanceKit-Account-Stack`
+
+**必須環境変数**: `COST_ALERT_EMAIL`（GitHub Secrets）
+
+### 環境変数の設定
 
 GitHub Secretsに追加が必要:
 - `COST_ALERT_EMAIL`: アカウント全体のアラート送信先メールアドレス
   - 値の取得方法: プロジェクトオーナーに確認、またはチーム共有のメーリングリストを使用
+  - **重要**: この環境変数が未設定の場合、アカウントスタックのデプロイが失敗します
 
 **実装時の注意**: 
-- CDKコードではプロセス環境変数またはCDK Contextから読み込み
+- CDKコードではプロセス環境変数から読み込み（`process.env.COST_ALERT_EMAIL`）
 - 未設定の場合はデプロイ時にエラーとなるように実装（必須パラメータ）
 
 **リファクタリング事項**:
 - 既存のapp.tsを更新し、アカウントレベルのスタック（`AttendanceKitAccountStack`）を作成
 - 環境レベルのスタック（`AttendanceKitStack`）とは分離して管理
 - 命名規則: 既存スタックに合わせて `AttendanceKitAccountStack` クラスと `attendance-kit-account-stack.ts` ファイル名を使用
+- 各スタックは独立したワークフローでデプロイされる
 
 ### 初回デプロイ後の作業
 

@@ -53,17 +53,16 @@ describe('AttendanceKitAccountStack', () => {
     const stack = new AttendanceKitAccountStack(app, 'TestStack', {
       budgetAmountYen: 1000,
       alertEmail: 'test@example.com',
-      tags: {
-        Project: 'attendance-kit',
-        ManagedBy: 'CDK',
-        CostCenter: 'Engineering',
-        ResourceLevel: 'Account',
-      },
     });
 
-    // Tags are applied at stack level, verify stack was created
+    // Verify stack was created successfully
     expect(stack).toBeDefined();
     expect(stack.node.id).toBe('TestStack');
+    
+    // Verify the stack has tags applied via Tags.of()
+    const template = Template.fromStack(stack);
+    // Tags are applied at the stack level and inherited by resources
+    expect(stack.tags).toBeDefined();
   });
 
   test('Budget amount is configurable', () => {

@@ -170,6 +170,13 @@ infrastructure/deploy/
 │   └── attendance-kit-stack.test.ts       # 既存
 └── bin/
     └── app.ts                              # エントリーポイント
+
+.github/workflows/
+├── deploy-environment-stack.yml            # 環境スタックデプロイ
+└── deploy-account-stack.yml                # アカウントスタックデプロイ
+```
+└── bin/
+    └── app.ts                              # エントリーポイント
 ```
 
 ## コスト分析
@@ -205,9 +212,31 @@ infrastructure/deploy/
 
 ### デプロイ
 
-アカウントスタックは1回のみデプロイ:
+#### GitHub Actions による自動デプロイ
+
+**アカウントスタック**:
+- ワークフロー: `deploy-account-stack.yml`
+- トリガー: アカウントスタック関連ファイルの変更
+- 手動実行: GitHub Actions タブから実行可能
+- 必須環境変数: `COST_ALERT_EMAIL`（GitHub Secrets）
+
+**環境スタック**:
+- ワークフロー: `deploy-environment-stack.yml`
+- トリガー: 環境スタック関連ファイルの変更
+- 手動実行: GitHub Actions タブから環境を選択して実行可能
+
+#### ローカルからのデプロイ
+
+アカウントスタックを1回のみデプロイ:
 ```bash
-COST_ALERT_EMAIL=email@example.com cdk deploy AttendanceKit-Account-Stack
+cd infrastructure/deploy
+COST_ALERT_EMAIL=email@example.com npm run cdk deploy AttendanceKit-Account-Stack
+```
+
+環境スタックをデプロイ:
+```bash
+cd infrastructure/deploy
+ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ```
 
 ### モニタリング

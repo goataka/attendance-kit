@@ -16,33 +16,43 @@ CloudFormationを使用してOIDCプロバイダーとIAMロールを作成し�
 GitHubリポジトリのSettings > Secrets and variables > Actionsを開く
 
 ### 必須シークレット
-- `AWS_ROLE_TO_ASSUME`: 取得したロールARN
+- `AWS_ROLE_TO_ASSUME`: OIDCで取得したロールARN
 
-### コストアラート用シークレット（推奨）
+### コストアラート用シークレット（必須）
 - `COST_ALERT_EMAIL`: コストアラート送信先のメールアドレス
 
 例: `your-email@example.com`
 
-## ステップ3: CDKデプロイ
+**注意**: `COST_ALERT_EMAIL` は、アカウントスタック（コストアラート）の自動デプロイに必要です。設定されていない場合、GitHub Actionsのデプロイが失敗します。
 
-### 環境スタックのデプロイ
+## ステップ3: 自動デプロイの設定
 
+### 環境スタック（DynamoDB等）
+
+環境レベルリソースは、関連ファイルの変更時に自動デプロイされます。
+
+**初回デプロイ**:
 1. GitHub Actionsタブを開く
-2. "Deploy to AWS"ワークフローを実行
+2. "Deploy Environment Stack to AWS"ワークフローを選択
+3. "Run workflow"をクリックして環境（dev）を選択
+4. デプロイが完了するまで待機
 
-これでDynamoDBテーブルなどのインフラストラクチャがデプロイされます。
+**以降の更新**:
+- `infrastructure/deploy/lib/attendance-kit-stack.ts` 等を変更してmainブランチにマージすると自動デプロイ
 
-### アカウントスタックのデプロイ（コストアラート）
+### アカウントスタック（コストアラート）
 
-コストアラート機能を有効にする場合:
+アカウントレベルリソースは、関連ファイルの変更時に自動デプロイされます。
 
-```bash
-# ローカル環境から実行
-cd infrastructure/deploy
-COST_ALERT_EMAIL=your-email@example.com npm run cdk deploy AttendanceKit-Account-Stack
-```
+**初回デプロイ**:
+1. `COST_ALERT_EMAIL` がGitHub Secretsに設定されていることを確認
+2. GitHub Actionsタブを開く
+3. "Deploy Account Stack to AWS"ワークフローを選択
+4. "Run workflow"をクリック
+5. デプロイが完了するまで待機
 
-または GitHub Actions経由でデプロイする場合は、ワークフローファイルを更新してください。
+**以降の更新**:
+- `infrastructure/deploy/lib/attendance-kit-account-stack.ts` 等を変更してmainブランチにマージすると自動デプロイ
 
 ## ステップ4: SNSサブスクリプション確認（コストアラート）
 
