@@ -35,8 +35,9 @@
 **⚠️ 重要**: このフェーズが完了するまで、ユーザーストーリーの作業を開始できません
 
 - [ ] T004 infrastructure/deploy/lib/constructs/cost-budget.ts にCostBudgetConstruct基本構造を作成
-- [ ] T005 CostBudgetProps インターフェースを定義（budgetName, budgetAmountYen, emailEndpoint, environment）
+- [ ] T005 CostBudgetProps インターフェースを定義（budgetName, budgetAmountYen, emailEndpoint）
 - [ ] T006 [P] infrastructure/deploy/test/cost-budget.test.ts にテストファイルの基本構造を作成
+- [ ] T007 infrastructure/deploy/lib/account-stack.ts にAccountStack基本構造を作成（アカウント単位リソース用）
 
 **チェックポイント**: 基礎の準備完了 - ユーザーストーリーの実装を並行して開始可能
 
@@ -50,18 +51,18 @@
 
 ### ユーザーストーリー 1 の実装
 
-- [ ] T007 [P] [US1] CostBudgetConstruct に createSnsTopic メソッドを実装
-- [ ] T008 [P] [US1] SNS Topic にメールサブスクリプションを追加する機能を実装
-- [ ] T009 [US1] CostBudgetConstruct に createBudget メソッドを実装（基本構造）
-- [ ] T010 [US1] createBudget に実利用額アラート（ACTUAL, 100%閾値）を追加
-- [ ] T011 [US1] SNS Topic に AWS Budgets サービスからのパブリッシュ権限を付与
-- [ ] T012 [US1] CostBudgetConstruct のコンストラクタで全メソッドを呼び出し、リソースを作成
+- [ ] T008 [P] [US1] CostBudgetConstruct に createSnsTopic メソッドを実装
+- [ ] T009 [P] [US1] SNS Topic にメールサブスクリプションを追加する機能を実装
+- [ ] T010 [US1] CostBudgetConstruct に createBudget メソッドを実装（基本構造）
+- [ ] T011 [US1] createBudget に実利用額アラート（ACTUAL, 100%閾値）を追加
+- [ ] T012 [US1] SNS Topic に AWS Budgets サービスからのパブリッシュ権限を付与
+- [ ] T013 [US1] CostBudgetConstruct のコンストラクタで全メソッドを呼び出し、リソースを作成
 
 ### ユーザーストーリー 1 のテスト
 
-- [ ] T013 [P] [US1] test/cost-budget.test.ts にSNS Topic作成のテストを追加
-- [ ] T014 [P] [US1] test/cost-budget.test.ts にBudget作成のテストを追加
-- [ ] T015 [P] [US1] test/cost-budget.test.ts に実利用額アラート設定のテストを追加
+- [ ] T014 [P] [US1] test/cost-budget.test.ts にSNS Topic作成のテストを追加
+- [ ] T015 [P] [US1] test/cost-budget.test.ts にBudget作成のテストを追加
+- [ ] T016 [P] [US1] test/cost-budget.test.ts に実利用額アラート設定のテストを追加
 
 **チェックポイント**: この時点で、実利用額の予算超過アラートが機能し、独立してテスト可能であるべきです
 
@@ -75,13 +76,13 @@
 
 ### ユーザーストーリー 2 の実装
 
-- [ ] T016 [US2] createBudget メソッドに予測額アラート（FORECASTED, 100%閾値）を追加
-- [ ] T017 [US2] 実利用額と予測額の両方のアラートがBudgetに設定されていることを確認
+- [ ] T017 [US2] createBudget メソッドに予測額アラート（FORECASTED, 100%閾値）を追加
+- [ ] T018 [US2] 実利用額と予測額の両方のアラートがBudgetに設定されていることを確認
 
 ### ユーザーストーリー 2 のテスト
 
-- [ ] T018 [P] [US2] test/cost-budget.test.ts に予測額アラート設定のテストを追加
-- [ ] T019 [P] [US2] test/cost-budget.test.ts に複数通知設定のテストを追加
+- [ ] T019 [P] [US2] test/cost-budget.test.ts に予測額アラート設定のテストを追加
+- [ ] T020 [P] [US2] test/cost-budget.test.ts に複数通知設定のテストを追加
 
 **チェックポイント**: この時点で、実利用額と予測額の両方のアラートが独立して動作するべきです
 
@@ -89,22 +90,23 @@
 
 ## Phase 5: ユーザーストーリー 3 - アラート設定の管理（優先度: P2）
 
-**目標**: インフラストラクチャコードで予算アラートを管理し、環境ごとに設定を分離
+**目標**: インフラストラクチャコードで予算アラートを管理し、アカウント単位で設定を統合
 
-**独立テスト**: CDKコードをデプロイし、dev環境とstaging環境で独立したBudgetが作成されることを確認
+**独立テスト**: CDKコードをデプロイし、アカウント単位でBudgetが作成されることを確認
 
 ### ユーザーストーリー 3 の実装
 
-- [ ] T020 [US3] lib/attendance-kit-stack.ts に CostBudgetConstruct をインポート（T004-T012完了後）
-- [ ] T021 [US3] AttendanceKitStack に環境ごとの設定を定義（dev, staging）
-- [ ] T022 [US3] AttendanceKitStack のコンストラクタで CostBudgetConstruct をインスタンス化
-- [ ] T023 [US3] 環境変数から alertEmail を読み込む機能を追加（process.env または context）
-- [ ] T024 [US3] dev環境用の CostBudgetConstruct インスタンスを作成
+- [ ] T021 [US3] lib/account-stack.ts に CostBudgetConstruct をインポート（T008-T013完了後）
+- [ ] T022 [US3] AccountStack のコンストラクタで CostBudgetConstruct をインスタンス化
+- [ ] T023 [US3] 環境変数から alertEmail を読み込む機能を追加（process.env.COST_ALERT_EMAIL）
+- [ ] T024 [US3] bin/app.ts をリファクタリングし、AccountStack を作成（アカウント単位リソース用）
+- [ ] T025 [US3] bin/app.ts で環境レベルスタック（AttendanceKitStack）とアカウントレベルスタック（AccountStack）を分離
+- [ ] T026 [US3] AttendanceKitStack から environment 依存のロジックを整理（環境タグなど維持）
 
 ### ユーザーストーリー 3 のテスト
 
-- [ ] T025 [P] [US3] test/attendance-kit-stack.test.ts に CostBudgetConstruct 統合のテストを追加
-- [ ] T026 [P] [US3] test/attendance-kit-stack.test.ts に環境ごとの設定差異のテストを追加
+- [ ] T027 [P] [US3] test/account-stack.test.ts に AccountStack のテストを追加
+- [ ] T028 [P] [US3] test/account-stack.test.ts に CostBudgetConstruct 統合のテストを追加
 
 **チェックポイント**: すべてのユーザーストーリーが独立して機能し、インフラストラクチャコードで管理されるようになりました
 
@@ -114,14 +116,15 @@
 
 **目的**: 複数のユーザーストーリーに影響する改善
 
-- [ ] T027 [P] CDKテストを実行し、すべてのテストが成功することを確認（npm test）
-- [ ] T028 CDKコードをビルドし、エラーがないことを確認（npm run build）
-- [ ] T029 [P] plan.md に記載された未明確化事項を確認し、必要に応じてドキュメントを更新
-- [ ] T030 GitHub Actions ワークフローで自動デプロイが動作することを確認
-- [ ] T031 [P] README または docs/ に予算アラート機能のドキュメントを追加（オプション）
-- [ ] T032 AWSコンソールで手動デプロイテストを実行し、Budget と SNS Topic が作成されることを確認
-- [ ] T033 SNSサブスクリプション確認メールを受信し、確認リンクをクリック
-- [ ] T034 AWS Budgetのテスト通知機能を使用して、アラートが正常に届くことを確認
+- [ ] T029 [P] CDKテストを実行し、すべてのテストが成功することを確認（npm test）
+- [ ] T030 CDKコードをビルドし、エラーがないことを確認（npm run build）
+- [ ] T031 [P] plan.md に記載された未明確化事項を確認し、必要に応じてドキュメントを更新
+- [ ] T032 GitHub Actions ワークフローで自動デプロイが動作することを確認
+- [ ] T033 [P] README または docs/ に予算アラート機能のドキュメントを追加（オプション）
+- [ ] T034 AWSコンソールで手動デプロイテストを実行し、Budget と SNS Topic が作成されることを確認
+- [ ] T035 SNSサブスクリプション確認メールを受信し、確認リンクをクリック
+- [ ] T036 AWS Budgetのテスト通知機能を使用して、アラートが正常に届くことを確認
+- [ ] T037 既存のAttendanceKitStackが正常にデプロイされることを確認（リファクタリング後）
 
 ---
 
@@ -140,21 +143,21 @@
 
 - **ユーザーストーリー 1 (P1)**: Foundational 後に開始可能 - SNS と Budget の基本実装
 - **ユーザーストーリー 2 (P1)**: US1 のBudgetリソースを拡張するため、US1完了後に開始
-- **ユーザーストーリー 3 (P2)**: US1, US2 の機能をスタックに統合するため、両方完了後に開始
+- **ユーザーストーリー 3 (P2)**: US1, US2 の機能を新しいAccountStackに統合し、既存app.tsをリファクタリング。両方完了後に開始
 
 ### 各ユーザーストーリー内
 
 - US1: createSnsTopic と createBudget は並列実行可能 → その後権限付与
 - US2: US1のBudgetに通知を追加するだけ → 依存関係あり
-- US3: 完成したConstructをスタックに統合 → US1, US2完了が前提
+- US3: 完成したConstructを新しいAccountStackに統合し、app.tsリファクタリング → US1, US2完了が前提
 
 ### 並行実行の機会
 
-- T007, T008 (SNS) と T009 (Budget基本構造) は並列実行可能
-- T013, T014, T015 (US1テスト) は並列実行可能
-- T018, T019 (US2テスト) は並列実行可能
-- T025, T026 (US3テスト) は並列実行可能
-- T027, T029, T031 (仕上げ) は並列実行可能
+- T008, T009 (SNS) と T010 (Budget基本構造) は並列実行可能
+- T014, T015, T016 (US1テスト) は並列実行可能
+- T019, T020 (US2テスト) は並列実行可能
+- T027, T028 (US3テスト) は並列実行可能
+- T029, T031 (仕上げ) は並列実行可能
 
 ---
 
@@ -230,8 +233,9 @@ Task: "実利用額アラート設定のテストを追加"
 ### 環境変数
 
 plan.mdに記載の通り、GitHub Secretsに以下を追加:
-- `COST_ALERT_EMAIL_DEV`
-- `COST_ALERT_EMAIL_STAGING`
+- `COST_ALERT_EMAIL`: アカウント全体のアラート送信先
+
+**重要**: 環境別（dev, staging）ではなく、アカウント単位で1つのみ設定
 
 ## 関連ドキュメント
 

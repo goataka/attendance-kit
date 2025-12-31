@@ -12,7 +12,7 @@
 
 ## 概要
 
-AWS Budgetを使用して月次1000円の予算を設定し、実利用額および予測額が予算を超えた場合にSNS経由でスマホアプリに通知する機能を実装する。既存のCDKインフラストラクチャに統合し、環境ごとに独立した予算管理を実現する。
+AWS Budgetを使用してAWSアカウント全体の月次1000円の予算を設定し、実利用額および予測額が予算を超えた場合にSNS経由でスマホアプリに通知する機能を実装する。既存のCDKインフラストラクチャに統合し、アカウント単位での予算管理を実現する。
 
 ## 技術コンテキスト
 
@@ -24,7 +24,7 @@ AWS Budgetを使用して月次1000円の予算を設定し、実利用額およ
 **プロジェクトタイプ**: Infrastructure as Code (single CDK project)  
 **パフォーマンス目標**: アラート通知5分以内の配信  
 **制約**: 無料枠内での運用、CloudWatchアラームを使用しない  
-**規模/スコープ**: 単一AWSアカウント、2環境（dev, staging）
+**規模/スコープ**: 単一AWSアカウント、アカウント全体のコスト監視（環境別ではない）
 
 ## Constitution Check
 
@@ -57,15 +57,17 @@ infrastructure/deploy/
 ├── lib/
 │   ├── attendance-kit-stack.ts      # 既存: DynamoDB等
 │   └── constructs/
-│       └── cost-budget.ts           # 新規: 予算アラート用Construct
+│       └── cost-budget.ts           # 新規: 予算アラート用Construct（アカウント単位）
 ├── test/
 │   └── cost-budget.test.ts          # 新規: 予算アラートのテスト
 ├── bin/
-│   └── app.ts                       # 既存: エントリーポイント
+│   └── app.ts                       # 既存: エントリーポイント（要リファクタリング）
 └── package.json                     # 依存関係管理
 ```
 
 **構造の決定**: 既存のCDKプロジェクト構造を維持し、新しいConstructとして予算アラート機能を追加する。これにより、既存のインフラストラクチャとの統合が容易になり、デプロイプロセスも統一できる。
+
+**重要な変更点**: 予算はアカウント単位で1つ作成するため、環境（dev/staging）に依存しない形でConstructを設計する。既存のapp.tsとスタック設計をリファクタリングし、アカウントレベルのリソースと環境レベルのリソースを分離する。
 
 ## アーキテクチャ設計
 
@@ -143,16 +145,20 @@ classDiagram
         +budgetName: string
         +budgetAmountYen: number
         +emailEndpoint: string
-        +environment: string
     }
     
     class AttendanceKitStack {
         +clockTable: Table
-        +addCostBudget()
+        +environment: string
     }
     
-    AttendanceKitStack --> CostBudgetConstruct : uses
+    class AccountStack {
+        +costBudget: CostBudgetConstruct
+    }
+    
+    AccountStack --> CostBudgetConstruct : uses
     CostBudgetConstruct --> CostBudgetProps : uses
+    AttendanceKitStack : per-environment resources
 ```
 
 ## 技術的アプローチ
@@ -179,20 +185,17 @@ classDiagram
 
 ### 環境ごとの設定
 
+**重要な変更**: 予算はアカウント単位で設定するため、環境別の設定は不要。代わりにアカウント全体の設定を1つ定義する。
+
 ```typescript
-interface EnvironmentConfig {
-  dev: {
-    budgetName: "attendance-kit-dev-monthly-budget";
-    budgetAmountYen: 1000;
-    alertEmail: "dev-alerts@example.com"; // 要明確化
-  },
-  staging: {
-    budgetName: "attendance-kit-staging-monthly-budget";
-    budgetAmountYen: 1000;
-    alertEmail: "staging-alerts@example.com"; // 要明確化
-  }
+interface AccountConfig {
+  budgetName: "attendance-kit-account-monthly-budget";
+  budgetAmountYen: 1000;
+  alertEmail: "cost-alerts@example.com"; // 要明確化
 }
 ```
+
+**リファクタリングポイント**: 既存のapp.tsは環境単位でスタックを作成しているが、アカウントレベルのリソース（予算アラート）と環境レベルのリソース（DynamoDBテーブル）を分離する必要がある。新しいAccountStackを作成し、予算アラートはそこに配置する。
 
 ### アラート設定
 
@@ -221,7 +224,7 @@ export class CostBudgetConstruct extends Construct {
   
   private createSnsTopic(props: CostBudgetProps): sns.Topic {
     const topic = new sns.Topic(this, 'CostAlertTopic', {
-      topicName: `${props.environment}-cost-alerts`,
+      topicName: 'attendance-kit-cost-alerts',
       displayName: 'AWS Cost Budget Alerts',
     });
     
@@ -320,7 +323,6 @@ test('SNS Topic Created', () => {
     budgetName: 'test-budget',
     budgetAmountYen: 1000,
     emailEndpoint: 'test@example.com',
-    environment: 'test',
   });
   
   const template = Template.fromStack(stack);
@@ -333,7 +335,6 @@ test('Budget with Actual and Forecasted Alerts', () => {
     budgetName: 'test-budget',
     budgetAmountYen: 1000,
     emailEndpoint: 'test@example.com',
-    environment: 'test',
   });
   
   const template = Template.fromStack(stack);
@@ -366,14 +367,16 @@ test('Budget with Actual and Forecasted Alerts', () => {
 ### 環境変数の追加
 
 GitHub Secretsに追加が必要:
-- `COST_ALERT_EMAIL_DEV`: dev環境のアラート送信先メールアドレス
-  - 値の取得方法: プロジェクトオーナーに確認、またはチーム共有のメーリングリストを使用
-- `COST_ALERT_EMAIL_STAGING`: staging環境のアラート送信先メールアドレス
+- `COST_ALERT_EMAIL`: アカウント全体のアラート送信先メールアドレス
   - 値の取得方法: プロジェクトオーナーに確認、またはチーム共有のメーリングリストを使用
 
 **実装時の注意**: 
 - CDKコードではプロセス環境変数またはCDK Contextから読み込み
 - 未設定の場合はデプロイ時にエラーとなるように実装（必須パラメータ）
+
+**リファクタリング事項**:
+- 既存のapp.tsを更新し、アカウントレベルのスタック（AccountStack）を作成
+- 環境レベルのスタック（AttendanceKitStack）とは分離して管理
 
 ### 初回デプロイ後の作業
 
@@ -400,7 +403,7 @@ GitHub Secretsに追加が必要:
 - 最初の2つのBudget: 無料
 - 3つ目以降: $0.02/日/Budget
 
-本実装では2環境（dev, staging）でそれぞれ1つのBudgetを作成するため、**完全に無料枠内**で運用可能。
+本実装ではアカウント単位で1つのBudgetのみを作成するため、**完全に無料枠内**で運用可能。
 
 ### SNS通知コスト
 
@@ -415,11 +418,10 @@ GitHub Secretsに追加が必要:
 
 1. **アラート送信先のメールアドレス** ✅ 対応済み
    - GitHub Secretsで管理
-   - dev環境とstaging環境で設定必要
+   - アカウント全体で1つのメールアドレスを設定
 
-2. **予算額の環境ごとの差異**
-   - dev: 1000円
-   - staging: 1000円（現状は同額、必要に応じて調整可能）
+2. **予算額**
+   - アカウント全体: 1000円/月
 
 3. **将来のモバイル対応** 📋 将来対応
    - 初期実装: Email（スマホでメール受信）
@@ -429,6 +431,12 @@ GitHub Secretsに追加が必要:
 4. **通知内容のカスタマイズ**
    - デフォルトのAWS Budget通知メッセージを使用
    - 標準メッセージで十分な情報が含まれる（利用額、予算額、アカウント情報）
+
+5. **既存コードのリファクタリング** ⚠️ 要実装
+   - app.tsでアカウントレベルスタック（AccountStack）を新規作成
+   - 環境レベルスタック（AttendanceKitStack）とリソースを分離
+   - アカウント単位リソース: AWS Budget, SNS Topic
+   - 環境単位リソース: DynamoDB Table
 
 ## 関連ドキュメント
 
