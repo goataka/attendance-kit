@@ -22,8 +22,8 @@
 
 **目的**: プロジェクトの初期化と基本構造
 
-- [ ] T001 specs/2-aws-cost-usage-alerts/ にドキュメントディレクトリを作成
-- [ ] T002 infrastructure/deploy/lib/constructs/ ディレクトリが存在することを確認（既存）
+- [ ] T001 specs/2-aws-cost-usage-alerts/ にドキュメントディレクトリを作成（完了済み）
+- [ ] T002 infrastructure/deploy/lib/constructs/ ディレクトリを作成
 - [ ] T003 [P] infrastructure/deploy/test/ ディレクトリが存在することを確認（既存）
 
 ---
@@ -95,7 +95,7 @@
 
 ### ユーザーストーリー 3 の実装
 
-- [ ] T020 [US3] lib/attendance-kit-stack.ts に CostBudgetConstruct をインポート
+- [ ] T020 [US3] lib/attendance-kit-stack.ts に CostBudgetConstruct をインポート（T004-T012完了後）
 - [ ] T021 [US3] AttendanceKitStack に環境ごとの設定を定義（dev, staging）
 - [ ] T022 [US3] AttendanceKitStack のコンストラクタで CostBudgetConstruct をインスタンス化
 - [ ] T023 [US3] 環境変数から alertEmail を読み込む機能を追加（process.env または context）

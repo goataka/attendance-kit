@@ -114,8 +114,9 @@
 
 - **SNS Topic**: 通知配信のためのメッセージングトピック
   - topicName: トピック名（例: "attendance-kit-cost-alerts"）
-  - subscribers: サブスクライバー（スマホアプリのエンドポイント）
-  - protocol: プロトコル（要明確化: application, email, sms?）
+  - subscribers: サブスクライバー（初期実装: メールアドレス、将来: モバイルアプリエンドポイント）
+  - protocol: プロトコル（初期実装: email、将来拡張: application endpoint for mobile push）
+  - 注記: スマホでメール受信することで、初期段階でもモバイル通知の要件を満たす
 
 ## 成功基準 *(mandatory)*
 
