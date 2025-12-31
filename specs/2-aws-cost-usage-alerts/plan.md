@@ -55,19 +55,23 @@ specs/2-aws-cost-usage-alerts/
 ```text
 infrastructure/deploy/
 ├── lib/
-│   ├── attendance-kit-stack.ts      # 既存: DynamoDB等
+│   ├── attendance-kit-stack.ts          # 既存: DynamoDB等（環境単位）
+│   ├── attendance-kit-account-stack.ts  # 新規: アカウント単位リソース用Stack
 │   └── constructs/
-│       └── cost-budget.ts           # 新規: 予算アラート用Construct（アカウント単位）
+│       └── cost-budget.ts               # 新規: 予算アラート用Construct
 ├── test/
-│   └── cost-budget.test.ts          # 新規: 予算アラートのテスト
+│   ├── cost-budget.test.ts                      # 新規: 予算アラートのテスト
+│   └── attendance-kit-account-stack.test.ts     # 新規: AccountStackのテスト
 ├── bin/
-│   └── app.ts                       # 既存: エントリーポイント（要リファクタリング）
-└── package.json                     # 依存関係管理
+│   └── app.ts                           # 既存: エントリーポイント（要リファクタリング）
+└── package.json                         # 依存関係管理
 ```
 
 **構造の決定**: 既存のCDKプロジェクト構造を維持し、新しいConstructとして予算アラート機能を追加する。これにより、既存のインフラストラクチャとの統合が容易になり、デプロイプロセスも統一できる。
 
 **重要な変更点**: 予算はアカウント単位で1つ作成するため、環境（dev/staging）に依存しない形でConstructを設計する。既存のapp.tsとスタック設計をリファクタリングし、アカウントレベルのリソースと環境レベルのリソースを分離する。
+
+**命名規則**: 既存の `AttendanceKitStack` に合わせて、`AttendanceKitAccountStack` という命名を使用。ファイル名も `attendance-kit-account-stack.ts` として統一性を保つ。
 
 ## アーキテクチャ設計
 
@@ -152,11 +156,11 @@ classDiagram
         +environment: string
     }
     
-    class AccountStack {
+    class AttendanceKitAccountStack {
         +costBudget: CostBudgetConstruct
     }
     
-    AccountStack --> CostBudgetConstruct : uses
+    AttendanceKitAccountStack --> CostBudgetConstruct : uses
     CostBudgetConstruct --> CostBudgetProps : uses
     AttendanceKitStack : per-environment resources
 ```
@@ -195,7 +199,7 @@ interface AccountConfig {
 }
 ```
 
-**リファクタリングポイント**: 既存のapp.tsは環境単位でスタックを作成しているが、アカウントレベルのリソース（予算アラート）と環境レベルのリソース（DynamoDBテーブル）を分離する必要がある。新しいAccountStackを作成し、予算アラートはそこに配置する。
+**リファクタリングポイント**: 既存のapp.tsは環境単位でスタックを作成しているが、アカウントレベルのリソース（予算アラート）と環境レベルのリソース（DynamoDBテーブル）を分離する必要がある。新しい `AttendanceKitAccountStack` を作成し、予算アラートはそこに配置する。命名規則は既存の `AttendanceKitStack` に合わせる。
 
 ### アラート設定
 
@@ -375,8 +379,9 @@ GitHub Secretsに追加が必要:
 - 未設定の場合はデプロイ時にエラーとなるように実装（必須パラメータ）
 
 **リファクタリング事項**:
-- 既存のapp.tsを更新し、アカウントレベルのスタック（AccountStack）を作成
-- 環境レベルのスタック（AttendanceKitStack）とは分離して管理
+- 既存のapp.tsを更新し、アカウントレベルのスタック（`AttendanceKitAccountStack`）を作成
+- 環境レベルのスタック（`AttendanceKitStack`）とは分離して管理
+- 命名規則: 既存スタックに合わせて `AttendanceKitAccountStack` クラスと `attendance-kit-account-stack.ts` ファイル名を使用
 
 ### 初回デプロイ後の作業
 
@@ -433,10 +438,11 @@ GitHub Secretsに追加が必要:
    - 標準メッセージで十分な情報が含まれる（利用額、予算額、アカウント情報）
 
 5. **既存コードのリファクタリング** ⚠️ 要実装
-   - app.tsでアカウントレベルスタック（AccountStack）を新規作成
-   - 環境レベルスタック（AttendanceKitStack）とリソースを分離
+   - app.tsでアカウントレベルスタック（`AttendanceKitAccountStack`）を新規作成
+   - 環境レベルスタック（`AttendanceKitStack`）とリソースを分離
    - アカウント単位リソース: AWS Budget, SNS Topic
    - 環境単位リソース: DynamoDB Table
+   - 命名規則を統一: `attendance-kit-account-stack.ts` ファイル、`AttendanceKitAccountStack` クラス
 
 ## 関連ドキュメント
 

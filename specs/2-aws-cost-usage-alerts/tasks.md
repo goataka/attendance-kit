@@ -37,7 +37,7 @@
 - [ ] T004 infrastructure/deploy/lib/constructs/cost-budget.ts にCostBudgetConstruct基本構造を作成
 - [ ] T005 CostBudgetProps インターフェースを定義（budgetName, budgetAmountYen, emailEndpoint）
 - [ ] T006 [P] infrastructure/deploy/test/cost-budget.test.ts にテストファイルの基本構造を作成
-- [ ] T007 infrastructure/deploy/lib/account-stack.ts にAccountStack基本構造を作成（アカウント単位リソース用）
+- [ ] T007 infrastructure/deploy/lib/attendance-kit-account-stack.ts に AttendanceKitAccountStack 基本構造を作成（アカウント単位リソース用、命名規則を既存スタックに合わせる）
 
 **チェックポイント**: 基礎の準備完了 - ユーザーストーリーの実装を並行して開始可能
 
@@ -96,17 +96,17 @@
 
 ### ユーザーストーリー 3 の実装
 
-- [ ] T021 [US3] lib/account-stack.ts に CostBudgetConstruct をインポート（T008-T013完了後）
-- [ ] T022 [US3] AccountStack のコンストラクタで CostBudgetConstruct をインスタンス化
+- [ ] T021 [US3] lib/attendance-kit-account-stack.ts に CostBudgetConstruct をインポート（T008-T013完了後）
+- [ ] T022 [US3] AttendanceKitAccountStack のコンストラクタで CostBudgetConstruct をインスタンス化
 - [ ] T023 [US3] 環境変数から alertEmail を読み込む機能を追加（process.env.COST_ALERT_EMAIL）
-- [ ] T024 [US3] bin/app.ts をリファクタリングし、AccountStack を作成（アカウント単位リソース用）
-- [ ] T025 [US3] bin/app.ts で環境レベルスタック（AttendanceKitStack）とアカウントレベルスタック（AccountStack）を分離
+- [ ] T024 [US3] bin/app.ts をリファクタリングし、AttendanceKitAccountStack を作成（アカウント単位リソース用）
+- [ ] T025 [US3] bin/app.ts で環境レベルスタック（AttendanceKitStack）とアカウントレベルスタック（AttendanceKitAccountStack）を分離
 - [ ] T026 [US3] AttendanceKitStack から environment 依存のロジックを整理（環境タグなど維持）
 
 ### ユーザーストーリー 3 のテスト
 
-- [ ] T027 [P] [US3] test/account-stack.test.ts に AccountStack のテストを追加
-- [ ] T028 [P] [US3] test/account-stack.test.ts に CostBudgetConstruct 統合のテストを追加
+- [ ] T027 [P] [US3] test/attendance-kit-account-stack.test.ts に AttendanceKitAccountStack のテストを追加
+- [ ] T028 [P] [US3] test/attendance-kit-account-stack.test.ts に CostBudgetConstruct 統合のテストを追加
 
 **チェックポイント**: すべてのユーザーストーリーが独立して機能し、インフラストラクチャコードで管理されるようになりました
 
@@ -143,13 +143,13 @@
 
 - **ユーザーストーリー 1 (P1)**: Foundational 後に開始可能 - SNS と Budget の基本実装
 - **ユーザーストーリー 2 (P1)**: US1 のBudgetリソースを拡張するため、US1完了後に開始
-- **ユーザーストーリー 3 (P2)**: US1, US2 の機能を新しいAccountStackに統合し、既存app.tsをリファクタリング。両方完了後に開始
+- **ユーザーストーリー 3 (P2)**: US1, US2 の機能を新しい AttendanceKitAccountStack に統合し、既存app.tsをリファクタリング。両方完了後に開始
 
 ### 各ユーザーストーリー内
 
 - US1: createSnsTopic と createBudget は並列実行可能 → その後権限付与
 - US2: US1のBudgetに通知を追加するだけ → 依存関係あり
-- US3: 完成したConstructを新しいAccountStackに統合し、app.tsリファクタリング → US1, US2完了が前提
+- US3: 完成したConstructを新しい AttendanceKitAccountStack に統合し、app.tsリファクタリング → US1, US2完了が前提
 
 ### 並行実行の機会
 
