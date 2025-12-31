@@ -59,7 +59,7 @@ describe('CostBudgetConstruct', () => {
 
   test('Budget has SNS notification for actual cost', () => {
     const stack = new Stack();
-    const construct = new CostBudgetConstruct(stack, 'TestBudget', {
+    new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
       budgetAmountYen: 1000,
       emailEndpoint: 'test@example.com',

@@ -33,7 +33,8 @@ export class CostBudgetConstruct extends Construct {
       displayName: 'AWS Cost Budget Alerts',
     });
 
-    // Add email subscription (initial implementation)
+    // Add email subscription
+    // Future: Can be extended to support Mobile Push (AWS SNS Mobile Push)
     if (props.emailEndpoint) {
       topic.addSubscription(
         new subscriptions.EmailSubscription(props.emailEndpoint)
