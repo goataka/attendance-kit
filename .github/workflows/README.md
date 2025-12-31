@@ -4,6 +4,18 @@
 
 このディレクトリには、プロジェクトの CI/CD ワークフローが含まれています。
 
+### copilot-setup-steps.yml
+
+GitHub Copilot Coding Agent の実行環境をセットアップするワークフロー。
+
+- **トリガー**: 
+  - ワークフローファイル自体の変更時
+  - 手動実行（通常は不要）
+- **目的**: spec-kit CLI のインストールと初期化
+- **実行者**: GitHub Copilot Coding Agent（自動）
+
+**詳細**: [copilot-setup-steps.md](./copilot-setup-steps.md)
+
 ### deploy-environment-stack.yml
 
 環境レベルリソース（DynamoDBテーブル等）をデプロイするワークフロー。
@@ -20,6 +32,8 @@
 - `infrastructure/deploy/test/attendance-kit-stack.test.ts`
 - `infrastructure/deploy/bin/app.ts`
 - `infrastructure/deploy/package*.json`
+
+**詳細**: [deploy-environment-stack.md](./deploy-environment-stack.md)
 
 ### deploy-account-stack.yml
 
@@ -39,4 +53,9 @@
 - `infrastructure/deploy/test/attendance-kit-account-stack.test.ts`
 - `infrastructure/deploy/test/cost-budget.test.ts`
 
-詳細は各ワークフローのドキュメントを参照してください。
+**詳細**: [deploy-account-stack.md](./deploy-account-stack.md)
+
+## 関連ドキュメント
+
+- [デプロイ手順](../../infrastructure/DEPLOYMENT.md) - 各ワークフローの使い方
+- [初回セットアップ](../../infrastructure/setup/README.md) - GitHub Secretsの設定方法
