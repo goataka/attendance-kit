@@ -125,6 +125,10 @@ describe('AttendanceKitStack', () => {
   test('GitHub Actions IAM Role is NOT created (managed by CloudFormation)', () => {
     template.resourceCountIs('AWS::IAM::Role', 0);
   });
+
+  test('Stack matches snapshot', () => {
+    expect(template.toJSON()).toMatchSnapshot();
+  });
 });
 
 describe('AttendanceKitStack - Staging Environment', () => {
@@ -138,5 +142,15 @@ describe('AttendanceKitStack - Staging Environment', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-staging-clock',
     });
+  });
+
+  test('Staging stack matches snapshot', () => {
+    const app = new App();
+    const stack = new AttendanceKitStack(app, 'TestStackStaging', {
+      environment: 'staging',
+    });
+    const template = Template.fromStack(stack);
+
+    expect(template.toJSON()).toMatchSnapshot();
   });
 });

@@ -128,4 +128,16 @@ describe('CostBudgetConstruct', () => {
       },
     });
   });
+
+  test('CostBudgetConstruct matches snapshot', () => {
+    const stack = new Stack();
+    new CostBudgetConstruct(stack, 'TestBudget', {
+      budgetName: 'test-budget',
+      budgetAmountYen: 1000,
+      emailEndpoint: 'test@example.com',
+    });
+
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+  });
 });

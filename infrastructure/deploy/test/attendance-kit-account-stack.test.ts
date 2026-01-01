@@ -96,4 +96,15 @@ describe('AttendanceKitAccountStack', () => {
       Endpoint: 'custom@example.com',
     });
   });
+
+  test('Stack matches snapshot', () => {
+    const app = new App();
+    const stack = new AttendanceKitAccountStack(app, 'TestStack', {
+      budgetAmountYen: 1000,
+      alertEmail: 'test@example.com',
+    });
+
+    const template = Template.fromStack(stack);
+    expect(template.toJSON()).toMatchSnapshot();
+  });
 });
