@@ -24,11 +24,11 @@ const env = {
 // Account-level resources (deployed once per AWS account)
 // Only create Account Stack if COST_ALERT_EMAIL is provided
 const alertEmail = process.env.COST_ALERT_EMAIL;
-if (alertEmail) {
+if (alertEmail && alertEmail.trim()) {
   new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
     env,
     budgetAmountYen: 1000,
-    alertEmail,
+    alertEmail: alertEmail.trim(),
     description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
     tags: {
       Project: 'attendance-kit',
