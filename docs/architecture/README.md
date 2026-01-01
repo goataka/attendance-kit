@@ -2,6 +2,7 @@
 
 - [DynamoDB Clock Table](./dynamodb-clock-table.md) - 打刻テーブルの詳細設計
 - [CI/CD デプロイメント戦略](./cicd-deployment-strategy.md) - デプロイ戦略とセキュリティアーキテクチャ
+- [AWS利用金額アラート](./cost-budget-alerts.md) - コスト監視とアラート通知の設計
 
 ## 内容
 

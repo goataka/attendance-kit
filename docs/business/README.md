@@ -5,6 +5,7 @@
 ## 実装済みドキュメント
 
 - [Clock Table ビジネス要件](./clock-table-requirements.md) - 打刻テーブルのビジネス要件とユースケース
+- [AWS利用金額アラート ビジネス要件](./cost-budget-requirements.md) - コスト監視のビジネス要件とユーザーシナリオ
 
 ## 内容
 
