@@ -107,8 +107,8 @@ jobs:
 
           echo "作成されたIssue: $ISSUE_URL"
 
-          # Extract issue number from URL
-          ISSUE_NUMBER=$(echo $ISSUE_URL | grep -oP '\d+$')
+          # Extract issue number from URL (more portable approach)
+          ISSUE_NUMBER=$(echo "$ISSUE_URL" | sed 's/.*\///')
           echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
 
           # Assign to copilot (GitHub's Copilot bot username)
