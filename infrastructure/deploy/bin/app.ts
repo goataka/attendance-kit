@@ -6,14 +6,9 @@ import { AttendanceKitAccountStack } from '../lib/attendance-kit-account-stack';
 
 const app = new cdk.App();
 
-// Get environment parameter from context or environment variable
-const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
-
-// Validate environment
-const validEnvironments = ['dev', 'staging'];
-if (!validEnvironments.includes(environment)) {
-  throw new Error(`Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`);
-}
+// Determine which stack to deploy from context
+// This allows bootstrap and individual stack deployments to work independently
+const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
 // AWS environment configuration
 const env = {
@@ -22,36 +17,52 @@ const env = {
 };
 
 // Account-level resources (deployed once per AWS account)
-// Only create Account Stack if COST_ALERT_EMAIL is provided
-const alertEmail = process.env.COST_ALERT_EMAIL;
-if (alertEmail && alertEmail.trim()) {
-  new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
-    env,
-    budgetAmountYen: 1000,
-    alertEmail: alertEmail.trim(),
-    description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
-    tags: {
-      Project: 'attendance-kit',
-      ManagedBy: 'CDK',
-      CostCenter: 'Engineering',
-      ResourceLevel: 'Account',
-    },
-  });
+if (stackType === 'account' || stackType === 'all') {
+  const alertEmail = process.env.COST_ALERT_EMAIL;
+  if (!alertEmail || !alertEmail.trim()) {
+    if (stackType === 'account') {
+      throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
+    }
+    // Skip account stack creation if email is not provided and stackType is 'all'
+  } else {
+    new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
+      env,
+      budgetAmountYen: 1000,
+      alertEmail: alertEmail.trim(),
+      description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
+      tags: {
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+        ResourceLevel: 'Account',
+      },
+    });
+  }
 }
 
 // Environment-level resources (deployed per environment: dev, staging)
-const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
+if (stackType === 'environment' || stackType === 'all') {
+  const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
+  
+  // Validate environment
+  const validEnvironments = ['dev', 'staging'];
+  if (!validEnvironments.includes(environment)) {
+    throw new Error(`Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`);
+  }
 
-new AttendanceKitStack(app, stackName, {
-  env,
-  environment,
-  description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
-  tags: {
-    Environment: environment,
-    Project: 'attendance-kit',
-    ManagedBy: 'CDK',
-    CostCenter: 'Engineering',
-  },
-});
+  const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
+
+  new AttendanceKitStack(app, stackName, {
+    env,
+    environment,
+    description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
+    tags: {
+      Environment: environment,
+      Project: 'attendance-kit',
+      ManagedBy: 'CDK',
+      CostCenter: 'Engineering',
+    },
+  });
+}
 
 app.synth();
