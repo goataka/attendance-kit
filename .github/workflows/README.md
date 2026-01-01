@@ -55,6 +55,26 @@ GitHub Copilot Coding Agent の実行環境をセットアップするワーク�
 
 **詳細**: [deploy-account-stack.md](./deploy-account-stack.md)
 
+### create-issue-on-failure.yml
+
+GitHub Actionsワークフローの失敗を検知し、自動的にIssueを作成するワークフロー。
+
+- **トリガー**: 
+  - 監視対象のワークフローが失敗した時（自動）
+- **機能**: 
+  - 失敗したワークフローの詳細情報を含むIssueを作成
+  - Copilotにアサイン（可能な場合）
+  - 既存Issueがある場合はコメントを追加
+- **自己除外**: このワークフロー自体は監視対象外
+- **ラベル**: `bug`, `automated`, `workflow-failure`
+
+**監視対象ワークフロー**:
+- Copilot Setup Steps
+- Deploy Account Stack to AWS
+- Deploy Environment Stack to AWS
+
+**詳細**: [create-issue-on-failure.md](./create-issue-on-failure.md)
+
 ## 関連ドキュメント
 
 - [デプロイ手順](../../infrastructure/DEPLOYMENT.md) - 各ワークフローの使い方

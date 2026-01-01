@@ -1,0 +1,148 @@
+name: Create Issue on Workflow Failure
+
+on:
+  workflow_run:
+    workflows:
+      - "Copilot Setup Steps"
+      - "Deploy Account Stack to AWS"
+      - "Deploy Environment Stack to AWS"
+    types:
+      - completed
+
+permissions:
+  issues: write
+  actions: read
+  contents: read
+
+jobs:
+  create-issue:
+    runs-on: ubuntu-latest
+    # Only run if the workflow failed (not on success or skipped)
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+
+    steps:
+      - name: Get workflow run information
+        id: workflow-info
+        run: |
+          WORKFLOW_NAME="${{ github.event.workflow_run.name }}"
+          RUN_NUMBER="${{ github.event.workflow_run.run_number }}"
+          RUN_ID="${{ github.event.workflow_run.id }}"
+          HTML_URL="${{ github.event.workflow_run.html_url }}"
+          HEAD_BRANCH="${{ github.event.workflow_run.head_branch }}"
+          HEAD_SHA="${{ github.event.workflow_run.head_sha }}"
+          echo "workflow_name=$WORKFLOW_NAME" >> $GITHUB_OUTPUT
+          echo "run_number=$RUN_NUMBER" >> $GITHUB_OUTPUT
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          echo "html_url=$HTML_URL" >> $GITHUB_OUTPUT
+          echo "head_branch=$HEAD_BRANCH" >> $GITHUB_OUTPUT
+          echo "head_sha=$HEAD_SHA" >> $GITHUB_OUTPUT
+
+      - name: Check for existing issue
+        id: check-issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Search for open issues with the same workflow and run number
+          WORKFLOW_NAME="${{ steps.workflow-info.outputs.workflow_name }}"
+          RUN_NUMBER="${{ steps.workflow-info.outputs.run_number }}"
+          SEARCH_QUERY="\"[Workflow失敗] $WORKFLOW_NAME #$RUN_NUMBER\" in:title"
+          EXISTING_ISSUE=$(gh issue list \
+            --repo ${{ github.repository }} \
+            --state open \
+            --search "$SEARCH_QUERY" \
+            --json number \
+            --jq '.[0].number')
+
+          if [ -n "$EXISTING_ISSUE" ] && [ "$EXISTING_ISSUE" != "null" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "issue_number=$EXISTING_ISSUE" >> $GITHUB_OUTPUT
+            echo "既存のIssueが見つかりました: #$EXISTING_ISSUE"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "新しいIssueを作成します"
+          fi
+
+      - name: Create issue for workflow failure
+        if: steps.check-issue.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Create issue body with workflow details
+          WORKFLOW_NAME="${{ steps.workflow-info.outputs.workflow_name }}"
+          RUN_NUMBER="${{ steps.workflow-info.outputs.run_number }}"
+          HEAD_BRANCH="${{ steps.workflow-info.outputs.head_branch }}"
+          HEAD_SHA="${{ steps.workflow-info.outputs.head_sha }}"
+          HTML_URL="${{ steps.workflow-info.outputs.html_url }}"
+
+          cat > issue_body.md << EOF
+          ## ワークフロー失敗の詳細
+
+          **ワークフロー名**: $WORKFLOW_NAME
+          **実行番号**: #$RUN_NUMBER
+          **ブランチ**: \`$HEAD_BRANCH\`
+          **コミット**: \`$HEAD_SHA\`
+
+          **ワークフロー実行URL**: $HTML_URL
+
+          ## 対応について
+
+          このIssueは、GitHub Actionsのワークフロー失敗を検知して
+          自動的に作成されました。
+          失敗の原因を調査し、必要な修正を行ってください。
+
+          ## 確認手順
+
+          1. [ワークフロー実行ログ]($HTML_URL)を確認
+          2. 失敗したステップとエラーメッセージを特定
+          3. 必要な修正を実施
+          4. 修正後、このIssueをクローズ
+          EOF
+
+          # Create the issue and capture the issue URL
+          ISSUE_URL=$(gh issue create \
+            --repo ${{ github.repository }} \
+            --title "[Workflow失敗] $WORKFLOW_NAME #$RUN_NUMBER" \
+            --body-file issue_body.md \
+            --label "bug,automated,workflow-failure")
+
+          echo "作成されたIssue: $ISSUE_URL"
+
+          # Extract issue number from URL
+          ISSUE_NUMBER=$(echo $ISSUE_URL | grep -oP '\d+$')
+          echo "issue_number=$ISSUE_NUMBER" >> $GITHUB_OUTPUT
+
+          # Assign to copilot (GitHub's Copilot bot username)
+          # Note: This will only work if copilot has repository access
+          gh issue edit $ISSUE_NUMBER \
+            --repo ${{ github.repository }} \
+            --add-assignee copilot || \
+            echo "Copilotのアサインに失敗（権限がない可能性があります）"
+
+      - name: Add comment to existing issue
+        if: steps.check-issue.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Add a comment to the existing issue about the new failure
+          RUN_NUMBER="${{ steps.workflow-info.outputs.run_number }}"
+          HEAD_BRANCH="${{ steps.workflow-info.outputs.head_branch }}"
+          HEAD_SHA="${{ steps.workflow-info.outputs.head_sha }}"
+          HTML_URL="${{ steps.workflow-info.outputs.html_url }}"
+
+          cat > comment_body.md << EOF
+          ## 再度の失敗を検出
+
+          **実行番号**: #$RUN_NUMBER
+          **ブランチ**: \`$HEAD_BRANCH\`
+          **コミット**: \`$HEAD_SHA\`
+          **ワークフロー実行URL**: $HTML_URL
+
+          同じワークフローで再度失敗が発生しました。
+          EOF
+
+          ISSUE_NUMBER="${{ steps.check-issue.outputs.issue_number }}"
+          gh issue comment $ISSUE_NUMBER \
+            --repo ${{ github.repository }} \
+            --body-file comment_body.md
+
+          echo "既存のIssue #$ISSUE_NUMBER にコメントを追加しました"
