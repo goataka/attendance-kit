@@ -127,6 +127,12 @@ describe('AttendanceKitStack', () => {
   });
 
   test('Stack matches snapshot', () => {
+    const app = new App();
+    const stack = new AttendanceKitStack(app, 'TestStack', {
+      environment: 'dev',
+    });
+    const template = Template.fromStack(stack);
+
     expect(template.toJSON()).toMatchSnapshot();
   });
 });
