@@ -8,6 +8,10 @@ const app = new cdk.App();
 
 // Determine which stack to deploy from context
 // This allows bootstrap and individual stack deployments to work independently
+// Valid values:
+//   - 'account': Deploy only Account Stack (requires COST_ALERT_EMAIL)
+//   - 'environment': Deploy only Environment Stack (requires environment context)
+//   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is optional)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
 // AWS environment configuration
@@ -23,7 +27,7 @@ if (stackType === 'account' || stackType === 'all') {
     if (stackType === 'account') {
       throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
     }
-    // Skip account stack creation if email is not provided and stackType is 'all'
+    // Skip account stack creation when stackType is 'all' and COST_ALERT_EMAIL is not provided
   } else {
     new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
       env,
