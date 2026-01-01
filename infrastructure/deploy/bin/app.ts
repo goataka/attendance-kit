@@ -22,23 +22,22 @@ const env = {
 };
 
 // Account-level resources (deployed once per AWS account)
+// Only create Account Stack if COST_ALERT_EMAIL is provided
 const alertEmail = process.env.COST_ALERT_EMAIL;
-if (!alertEmail) {
-  throw new Error('COST_ALERT_EMAIL environment variable must be set');
+if (alertEmail) {
+  new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
+    env,
+    budgetAmountYen: 1000,
+    alertEmail,
+    description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
+    tags: {
+      Project: 'attendance-kit',
+      ManagedBy: 'CDK',
+      CostCenter: 'Engineering',
+      ResourceLevel: 'Account',
+    },
+  });
 }
-
-new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
-  env,
-  budgetAmountYen: 1000,
-  alertEmail,
-  description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
-  tags: {
-    Project: 'attendance-kit',
-    ManagedBy: 'CDK',
-    CostCenter: 'Engineering',
-    ResourceLevel: 'Account',
-  },
-});
 
 // Environment-level resources (deployed per environment: dev, staging)
 const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
