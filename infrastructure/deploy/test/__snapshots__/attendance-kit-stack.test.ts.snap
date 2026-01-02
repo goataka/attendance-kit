@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AttendanceKitStack - Staging Environment Staging stack matches snapshot 1`] = `
+exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot 1`] = `
 {
   "Outputs": {
     "Environment": {
@@ -153,7 +153,7 @@ exports[`AttendanceKitStack - Staging Environment Staging stack matches snapshot
 }
 `;
 
-exports[`AttendanceKitStack Stack matches snapshot 1`] = `
+exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
 {
   "Outputs": {
     "Environment": {

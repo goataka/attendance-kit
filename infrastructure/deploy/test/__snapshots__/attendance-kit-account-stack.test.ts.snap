@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AttendanceKitAccountStack Stack matches snapshot 1`] = `
+exports[`AttendanceKitAccountStack Stack Matches Snapshot 1`] = `
 {
   "Outputs": {
     "BudgetName": {

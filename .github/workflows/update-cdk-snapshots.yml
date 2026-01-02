@@ -16,6 +16,8 @@ permissions:
 jobs:
   update-snapshots:
     runs-on: ubuntu-latest
+    # Only run for PRs from the same repository (not forks)
+    if: github.event.pull_request.head.repo.full_name == github.repository
     
     steps:
       - name: Checkout code
@@ -68,21 +70,23 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const comment = `## 📸 CDKスナップショット自動更新
-
-            CDK関連ファイルの変更を検知し、スナップショットを自動更新しました。
-
-            ### 更新されたスナップショット
-
-            \`\`\`
-            infrastructure/deploy/test/__snapshots__/
-            \`\`\`
-
-            変更内容を確認してください：
-            - [最新のコミットを表示](${{ github.event.pull_request.html_url }}/commits)
-            - [スナップショットの差分を確認](${{ github.event.pull_request.html_url }}/files)
-
-            > ⚠️ スナップショットの変更が意図したものであることを確認してください。`;
+            const comment = [
+              '## 📸 CDKスナップショット自動更新',
+              '',
+              'CDK関連ファイルの変更を検知し、スナップショットを自動更新しました。',
+              '',
+              '### 更新されたスナップショット',
+              '',
+              '```',
+              'infrastructure/deploy/test/__snapshots__/',
+              '```',
+              '',
+              '変更内容を確認してください：',
+              '- [最新のコミットを表示](${{ github.event.pull_request.html_url }}/commits)',
+              '- [スナップショットの差分を確認](${{ github.event.pull_request.html_url }}/files)',
+              '',
+              '> ⚠️ スナップショットの変更が意図したものであることを確認してください。'
+            ].join('\n');
 
             github.rest.issues.createComment({
               owner: context.repo.owner,

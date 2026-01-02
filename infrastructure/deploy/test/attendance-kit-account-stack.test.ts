@@ -97,9 +97,9 @@ describe('AttendanceKitAccountStack', () => {
     });
   });
 
-  test('Stack matches snapshot', () => {
+  test('Stack Matches Snapshot', () => {
     const app = new App();
-    const stack = new AttendanceKitAccountStack(app, 'TestStack', {
+    const stack = new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
       budgetAmountYen: 1000,
       alertEmail: 'test@example.com',
     });

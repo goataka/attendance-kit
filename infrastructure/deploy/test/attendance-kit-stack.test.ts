@@ -8,7 +8,7 @@ describe('AttendanceKitStack', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, 'AttendanceKit-Dev-Stack', {
       environment: 'dev',
     });
     template = Template.fromStack(stack);
@@ -126,13 +126,7 @@ describe('AttendanceKitStack', () => {
     template.resourceCountIs('AWS::IAM::Role', 0);
   });
 
-  test('Stack matches snapshot', () => {
-    const app = new App();
-    const stack = new AttendanceKitStack(app, 'TestStack', {
-      environment: 'dev',
-    });
-    const template = Template.fromStack(stack);
-
+  test('Stack Matches Snapshot', () => {
     expect(template.toJSON()).toMatchSnapshot();
   });
 });
@@ -140,7 +134,7 @@ describe('AttendanceKitStack', () => {
 describe('AttendanceKitStack - Staging Environment', () => {
   test('Staging environment creates correct table name', () => {
     const app = new App();
-    const stack = new AttendanceKitStack(app, 'TestStackStaging', {
+    const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
       environment: 'staging',
     });
     const template = Template.fromStack(stack);
@@ -150,9 +144,9 @@ describe('AttendanceKitStack - Staging Environment', () => {
     });
   });
 
-  test('Staging stack matches snapshot', () => {
+  test('Staging Stack Matches Snapshot', () => {
     const app = new App();
-    const stack = new AttendanceKitStack(app, 'TestStackStaging', {
+    const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
       environment: 'staging',
     });
     const template = Template.fromStack(stack);
