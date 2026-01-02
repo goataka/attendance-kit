@@ -22,14 +22,9 @@ const env = {
 };
 
 // Account-level resources (deployed once per AWS account)
-if (stackType === 'account' || stackType === 'all') {
+if (['all', 'account'].includes(stackType)) {
   const alertEmail = process.env.COST_ALERT_EMAIL;
-  if (!alertEmail || !alertEmail.trim()) {
-    if (stackType === 'account') {
-      throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
-    }
-    // Skip account stack creation when stackType is 'all' and COST_ALERT_EMAIL is not provided
-  } else {
+  if (alertEmail && alertEmail.trim()) {
     new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
       env,
       budgetAmountYen: 1000,
@@ -46,7 +41,7 @@ if (stackType === 'account' || stackType === 'all') {
 }
 
 // Environment-level resources (deployed per environment: dev, staging)
-if (stackType === 'environment' || stackType === 'all') {
+if (['all', 'environment'].includes(stackType)) {
   const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
   
   // Validate environment
