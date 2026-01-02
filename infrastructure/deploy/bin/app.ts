@@ -9,6 +9,7 @@ const app = new cdk.App();
 // Determine which stack to deploy from context
 // This allows bootstrap and individual stack deployments to work independently
 // Valid values:
+//   - 'bootstrap': No stacks created (for CDK bootstrap operation only)
 //   - 'account': Deploy only Account Stack (requires COST_ALERT_EMAIL)
 //   - 'environment': Deploy only Environment Stack (requires environment context)
 //   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is optional)
