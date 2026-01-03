@@ -5,7 +5,7 @@
 Bootstrapが必要な場合は、ワークフローが自動的に実行します。手動実行が必要な場合：
 
 ```bash
-npx cdk bootstrap aws://ACCOUNT_ID/ap-northeast-1
+npx cdk bootstrap aws://ACCOUNT_ID/ap-northeast-1 --context environment=dev
 ```
 
 ## OIDC認証エラー

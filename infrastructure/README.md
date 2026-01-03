@@ -80,7 +80,7 @@ npx cdk synth --context environment=staging
 export AWS_PROFILE=your-profile
 
 # Bootstrap（初回のみ）
-npx cdk bootstrap
+npx cdk bootstrap --context environment=dev
 
 # デプロイ
 npx cdk deploy --context environment=dev
@@ -136,7 +136,7 @@ npm test
 
 ```bash
 # Bootstrapが必要な場合は手動で実行
-npx cdk bootstrap aws://ACCOUNT_ID/ap-northeast-1
+npx cdk bootstrap aws://ACCOUNT_ID/ap-northeast-1 --context environment=dev
 ```
 
 ### OIDC認証エラー
