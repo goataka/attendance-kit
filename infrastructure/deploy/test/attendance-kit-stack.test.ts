@@ -139,8 +139,11 @@ describe('AttendanceKitStack', () => {
 });
 
 describe('AttendanceKitStack - Staging Environment', () => {
-  test('Staging environment creates correct table name', () => {
-    const app = new App();
+  let app: App;
+  let template: Template;
+
+  beforeEach(() => {
+    app = new App();
     const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
       environment: 'staging',
       description: 'DynamoDB clock table for attendance-kit (staging environment)',
@@ -151,27 +154,16 @@ describe('AttendanceKitStack - Staging Environment', () => {
         CostCenter: 'Engineering',
       },
     });
-    const template = Template.fromStack(stack);
+    template = Template.fromStack(stack);
+  });
 
+  test('Staging environment creates correct table name', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-staging-clock',
     });
   });
 
   test('Staging Stack Matches Snapshot', () => {
-    const app = new App();
-    const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
-      environment: 'staging',
-      description: 'DynamoDB clock table for attendance-kit (staging environment)',
-      tags: {
-        Environment: 'staging',
-        Project: 'attendance-kit',
-        ManagedBy: 'CDK',
-        CostCenter: 'Engineering',
-      },
-    });
-    const template = Template.fromStack(stack);
-
     expect(template.toJSON()).toMatchSnapshot();
   });
 });
