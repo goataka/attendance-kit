@@ -6,7 +6,7 @@ import * as iam from 'aws-cdk-lib/aws-iam';
 
 export interface CostBudgetProps {
   budgetName: string;
-  budgetAmountYen: number;
+  budgetAmountUsd: number;
   emailEndpoint: string;
 }
 
@@ -62,8 +62,8 @@ export class CostBudgetConstruct extends Construct {
         budgetType: 'COST',
         timeUnit: 'MONTHLY',
         budgetLimit: {
-          amount: props.budgetAmountYen,
-          unit: 'JPY',
+          amount: props.budgetAmountUsd,
+          unit: 'USD',
         },
       },
       notificationsWithSubscribers: [
