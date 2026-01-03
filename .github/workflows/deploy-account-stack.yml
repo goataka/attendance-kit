@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=bootstrap
 
       - name: CDK Deploy Account Stack
         working-directory: infrastructure/deploy
@@ -63,7 +63,7 @@ jobs:
           COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
         run: |
           echo "Deploying account stack: AttendanceKit-Account-Stack"
-          npx cdk deploy AttendanceKit-Account-Stack --require-approval never
+          npx cdk deploy AttendanceKit-Account-Stack --require-approval never --context stack=account
 
       - name: Output deployment results
         run: |

@@ -62,13 +62,10 @@ jobs:
 
       - name: CDK Bootstrap
         working-directory: infrastructure/deploy
-        env:
-          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 \
-            --context environment=${ENVIRONMENT}
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=bootstrap
 
       - name: CDK Deploy Environment Stack
         working-directory: infrastructure/deploy
@@ -77,7 +74,9 @@ jobs:
         run: |
           STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/')-Stack"
           echo "Deploying environment stack: ${STACK_NAME}"
-          npx cdk deploy ${STACK_NAME} --require-approval never --context environment=${ENVIRONMENT}
+          npx cdk deploy ${STACK_NAME} --require-approval never \
+            --context stack=environment \
+            --context environment=${ENVIRONMENT}
 
       - name: Output deployment results
         env:
