@@ -4,6 +4,7 @@ import { AttendanceKitAccountStack, AttendanceKitAccountStackProps } from '../li
 
 describe('AttendanceKitAccountStack', () => {
   let app: App;
+  let stack: AttendanceKitAccountStack;
   let template: Template;
 
   // Helper function to create common stack props
@@ -22,7 +23,7 @@ describe('AttendanceKitAccountStack', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', createStackProps());
+    stack = new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', createStackProps());
     template = Template.fromStack(stack);
   });
 
@@ -56,9 +57,6 @@ describe('AttendanceKitAccountStack', () => {
   });
 
   test('Stack has correct tags', () => {
-    const customApp = new App();
-    const stack = new AttendanceKitAccountStack(customApp, 'AttendanceKit-Account-Stack', createStackProps());
-
     // Verify stack was created successfully
     expect(stack).toBeDefined();
     expect(stack.node.id).toBe('AttendanceKit-Account-Stack');
