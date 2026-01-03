@@ -62,6 +62,8 @@ jobs:
 
       - name: CDK Bootstrap
         working-directory: infrastructure/deploy
+        env:
+          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)

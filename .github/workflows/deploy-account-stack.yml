@@ -52,6 +52,8 @@ jobs:
 
       - name: CDK Bootstrap
         working-directory: infrastructure/deploy
+        env:
+          COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
