@@ -152,7 +152,7 @@
 - [ ] Node.js 22環境をセットアップ
 - [ ] OIDCでAWS認証情報を設定
 - [ ] CDK依存関係をインストール: `npm ci`
-- [ ] CDK bootstrapを実行: `cdk bootstrap --context environment=$ENVIRONMENT`
+- [ ] CDK bootstrapを実行: `cdk bootstrap`
 - [ ] CDK deployを実行: `cdk deploy --context environment=$ENVIRONMENT --require-approval never`
 - [ ] スタック出力をキャプチャして表示するステップを追加
 
