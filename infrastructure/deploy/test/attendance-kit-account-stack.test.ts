@@ -9,7 +9,7 @@ describe('AttendanceKitAccountStack', () => {
 
   // Helper function to create common stack props
   const createStackProps = (overrides?: Partial<AttendanceKitAccountStackProps>): AttendanceKitAccountStackProps => ({
-    budgetAmountYen: 1000,
+    budgetAmountUsd: 10,
     alertEmail: 'test@example.com',
     description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
     tags: {
@@ -69,15 +69,15 @@ describe('AttendanceKitAccountStack', () => {
   test('Budget amount is configurable', () => {
     const customApp = new App();
     const stack = new AttendanceKitAccountStack(customApp, 'AttendanceKit-Account-Stack', createStackProps({
-      budgetAmountYen: 2000,
+      budgetAmountUsd: 20,
     }));
 
     const customTemplate = Template.fromStack(stack);
     customTemplate.hasResourceProperties('AWS::Budgets::Budget', {
       Budget: {
         BudgetLimit: {
-          Amount: 2000,
-          Unit: 'JPY',
+          Amount: 20,
+          Unit: 'USD',
         },
       },
     });

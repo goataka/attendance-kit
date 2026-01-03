@@ -96,8 +96,8 @@ exports[`AttendanceKitAccountStack Stack Matches Snapshot 1`] = `
       "Properties": {
         "Budget": {
           "BudgetLimit": {
-            "Amount": 1000,
-            "Unit": "JPY",
+            "Amount": 10,
+            "Unit": "USD",
           },
           "BudgetName": "attendance-kit-account-monthly-budget",
           "BudgetType": "COST",

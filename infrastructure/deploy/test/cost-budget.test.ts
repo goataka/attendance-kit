@@ -7,7 +7,7 @@ describe('CostBudgetConstruct', () => {
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
-      budgetAmountYen: 1000,
+      budgetAmountUsd: 10,
       emailEndpoint: 'test@example.com',
     });
 
@@ -23,7 +23,7 @@ describe('CostBudgetConstruct', () => {
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
-      budgetAmountYen: 1000,
+      budgetAmountUsd: 10,
       emailEndpoint: 'test@example.com',
     });
 
@@ -39,7 +39,7 @@ describe('CostBudgetConstruct', () => {
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
-      budgetAmountYen: 1000,
+      budgetAmountUsd: 10,
       emailEndpoint: 'test@example.com',
     });
 
@@ -50,8 +50,8 @@ describe('CostBudgetConstruct', () => {
         BudgetType: 'COST',
         TimeUnit: 'MONTHLY',
         BudgetLimit: {
-          Amount: 1000,
-          Unit: 'JPY',
+          Amount: 10,
+          Unit: 'USD',
         },
       },
     });
@@ -61,7 +61,7 @@ describe('CostBudgetConstruct', () => {
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
-      budgetAmountYen: 1000,
+      budgetAmountUsd: 10,
       emailEndpoint: 'test@example.com',
     });
 
@@ -87,7 +87,7 @@ describe('CostBudgetConstruct', () => {
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
-      budgetAmountYen: 1000,
+      budgetAmountUsd: 10,
       emailEndpoint: 'test@example.com',
     });
 
@@ -109,7 +109,7 @@ describe('CostBudgetConstruct', () => {
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
       budgetName: 'test-budget',
-      budgetAmountYen: 1000,
+      budgetAmountUsd: 10,
       emailEndpoint: 'test@example.com',
     });
 

@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 import { CostBudgetConstruct } from './constructs/cost-budget';
 
 export interface AttendanceKitAccountStackProps extends cdk.StackProps {
-  budgetAmountYen: number;
+  budgetAmountUsd: number;
   alertEmail: string;
 }
 
@@ -13,12 +13,12 @@ export class AttendanceKitAccountStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AttendanceKitAccountStackProps) {
     super(scope, id, props);
 
-    const { budgetAmountYen, alertEmail } = props;
+    const { budgetAmountUsd, alertEmail } = props;
 
     // Create cost budget with alerts (account-level resource)
     this.costBudget = new CostBudgetConstruct(this, 'CostBudget', {
       budgetName: 'attendance-kit-account-monthly-budget',
-      budgetAmountYen,
+      budgetAmountUsd,
       emailEndpoint: alertEmail,
     });
 

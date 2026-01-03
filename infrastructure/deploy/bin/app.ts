@@ -27,7 +27,7 @@ if (['all', 'account'].includes(stackType)) {
   }
   new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
     env,
-    budgetAmountYen: 1000,
+    budgetAmountUsd: 10,
     alertEmail: alertEmail.trim(),
     description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
     tags: {
