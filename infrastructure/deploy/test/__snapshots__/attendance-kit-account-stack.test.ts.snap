@@ -2,6 +2,7 @@
 
 exports[`AttendanceKitAccountStack Stack Matches Snapshot 1`] = `
 {
+  "Description": "Account-level resources for attendance-kit (AWS Budget, SNS)",
   "Outputs": {
     "BudgetName": {
       "Description": "AWS Budget name for cost monitoring",

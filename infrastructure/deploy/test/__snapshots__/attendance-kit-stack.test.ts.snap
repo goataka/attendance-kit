@@ -2,6 +2,7 @@
 
 exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot 1`] = `
 {
+  "Description": "DynamoDB clock table for attendance-kit (staging environment)",
   "Outputs": {
     "Environment": {
       "Description": "Deployment environment",
@@ -155,6 +156,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
 
 exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
 {
+  "Description": "DynamoDB clock table for attendance-kit (dev environment)",
   "Outputs": {
     "Environment": {
       "Description": "Deployment environment",

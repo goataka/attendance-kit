@@ -10,6 +10,13 @@ describe('AttendanceKitStack', () => {
     app = new App();
     const stack = new AttendanceKitStack(app, 'AttendanceKit-Dev-Stack', {
       environment: 'dev',
+      description: 'DynamoDB clock table for attendance-kit (dev environment)',
+      tags: {
+        Environment: 'dev',
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+      },
     });
     template = Template.fromStack(stack);
   });
@@ -136,6 +143,13 @@ describe('AttendanceKitStack - Staging Environment', () => {
     const app = new App();
     const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
       environment: 'staging',
+      description: 'DynamoDB clock table for attendance-kit (staging environment)',
+      tags: {
+        Environment: 'staging',
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+      },
     });
     const template = Template.fromStack(stack);
 
@@ -148,6 +162,13 @@ describe('AttendanceKitStack - Staging Environment', () => {
     const app = new App();
     const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
       environment: 'staging',
+      description: 'DynamoDB clock table for attendance-kit (staging environment)',
+      tags: {
+        Environment: 'staging',
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+      },
     });
     const template = Template.fromStack(stack);
 
