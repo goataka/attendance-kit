@@ -16,6 +16,24 @@ GitHub Copilot Coding Agent の実行環境をセットアップするワーク�
 
 **詳細**: [copilot-setup-steps.md](./copilot-setup-steps.md)
 
+### update-cdk-snapshots.yml
+
+CDK関連ファイルが変更されたPull Requestで、スナップショットを自動更新するワークフロー。
+
+- **トリガー**: 
+  - CDK関連ファイルが変更されたPull Request
+- **対象**: Dev, Staging, Accountスタックのスナップショット
+- **自動化**: スナップショット更新、コミット、PRコメント
+- **権限**: contents:write, pull-requests:write
+
+**監視ファイル**:
+- `infrastructure/deploy/lib/**/*.ts`
+- `infrastructure/deploy/bin/**/*.ts`
+- `infrastructure/deploy/test/**/*.test.ts`
+- `infrastructure/deploy/package*.json`
+
+**詳細**: [update-cdk-snapshots.md](./update-cdk-snapshots.md)
+
 ### deploy-environment-stack.yml
 
 環境レベルリソース（DynamoDBテーブル等）をデプロイするワークフロー。
