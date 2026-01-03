@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=account
 
       - name: CDK Deploy Account Stack
         working-directory: infrastructure/deploy
