@@ -8,8 +8,15 @@ describe('AttendanceKitStack', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, 'AttendanceKit-Dev-Stack', {
       environment: 'dev',
+      description: 'DynamoDB clock table for attendance-kit (dev environment)',
+      tags: {
+        Environment: 'dev',
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+      },
     });
     template = Template.fromStack(stack);
   });
@@ -125,18 +132,38 @@ describe('AttendanceKitStack', () => {
   test('GitHub Actions IAM Role is NOT created (managed by CloudFormation)', () => {
     template.resourceCountIs('AWS::IAM::Role', 0);
   });
+
+  test('Stack Matches Snapshot', () => {
+    expect(template.toJSON()).toMatchSnapshot();
+  });
 });
 
 describe('AttendanceKitStack - Staging Environment', () => {
-  test('Staging environment creates correct table name', () => {
-    const app = new App();
-    const stack = new AttendanceKitStack(app, 'TestStackStaging', {
-      environment: 'staging',
-    });
-    const template = Template.fromStack(stack);
+  let app: App;
+  let template: Template;
 
+  beforeEach(() => {
+    app = new App();
+    const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
+      environment: 'staging',
+      description: 'DynamoDB clock table for attendance-kit (staging environment)',
+      tags: {
+        Environment: 'staging',
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+      },
+    });
+    template = Template.fromStack(stack);
+  });
+
+  test('Staging environment creates correct table name', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-staging-clock',
     });
+  });
+
+  test('Staging Stack Matches Snapshot', () => {
+    expect(template.toJSON()).toMatchSnapshot();
   });
 });

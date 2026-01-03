@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttendanceKitAccountStack Stack Matches Snapshot 1`] = `
+{
+  "Description": "Account-level resources for attendance-kit (AWS Budget, SNS)",
+  "Outputs": {
+    "BudgetName": {
+      "Description": "AWS Budget name for cost monitoring",
+      "Export": {
+        "Name": "AttendanceKit-Account-BudgetName",
+      },
+      "Value": {
+        "Ref": "CostBudgetMonthlyBudget9F2EFA61",
+      },
+    },
+    "SnsTopicArn": {
+      "Description": "SNS Topic ARN for cost alerts",
+      "Export": {
+        "Name": "AttendanceKit-Account-SnsTopicArn",
+      },
+      "Value": {
+        "Ref": "CostBudgetCostAlertTopic728133D4",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "CostBudgetCostAlertTopic728133D4": {
+      "Properties": {
+        "DisplayName": "AWS Cost Budget Alerts",
+        "Tags": [
+          {
+            "Key": "CostCenter",
+            "Value": "Engineering",
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CDK",
+          },
+          {
+            "Key": "Project",
+            "Value": "attendance-kit",
+          },
+          {
+            "Key": "ResourceLevel",
+            "Value": "Account",
+          },
+        ],
+        "TopicName": "attendance-kit-cost-alerts",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "CostBudgetCostAlertTopicPolicy7E07D30D": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "SNS:Publish",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "budgets.amazonaws.com",
+              },
+              "Resource": {
+                "Ref": "CostBudgetCostAlertTopic728133D4",
+              },
+              "Sid": "0",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "Topics": [
+          {
+            "Ref": "CostBudgetCostAlertTopic728133D4",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::TopicPolicy",
+    },
+    "CostBudgetCostAlertTopictestexamplecomB2DA56A7": {
+      "Properties": {
+        "Endpoint": "test@example.com",
+        "Protocol": "email",
+        "TopicArn": {
+          "Ref": "CostBudgetCostAlertTopic728133D4",
+        },
+      },
+      "Type": "AWS::SNS::Subscription",
+    },
+    "CostBudgetMonthlyBudget9F2EFA61": {
+      "Properties": {
+        "Budget": {
+          "BudgetLimit": {
+            "Amount": 1000,
+            "Unit": "JPY",
+          },
+          "BudgetName": "attendance-kit-account-monthly-budget",
+          "BudgetType": "COST",
+          "TimeUnit": "MONTHLY",
+        },
+        "NotificationsWithSubscribers": [
+          {
+            "Notification": {
+              "ComparisonOperator": "GREATER_THAN",
+              "NotificationType": "ACTUAL",
+              "Threshold": 100,
+              "ThresholdType": "PERCENTAGE",
+            },
+            "Subscribers": [
+              {
+                "Address": {
+                  "Ref": "CostBudgetCostAlertTopic728133D4",
+                },
+                "SubscriptionType": "SNS",
+              },
+            ],
+          },
+          {
+            "Notification": {
+              "ComparisonOperator": "GREATER_THAN",
+              "NotificationType": "FORECASTED",
+              "Threshold": 100,
+              "ThresholdType": "PERCENTAGE",
+            },
+            "Subscribers": [
+              {
+                "Address": {
+                  "Ref": "CostBudgetCostAlertTopic728133D4",
+                },
+                "SubscriptionType": "SNS",
+              },
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::Budgets::Budget",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

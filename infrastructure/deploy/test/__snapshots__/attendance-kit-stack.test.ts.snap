@@ -1,0 +1,309 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot 1`] = `
+{
+  "Description": "DynamoDB clock table for attendance-kit (staging environment)",
+  "Outputs": {
+    "Environment": {
+      "Description": "Deployment environment",
+      "Export": {
+        "Name": "AttendanceKit-Staging-Environment",
+      },
+      "Value": "staging",
+    },
+    "GSIName": {
+      "Description": "Global Secondary Index name (staging)",
+      "Export": {
+        "Name": "AttendanceKit-Staging-GSIName",
+      },
+      "Value": "DateIndex",
+    },
+    "TableArn": {
+      "Description": "DynamoDB clock table ARN (staging)",
+      "Export": {
+        "Name": "AttendanceKit-Staging-ClockTableArn",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "ClockTable9AA4DD3D",
+          "Arn",
+        ],
+      },
+    },
+    "TableName": {
+      "Description": "DynamoDB clock table name (staging)",
+      "Export": {
+        "Name": "AttendanceKit-Staging-ClockTableName",
+      },
+      "Value": {
+        "Ref": "ClockTable9AA4DD3D",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "ClockTable9AA4DD3D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "timestamp",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "date",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "DateIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "date",
+                "KeyType": "HASH",
+              },
+              {
+                "AttributeName": "timestamp",
+                "KeyType": "RANGE",
+              },
+            ],
+            "Projection": {
+              "ProjectionType": "ALL",
+            },
+          },
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userId",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "timestamp",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
+        "TableName": "attendance-kit-staging-clock",
+        "Tags": [
+          {
+            "Key": "CostCenter",
+            "Value": "Engineering",
+          },
+          {
+            "Key": "Environment",
+            "Value": "staging",
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CDK",
+          },
+          {
+            "Key": "Project",
+            "Value": "attendance-kit",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
+
+exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
+{
+  "Description": "DynamoDB clock table for attendance-kit (dev environment)",
+  "Outputs": {
+    "Environment": {
+      "Description": "Deployment environment",
+      "Export": {
+        "Name": "AttendanceKit-Dev-Environment",
+      },
+      "Value": "dev",
+    },
+    "GSIName": {
+      "Description": "Global Secondary Index name (dev)",
+      "Export": {
+        "Name": "AttendanceKit-Dev-GSIName",
+      },
+      "Value": "DateIndex",
+    },
+    "TableArn": {
+      "Description": "DynamoDB clock table ARN (dev)",
+      "Export": {
+        "Name": "AttendanceKit-Dev-ClockTableArn",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "ClockTable9AA4DD3D",
+          "Arn",
+        ],
+      },
+    },
+    "TableName": {
+      "Description": "DynamoDB clock table name (dev)",
+      "Export": {
+        "Name": "AttendanceKit-Dev-ClockTableName",
+      },
+      "Value": {
+        "Ref": "ClockTable9AA4DD3D",
+      },
+    },
+  },
+  "Parameters": {
+    "BootstrapVersion": {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": {
+    "ClockTable9AA4DD3D": {
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "timestamp",
+            "AttributeType": "S",
+          },
+          {
+            "AttributeName": "date",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "DateIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "date",
+                "KeyType": "HASH",
+              },
+              {
+                "AttributeName": "timestamp",
+                "KeyType": "RANGE",
+              },
+            ],
+            "Projection": {
+              "ProjectionType": "ALL",
+            },
+          },
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userId",
+            "KeyType": "HASH",
+          },
+          {
+            "AttributeName": "timestamp",
+            "KeyType": "RANGE",
+          },
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": {
+          "SSEEnabled": true,
+        },
+        "TableName": "attendance-kit-dev-clock",
+        "Tags": [
+          {
+            "Key": "CostCenter",
+            "Value": "Engineering",
+          },
+          {
+            "Key": "Environment",
+            "Value": "dev",
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CDK",
+          },
+          {
+            "Key": "Project",
+            "Value": "attendance-kit",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+  },
+  "Rules": {
+    "CheckBootstrapVersion": {
+      "Assertions": [
+        {
+          "Assert": {
+            "Fn::Not": [
+              {
+                "Fn::Contains": [
+                  [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
