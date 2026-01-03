@@ -12,7 +12,7 @@ const app = new cdk.App();
 //   - 'bootstrap': No stacks created (for CDK bootstrap operation only)
 //   - 'account': Deploy only Account Stack (requires COST_ALERT_EMAIL)
 //   - 'environment': Deploy only Environment Stack (requires environment context)
-//   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is optional)
+//   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is required)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
 // AWS environment configuration
@@ -25,24 +25,20 @@ const env = {
 if (['all', 'account'].includes(stackType)) {
   const alertEmail = process.env.COST_ALERT_EMAIL;
   if (!alertEmail || !alertEmail.trim()) {
-    if (stackType === 'account') {
-      throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
-    }
-    // Skip account stack creation when stackType is 'all' and COST_ALERT_EMAIL is not provided
-  } else {
-    new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
-      env,
-      budgetAmountYen: 1000,
-      alertEmail: alertEmail.trim(),
-      description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
-      tags: {
-        Project: 'attendance-kit',
-        ManagedBy: 'CDK',
-        CostCenter: 'Engineering',
-        ResourceLevel: 'Account',
-      },
-    });
+    throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
   }
+  new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
+    env,
+    budgetAmountYen: 1000,
+    alertEmail: alertEmail.trim(),
+    description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
+    tags: {
+      Project: 'attendance-kit',
+      ManagedBy: 'CDK',
+      CostCenter: 'Engineering',
+      ResourceLevel: 'Account',
+    },
+  });
 }
 
 // Environment-level resources (deployed per environment: dev, staging)
