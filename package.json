@@ -1,0 +1,32 @@
+{
+  "name": "attendance-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Attendance management system built with spec-kit driven development",
+  "workspaces": [
+    "apps/*",
+    "sites/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:frontend": "npm run dev -w apps/clock-app-frontend",
+    "dev:backend": "npm run dev -w apps/clock-app-backend",
+    "dev:site": "npm run dev -w sites/product-support",
+    "build": "npm run build --workspaces --if-present",
+    "build:frontend": "npm run build -w apps/clock-app-frontend",
+    "build:backend": "npm run build -w apps/clock-app-backend",
+    "build:site": "npm run build -w sites/product-support"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "attendance",
+    "time-tracking",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC"
+}

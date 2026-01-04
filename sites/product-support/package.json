@@ -1,0 +1,19 @@
+{
+  "name": "product-support",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.17.1",
+    "astro": "^4.1.2",
+    "sharp": "^0.33.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
