@@ -10,12 +10,12 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
-    "dev:frontend": "npm run dev -w apps/clock-app-frontend",
-    "dev:backend": "npm run dev -w apps/clock-app-backend",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend",
     "dev:site": "npm run dev -w sites/product-support",
     "build": "npm run build --workspaces --if-present",
-    "build:frontend": "npm run build -w apps/clock-app-frontend",
-    "build:backend": "npm run build -w apps/clock-app-backend",
+    "build:frontend": "npm run build -w apps/frontend",
+    "build:backend": "npm run build -w apps/backend",
     "build:site": "npm run build -w sites/product-support"
   },
   "engines": {

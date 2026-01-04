@@ -38,8 +38,8 @@ graph TB
 ```
 attendance-kit/
 ├── apps/                       # アプリケーション
-│   ├── clock-app-frontend/    # React フロントエンド
-│   └── clock-app-backend/     # NestJS バックエンド
+│   ├── frontend/    # React フロントエンド
+│   └── backend/     # NestJS バックエンド
 ├── sites/                      # 静的サイト
 │   └── product-support/       # Astro サポートサイト
 ├── packages/                   # 共通パッケージ
@@ -192,8 +192,8 @@ npm run dev:site      # http://localhost:4321
 npm run build
 
 # 個別ビルド
-npm run build:frontend  # -> apps/clock-app-frontend/dist
-npm run build:backend   # -> apps/clock-app-backend/dist
+npm run build:frontend  # -> apps/frontend/dist
+npm run build:backend   # -> apps/backend/dist
 npm run build:site      # -> sites/product-support/dist
 ```
 
@@ -302,8 +302,8 @@ npm run build:site      # -> sites/product-support/dist
 
 ### パッケージREADME
 
-- [フロントエンド](../apps/clock-app-frontend/README.md)
-- [バックエンド](../apps/clock-app-backend/README.md)
+- [フロントエンド](../apps/frontend/README.md)
+- [バックエンド](../apps/backend/README.md)
 - [サポートサイト](../sites/product-support/README.md)
 - [型定義](../packages/types/README.md)
 - [共通設定](../packages/config/README.md)

@@ -24,17 +24,16 @@ export default defineConfig({
           label: 'はじめに',
           items: [
             { label: '概要', link: '/' },
-            { label: '使い方ガイド', link: '/getting-started' },
+            { label: '使い方ガイド', link: '/getting-started/' },
           ],
         },
         {
           label: 'サポート',
           items: [
-            { label: 'FAQ', link: '/faq' },
+            { label: 'FAQ', link: '/faq/' },
           ],
         },
       ],
-      head: [],
     }),
   ],
 });

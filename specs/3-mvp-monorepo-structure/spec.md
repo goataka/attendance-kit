@@ -127,8 +127,8 @@ graph TB
 ```
 attendance-kit/
 ├── apps/
-│   ├── clock-app-frontend/    # 勤怠アプリ（フロント）
-│   └── clock-app-backend/     # 勤怠アプリ（バック）
+│   ├── frontend/    # 勤怠アプリ（フロント）
+│   └── backend/     # 勤怠アプリ（バック）
 ├── sites/
 │   └── product-support/       # 製品サポートサイト
 ├── packages/

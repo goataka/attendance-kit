@@ -91,7 +91,7 @@
 
 ### フロントエンドタスク
 
-#### タスク: clock-app-frontendの基本セットアップ
+#### タスク: frontendの基本セットアップ
 
 **内容**:
 - Reactプロジェクトのセットアップ
@@ -100,13 +100,13 @@
 - 依存パッケージのインストール
 
 **成果物**:
-- `apps/clock-app-frontend/package.json`
-- `apps/clock-app-frontend/tsconfig.json`
-- `apps/clock-app-frontend/vite.config.ts`
-- `apps/clock-app-frontend/index.html`
+- `apps/frontend/package.json`
+- `apps/frontend/tsconfig.json`
+- `apps/frontend/vite.config.ts`
+- `apps/frontend/index.html`
 
 **受け入れ基準**:
-- `npm run dev -w apps/clock-app-frontend`が起動する
+- `npm run dev -w apps/frontend`が起動する
 - http://localhost:5173でアプリが表示される
 
 ---
@@ -120,9 +120,9 @@
 - レスポンシブデザインの基本CSS
 
 **成果物**:
-- `apps/clock-app-frontend/src/main.tsx`
-- `apps/clock-app-frontend/src/App.tsx`
-- `apps/clock-app-frontend/src/index.css`
+- `apps/frontend/src/main.tsx`
+- `apps/frontend/src/App.tsx`
+- `apps/frontend/src/index.css`
 
 **受け入れ基準**:
 - アプリが表示される
@@ -140,10 +140,10 @@
 - 打刻履歴表示コンポーネント
 
 **成果物**:
-- `apps/clock-app-frontend/src/components/ClockInButton.tsx`
-- `apps/clock-app-frontend/src/components/ClockOutButton.tsx`
-- `apps/clock-app-frontend/src/components/UserInput.tsx`
-- `apps/clock-app-frontend/src/components/RecordList.tsx`
+- `apps/frontend/src/components/ClockInButton.tsx`
+- `apps/frontend/src/components/ClockOutButton.tsx`
+- `apps/frontend/src/components/UserInput.tsx`
+- `apps/frontend/src/components/RecordList.tsx`
 
 **受け入れ基準**:
 - ボタンがクリック可能
@@ -160,7 +160,7 @@
 - エラーハンドリング
 
 **成果物**:
-- `apps/clock-app-frontend/src/services/api.ts`
+- `apps/frontend/src/services/api.ts`
 
 **受け入れ基準**:
 - 共通型定義を使用している
@@ -170,7 +170,7 @@
 
 ### バックエンドタスク
 
-#### タスク: clock-app-backendの基本セットアップ
+#### タスク: backendの基本セットアップ
 
 **内容**:
 - NestJSプロジェクトのセットアップ
@@ -178,12 +178,12 @@
 - 依存パッケージのインストール
 
 **成果物**:
-- `apps/clock-app-backend/package.json`
-- `apps/clock-app-backend/tsconfig.json`
-- `apps/clock-app-backend/nest-cli.json`
+- `apps/backend/package.json`
+- `apps/backend/tsconfig.json`
+- `apps/backend/nest-cli.json`
 
 **受け入れ基準**:
-- `npm run dev -w apps/clock-app-backend`が起動する
+- `npm run dev -w apps/backend`が起動する
 - http://localhost:3000でAPIが応答する
 
 ---
@@ -196,8 +196,8 @@
 - CORS設定
 
 **成果物**:
-- `apps/clock-app-backend/src/main.ts`
-- `apps/clock-app-backend/src/app.module.ts`
+- `apps/backend/src/main.ts`
+- `apps/backend/src/app.module.ts`
 
 **受け入れ基準**:
 - サーバーが起動する
@@ -214,9 +214,9 @@
 - 型定義パッケージの利用
 
 **成果物**:
-- `apps/clock-app-backend/src/clock/clock.controller.ts`
-- `apps/clock-app-backend/src/clock/clock.service.ts`
-- `apps/clock-app-backend/src/clock/clock.module.ts`
+- `apps/backend/src/clock/clock.controller.ts`
+- `apps/backend/src/clock/clock.service.ts`
+- `apps/backend/src/clock/clock.module.ts`
 
 **受け入れ基準**:
 - POST /api/clock-inが動作する
@@ -233,7 +233,7 @@
 - 打刻データの保存・取得機能
 
 **成果物**:
-- `apps/clock-app-backend/src/clock/clock.service.ts`（更新）
+- `apps/backend/src/clock/clock.service.ts`（更新）
 
 **受け入れ基準**:
 - データの保存・取得が動作する
@@ -372,8 +372,8 @@
 - 簡潔な説明とコマンド例
 
 **成果物**:
-- `apps/clock-app-frontend/README.md`
-- `apps/clock-app-backend/README.md`
+- `apps/frontend/README.md`
+- `apps/backend/README.md`
 - `sites/product-support/README.md`
 - `packages/types/README.md`
 - `packages/config/README.md`
@@ -398,14 +398,14 @@
 
 ### Phase 3: フロントエンド
 
-- clock-app-frontendの基本セットアップ
+- frontendの基本セットアップ
 - フロントエンドの基本コンポーネント作成
 - 打刻コンポーネントの作成
 - フロントエンドAPIサービスの作成
 
 ### Phase 4: バックエンド
 
-- clock-app-backendの基本セットアップ
+- backendの基本セットアップ
 - バックエンドの基本構造作成
 - 打刻APIの実装
 - データストレージの実装

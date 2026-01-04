@@ -15,8 +15,8 @@
 ```
 .
 ├── apps/               # アプリケーション
-│   ├── clock-app-frontend/   # 勤怠アプリ（React）
-│   └── clock-app-backend/    # 勤怠アプリ（NestJS）
+│   ├── frontend/             # 勤怠アプリ（React）
+│   └── backend/              # 勤怠アプリ（NestJS）
 ├── sites/              # 静的サイト
 │   └── product-support/      # 製品サポートサイト（Astro + Starlight）
 ├── packages/           # 共通パッケージ

@@ -59,7 +59,7 @@ attendance-kit/
 ├── tsconfig.json               # ベースTypeScript設定
 ├── .gitignore                  # Git除外設定（更新）
 ├── apps/
-│   ├── clock-app-frontend/
+│   ├── frontend/
 │   │   ├── package.json
 │   │   ├── tsconfig.json       # 継承設定
 │   │   ├── vite.config.ts
@@ -75,7 +75,7 @@ attendance-kit/
 │   │   │   └── types/
 │   │   │       └── index.ts
 │   │   └── public/
-│   └── clock-app-backend/
+│   └── backend/
 │       ├── package.json
 │       ├── tsconfig.json
 │       ├── nest-cli.json
@@ -249,8 +249,8 @@ export interface ClockOutRequest {
 {
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
-    "dev:frontend": "npm run dev -w apps/clock-app-frontend",
-    "dev:backend": "npm run dev -w apps/clock-app-backend",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend",
     "dev:site": "npm run dev -w sites/product-support"
   }
 }
@@ -268,16 +268,16 @@ export interface ClockOutRequest {
 {
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build:frontend": "npm run build -w apps/clock-app-frontend",
-    "build:backend": "npm run build -w apps/clock-app-backend",
+    "build:frontend": "npm run build -w apps/frontend",
+    "build:backend": "npm run build -w apps/backend",
     "build:site": "npm run build -w sites/product-support"
   }
 }
 ```
 
 **ビルド成果物**:
-- フロントエンド: `apps/clock-app-frontend/dist`
-- バックエンド: `apps/clock-app-backend/dist`
+- フロントエンド: `apps/frontend/dist`
+- バックエンド: `apps/backend/dist`
 - サポートサイト: `sites/product-support/dist`
 
 ## デプロイ戦略
@@ -424,14 +424,14 @@ export interface ClockRecord {
   clockOutTime?: Date;
 }
 
-// apps/clock-app-frontend/src/services/api.ts
+// apps/frontend/src/services/api.ts
 import { ClockRecord } from '@attendance-kit/types';
 
 export async function fetchRecords(): Promise<ClockRecord[]> {
   // 実装
 }
 
-// apps/clock-app-backend/src/clock/clock.service.ts
+// apps/backend/src/clock/clock.service.ts
 import { ClockRecord } from '@attendance-kit/types';
 
 export class ClockService {
