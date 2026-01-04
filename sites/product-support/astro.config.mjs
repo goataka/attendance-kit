@@ -28,6 +28,12 @@ export default defineConfig({
           ],
         },
         {
+          label: '機能',
+          items: [
+            { label: '機能リファレンス', link: '/features/' },
+          ],
+        },
+        {
           label: 'サポート',
           items: [
             { label: 'FAQ', link: '/faq/' },

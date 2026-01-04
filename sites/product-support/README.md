@@ -4,8 +4,8 @@
 
 ## 技術スタック
 
-- Astro 4
-- Starlight
+- Astro 4.16.19
+- Starlight 0.29.3
 - Markdown
 
 ## 開発
@@ -22,9 +22,5 @@ npm run build:site
 
 - 概要
 - 使い方ガイド
+- 機能リファレンス
 - FAQ
-
-## 注意事項
-
-現在、Astro/Starlightのビルドに既知の問題があります。
-開発サーバーは正常に動作します。

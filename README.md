@@ -14,17 +14,29 @@
 
 ```
 .
+├── .devcontainer/      # DevContainer設定
+│   ├── devcontainer.json
+│   └── README.md
+├── .github/            # GitHub設定
+│   ├── agents/        # カスタムエージェント設定
+│   └── workflows/     # GitHub Actionsワークフロー
+├── .specify/           # spec-kit設定とテンプレート
+│   └── templates/     # ドキュメントテンプレート
 ├── apps/               # アプリケーション
-│   ├── frontend/             # 勤怠アプリ（React）
-│   └── backend/              # 勤怠アプリ（NestJS）
+│   ├── frontend/      # 勤怠アプリ（React）
+│   └── backend/       # 勤怠アプリ（NestJS）
 ├── sites/              # 静的サイト
 │   └── product-support/      # 製品サポートサイト（Astro + Starlight）
 ├── packages/           # 共通パッケージ
-│   ├── types/                # 共通型定義
-│   └── config/               # 共通設定
+│   ├── types/         # 共通型定義
+│   └── config/        # 共通設定
 ├── infrastructure/     # AWS CDKインフラコード
+│   ├── deploy/        # CDKデプロイコード
+│   └── setup/         # セットアップスクリプト
 ├── specs/              # 機能仕様書（ブランチごと）
 ├── docs/               # 確定した仕様と実装ドキュメント
+│   ├── architecture/  # アーキテクチャ設計
+│   └── business/      # ビジネス要件
 ├── memory/             # プロジェクト憲法と記憶
 └── README.md           # このファイル
 ```
