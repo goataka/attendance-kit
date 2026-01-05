@@ -17,7 +17,7 @@ attendance-kit/
 ├── apps/                  # アプリケーション
 │   ├── frontend/          # フロントエンドアプリ（React）
 │   └── backend/           # バックエンドアプリ（NestJS）
-├── sites/                 # 静的サイト
+├── apps/site/                 # 静的サイト
 │   └── site/   # 製品サポートサイト（Astro + Starlight）
 ├── packages/              # 共通パッケージ
 │   ├── types/            # 共通型定義
@@ -96,11 +96,11 @@ NestJS + TypeScriptで構築されたバックエンドアプリケーション�
 
 **ビルド成果物**: `dist/`
 
-### `sites/`
+### `apps/site/`
 
 静的サイトを格納するディレクトリ。
 
-#### `sites/site/`
+#### `apps/site/site/`
 
 Astro + Starlightで構築された製品サポートサイト。
 
@@ -210,7 +210,7 @@ specs/
 {
   "workspaces": [
     "apps/*",
-    "sites/*",
+    "apps/site/*",
     "packages/*"
   ]
 }
@@ -258,7 +258,7 @@ npm run build:site
 |----------|------------|-----------|
 | frontend | `apps/frontend/dist/` | CloudFront + S3 |
 | backend | `apps/backend/dist/` | API Gateway + Lambda |
-| site | `sites/site/dist/` | CloudFront + S3 |
+| site | `apps/site/site/dist/` | CloudFront + S3 |
 
 ## 開発ワークフロー
 

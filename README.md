@@ -25,7 +25,7 @@
 ├── apps/               # アプリケーション
 │   ├── frontend/      # 勤怠アプリ（React）
 │   └── backend/       # 勤怠アプリ（NestJS）
-├── sites/              # 静的サイト
+├── apps/site/              # 静的サイト
 │   └── site/      # 製品サポートサイト（Astro + Starlight）
 ├── packages/           # 共通パッケージ
 │   ├── types/         # 共通型定義

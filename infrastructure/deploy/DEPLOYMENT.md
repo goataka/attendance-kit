@@ -18,10 +18,25 @@
 - SNS トピック（コストアラート用）
 
 ### Environment Stack (環境ごと)
-- **DynamoDB**: テーブル（打刻データ保存）+ Global Secondary Index
+- **Database**: DynamoDB テーブル（打刻イベント保存）+ Global Secondary Index
 - **Frontend**: CloudFront + S3（Reactアプリ）
 - **Backend**: API Gateway + Lambda（NestJS）
 - **Site**: CloudFront + S3（Astro + Starlight）
+
+### データモデル
+
+各打刻（出勤・退勤）は個別のレコードとしてDynamoDBに保存されます：
+
+```typescript
+{
+  userId: string,        // Partition Key
+  timestamp: string,     // Sort Key (ISO 8601)
+  id: string,
+  type: 'clock-in' | 'clock-out',
+  userName?: string,     // 出勤時のみ
+  date: string          // YYYY-MM-DD (GSI用)
+}
+```
 
 ## セットアップ
 
@@ -62,22 +77,7 @@ export COST_ALERT_EMAIL="your-email@example.com"
 cdk deploy AttendanceKit-Account-Stack --context stack=account
 ```
 
-### DynamoDB のみデプロイ
-
-DynamoDBテーブルのみをデプロイする場合:
-
-```bash
-# dev環境（アプリはデプロイしない）
-cdk deploy AttendanceKit-Dev-Stack --context environment=dev --context deployApp=false
-
-# staging環境
-cdk deploy AttendanceKit-Staging-Stack --context environment=staging --context deployApp=false
-
-# prod環境
-cdk deploy AttendanceKit-Prod-Stack --context environment=prod --context deployApp=false
-```
-
-### フルスタックデプロイ（DynamoDB + アプリ）
+### フルスタックデプロイ（Database + Frontend + Backend + Site）
 
 アプリケーションをビルドしてからデプロイします。
 

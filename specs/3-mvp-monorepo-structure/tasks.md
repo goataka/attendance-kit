@@ -251,12 +251,12 @@
 - 依存パッケージのインストール
 
 **成果物**:
-- `sites/site/package.json`
-- `sites/site/tsconfig.json`
-- `sites/site/astro.config.mjs`
+- `apps/site/site/package.json`
+- `apps/site/site/tsconfig.json`
+- `apps/site/site/astro.config.mjs`
 
 **受け入れ基準**:
-- `npm run dev -w sites/site`が起動する
+- `npm run dev -w apps/site/site`が起動する
 - http://localhost:4321でサイトが表示される
 
 ---
@@ -270,7 +270,7 @@
 - ロゴとファビコン（後続で追加）
 
 **成果物**:
-- `sites/site/astro.config.mjs`（更新）
+- `apps/site/site/astro.config.mjs`（更新）
 
 **受け入れ基準**:
 - カスタムカラーが適用されている
@@ -286,9 +286,9 @@
 - FAQページ
 
 **成果物**:
-- `sites/site/src/content/docs/index.md`
-- `sites/site/src/content/docs/getting-started.md`
-- `sites/site/src/content/docs/faq.md`
+- `apps/site/site/src/content/docs/index.md`
+- `apps/site/site/src/content/docs/getting-started.md`
+- `apps/site/site/src/content/docs/faq.md`
 
 **受け入れ基準**:
 - すべてのページが表示される
@@ -374,7 +374,7 @@
 **成果物**:
 - `apps/frontend/README.md`
 - `apps/backend/README.md`
-- `sites/site/README.md`
+- `apps/site/site/README.md`
 - `packages/types/README.md`
 - `packages/config/README.md`
 

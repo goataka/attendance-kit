@@ -40,7 +40,7 @@ attendance-kit/
 ├── apps/                       # アプリケーション
 │   ├── frontend/    # React フロントエンド
 │   └── backend/     # NestJS バックエンド
-├── sites/                      # 静的サイト
+├── apps/site/                      # 静的サイト
 │   └── site/       # Astro サポートサイト
 ├── packages/                   # 共通パッケージ
 │   ├── types/                 # 型定義
@@ -194,7 +194,7 @@ npm run build
 # 個別ビルド
 npm run build:frontend  # -> apps/frontend/dist
 npm run build:backend   # -> apps/backend/dist
-npm run build:site      # -> sites/site/dist
+npm run build:site      # -> apps/site/site/dist
 ```
 
 ## テスト結果
@@ -304,7 +304,7 @@ npm run build:site      # -> sites/site/dist
 
 - [フロントエンド](../apps/frontend/README.md)
 - [バックエンド](../apps/backend/README.md)
-- [サポートサイト](../sites/site/README.md)
+- [サポートサイト](../apps/site/site/README.md)
 - [型定義](../packages/types/README.md)
 - [共通設定](../packages/config/README.md)
 

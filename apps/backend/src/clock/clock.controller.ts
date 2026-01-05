@@ -1,18 +1,18 @@
 import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ClockService } from './clock.service';
-import { ClockInRequest, ClockOutRequest, ClockRecord, ApiResponse } from '@attendance-kit/types';
+import { ClockInRequest, ClockOutRequest, ClockEvent, ClockRecord, ApiResponse } from '@attendance-kit/types';
 
 @Controller()
 export class ClockController {
   constructor(private readonly clockService: ClockService) {}
 
   @Post('clock-in')
-  async clockIn(@Body() request: ClockInRequest): Promise<ApiResponse<ClockRecord>> {
+  async clockIn(@Body() request: ClockInRequest): Promise<ApiResponse<ClockEvent>> {
     try {
-      const record = await this.clockService.clockIn(request);
+      const event = await this.clockService.clockIn(request);
       return {
         success: true,
-        data: record,
+        data: event,
         message: 'Clock in successful',
       };
     } catch (error) {
@@ -24,12 +24,12 @@ export class ClockController {
   }
 
   @Post('clock-out')
-  async clockOut(@Body() request: ClockOutRequest): Promise<ApiResponse<ClockRecord>> {
+  async clockOut(@Body() request: ClockOutRequest): Promise<ApiResponse<ClockEvent>> {
     try {
-      const record = await this.clockService.clockOut(request);
+      const event = await this.clockService.clockOut(request);
       return {
         success: true,
-        data: record,
+        data: event,
         message: 'Clock out successful',
       };
     } catch (error) {

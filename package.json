@@ -5,18 +5,17 @@
   "description": "Attendance management system built with spec-kit driven development",
   "workspaces": [
     "apps/*",
-    "sites",
     "packages/*"
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
     "dev:frontend": "npm run dev -w apps/frontend",
     "dev:backend": "npm run dev -w apps/backend",
-    "dev:site": "npm run dev -w sites",
+    "dev:site": "npm run dev -w apps/site",
     "build": "npm run build --workspaces --if-present",
     "build:frontend": "npm run build -w apps/frontend",
     "build:backend": "npm run build -w apps/backend",
-    "build:site": "npm run build -w sites"
+    "build:site": "npm run build -w apps/site"
   },
   "engines": {
     "node": ">=18.0.0",

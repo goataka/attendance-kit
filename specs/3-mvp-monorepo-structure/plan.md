@@ -89,7 +89,7 @@ attendance-kit/
 │       │   └── types/
 │       │       └── index.ts
 │       └── test/
-├── sites/
+├── apps/site/
 │   └── site/
 │       ├── package.json
 │       ├── tsconfig.json
@@ -251,7 +251,7 @@ export interface ClockOutRequest {
     "dev": "npm run dev --workspaces --if-present",
     "dev:frontend": "npm run dev -w apps/frontend",
     "dev:backend": "npm run dev -w apps/backend",
-    "dev:site": "npm run dev -w sites/site"
+    "dev:site": "npm run dev -w apps/site/site"
   }
 }
 ```
@@ -270,7 +270,7 @@ export interface ClockOutRequest {
     "build": "npm run build --workspaces --if-present",
     "build:frontend": "npm run build -w apps/frontend",
     "build:backend": "npm run build -w apps/backend",
-    "build:site": "npm run build -w sites/site"
+    "build:site": "npm run build -w apps/site/site"
   }
 }
 ```
@@ -278,7 +278,7 @@ export interface ClockOutRequest {
 **ビルド成果物**:
 - フロントエンド: `apps/frontend/dist`
 - バックエンド: `apps/backend/dist`
-- サポートサイト: `sites/site/dist`
+- サポートサイト: `apps/site/site/dist`
 
 ## デプロイ戦略
 
