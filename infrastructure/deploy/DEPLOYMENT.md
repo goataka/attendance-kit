@@ -17,11 +17,8 @@
 - AWS Budget（月額10 USD）
 - SNS トピック（コストアラート用）
 
-### Infrastructure Stack (環境ごと)
-- DynamoDB テーブル（打刻データ保存）
-- Global Secondary Index（日付検索用）
-
-### App Stack (環境ごと)
+### Environment Stack (環境ごと)
+- **DynamoDB**: テーブル（打刻データ保存）+ Global Secondary Index
 - **Frontend**: CloudFront + S3（Reactアプリ）
 - **Backend**: API Gateway + Lambda（NestJS）
 - **Site**: CloudFront + S3（Astro + Starlight）
@@ -32,7 +29,7 @@
 
 ```bash
 cd infrastructure/deploy
-npm install
+npm ci
 ```
 
 ### 2. ビルド
@@ -62,27 +59,29 @@ cdk bootstrap aws://ACCOUNT-NUMBER/ap-northeast-1
 export COST_ALERT_EMAIL="your-email@example.com"
 
 # Account Stackのみデプロイ
-cdk deploy AttendanceKit-Account-Stack
+cdk deploy AttendanceKit-Account-Stack --context stack=account
 ```
 
-### Infrastructure Stack（DynamoDB）
+### DynamoDB のみデプロイ
+
+DynamoDBテーブルのみをデプロイする場合:
 
 ```bash
-# dev環境
-cdk deploy AttendanceKit-Dev-Stack --context environment=dev
+# dev環境（アプリはデプロイしない）
+cdk deploy AttendanceKit-Dev-Stack --context environment=dev --context deployApp=false
 
 # staging環境
-cdk deploy AttendanceKit-Staging-Stack --context environment=staging
+cdk deploy AttendanceKit-Staging-Stack --context environment=staging --context deployApp=false
 
 # prod環境
-cdk deploy AttendanceKit-Prod-Stack --context environment=prod
+cdk deploy AttendanceKit-Prod-Stack --context environment=prod --context deployApp=false
 ```
 
-### App Stack（Frontend, Backend, Site）
+### フルスタックデプロイ（DynamoDB + アプリ）
 
 アプリケーションをビルドしてからデプロイします。
 
-#### ビルド
+#### 1. アプリのビルド
 
 ```bash
 # ルートディレクトリに戻る
@@ -97,7 +96,34 @@ npm run build:backend
 npm run build:site
 ```
 
-#### デプロイ
+#### 2. デプロイ
+
+```bash
+# infrastructure/deployディレクトリに戻る
+cd infrastructure/deploy
+
+# dev環境（DynamoDB + アプリ全体）
+cdk deploy AttendanceKit-Dev-Stack --context environment=dev
+
+# staging環境
+cdk deploy AttendanceKit-Staging-Stack --context environment=staging
+
+# prod環境
+cdk deploy AttendanceKit-Prod-Stack --context environment=prod
+```
+
+### 一括デプロイ
+
+すべてのスタックを一度にデプロイすることもできます。
+
+```bash
+# dev環境の全スタックをデプロイ
+export COST_ALERT_EMAIL="your-email@example.com"
+export ENVIRONMENT=dev
+export STACK_TYPE=all
+
+cdk deploy --all
+```
 
 ```bash
 # infrastructure/deployディレクトリに戻る

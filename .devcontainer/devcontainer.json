@@ -9,7 +9,7 @@
     }
   },
   
-  "postCreateCommand": "pip3 install uv && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git && npm install && echo 'Setup complete. Node.js and spec-kit are ready to use.'",
+  "postCreateCommand": "pip3 install uv && uv tool install specify-cli --from git+https://github.com/github/spec-kit.git && npm ci && echo 'Setup complete. Node.js and spec-kit are ready to use.'",
   
   "customizations": {
     "vscode": {

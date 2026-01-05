@@ -1,13 +1,19 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { FrontendConstruct } from './constructs/frontend-construct';
+import { SiteConstruct } from './constructs/site-construct';
+import { BackendConstruct } from './constructs/backend-construct';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment: string; // 'dev' | 'staging'
+  environment: string; // 'dev' | 'staging' | 'prod'
 }
 
 export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
+  public readonly frontend?: FrontendConstruct;
+  public readonly site?: SiteConstruct;
+  public readonly backend?: BackendConstruct;
 
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
@@ -60,7 +66,7 @@ export class AttendanceKitStack extends cdk.Stack {
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
     cdk.Tags.of(this.clockTable).add('CostCenter', 'Engineering');
 
-    // CloudFormation Outputs
+    // CloudFormation Outputs for DynamoDB
     new cdk.CfnOutput(this, 'TableName', {
       value: this.clockTable.tableName,
       description: `DynamoDB clock table name (${environment})`,
@@ -84,5 +90,27 @@ export class AttendanceKitStack extends cdk.Stack {
       description: 'Deployment environment',
       exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Environment`,
     });
+
+    // Application resources (optional deployment)
+    const deployApp = this.node.tryGetContext('deployApp') !== 'false';
+    
+    if (deployApp) {
+      // Frontend (React App)
+      this.frontend = new FrontendConstruct(this, 'Frontend', {
+        environment,
+      });
+
+      // Support Site (Astro + Starlight)
+      this.site = new SiteConstruct(this, 'Site', {
+        environment,
+      });
+
+      // Backend (NestJS on Lambda)
+      this.backend = new BackendConstruct(this, 'Backend', {
+        environment,
+        clockTable: this.clockTable,
+        frontendUrl: `https://${this.frontend.distribution.distributionDomainName}`,
+      });
+    }
   }
 }

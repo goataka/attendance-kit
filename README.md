@@ -26,7 +26,7 @@
 │   ├── frontend/      # 勤怠アプリ（React）
 │   └── backend/       # 勤怠アプリ（NestJS）
 ├── sites/              # 静的サイト
-│   └── product-support/      # 製品サポートサイト（Astro + Starlight）
+│   └── site/      # 製品サポートサイト（Astro + Starlight）
 ├── packages/           # 共通パッケージ
 │   ├── types/         # 共通型定義
 │   └── config/        # 共通設定

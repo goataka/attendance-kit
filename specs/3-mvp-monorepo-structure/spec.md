@@ -130,7 +130,7 @@ attendance-kit/
 │   ├── frontend/    # 勤怠アプリ（フロント）
 │   └── backend/     # 勤怠アプリ（バック）
 ├── sites/
-│   └── product-support/       # 製品サポートサイト
+│   └── site/       # 製品サポートサイト
 ├── packages/
 │   ├── config/                # 共通設定
 │   └── types/                 # 共通型定義

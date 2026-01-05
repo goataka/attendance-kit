@@ -3,15 +3,13 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 import { AttendanceKitAccountStack } from '../lib/attendance-kit-account-stack';
-import { AttendanceKitAppStack } from '../lib/attendance-kit-app-stack';
 
 const app = new cdk.App();
 
 // Determine which stack to deploy from context
 // Valid values:
 //   - 'account': Deploy only Account Stack (requires COST_ALERT_EMAIL)
-//   - 'infrastructure': Deploy only Infrastructure Stack (DynamoDB)
-//   - 'app': Deploy only App Stack (Frontend, Backend, Site)
+//   - 'infrastructure': Deploy only Infrastructure Stack (DynamoDB only)
 //   - 'all': Deploy all stacks (default, COST_ALERT_EMAIL is required)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
@@ -50,42 +48,14 @@ if (['all', 'account'].includes(stackType)) {
   });
 }
 
-// Infrastructure resources (DynamoDB)
-let clockTableName: string | undefined;
+// Infrastructure and Application resources
 if (['all', 'infrastructure'].includes(stackType)) {
   const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
   
-  const infraStack = new AttendanceKitStack(app, stackName, {
+  new AttendanceKitStack(app, stackName, {
     env,
     environment,
-    description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
-    tags: {
-      Environment: environment,
-      Project: 'attendance-kit',
-      ManagedBy: 'CDK',
-      CostCenter: 'Engineering',
-    },
-  });
-  
-  clockTableName = infraStack.clockTable.tableName;
-}
-
-// Application resources (Frontend, Backend, Site)
-if (['all', 'app'].includes(stackType)) {
-  // If not deploying infrastructure stack, get table name from context or environment
-  if (!clockTableName) {
-    clockTableName = app.node.tryGetContext('clockTableName') 
-      || process.env.CLOCK_TABLE_NAME 
-      || `attendance-kit-${environment}-clock`;
-  }
-  
-  const appStackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-App-Stack`;
-  
-  new AttendanceKitAppStack(app, appStackName, {
-    env,
-    environment,
-    clockTableName,
-    description: `Application resources for attendance-kit (${environment} environment)`,
+    description: `Infrastructure and application resources for attendance-kit (${environment} environment)`,
     tags: {
       Environment: environment,
       Project: 'attendance-kit',
