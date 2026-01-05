@@ -19,7 +19,8 @@
     "localstack:start": "docker-compose up -d",
     "localstack:stop": "docker-compose down",
     "localstack:logs": "docker-compose logs -f localstack",
-    "dynamodb:setup": "./scripts/setup-dynamodb-local.sh"
+    "dynamodb:setup": "./scripts/setup-dynamodb-local.sh",
+    "capture:screenshots": "./scripts/capture-screenshots.sh"
   },
   "engines": {
     "node": ">=18.0.0",

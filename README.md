@@ -141,6 +141,8 @@ specify --help
 - [リポジトリ構成](docs/REPOSITORY_STRUCTURE.md) - ディレクトリ構造と役割
 - [アーキテクチャ仕様](docs/architecture/attendance-kit-architecture.md) - システムアーキテクチャと設計
 - [ローカル開発環境](docs/LOCAL_DEVELOPMENT.md) - ローカル開発のセットアップ手順
+- [スクリーンショット撮影ガイド](docs/SCREENSHOT_GUIDE.md) - 機能リファレンス用スクリーンショットの撮影方法
+- [スクリーンショットS3アップロード](docs/SCREENSHOT_S3_UPLOAD.md) - 画像のS3デプロイとキャッシュ管理
 - [デプロイガイド](infrastructure/deploy/DEPLOYMENT.md) - AWS CDKデプロイ手順
 - [プロジェクト憲法](memory/constitution.md) - プロジェクトの核心原則
 

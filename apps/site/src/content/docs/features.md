@@ -9,7 +9,7 @@ description: 勤怠管理システムの機能詳細と使用方法
 
 アプリケーションを開くと、以下の画面が表示されます。
 
-![初期画面](https://github.com/user-attachments/assets/e3675d3e-a689-4251-b794-000eb147e859)
+![初期画面](/images/screenshots/01-initial-screen.png)
 
 ### 画面構成
 
@@ -28,7 +28,7 @@ description: 勤怠管理システムの機能詳細と使用方法
 
 ### 実行結果
 
-![出勤打刻後](https://github.com/user-attachments/assets/cb35c29e-0035-4b07-b4c4-d7a7f68cc608)
+![出勤打刻後](/images/screenshots/02-after-clock-in.png)
 
 打刻が完了すると、打刻履歴テーブルに新しいレコードが追加されます。
 
@@ -52,7 +52,7 @@ description: 勤怠管理システムの機能詳細と使用方法
 
 ### 実行結果
 
-![退勤打刻後](https://github.com/user-attachments/assets/c4ad2af2-03d7-4e34-8b7a-e3b82ec2ab08)
+![退勤打刻後](/images/screenshots/03-after-clock-out.png)
 
 退勤打刻が完了すると、該当レコードに退勤時刻が記録され、状態が「完了」に変わります。
 
