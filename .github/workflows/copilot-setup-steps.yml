@@ -14,6 +14,31 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Setup LocalStack
+        run: |
+          npm run localstack:start
+          npm run dynamodb:setup
+        
+      - name: Verify LocalStack
+        run: |
+          docker ps | grep localstack
+          aws dynamodb list-tables --endpoint-url http://localhost:4566 --region us-east-1 --no-sign-request
+          
+      - name: Build all packages
+        run: npm run build
+        
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -23,4 +48,8 @@ jobs:
         run: |
           uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
           echo "Setup complete. spec-kit is ready to use."
+          
+      - name: Cleanup
+        if: always()
+        run: npm run localstack:stop || true
           
