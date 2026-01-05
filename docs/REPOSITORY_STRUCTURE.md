@@ -299,8 +299,9 @@ npm run build:site
 - **言語**: 日本語
 - **形式**: 簡潔な説明（50文字以内推奨）
 
-## 参照
+### 参照
 
-- [プロジェクト憲法](../memory/constitution.md)
-- [MVP実装ドキュメント](architecture/mvp-monorepo-implementation.md)
+- [アーキテクチャ仕様](architecture/attendance-kit-architecture.md)
+- [ローカル開発環境](LOCAL_DEVELOPMENT.md)
 - [メインREADME](../README.md)
+- [プロジェクト憲法](../memory/constitution.md)

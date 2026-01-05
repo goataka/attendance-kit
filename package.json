@@ -15,7 +15,11 @@
     "build": "npm run build --workspaces --if-present",
     "build:frontend": "npm run build -w apps/frontend",
     "build:backend": "npm run build -w apps/backend",
-    "build:site": "npm run build -w apps/site"
+    "build:site": "npm run build -w apps/site",
+    "localstack:start": "docker-compose up -d",
+    "localstack:stop": "docker-compose down",
+    "localstack:logs": "docker-compose logs -f localstack",
+    "dynamodb:setup": "./scripts/setup-dynamodb-local.sh"
   },
   "engines": {
     "node": ">=18.0.0",

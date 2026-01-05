@@ -47,3 +47,13 @@ build/
 
 # OS
 Thumbs.db
+
+# LocalStack
+localstack-data/
+
+# CDK
+infrastructure/deploy/cdk.out/
+infrastructure/deploy/.cdk.staging/
+
+# Astro
+apps/site/.astro/

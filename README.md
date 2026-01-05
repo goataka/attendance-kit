@@ -138,9 +138,11 @@ specify --help
 
 ## 📝 ドキュメント
 
-- [憲法](memory/constitution.md): プロジェクトの原則とガイドライン
-- 仕様書: `specs/`ディレクトリに機能ごとに作成
-- 実装文書: `docs/`ディレクトリに確定版を保存
+- [リポジトリ構成](docs/REPOSITORY_STRUCTURE.md) - ディレクトリ構造と役割
+- [アーキテクチャ仕様](docs/architecture/attendance-kit-architecture.md) - システムアーキテクチャと設計
+- [ローカル開発環境](docs/LOCAL_DEVELOPMENT.md) - ローカル開発のセットアップ手順
+- [デプロイガイド](infrastructure/deploy/DEPLOYMENT.md) - AWS CDKデプロイ手順
+- [プロジェクト憲法](memory/constitution.md) - プロジェクトの核心原則
 
 ## 🎯 初期セットアップ状況
 
@@ -161,6 +163,32 @@ specify --help
 
 ## 💻 開発コマンド
 
+### ローカル開発のセットアップ
+
+詳細な手順は [ローカル開発環境セットアップガイド](docs/LOCAL_DEVELOPMENT.md) を参照してください。
+
+#### クイックスタート
+
+```bash
+# 1. 依存関係をインストール
+npm ci
+
+# 2. LocalStackを起動（DynamoDBローカル環境）
+npm run localstack:start
+
+# 3. DynamoDBテーブルを作成
+npm run dynamodb:setup
+
+# 4. 開発サーバーを起動
+npm run dev
+```
+
+アクセス:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
+- Site: http://localhost:4321
+- LocalStack: http://localhost:4566
+
 ### すべてのアプリを起動
 
 ```bash
@@ -178,6 +206,28 @@ npm run dev:backend
 
 # サポートサイト（http://localhost:4321）
 npm run dev:site
+```
+
+### ビルド
+
+```bash
+# すべてをビルド
+npm run build
+
+# 個別ビルド
+npm run build:frontend
+npm run build:backend
+npm run build:site
+```
+
+### LocalStack管理
+
+```bash
+npm run localstack:start    # LocalStackを起動
+npm run localstack:stop     # LocalStackを停止
+npm run localstack:logs     # LocalStackのログを表示
+npm run dynamodb:setup      # DynamoDBテーブルを作成
+```
 ```
 
 ### ビルド
