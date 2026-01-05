@@ -27,9 +27,15 @@ jobs:
         run: npm ci
         
       - name: Setup LocalStack
+        run: docker-compose up -d
+        
+      - name: Wait for LocalStack to be ready
         run: |
-          npm run localstack:start
-          npm run dynamodb:setup
+          timeout 30 bash -c 'until docker ps | grep localstack | grep -q healthy; do sleep 1; done' || \
+          timeout 30 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "running"; do sleep 1; done'
+        
+      - name: Setup DynamoDB tables
+        run: npm run dynamodb:setup
         
       - name: Verify LocalStack
         run: |
@@ -51,5 +57,5 @@ jobs:
           
       - name: Cleanup
         if: always()
-        run: npm run localstack:stop || true
+        run: docker-compose down || true
           
