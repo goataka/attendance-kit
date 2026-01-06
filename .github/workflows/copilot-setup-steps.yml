@@ -25,22 +25,6 @@ jobs:
           
       - name: Install dependencies
         run: npm ci
-        
-      - name: Setup LocalStack
-        run: docker-compose up -d
-        
-      - name: Wait for LocalStack to be ready
-        run: |
-          timeout 30 bash -c 'until docker ps | grep localstack | grep -q healthy; do sleep 1; done' || \
-          timeout 30 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "running"; do sleep 1; done'
-        
-      - name: Setup DynamoDB tables
-        run: npm run dynamodb:setup
-        
-      - name: Verify LocalStack
-        run: |
-          docker ps | grep localstack
-          aws dynamodb list-tables --endpoint-url http://localhost:4566 --region us-east-1 --no-sign-request
           
       - name: Build all packages
         run: npm run build
@@ -54,8 +38,4 @@ jobs:
         run: |
           uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
           echo "Setup complete. spec-kit is ready to use."
-          
-      - name: Cleanup
-        if: always()
-        run: docker-compose down || true
           
