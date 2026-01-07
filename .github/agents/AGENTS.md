@@ -2,6 +2,21 @@
 
 最終更新: 2025-12-27
 
+## Agent Skills
+
+このディレクトリには、GitHub Copilot Agent用のスキル定義が格納されています。
+
+### スキルのネーミング規則
+
+Agent skillファイルは以下の命名規則に従います:
+
+- `{skill-name}-skill.md` - スキル定義ファイル
+- 例: `localstack-skill.md`, `deploy-skill.md`
+
+### 利用可能なスキル
+
+- **localstack-skill.md**: LocalStackを使ったローカル開発環境のセットアップと管理
+
 ## Spec-Kit使用の原則
 
 **このプロジェクトでは、すべての開発作業においてspec-kitを使用します。**

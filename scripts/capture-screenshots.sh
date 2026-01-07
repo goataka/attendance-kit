@@ -23,12 +23,29 @@ cat > "$TEMP_SCRIPT" << 'EOF'
 const { chromium } = require('playwright');
 
 (async () => {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    args: [
+      '--font-render-hinting=none',
+      '--disable-font-subpixel-positioning',
+    ]
+  });
   const context = await browser.newContext({
     viewport: { width: 1920, height: 1080 },
     locale: 'ja-JP',
+    // 日本語フォントの読み込みを確実にする
+    screen: { width: 1920, height: 1080 },
   });
+  
+  // 日本語フォントがロードされるまで待機
   const page = await context.newPage();
+  await page.addStyleTag({
+    content: `
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+      * {
+        font-family: 'Noto Sans JP', sans-serif !important;
+      }
+    `
+  });
 
   const baseURL = 'http://localhost:5173';
   const screenshotDir = 'apps/site/public/images/screenshots';

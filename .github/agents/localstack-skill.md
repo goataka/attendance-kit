@@ -1,6 +1,6 @@
-# LocalStack Agent Skill
+# LocalStack Skill
 
-このagent skillはLocalStackを使ったローカル開発環境のセットアップと管理を行います。
+このskillはLocalStackを使ったローカル開発環境のセットアップと管理を行います。
 
 ## 機能
 
