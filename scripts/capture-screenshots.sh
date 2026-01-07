@@ -38,14 +38,20 @@ const { chromium } = require('playwright');
   
   // 日本語フォントがロードされるまで待機
   const page = await context.newPage();
-  await page.addStyleTag({
-    content: `
-      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
-      * {
-        font-family: 'Noto Sans JP', sans-serif !important;
-      }
-    `
-  });
+  
+  // Google Fontsを別タブで読み込んで待機（DNSブロック回避）
+  try {
+    await page.addStyleTag({
+      content: `
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+        * {
+          font-family: 'Noto Sans JP', sans-serif !important;
+        }
+      `
+    });
+  } catch (e) {
+    console.log('⚠️  Google Fontsの読み込みに失敗しました。システムフォントを使用します。');
+  }
 
   const baseURL = 'http://localhost:5173';
   const screenshotDir = 'apps/site/public/images/screenshots';
@@ -64,7 +70,7 @@ const { chromium } = require('playwright');
     // 2. 出勤打刻後
     console.log('📸 出勤打刻を実行中...');
     await page.fill('input[placeholder*="user"]', 'user001');
-    await page.fill('input[placeholder*="名前"]', '山田太郎');
+    await page.fill('input[placeholder*="山田"]', '山田太郎');
     await page.click('button:has-text("出勤打刻")');
     await page.waitForTimeout(1000);
     await page.screenshot({ 
@@ -107,7 +113,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 
 echo "📸 スクリーンショットを撮影中..."
-node "$TEMP_SCRIPT"
+NODE_PATH=$(npm root) node "$TEMP_SCRIPT"
 
 # 一時ファイルを削除
 rm "$TEMP_SCRIPT"
