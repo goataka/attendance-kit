@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "screenshot": "node scripts/capture-screenshots.js",
+    "screenshot:auto": "node scripts/capture-screenshots.js --auto"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.29.3",
@@ -14,6 +16,7 @@
     "sharp": "^0.33.1"
   },
   "devDependencies": {
+    "playwright": "^1.40.1",
     "typescript": "^5.3.3"
   }
 }
