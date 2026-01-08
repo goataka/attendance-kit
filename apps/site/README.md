@@ -36,6 +36,7 @@ npm run build:site
 2. Playwrightブラウザがインストールされていること:
    ```bash
    cd apps/site
+   npm install
    npx playwright install chromium
    ```
 
@@ -51,6 +52,9 @@ npm run screenshot
 # 自動モード（CI/CD用、確認なし）
 npm run screenshot:auto
 ```
+
+撮影スクリプトは TypeScript で記述されており、`scripts/capture-screenshots.ts` に実装されています。
+日本語フォント（Noto Sans JP）に対応し、文字化けを防止します。
 
 ### 出力先
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * スクリーンショット撮影スクリプト
  * 
@@ -11,8 +9,7 @@
  *   npm run screenshot:auto  # 自動モード（確認なし）
  */
 
-import { chromium } from 'playwright';
-import { readFileSync, writeFileSync } from 'fs';
+import { chromium, Browser, BrowserContext, Page } from 'playwright';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -27,7 +24,7 @@ const AUTO_MODE = process.argv.includes('--auto');
 /**
  * フロントエンドとバックエンドが起動しているか確認
  */
-async function checkServers() {
+async function checkServers(): Promise<void> {
   try {
     const frontendResponse = await fetch(FRONTEND_URL);
     const backendResponse = await fetch(`${BACKEND_URL}/api/health`).catch(() => ({ ok: true }));
@@ -39,7 +36,8 @@ async function checkServers() {
     
     console.log('✅ サーバーの起動を確認しました');
   } catch (error) {
-    console.error(`❌ サーバーの起動確認に失敗しました: ${error.message}`);
+    const err = error as Error;
+    console.error(`❌ サーバーの起動確認に失敗しました: ${err.message}`);
     console.error('\n以下のコマンドでサーバーを起動してください:');
     console.error('  ターミナル1: npm run dev:frontend');
     console.error('  ターミナル2: npm run dev:backend');
@@ -50,23 +48,44 @@ async function checkServers() {
 /**
  * スクリーンショットを撮影
  */
-async function captureScreenshots() {
+async function captureScreenshots(): Promise<void> {
   console.log('🚀 スクリーンショット撮影を開始します...\n');
   
-  const browser = await chromium.launch();
-  const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 },
-    // 日本語フォントを使用
-    locale: 'ja-JP',
+  const browser: Browser = await chromium.launch({
+    headless: true,
   });
   
-  const page = await context.newPage();
+  const context: BrowserContext = await browser.newContext({
+    viewport: { width: 1920, height: 1080 },
+    locale: 'ja-JP',
+    timezoneId: 'Asia/Tokyo',
+    // 日本語フォントを確実に読み込むための設定
+    extraHTTPHeaders: {
+      'Accept-Language': 'ja-JP,ja;q=0.9',
+    },
+  });
+  
+  // 日本語フォントのスタイルを注入
+  await context.addInitScript(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      * {
+        font-family: "Noto Sans JP", "Yu Gothic", "Meiryo", "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif !important;
+      }
+    `;
+    document.head.appendChild(style);
+  });
+  
+  const page: Page = await context.newPage();
   
   try {
     // 1. 初期画面
     console.log('📸 1/3: 初期画面を撮影中...');
-    await page.goto(FRONTEND_URL);
-    await page.waitForLoadState('networkidle');
+    await page.goto(FRONTEND_URL, { waitUntil: 'networkidle' });
+    // ページが完全にレンダリングされるまで待機
+    await page.waitForTimeout(2000);
+    // フォントが読み込まれるまで待機
+    await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ 
       path: join(OUTPUT_DIR, '01-initial-screen.png'),
       fullPage: false
@@ -75,10 +94,19 @@ async function captureScreenshots() {
     
     // 2. 出勤打刻後
     console.log('📸 2/3: 出勤打刻後の画面を撮影中...');
-    await page.fill('input[placeholder*="user"]', 'user001');
-    await page.fill('input[placeholder*="名前"]', 'テスト太郎');
-    await page.click('button:has-text("出勤")');
-    await page.waitForTimeout(1000); // アニメーション待機
+    // より正確なセレクタを使用
+    const userIdInput = await page.locator('input[placeholder*="user"], input[type="text"]').first();
+    await userIdInput.fill('user001');
+    
+    const userNameInput = await page.locator('input[placeholder*="名前"]').first();
+    await userNameInput.fill('テスト太郎');
+    
+    const clockInButton = await page.locator('button:has-text("出勤")').first();
+    await clockInButton.click();
+    
+    // レンダリングとアニメーション待機
+    await page.waitForTimeout(2000);
+    await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ 
       path: join(OUTPUT_DIR, '02-after-clock-in.png'),
       fullPage: false
@@ -87,8 +115,12 @@ async function captureScreenshots() {
     
     // 3. 退勤打刻後
     console.log('📸 3/3: 退勤打刻後の画面を撮影中...');
-    await page.click('button:has-text("退勤")');
-    await page.waitForTimeout(1000); // アニメーション待機
+    const clockOutButton = await page.locator('button:has-text("退勤")').first();
+    await clockOutButton.click();
+    
+    // レンダリングとアニメーション待機
+    await page.waitForTimeout(2000);
+    await page.evaluate(() => document.fonts.ready);
     await page.screenshot({ 
       path: join(OUTPUT_DIR, '03-after-clock-out.png'),
       fullPage: false
@@ -99,7 +131,8 @@ async function captureScreenshots() {
     console.log(`📁 保存先: ${OUTPUT_DIR}\n`);
     
   } catch (error) {
-    console.error(`\n❌ スクリーンショット撮影に失敗しました: ${error.message}`);
+    const err = error as Error;
+    console.error(`\n❌ スクリーンショット撮影に失敗しました: ${err.message}`);
     throw error;
   } finally {
     await browser.close();
@@ -109,7 +142,7 @@ async function captureScreenshots() {
 /**
  * ユーザーに確認を求める
  */
-async function confirmStart() {
+async function confirmStart(): Promise<boolean> {
   if (AUTO_MODE) {
     return true;
   }
@@ -130,7 +163,7 @@ async function confirmStart() {
 /**
  * メイン処理
  */
-async function main() {
+async function main(): Promise<void> {
   console.log('🖼️  スクリーンショット撮影スクリプト\n');
   
   // サーバーの起動確認
@@ -145,7 +178,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch((error) => {
+main().catch((error: Error) => {
   console.error('❌ エラーが発生しました:', error);
   process.exit(1);
 });

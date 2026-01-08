@@ -7,8 +7,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "screenshot": "node scripts/capture-screenshots.js",
-    "screenshot:auto": "node scripts/capture-screenshots.js --auto"
+    "screenshot": "tsx scripts/capture-screenshots.ts",
+    "screenshot:auto": "tsx scripts/capture-screenshots.ts --auto"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.29.3",
@@ -16,7 +16,9 @@
     "sharp": "^0.33.1"
   },
   "devDependencies": {
+    "@types/node": "^20.10.0",
     "playwright": "^1.40.1",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }
