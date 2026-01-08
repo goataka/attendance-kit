@@ -65,12 +65,18 @@ async function captureScreenshots(): Promise<void> {
     },
   });
   
-  // 日本語フォントのスタイルを注入
+  // 日本語フォントのスタイルを注入（システムフォントを使用）
   await context.addInitScript(() => {
     const style = document.createElement('style');
     style.textContent = `
+      @font-face {
+        font-family: 'Noto Sans JP';
+        font-style: normal;
+        font-weight: 400;
+        src: url(data:font/woff2;base64,d09GMgABAAAAABEYAA4AAAAAIvgAABDDAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGiYbIBw6BmAAhCIBCsJQgjIBNgIkA4NQC4NOAAE2AiQDiAQGBYtOB4MlG/kaFeyYB9hxoyLFpEwLlTGGUVo0lv3/mZOY0Ge1jIwpZjMTW0d3M+8+2s5E7n8AThkKLHBA) format('woff2');
+      }
       * {
-        font-family: "Noto Sans JP", "Yu Gothic", "Meiryo", "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif !important;
       }
     `;
     document.head.appendChild(style);
