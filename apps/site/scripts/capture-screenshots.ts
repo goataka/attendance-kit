@@ -3,6 +3,7 @@
  * 
  * フロントエンド（http://localhost:5173）の3つの画面をキャプチャし、
  * public/images/screenshots/ ディレクトリに保存します。
+ * デバッグ用にHTMLも /tmp に保存します。
  * 
  * 使い方:
  *   npm run screenshot       # 対話的モード（確認あり）
@@ -12,9 +13,11 @@
 import { chromium, Browser, BrowserContext, Page } from 'playwright';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { writeFileSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = join(__dirname, '..', 'public', 'images', 'screenshots');
+const TMP_DIR = '/tmp';
 const FRONTEND_URL = 'http://localhost:5173';
 const BACKEND_URL = 'http://localhost:3000';
 
@@ -92,6 +95,12 @@ async function captureScreenshots(): Promise<void> {
     await page.waitForTimeout(2000);
     // フォントが読み込まれるまで待機
     await page.evaluate(() => document.fonts.ready);
+    
+    // HTMLを保存（デバッグ用）
+    const html1 = await page.content();
+    writeFileSync(join(TMP_DIR, '01-initial-screen.html'), html1);
+    console.log('   📄 HTMLを /tmp/01-initial-screen.html に保存しました');
+    
     await page.screenshot({ 
       path: join(OUTPUT_DIR, '01-initial-screen.png'),
       fullPage: false
@@ -109,6 +118,12 @@ async function captureScreenshots(): Promise<void> {
     // レンダリングとアニメーション待機
     await page.waitForTimeout(2000);
     await page.evaluate(() => document.fonts.ready);
+    
+    // HTMLを保存（デバッグ用）
+    const html2 = await page.content();
+    writeFileSync(join(TMP_DIR, '02-after-clock-in.html'), html2);
+    console.log('   📄 HTMLを /tmp/02-after-clock-in.html に保存しました');
+    
     await page.screenshot({ 
       path: join(OUTPUT_DIR, '02-after-clock-in.png'),
       fullPage: false
@@ -122,6 +137,12 @@ async function captureScreenshots(): Promise<void> {
     // レンダリングとアニメーション待機
     await page.waitForTimeout(2000);
     await page.evaluate(() => document.fonts.ready);
+    
+    // HTMLを保存（デバッグ用）
+    const html3 = await page.content();
+    writeFileSync(join(TMP_DIR, '03-after-clock-out.html'), html3);
+    console.log('   📄 HTMLを /tmp/03-after-clock-out.html に保存しました');
+    
     await page.screenshot({ 
       path: join(OUTPUT_DIR, '03-after-clock-out.png'),
       fullPage: false
@@ -129,7 +150,8 @@ async function captureScreenshots(): Promise<void> {
     console.log('   ✅ 03-after-clock-out.png を保存しました');
     
     console.log('\n✅ すべてのスクリーンショットを撮影しました！');
-    console.log(`📁 保存先: ${OUTPUT_DIR}\n`);
+    console.log(`📁 スクリーンショット保存先: ${OUTPUT_DIR}`);
+    console.log(`📄 HTML保存先（デバッグ用）: ${TMP_DIR}\n`);
     
   } catch (error) {
     const err = error as Error;
