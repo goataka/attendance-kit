@@ -95,14 +95,10 @@ async function captureScreenshots(): Promise<void> {
     // 2. 出勤打刻後
     console.log('📸 2/3: 出勤打刻後の画面を撮影中...');
     // より正確なセレクタを使用
-    const userIdInput = await page.locator('input[placeholder*="user"], input[type="text"]').first();
-    await userIdInput.fill('user001');
+    await page.fill('input[placeholder="例: user001"]', 'user001');
+    await page.fill('input[placeholder="例: 山田太郎"]', 'テスト太郎');
     
-    const userNameInput = await page.locator('input[placeholder*="名前"]').first();
-    await userNameInput.fill('テスト太郎');
-    
-    const clockInButton = await page.locator('button:has-text("出勤")').first();
-    await clockInButton.click();
+    await page.click('button:has-text("出勤")');
     
     // レンダリングとアニメーション待機
     await page.waitForTimeout(2000);
@@ -115,8 +111,7 @@ async function captureScreenshots(): Promise<void> {
     
     // 3. 退勤打刻後
     console.log('📸 3/3: 退勤打刻後の画面を撮影中...');
-    const clockOutButton = await page.locator('button:has-text("退勤")').first();
-    await clockOutButton.click();
+    await page.click('button:has-text("退勤")');
     
     // レンダリングとアニメーション待機
     await page.waitForTimeout(2000);
