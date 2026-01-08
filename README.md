@@ -14,18 +14,31 @@
 
 ```
 .
-├── .devcontainer/     # DevContainer設定
+├── .devcontainer/      # DevContainer設定
 │   ├── devcontainer.json
 │   └── README.md
-├── .github/
-│   └── workflows/
-│       └── copilot-setup-steps.yml  # 自動セットアップ
-├── .specify/          # spec-kit設定とテンプレート
+├── .github/            # GitHub設定
+│   ├── agents/        # カスタムエージェント設定
+│   └── workflows/     # GitHub Actionsワークフロー
+├── .specify/           # spec-kit設定とテンプレート
 │   └── templates/     # ドキュメントテンプレート
-├── memory/            # プロジェクト憲法と記憶
-├── specs/             # 機能仕様書（ブランチごと）
-├── docs/              # 確定した仕様と実装ドキュメント
-└── README.md          # このファイル
+├── apps/               # アプリケーション
+│   ├── frontend/      # 勤怠アプリ（React）
+│   └── backend/       # 勤怠アプリ（NestJS）
+├── apps/site/              # 静的サイト
+│   └── site/      # 製品サポートサイト（Astro + Starlight）
+├── packages/           # 共通パッケージ
+│   ├── types/         # 共通型定義
+│   └── config/        # 共通設定
+├── infrastructure/     # AWS CDKインフラコード
+│   ├── deploy/        # CDKデプロイコード
+│   └── setup/         # セットアップスクリプト
+├── specs/              # 機能仕様書（ブランチごと）
+├── docs/               # 確定した仕様と実装ドキュメント
+│   ├── architecture/  # アーキテクチャ設計
+│   └── business/      # ビジネス要件
+├── memory/             # プロジェクト憲法と記憶
+└── README.md           # このファイル
 ```
 
 ## 🚀 Spec-Kit セットアップ
@@ -125,9 +138,13 @@ specify --help
 
 ## 📝 ドキュメント
 
-- [憲法](memory/constitution.md): プロジェクトの原則とガイドライン
-- 仕様書: `specs/`ディレクトリに機能ごとに作成
-- 実装文書: `docs/`ディレクトリに確定版を保存
+- [リポジトリ構成](docs/REPOSITORY_STRUCTURE.md) - ディレクトリ構造と役割
+- [アーキテクチャ仕様](docs/architecture/attendance-kit-architecture.md) - システムアーキテクチャと設計
+- [ローカル開発環境](docs/LOCAL_DEVELOPMENT.md) - ローカル開発のセットアップ手順
+- [スクリーンショット撮影ガイド](docs/SCREENSHOT_GUIDE.md) - 機能リファレンス用スクリーンショットの撮影方法
+- [スクリーンショットS3アップロード](docs/SCREENSHOT_S3_UPLOAD.md) - 画像のS3デプロイとキャッシュ管理
+- [デプロイガイド](infrastructure/deploy/DEPLOYMENT.md) - AWS CDKデプロイ手順
+- [プロジェクト憲法](memory/constitution.md) - プロジェクトの核心原則
 
 ## 🎯 初期セットアップ状況
 
@@ -138,13 +155,104 @@ specify --help
 - ✅ Constitution with Japanese language support created
 - ✅ Templates configured
 
+✅ MVP モノレポ構成 completed:
+- ✅ npm workspaces設定
+- ✅ 共通型定義パッケージ（@attendance-kit/types）
+- ✅ 共通設定パッケージ（@attendance-kit/config）
+- ✅ 勤怠アプリ フロントエンド（React + Vite）
+- ✅ 勤怠アプリ バックエンド（NestJS）
+- ✅ 製品サポートサイト（Astro + Starlight）
+
+## 💻 開発コマンド
+
+### ローカル開発のセットアップ
+
+詳細な手順は [ローカル開発環境セットアップガイド](docs/LOCAL_DEVELOPMENT.md) を参照してください。
+
+#### クイックスタート
+
+```bash
+# 1. 依存関係をインストール
+npm ci
+
+# 2. LocalStackを起動（DynamoDBローカル環境）
+npm run localstack:start
+
+# 3. DynamoDBテーブルを作成
+npm run dynamodb:setup
+
+# 4. 開発サーバーを起動
+npm run dev
+```
+
+アクセス:
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
+- Site: http://localhost:4321
+- LocalStack: http://localhost:4566
+
+### すべてのアプリを起動
+
+```bash
+npm run dev
+```
+
+### 個別起動
+
+```bash
+# フロントエンド（http://localhost:5173）
+npm run dev:frontend
+
+# バックエンド（http://localhost:3000）
+npm run dev:backend
+
+# サポートサイト（http://localhost:4321）
+npm run dev:site
+```
+
+### ビルド
+
+```bash
+# すべてをビルド
+npm run build
+
+# 個別ビルド
+npm run build:frontend
+npm run build:backend
+npm run build:site
+```
+
+### LocalStack管理
+
+```bash
+npm run localstack:start    # LocalStackを起動
+npm run localstack:stop     # LocalStackを停止
+npm run localstack:logs     # LocalStackのログを表示
+npm run dynamodb:setup      # DynamoDBテーブルを作成
+```
+```
+
+### ビルド
+
+```bash
+# すべてをビルド
+npm run build
+
+# 個別ビルド
+npm run build:frontend
+npm run build:backend
+npm run build:site
+```
+
 ## 🔮 今後の開発
 
 勤怠管理システムの主要機能：
-- 出退勤記録
+- 出退勤記録（MVP実装済み）
 - 休暇申請と承認
 - 勤怠データの集計とレポート
-- ユーザー管理
+- ユーザー管理と認証
+- データベース統合（DynamoDB）
+- CI/CDパイプライン
 
 これらの機能は、spec-kitのワークフローに従って順次実装していきます。
 

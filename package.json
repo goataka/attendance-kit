@@ -1,0 +1,39 @@
+{
+  "name": "attendance-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Attendance management system built with spec-kit driven development",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "dev:frontend": "npm run dev -w apps/frontend",
+    "dev:backend": "npm run dev -w apps/backend",
+    "dev:site": "npm run dev -w apps/site",
+    "build": "npm run build --workspaces --if-present",
+    "build:frontend": "npm run build -w apps/frontend",
+    "build:backend": "npm run build -w apps/backend",
+    "build:site": "npm run build -w apps/site",
+    "localstack:start": "docker-compose up -d",
+    "localstack:stop": "docker-compose down",
+    "localstack:logs": "docker-compose logs -f localstack",
+    "dynamodb:setup": "./scripts/setup-dynamodb-local.sh",
+    "capture:screenshots": "./scripts/capture-screenshots.sh"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "attendance",
+    "time-tracking",
+    "monorepo"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "playwright": "^1.57.0"
+  }
+}

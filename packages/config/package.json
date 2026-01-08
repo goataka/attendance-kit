@@ -1,0 +1,12 @@
+{
+  "name": "@attendance-kit/config",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Common configuration for attendance-kit",
+  "main": "./vite.config.base.ts",
+  "types": "./vite.config.base.ts",
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11"
+  }
+}

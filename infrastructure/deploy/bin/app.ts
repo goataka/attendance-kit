@@ -9,8 +9,8 @@ const app = new cdk.App();
 // Determine which stack to deploy from context
 // Valid values:
 //   - 'account': Deploy only Account Stack (requires COST_ALERT_EMAIL)
-//   - 'environment': Deploy only Environment Stack (requires environment context)
-//   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is required)
+//   - 'infrastructure': Deploy only Infrastructure Stack (DynamoDB only)
+//   - 'all': Deploy all stacks (default, COST_ALERT_EMAIL is required)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
 // AWS environment configuration
@@ -18,6 +18,15 @@ const env = {
   account: process.env.CDK_DEFAULT_ACCOUNT,
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
+
+// Determine environment (dev, staging, prod)
+const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
+
+// Validate environment
+const validEnvironments = ['dev', 'staging', 'prod'];
+if (!validEnvironments.includes(environment)) {
+  throw new Error(`Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`);
+}
 
 // Account-level resources (deployed once per AWS account)
 if (['all', 'account'].includes(stackType)) {
@@ -39,22 +48,14 @@ if (['all', 'account'].includes(stackType)) {
   });
 }
 
-// Environment-level resources (deployed per environment: dev, staging)
-if (['all', 'environment'].includes(stackType)) {
-  const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
-  
-  // Validate environment
-  const validEnvironments = ['dev', 'staging'];
-  if (!validEnvironments.includes(environment)) {
-    throw new Error(`Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`);
-  }
-
+// Infrastructure and Application resources
+if (['all', 'infrastructure'].includes(stackType)) {
   const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
-
+  
   new AttendanceKitStack(app, stackName, {
     env,
     environment,
-    description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
+    description: `Infrastructure and application resources for attendance-kit (${environment} environment)`,
     tags: {
       Environment: environment,
       Project: 'attendance-kit',
