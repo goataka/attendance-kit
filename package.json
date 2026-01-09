@@ -1,0 +1,26 @@
+{
+  "name": "attendance-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "勤怠管理システム - Monorepo",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "pnpm --parallel --stream dev",
+    "build": "pnpm --recursive build",
+    "test": "pnpm --recursive test",
+    "lint": "pnpm --recursive lint"
+  },
+  "keywords": [
+    "monorepo",
+    "attendance",
+    "management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}

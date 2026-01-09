@@ -1,0 +1,19 @@
+{
+  "name": "@attendance-kit/frontend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Frontend application for attendance management system",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Frontend dev server not configured yet'",
+    "build": "echo 'Frontend build not configured yet'",
+    "test": "echo 'Frontend tests not configured yet'",
+    "lint": "echo 'Frontend lint not configured yet'"
+  },
+  "keywords": [
+    "frontend",
+    "attendance"
+  ],
+  "author": "",
+  "license": "MIT"
+}

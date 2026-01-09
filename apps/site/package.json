@@ -1,0 +1,19 @@
+{
+  "name": "@attendance-kit/site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static site for attendance management system",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Site dev server not configured yet'",
+    "build": "echo 'Site build not configured yet'",
+    "test": "echo 'Site tests not configured yet'",
+    "lint": "echo 'Site lint not configured yet'"
+  },
+  "keywords": [
+    "site",
+    "attendance"
+  ],
+  "author": "",
+  "license": "MIT"
+}
