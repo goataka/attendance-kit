@@ -7,10 +7,10 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "pnpm --parallel --stream dev",
-    "build": "pnpm --recursive build",
-    "test": "pnpm --recursive test",
-    "lint": "pnpm --recursive lint"
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
   },
   "keywords": [
     "monorepo",
@@ -21,6 +21,6 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "npm": ">=8.0.0"
   }
 }
