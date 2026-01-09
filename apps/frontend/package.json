@@ -2,7 +2,7 @@
   "name": "@attendance-kit/frontend",
   "version": "0.1.0",
   "private": true,
-  "description": "勤怠管理キットのフロントエンドアプリケーション",
+  "description": "勤怠管理キット - Frontend",
   "type": "module",
   "scripts": {
     "dev": "echo 'Frontend dev server not configured yet'",

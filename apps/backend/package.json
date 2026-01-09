@@ -2,7 +2,7 @@
   "name": "@attendance-kit/backend",
   "version": "0.1.0",
   "private": true,
-  "description": "勤怠管理キットのバックエンドアプリケーション",
+  "description": "勤怠管理キット - Backend",
   "type": "module",
   "scripts": {
     "dev": "echo 'Backend dev server not configured yet'",

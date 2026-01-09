@@ -2,7 +2,7 @@
   "name": "@attendance-kit/site",
   "version": "0.1.0",
   "private": true,
-  "description": "勤怠管理キットの静的サイト",
+  "description": "勤怠管理キット - Site",
   "type": "module",
   "scripts": {
     "dev": "echo 'Site dev server not configured yet'",
