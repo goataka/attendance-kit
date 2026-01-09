@@ -23,9 +23,10 @@ const env = {
 
 // Account-level resources (deployed once per AWS account)
 if (['all', 'account'].includes(stackType)) {
-  const alertEmail = process.env.COST_ALERT_EMAIL;
-  if (!alertEmail || !alertEmail.trim()) {
-    throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
+  // Use dummy email for LocalStack/development, or real email from environment
+  const alertEmail = process.env.COST_ALERT_EMAIL || 'dummy@example.com';
+  if (!alertEmail.trim()) {
+    throw new Error('COST_ALERT_EMAIL must not be empty');
   }
   new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
     env,
