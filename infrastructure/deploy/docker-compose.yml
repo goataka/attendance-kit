@@ -15,11 +15,6 @@ services:
       # DynamoDB specific
       - DYNAMODB_SHARE_DB=1
       - PERSISTENCE=1
-      
-      # AWS configuration for LocalStack
-      - AWS_DEFAULT_REGION=ap-northeast-1
-      - AWS_ACCESS_KEY_ID=test
-      - AWS_SECRET_ACCESS_KEY=test
     volumes:
       - "./localstack-data:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
