@@ -2,7 +2,7 @@
   "name": "@attendance-kit/site",
   "version": "0.1.0",
   "private": true,
-  "description": "Static site for attendance management system",
+  "description": "勤怠管理キットの静的サイト",
   "type": "module",
   "scripts": {
     "dev": "echo 'Site dev server not configured yet'",
@@ -14,6 +14,6 @@
     "site",
     "attendance"
   ],
-  "author": "",
+  "author": "goataka",
   "license": "MIT"
 }

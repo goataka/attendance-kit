@@ -2,7 +2,7 @@
   "name": "attendance-kit",
   "version": "0.1.0",
   "private": true,
-  "description": "勤怠管理システム - Monorepo",
+  "description": "勤怠管理キット - Monorepo",
   "workspaces": [
     "apps/*"
   ],
@@ -17,7 +17,7 @@
     "attendance",
     "management"
   ],
-  "author": "",
+  "author": "goataka",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0",

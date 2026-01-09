@@ -2,7 +2,7 @@
   "name": "@attendance-kit/backend",
   "version": "0.1.0",
   "private": true,
-  "description": "Backend application for attendance management system",
+  "description": "勤怠管理キットのバックエンドアプリケーション",
   "type": "module",
   "scripts": {
     "dev": "echo 'Backend dev server not configured yet'",
@@ -14,6 +14,6 @@
     "backend",
     "attendance"
   ],
-  "author": "",
+  "author": "goataka",
   "license": "MIT"
 }
