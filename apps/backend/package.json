@@ -1,0 +1,23 @@
+{
+  "name": "@attendance-kit/backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "勤怠管理キット - Backend",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Backend dev server not configured yet'",
+    "build": "echo 'Backend build not configured yet'",
+    "test": "echo 'Backend tests not configured yet'",
+    "lint": "echo 'Backend lint not configured yet'"
+  },
+  "keywords": [
+    "backend",
+    "attendance"
+  ],
+  "author": "goataka",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=8.0.0"
+  }
+}

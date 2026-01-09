@@ -1,0 +1,26 @@
+{
+  "name": "attendance-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "勤怠管理キット - Monorepo",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "keywords": [
+    "monorepo",
+    "attendance",
+    "management"
+  ],
+  "author": "goataka",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=8.0.0"
+  }
+}
