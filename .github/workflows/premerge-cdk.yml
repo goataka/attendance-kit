@@ -77,17 +77,21 @@ jobs:
 
       - name: Test DynamoDB operations
         run: |
+          # Generate dynamic timestamp
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          echo "Using timestamp: $TIMESTAMP"
+          
           echo "Testing DynamoDB put-item..."
           aws dynamodb put-item \
             --table-name attendance-kit-dev-clock \
-            --item '{"userId": {"S": "test-user"}, "timestamp": {"S": "2026-01-09T07:00:00Z"}, "date": {"S": "2026-01-09"}, "type": {"S": "clock-in"}}' \
+            --item "{\"userId\": {\"S\": \"test-user\"}, \"timestamp\": {\"S\": \"$TIMESTAMP\"}, \"date\": {\"S\": \"$(date -u +%Y-%m-%d)\"}, \"type\": {\"S\": \"clock-in\"}}" \
             --endpoint-url http://localhost:4566 \
             --region ap-northeast-1
           
           echo "Testing DynamoDB get-item..."
           aws dynamodb get-item \
             --table-name attendance-kit-dev-clock \
-            --key '{"userId": {"S": "test-user"}, "timestamp": {"S": "2026-01-09T07:00:00Z"}}' \
+            --key "{\"userId\": {\"S\": \"test-user\"}, \"timestamp\": {\"S\": \"$TIMESTAMP\"}}" \
             --endpoint-url http://localhost:4566 \
             --region ap-northeast-1 \
             --no-cli-pager
