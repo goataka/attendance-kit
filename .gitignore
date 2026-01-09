@@ -33,3 +33,7 @@ build/
 *.log
 .env
 .env.local
+
+# LocalStack
+infrastructure/deploy/localstack-data/
+infrastructure/deploy/node_modules/

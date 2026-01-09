@@ -6,7 +6,13 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "localstack:start": "docker-compose up -d",
+    "localstack:stop": "docker-compose down",
+    "localstack:logs": "docker-compose logs -f localstack",
+    "localstack:deploy": "cdklocal deploy --context environment=dev --require-approval never",
+    "localstack:synth": "cdklocal synth --context environment=dev",
+    "localstack:destroy": "cdklocal destroy --context environment=dev --force"
   },
   "keywords": [
     "aws",
@@ -19,6 +25,7 @@
     "@types/jest": "^29.5.0",
     "@types/node": "^20.x",
     "aws-cdk": "^2.x",
+    "aws-cdk-local": "^2.x",
     "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",

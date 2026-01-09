@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  localstack:
+    container_name: attendance-kit-localstack
+    image: localstack/localstack:3.0
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # External services port range
+    environment:
+      # Core LocalStack configuration
+      - SERVICES=dynamodb
+      - DEBUG=1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - LOCALSTACK_HOST=localhost:4566
+      
+      # DynamoDB specific
+      - DYNAMODB_SHARE_DB=1
+      - PERSISTENCE=1
+      
+      # AWS configuration
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    volumes:
+      - "./localstack-data:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - attendance-kit-network
+
+networks:
+  attendance-kit-network:
+    driver: bridge
