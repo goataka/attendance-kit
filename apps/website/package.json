@@ -1,0 +1,19 @@
+{
+  "name": "@attendance-kit/website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "勤怠管理キット - Website",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Website dev server not configured yet'",
+    "build": "echo 'Website build not configured yet'",
+    "test": "echo 'Website tests not configured yet'",
+    "lint": "echo 'Website lint not configured yet'"
+  },
+  "keywords": [
+    "website",
+    "attendance"
+  ],
+  "author": "goataka",
+  "license": "MIT"
+}

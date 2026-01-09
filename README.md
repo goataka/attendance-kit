@@ -26,7 +26,7 @@
 ├── apps/              # アプリケーション（npmワークスペース）
 │   ├── frontend/      # フロントエンドアプリケーション
 │   ├── backend/       # バックエンドアプリケーション
-│   └── site/          # 静的サイト
+│   └── website/       # Webサイト
 ├── memory/            # プロジェクト憲法と記憶
 ├── specs/             # 機能仕様書（ブランチごと）
 ├── docs/              # 確定した仕様と実装ドキュメント
@@ -43,7 +43,7 @@
 
 - **@attendance-kit/frontend**: フロントエンドアプリケーション
 - **@attendance-kit/backend**: バックエンドアプリケーション
-- **@attendance-kit/site**: 静的サイト
+- **@attendance-kit/website**: Webサイト
 
 ### 共通コマンド
 
@@ -70,7 +70,7 @@ npm run lint
 # 特定のワークスペースでコマンド実行
 npm run dev -w @attendance-kit/frontend
 npm run build -w @attendance-kit/backend
-npm test -w @attendance-kit/site
+npm test -w @attendance-kit/website
 ```
 
 ## 🚀 Spec-Kit セットアップ
@@ -97,7 +97,7 @@ npm test -w @attendance-kit/site
 - ✅ spec-kit CLI
 - ✅ VS Code extensions (Copilot, Python)
 - ✅ 必要な環境変数とPATH設定
-- ✅ Node.js 20+ (モノレポ開発用)
+- ✅ Node.js 22+ (モノレポ開発用)
 
 ### 手動セットアップ（非推奨）
 
@@ -106,7 +106,7 @@ DevContainerを使わずにローカル環境で開発する場合：
 #### 前提条件
 
 - Python 3.11+
-- Node.js 18+
+- Node.js 22+
 - npm 8+
 - Git
 - uv (Python package manager)
@@ -179,20 +179,6 @@ npm install
 - [憲法](memory/constitution.md): プロジェクトの原則とガイドライン
 - 仕様書: `specs/`ディレクトリに機能ごとに作成
 - 実装文書: `docs/`ディレクトリに確定版を保存
-
-## 🎯 初期セットアップ状況
-
-✅ spec-kit minimal setup completed:
-- ✅ uv installed
-- ✅ spec-kit CLI installed
-- ✅ Directory structure created
-- ✅ Constitution with Japanese language support created
-- ✅ Templates configured
-
-✅ Monorepo setup completed:
-- ✅ npm workspaces configured
-- ✅ Frontend, Backend, Site applications scaffolded
-- ✅ Premerge CI/CD workflow configured
 
 ## 🔮 今後の開発
 
