@@ -14,10 +14,12 @@ const app = new cdk.App();
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
 // AWS environment configuration
-const env = {
+// Only set env if we have an AWS account (for real AWS deployments)
+// For LocalStack, leave env undefined so CDK doesn't require AWS credentials
+const env = process.env.CDK_DEFAULT_ACCOUNT ? {
   account: process.env.CDK_DEFAULT_ACCOUNT,
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
-};
+} : undefined;
 
 // Account-level resources (deployed once per AWS account)
 if (['all', 'account'].includes(stackType)) {
