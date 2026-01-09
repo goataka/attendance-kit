@@ -34,6 +34,29 @@ CDK関連ファイルが変更されたPull Requestで、スナップショッ�
 
 **詳細**: [update-cdk-snapshots.md](./update-cdk-snapshots.md)
 
+### premerge-cdk.yml
+
+CDK関連ファイルが変更されたPull Requestで、LocalStackを使用してCDKスタックの検証を行うワークフロー。
+
+- **トリガー**: 
+  - CDK関連ファイルが変更されたPull Request
+- **検証内容**: 
+  - TypeScriptビルド
+  - ユニットテスト
+  - LocalStackへのCDKデプロイ
+  - DynamoDB操作テスト
+- **自動化**: 検証結果をPRにコメント
+- **権限**: contents:read, pull-requests:write
+
+**監視ファイル**:
+- `infrastructure/deploy/lib/**/*.ts`
+- `infrastructure/deploy/bin/**/*.ts`
+- `infrastructure/deploy/test/**/*.test.ts`
+- `infrastructure/deploy/package*.json`
+- `infrastructure/deploy/docker-compose.yml`
+
+**詳細**: [premerge-cdk.md](./premerge-cdk.md)
+
 ### deploy-environment-stack.yml
 
 環境レベルリソース（DynamoDBテーブル等）をデプロイするワークフロー。

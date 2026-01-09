@@ -1,0 +1,155 @@
+name: Pre-merge CDK Validation
+
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/deploy/lib/**/*.ts'
+      - 'infrastructure/deploy/bin/**/*.ts'
+      - 'infrastructure/deploy/test/**/*.test.ts'
+      - 'infrastructure/deploy/package*.json'
+      - 'infrastructure/deploy/tsconfig.json'
+      - 'infrastructure/deploy/docker-compose.yml'
+      - '.github/workflows/premerge-cdk.yml'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-cdk:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: infrastructure/deploy/package-lock.json
+
+      - name: Install dependencies
+        working-directory: infrastructure/deploy
+        run: npm ci
+
+      - name: Build TypeScript
+        working-directory: infrastructure/deploy
+        run: npm run build
+
+      - name: Run tests
+        working-directory: infrastructure/deploy
+        run: npm test
+
+      - name: Start LocalStack
+        working-directory: infrastructure/deploy
+        run: npm run localstack:start
+
+      - name: Wait for LocalStack to be ready
+        run: |
+          echo "Waiting for LocalStack to be ready..."
+          timeout 60 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "\"dynamodb\": \"available\""; do sleep 2; done'
+          echo "LocalStack is ready!"
+
+      - name: CDK Synth
+        working-directory: infrastructure/deploy
+        run: npm run localstack:synth
+
+      - name: CDK Deploy to LocalStack
+        working-directory: infrastructure/deploy
+        run: npm run localstack:deploy
+
+      - name: Verify DynamoDB table in LocalStack
+        run: |
+          echo "Verifying DynamoDB table creation..."
+          aws dynamodb list-tables \
+            --endpoint-url http://localhost:4566 \
+            --region ap-northeast-1 \
+            --no-cli-pager
+          
+          echo "Checking table details..."
+          aws dynamodb describe-table \
+            --table-name attendance-kit-dev-clock \
+            --endpoint-url http://localhost:4566 \
+            --region ap-northeast-1 \
+            --no-cli-pager
+
+      - name: Test DynamoDB operations
+        run: |
+          echo "Testing DynamoDB put-item..."
+          aws dynamodb put-item \
+            --table-name attendance-kit-dev-clock \
+            --item '{"userId": {"S": "test-user"}, "timestamp": {"S": "2026-01-09T07:00:00Z"}, "date": {"S": "2026-01-09"}, "type": {"S": "clock-in"}}' \
+            --endpoint-url http://localhost:4566 \
+            --region ap-northeast-1
+          
+          echo "Testing DynamoDB get-item..."
+          aws dynamodb get-item \
+            --table-name attendance-kit-dev-clock \
+            --key '{"userId": {"S": "test-user"}, "timestamp": {"S": "2026-01-09T07:00:00Z"}}' \
+            --endpoint-url http://localhost:4566 \
+            --region ap-northeast-1 \
+            --no-cli-pager
+          
+          echo "Testing DynamoDB scan..."
+          aws dynamodb scan \
+            --table-name attendance-kit-dev-clock \
+            --endpoint-url http://localhost:4566 \
+            --region ap-northeast-1 \
+            --no-cli-pager
+
+      - name: Stop LocalStack
+        if: always()
+        working-directory: infrastructure/deploy
+        run: npm run localstack:stop
+
+      - name: Comment on PR
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = [
+              '## ✅ CDK Pre-merge Validation Passed',
+              '',
+              'すべてのCDK検証が成功しました:',
+              '',
+              '- ✅ TypeScriptビルド成功',
+              '- ✅ ユニットテスト通過',
+              '- ✅ CDK Synth成功',
+              '- ✅ LocalStackへのデプロイ成功',
+              '- ✅ DynamoDBテーブル作成確認',
+              '- ✅ DynamoDB操作テスト成功',
+              '',
+              'このPRはマージ可能です。'
+            ].join('\n');
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+      - name: Comment on PR failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = [
+              '## ❌ CDK Pre-merge Validation Failed',
+              '',
+              'CDK検証中にエラーが発生しました。',
+              '',
+              '詳細はワークフローログを確認してください:',
+              `[ワークフロー実行ログ](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+              '',
+              '問題を修正してから再度プッシュしてください。'
+            ].join('\n');
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
