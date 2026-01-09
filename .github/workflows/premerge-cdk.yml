@@ -55,8 +55,6 @@ jobs:
       - name: CDK Synth
         working-directory: infrastructure/deploy
         env:
-          CDK_DEFAULT_ACCOUNT: "000000000000"
-          CDK_DEFAULT_REGION: "ap-northeast-1"
           AWS_ACCESS_KEY_ID: "test"
           AWS_SECRET_ACCESS_KEY: "test"
           AWS_DEFAULT_REGION: "ap-northeast-1"
@@ -65,8 +63,6 @@ jobs:
       - name: CDK Deploy to LocalStack
         working-directory: infrastructure/deploy
         env:
-          CDK_DEFAULT_ACCOUNT: "000000000000"
-          CDK_DEFAULT_REGION: "ap-northeast-1"
           AWS_ACCESS_KEY_ID: "test"
           AWS_SECRET_ACCESS_KEY: "test"
           AWS_DEFAULT_REGION: "ap-northeast-1"
