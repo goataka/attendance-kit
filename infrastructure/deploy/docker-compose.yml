@@ -16,10 +16,14 @@ services:
       - DYNAMODB_SHARE_DB=1
       - PERSISTENCE=1
       
-      # AWS configuration
+      # AWS configuration for LocalStack
       - AWS_DEFAULT_REGION=ap-northeast-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
+      
+      # CDK configuration (dummy values for LocalStack)
+      - CDK_DEFAULT_ACCOUNT=000000000000
+      - CDK_DEFAULT_REGION=ap-northeast-1
     volumes:
       - "./localstack-data:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
