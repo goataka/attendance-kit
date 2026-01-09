@@ -7,9 +7,9 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "localstack:start": "docker-compose up -d",
-    "localstack:stop": "docker-compose down",
-    "localstack:logs": "docker-compose logs -f localstack",
+    "localstack:start": "docker compose up -d",
+    "localstack:stop": "docker compose down",
+    "localstack:logs": "docker compose logs -f localstack",
     "localstack:deploy": "cdklocal deploy --context environment=dev --require-approval never",
     "localstack:synth": "cdklocal synth --context environment=dev",
     "localstack:destroy": "cdklocal destroy --context environment=dev --force"

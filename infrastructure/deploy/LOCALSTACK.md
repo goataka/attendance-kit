@@ -182,6 +182,8 @@ rm -rf localstack-data
 npm run localstack:start
 ```
 
+**注意**: このプロジェクトでは Docker Compose v2 (プラグイン形式) を使用しています。コマンドは `docker compose` (ハイフンなし) です。
+
 ## トラブルシューティング
 
 ### LocalStackが起動しない
@@ -194,7 +196,7 @@ docker ps
 lsof -i :4566
 
 # LocalStackのログを確認
-docker-compose logs localstack
+docker compose logs localstack
 ```
 
 ### テーブルが作成されない
@@ -223,6 +225,10 @@ docker-compose ps
 npm run localstack:destroy
 npm run localstack:deploy
 ```
+
+**Docker Composeコマンドについて**:
+- Docker Compose v2では `docker compose` (ハイフンなし) を使用します
+- v1の `docker-compose` (ハイフンあり) からv2に移行している場合は、npmスクリプト経由で実行することを推奨します
 
 ## 環境変数
 
