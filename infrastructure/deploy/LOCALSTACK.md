@@ -219,7 +219,7 @@ npm run localstack:logs
 npx cdklocal --version
 
 # LocalStackが起動しているか確認
-docker-compose ps
+docker compose ps
 
 # 既存のスタックを削除してから再デプロイ
 npm run localstack:destroy
@@ -311,11 +311,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
       - name: Install dependencies
         run: |
           cd infrastructure/deploy
-          npm install
+          npm ci
       - name: Deploy to LocalStack
         run: |
           cd infrastructure/deploy
