@@ -40,7 +40,7 @@ npm run localstack:start
 npm run localstack:logs
 
 # コンテナの状態を確認
-docker-compose ps
+docker compose ps
 ```
 
 ## CDKのデプロイ
