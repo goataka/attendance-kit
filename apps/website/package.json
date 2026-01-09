@@ -15,5 +15,9 @@
     "attendance"
   ],
   "author": "goataka",
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=8.0.0"
+  }
 }
