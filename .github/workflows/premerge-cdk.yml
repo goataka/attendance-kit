@@ -72,27 +72,14 @@ jobs:
 
       - name: CDK Bootstrap
         working-directory: infrastructure/deploy
-        env:
-          AWS_ACCESS_KEY_ID: "test"
-          AWS_SECRET_ACCESS_KEY: "test"
-          AWS_DEFAULT_REGION: "ap-northeast-1"
-          COST_ALERT_EMAIL: "dummy@example.com"
         run: npm run localstack:bootstrap
 
       - name: CDK Synth
         working-directory: infrastructure/deploy
-        env:
-          AWS_ACCESS_KEY_ID: "test"
-          AWS_SECRET_ACCESS_KEY: "test"
-          AWS_DEFAULT_REGION: "ap-northeast-1"
         run: npm run localstack:synth
 
       - name: CDK Deploy to LocalStack
         working-directory: infrastructure/deploy
-        env:
-          AWS_ACCESS_KEY_ID: "test"
-          AWS_SECRET_ACCESS_KEY: "test"
-          AWS_DEFAULT_REGION: "ap-northeast-1"
         run: npm run localstack:deploy
 
       - name: Run DynamoDB Integration Tests
