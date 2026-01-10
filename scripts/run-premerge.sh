@@ -25,14 +25,15 @@ fi
 # Run the premerge workflow
 # -j test: Run only the 'test' job
 # --pull=false: Use cached Docker images
-# -W: Specify workflow file
-echo "Running workflow: .github/workflows/premerge.yml"
+# -W: Specify workflow file (use premerge-local.yml for act compatibility)
+echo "Running workflow: .github/workflows/premerge-local.yml"
 echo "Job: test"
+echo "Note: Using premerge-local.yml which skips Node.js setup (already in image)"
 echo ""
 
 act pull_request \
     -j test \
-    -W .github/workflows/premerge.yml \
+    -W .github/workflows/premerge-local.yml \
     --pull=false \
     "$@"
 
