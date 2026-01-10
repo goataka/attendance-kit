@@ -18,6 +18,7 @@
 │   ├── devcontainer.json
 │   └── README.md
 ├── .github/
+│   ├── skills/        # GitHub Copilot Agent Skills定義
 │   └── workflows/
 │       ├── copilot-setup-steps.yml  # 自動セットアップ
 │       └── premerge.yml             # PR時のCI/CD
@@ -99,6 +100,25 @@ npm run dev -w @attendance-kit/frontend
 npm run build -w @attendance-kit/backend
 npm test -w @attendance-kit/website
 ```
+
+## 🤖 GitHub Copilot Agent Skills
+
+このプロジェクトは、GitHub Copilot Agentが使用できるスキルを定義しています。
+
+### 利用可能なスキル
+
+#### premerge-check
+
+プレマージワークフローをローカルで実行してCI/CDチェックを行うスキルです。
+
+**使用方法**:
+```bash
+npm run premerge:local
+```
+
+**スキルの詳細**: [.github/skills/premerge-check.yml](.github/skills/premerge-check.yml)
+
+すべてのスキルの一覧と詳細は [.github/skills/README.md](.github/skills/README.md) を参照してください。
 
 ## 🚀 Spec-Kit セットアップ
 
