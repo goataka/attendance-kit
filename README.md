@@ -116,7 +116,7 @@ npm test -w @attendance-kit/website
 npm run premerge:local
 ```
 
-**スキルの詳細**: [.github/skills/premerge-check.yml](.github/skills/premerge-check.yml)
+**スキルの詳細**: [.github/skills/premerge-check/SKILL.md](.github/skills/premerge-check/SKILL.md)
 
 すべてのスキルの一覧と詳細は [.github/skills/README.md](.github/skills/README.md) を参照してください。
 
