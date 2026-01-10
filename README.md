@@ -18,6 +18,7 @@
 │   ├── devcontainer.json
 │   └── README.md
 ├── .github/
+│   ├── skills/        # GitHub Copilot Agent Skills定義
 │   └── workflows/
 │       ├── copilot-setup-steps.yml  # 自動セットアップ
 │       └── premerge.yml             # PR時のCI/CD
@@ -28,6 +29,7 @@
 │   ├── backend/       # バックエンドアプリケーション
 │   └── website/       # Webサイト
 ├── memory/            # プロジェクト憲法と記憶
+├── scripts/           # 開発・CI/CD支援スクリプト
 ├── specs/             # 機能仕様書（ブランチごと）
 ├── docs/              # 確定した仕様と実装ドキュメント
 ├── infrastructure/    # インフラストラクチャコード
@@ -62,7 +64,45 @@ npm test
 
 # 全アプリケーションのLintチェック
 npm run lint
+
+# プレマージワークフローのローカル実行
+npm run premerge:local
 ```
+
+### プレマージワークフローのローカル実行
+
+GitHub ActionsのPremergeワークフローをローカル環境で実行できます。これにより、プルリクエストを作成する前にCI/CDチェックをテストできます。
+
+**推奨方法**:
+```bash
+npm run premerge:local
+```
+
+このコマンドは、`.github/workflows/premerge.yml` ワークフローを実行します。SSL証明書の検証を無効化することで、証明書エラーを回避しています。
+
+**必要条件**:
+- Docker が起動していること
+- [act](https://github.com/nektos/act) がインストールされていること
+
+**actのインストール**:
+```bash
+# Linux/macOS
+curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
+# Homebrew
+brew install act
+```
+
+**詳細なセットアップ手順**: [scripts/SETUP.md](scripts/SETUP.md) を参照してください。
+
+**人間による手動設定が必要な項目**:
+- Dockerイメージの選択（`.actrc` で設定、デフォルトは `catthehacker/ubuntu:act-latest`）
+- 企業プロキシ環境での追加ネットワーク設定
+- シークレットや環境変数の設定（必要な場合）
+
+**注意**: `.actrc` で `NODE_TLS_REJECT_UNAUTHORIZED=0` を設定してSSL証明書の検証を無効化しています。これは開発環境専用の設定です。
+
+詳細は [scripts/README.md](scripts/README.md) と [scripts/SETUP.md](scripts/SETUP.md) を参照してください。
 
 ### 個別アプリケーションでのコマンド実行
 
@@ -72,6 +112,25 @@ npm run dev -w @attendance-kit/frontend
 npm run build -w @attendance-kit/backend
 npm test -w @attendance-kit/website
 ```
+
+## 🤖 GitHub Copilot Agent Skills
+
+このプロジェクトは、GitHub Copilot Agentが使用できるスキルを定義しています。
+
+### 利用可能なスキル
+
+#### premerge-check
+
+プレマージワークフローをローカルで実行してCI/CDチェックを行うスキルです。
+
+**使用方法**:
+```bash
+npm run premerge:local
+```
+
+**スキルの詳細**: [.github/skills/premerge-check/SKILL.md](.github/skills/premerge-check/SKILL.md)
+
+すべてのスキルの一覧と詳細は [.github/skills/README.md](.github/skills/README.md) を参照してください。
 
 ## 🚀 Spec-Kit セットアップ
 
