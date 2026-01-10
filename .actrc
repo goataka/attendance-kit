@@ -1,0 +1,9 @@
+# act configuration file
+# This file configures the act tool for running GitHub Actions locally
+
+# Use medium-sized ubuntu images
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+-P ubuntu-22.04=catthehacker/ubuntu:act-22.04
+
+# Network configuration
+--container-options "--network host"

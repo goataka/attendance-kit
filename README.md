@@ -28,6 +28,7 @@
 │   ├── backend/       # バックエンドアプリケーション
 │   └── website/       # Webサイト
 ├── memory/            # プロジェクト憲法と記憶
+├── scripts/           # 開発・CI/CD支援スクリプト
 ├── specs/             # 機能仕様書（ブランチごと）
 ├── docs/              # 確定した仕様と実装ドキュメント
 ├── infrastructure/    # インフラストラクチャコード
@@ -62,6 +63,32 @@ npm test
 
 # 全アプリケーションのLintチェック
 npm run lint
+
+# プレマージワークフローのローカル実行
+npm run premerge:local
+```
+
+### プレマージワークフローのローカル実行
+
+GitHub ActionsのPremergeワークフローをローカル環境で実行できます。これにより、プルリクエストを作成する前にCI/CDチェックをテストできます。
+
+```bash
+npm run premerge:local
+```
+
+詳細は [scripts/README.md](scripts/README.md) を参照してください。
+
+**必要条件**:
+- Docker が起動していること
+- [act](https://github.com/nektos/act) がインストールされていること
+
+**actのインストール**:
+```bash
+# Linux/macOS
+curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash
+
+# Homebrew
+brew install act
 ```
 
 ### 個別アプリケーションでのコマンド実行
