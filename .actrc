@@ -1,6 +1,9 @@
 # act configuration file
-# Use an image with Node.js 22 pre-installed to avoid SSL certificate issues
+# Configuration to run GitHub Actions workflows locally
 
-# Use node:22 based image for ubuntu-latest
--P ubuntu-latest=node:22-bookworm
--P ubuntu-22.04=node:22-bookworm
+# Use medium-sized ubuntu images (GitHub Actions compatible)
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+-P ubuntu-22.04=catthehacker/ubuntu:act-22.04
+
+# Disable SSL certificate verification to avoid certificate errors
+--env NODE_TLS_REJECT_UNAUTHORIZED=0

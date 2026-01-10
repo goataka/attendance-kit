@@ -43,10 +43,10 @@ npm run premerge:local
 
 ### 実行内容
 
-スクリプトは `.github/workflows/premerge-local.yml` で定義された以下のステップを実行します:
+スクリプトは `.github/workflows/premerge.yml` で定義された以下のステップを実行します:
 
 1. コードのチェックアウト
-2. Node.js バージョン確認（Node.js 22が事前インストール済み）
+2. Node.js 22のセットアップ
 3. 依存関係のインストール (`npm ci`)
 4. Lint実行 (`npm run lint`)
 5. テスト実行 (`npm run test`)
@@ -80,38 +80,17 @@ Please install act: https://github.com/nektos/act#installation
 
 上記のインストール手順に従ってactをインストールしてください。
 
-#### SSL証明書エラー
+#### SSL証明書エラー（解決済み）
 
-**解決済み**: 現在の設定では、Node.js 22がプリインストールされた `node:22-bookworm` Dockerイメージを使用しているため、SSL証明書エラーは発生しません。
+`.actrc` 設定で `NODE_TLS_REJECT_UNAUTHORIZED=0` 環境変数を設定することにより、SSL証明書の検証を無効化しています。これにより、Node.js 22のダウンロード時の証明書エラーを回避できます。
 
-古い設定で問題が発生した場合:
-
-```
-self-signed certificate in certificate chain
-```
-
-以下の解決方法があります:
-
-1. **推奨**: `.actrc` で Node.js 22プリインストール済みイメージを使用（デフォルト設定）
-   ```
-   -P ubuntu-latest=node:22-bookworm
-   ```
-
-2. **代替方法**: ローカルのNode.jsで直接コマンドを実行
-   ```bash
-   npm ci
-   npm run lint
-   npm test
-   npm run build
-   ```
-
-3. **詳細なセットアップ**: [scripts/SETUP.md](./SETUP.md) を参照
+**注意**: この設定は開発環境でのローカル実行専用です。本番環境では使用しないでください。
 
 ### 人間による手動設定が必要な項目
 
 以下の設定は、環境に応じて人間が手動で調整する必要があります:
 
-1. **Dockerイメージの選択**: `.actrc` で設定（デフォルト: `node:22-bookworm`）
+1. **Dockerイメージの選択**: `.actrc` で設定（デフォルト: `catthehacker/ubuntu:act-latest`）
 2. **プロキシ設定**: 企業プロキシ環境の場合、追加設定が必要
 3. **シークレット**: GitHub Actionsで使用するシークレットをローカルで設定する場合
 
@@ -122,4 +101,4 @@ self-signed certificate in certificate chain
 - [scripts/SETUP.md](./SETUP.md) - 詳細なセットアップガイド（人間による手動設定項目を含む）
 - [act - GitHub Actions local runner](https://github.com/nektos/act)
 - [GitHub Actions documentation](https://docs.github.com/en/actions)
-- [.github/workflows/premerge-local.yml](../.github/workflows/premerge-local.yml) - ローカル実行用ワークフロー定義
+- [.github/workflows/premerge.yml](../.github/workflows/premerge.yml) - プレマージワークフロー定義

@@ -78,7 +78,7 @@ GitHub ActionsのPremergeワークフローをローカル環境で実行でき�
 npm run premerge:local
 ```
 
-このコマンドは、`.github/workflows/premerge-local.yml` ワークフローを実行します。Node.js 22がプリインストールされたDockerイメージを使用するため、SSL証明書エラーを回避できます。
+このコマンドは、`.github/workflows/premerge.yml` ワークフローを実行します。SSL証明書の検証を無効化することで、証明書エラーを回避しています。
 
 **必要条件**:
 - Docker が起動していること
@@ -96,9 +96,11 @@ brew install act
 **詳細なセットアップ手順**: [scripts/SETUP.md](scripts/SETUP.md) を参照してください。
 
 **人間による手動設定が必要な項目**:
-- Dockerイメージの選択（`.actrc` で設定、デフォルトは `node:22-bookworm`）
+- Dockerイメージの選択（`.actrc` で設定、デフォルトは `catthehacker/ubuntu:act-latest`）
 - 企業プロキシ環境での追加ネットワーク設定
 - シークレットや環境変数の設定（必要な場合）
+
+**注意**: `.actrc` で `NODE_TLS_REJECT_UNAUTHORIZED=0` を設定してSSL証明書の検証を無効化しています。これは開発環境専用の設定です。
 
 詳細は [scripts/README.md](scripts/README.md) と [scripts/SETUP.md](scripts/SETUP.md) を参照してください。
 

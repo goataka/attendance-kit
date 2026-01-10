@@ -23,14 +23,14 @@ description: プレマージワークフローをローカルで実行してCI/C
 npm run premerge:local
 ```
 
-このコマンドは、`.github/workflows/premerge-local.yml` で定義されたワークフローを `act` ツールを使用してローカル環境で実行します。Node.js 22がプリインストールされたDockerイメージを使用するため、SSL証明書エラーを回避できます。
+このコマンドは、`.github/workflows/premerge.yml` で定義されたワークフローを `act` ツールを使用してローカル環境で実行します。SSL証明書の検証を無効化することで、証明書エラーを回避しています。
 
 ## 実行される内容
 
 ワークフローは以下のステップを実行します:
 
 1. **コードのチェックアウト**: リポジトリのコードをチェックアウト
-2. **Node.js バージョン確認**: Node.js 22.x環境を確認（プリインストール済み）
+2. **Node.js 22のセットアップ**: Node.js 22.x環境をセットアップ
 3. **依存関係のインストール**: `npm ci` で依存関係をインストール
 4. **Lintチェック**: `npm run lint` でコードスタイルをチェック
 5. **テスト実行**: `npm test` でテストを実行
@@ -57,11 +57,9 @@ brew install act
 
 ### SSL証明書エラー（解決済み）
 
-現在の設定では、Node.js 22がプリインストールされた `node:22-bookworm` Dockerイメージを使用しているため、SSL証明書エラーは発生しません。
+`.actrc` 設定で `NODE_TLS_REJECT_UNAUTHORIZED=0` 環境変数を設定することにより、SSL証明書の検証を無効化しています。これによりNode.js 22のダウンロード時の証明書エラーを回避できます。
 
-古い設定や特殊な環境で問題が発生する場合は、以下を参照してください:
-- 詳細なセットアップガイド: `scripts/SETUP.md`
-- ローカルのNode.jsで直接実行する代替方法
+**注意**: この設定は開発環境でのローカル実行専用です。
 
 ### その他の問題
 
@@ -73,6 +71,5 @@ brew install act
 
 - スクリプト使用方法: `scripts/README.md`
 - 詳細セットアップガイド: `scripts/SETUP.md`
-- ローカル実行用ワークフロー定義: `.github/workflows/premerge-local.yml`
-- GitHub Actionsプロダクション用ワークフロー: `.github/workflows/premerge.yml`
+- プレマージワークフロー定義: `.github/workflows/premerge.yml`
 - act - GitHub Actions local runner: https://github.com/nektos/act
