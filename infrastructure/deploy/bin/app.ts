@@ -54,7 +54,8 @@ if (['all', 'environment'].includes(stackType)) {
   new AttendanceKitStack(app, stackName, {
     env,
     environment,
-    description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
+    jwtSecret: process.env.JWT_SECRET, // From GitHub Secrets
+    description: `DynamoDB clock table and Backend API for attendance-kit (${environment} environment)`,
     tags: {
       Environment: environment,
       Project: 'attendance-kit',
