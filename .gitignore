@@ -42,3 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 .npm
 .eslintcache
+
+*storybook.log
+storybook-static
