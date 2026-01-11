@@ -129,7 +129,7 @@ jobs:
               '- ✅ ユニットテスト通過',
               '- ✅ CDK Synth成功',
               '- ✅ LocalStackへのデプロイ成功',
-              '- ✅ DynamoDB統合テスト通過 (vitest)',
+              '- ✅ DynamoDB統合テスト通過 (jest)',
               '',
               'このPRはマージ可能です。'
             ].join('\n');
