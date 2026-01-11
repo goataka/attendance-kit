@@ -1,0 +1,9 @@
+# act configuration file
+# Configuration to run GitHub Actions workflows locally
+
+# Use medium-sized ubuntu images (GitHub Actions compatible)
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+-P ubuntu-22.04=catthehacker/ubuntu:act-22.04
+
+# Disable SSL certificate verification to avoid certificate errors
+--env NODE_TLS_REJECT_UNAUTHORIZED=0
