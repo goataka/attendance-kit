@@ -156,7 +156,7 @@ jobs:
               'CDK検証中にエラーが発生しました。',
               '',
               '詳細はワークフローログを確認してください:',
-              `[ワークフロー実行ログ](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`,
+              `[ワークフロー実行ログ](${context.payload.repository.html_url}/actions/runs/${context.runId})`,
               '',
               '問題を修正してから再度プッシュしてください。'
             ].join('\n');
