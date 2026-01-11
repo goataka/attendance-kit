@@ -6,7 +6,7 @@ import { ClockService } from './../src/clock/clock.service';
 import { JwtService } from '@nestjs/jwt';
 import { ClockType } from './../src/clock/dto/clock.dto';
 
-describe('ClockController (e2e)', () => {
+describe('ClockController (api)', () => {
   let app: INestApplication;
   let clockService: ClockService;
   let jwtService: JwtService;

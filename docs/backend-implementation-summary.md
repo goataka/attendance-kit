@@ -97,9 +97,9 @@ Client → API Gateway → Lambda
 - **カバレッジ**: サービス層の全メソッド
 - **モック**: DynamoDB DocumentClient
 
-#### E2Eテスト (Supertest)
+#### APIテスト (Supertest)
 
-- **ファイル**: `test/clock.e2e-spec.ts`
+- **ファイル**: `test/clock.api-spec.ts`
 - **カバレッジ**: 全APIエンドポイント
 - **モック**: ClockService
 
@@ -109,7 +109,7 @@ Client → API Gateway → Lambda
 Test Suites: 2 passed, 2 total
 Tests:       13 passed, 13 total
 - Unit Tests: 6 passed
-- E2E Tests: 7 passed
+- API Tests: 7 passed
 ```
 
 ### 6. AWS Lambda統合 ✅
@@ -166,7 +166,7 @@ npm run generate:openapi
 npm run build              # TypeScriptコンパイル
 npm run lint              # ESLintチェック
 npm test                  # ユニットテスト
-npm run test:e2e          # E2Eテスト
+npm run test:api          # APIテスト
 ```
 
 #### プレマージワークフロー
@@ -289,7 +289,7 @@ cdk deploy --context environment=dev
 ### テストカバレッジ
 
 - **ユニットテスト**: 6 tests passed
-- **E2Eテスト**: 7 tests passed
+- **APIテスト**: 7 tests passed
 - **総テスト**: 13 tests passed
 
 ### Lint結果

@@ -48,10 +48,10 @@ API仕様はOpenAPI 3.0形式で提供されています:
 npm test
 ```
 
-### E2Eテスト
+### APIテスト
 
 ```bash
-npm run test:e2e
+npm run test:api
 ```
 
 ### カバレッジ
@@ -150,7 +150,7 @@ npm run lint
 | `npm run start` | 本番モードで起動 |
 | `npm run start:dev` | 開発モードで起動（ホットリロード） |
 | `npm test` | ユニットテストを実行 |
-| `npm run test:e2e` | E2Eテストを実行 |
+| `npm run test:api` | APIテストを実行 |
 | `npm run lint` | ESLintでコードをチェック |
 | `npm run format` | Prettierでコードを整形 |
 | `npm run generate:openapi` | OpenAPI仕様書を生成 |
