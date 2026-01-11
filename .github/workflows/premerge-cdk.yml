@@ -123,6 +123,7 @@ jobs:
         if: success()
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const comment = [
               '## ✅ CDK Pre-merge Validation Passed',
@@ -149,6 +150,7 @@ jobs:
         if: failure()
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const comment = [
               '## ❌ CDK Pre-merge Validation Failed',
