@@ -38,9 +38,9 @@ jobs:
         working-directory: infrastructure/deploy
         run: npm run build
 
-      - name: Run tests
+      - name: Run unit tests
         working-directory: infrastructure/deploy
-        run: npm test
+        run: npm test -- --testPathIgnorePatterns=test/integration
 
       - name: Start LocalStack
         working-directory: infrastructure/deploy
