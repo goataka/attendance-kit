@@ -109,6 +109,10 @@ jobs:
       - name: Run DynamoDB Integration Tests
         working-directory: infrastructure/deploy
         run: npm run test:integration
+        env:
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_DEFAULT_REGION: ap-northeast-1
 
       - name: Stop LocalStack
         if: always()

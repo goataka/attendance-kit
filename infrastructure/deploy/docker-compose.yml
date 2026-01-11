@@ -1,11 +1,8 @@
 services:
   localstack:
-    container_name: attendance-kit-localstack
     image: localstack/localstack:latest
     ports:
       - "4566:4566"
     environment:
       - DEBUG=1
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
 
