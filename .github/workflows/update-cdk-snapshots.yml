@@ -43,7 +43,7 @@ jobs:
 
       - name: Update snapshots
         working-directory: infrastructure/deploy
-        run: npm test -- -u
+        run: npm test -- -u --testPathIgnorePatterns=test/integration
 
       - name: Check for snapshot changes
         id: snapshot-changes
