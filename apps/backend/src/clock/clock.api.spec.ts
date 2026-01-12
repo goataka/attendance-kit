@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
-import { AppModule } from './../src/app.module';
-import { ClockService } from './../src/clock/clock.service';
+import { AppModule } from '../app.module';
+import { ClockService } from './clock.service';
 import { JwtService } from '@nestjs/jwt';
-import { ClockType } from './../src/clock/dto/clock.dto';
+import { ClockType } from './dto/clock.dto';
 
 describe('ClockController (api)', () => {
   let app: INestApplication;

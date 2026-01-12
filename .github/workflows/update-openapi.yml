@@ -43,7 +43,7 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          if git diff --quiet docs/api/openapi.json; then
+          if git diff --quiet apps/backend/api/openapi.json; then
             echo "changes=false" >> $GITHUB_OUTPUT
           else
             echo "changes=true" >> $GITHUB_OUTPUT
@@ -54,7 +54,7 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs/api/openapi.json
+          git add apps/backend/api/openapi.json
           git commit -m "docs: OpenAPI仕様を自動更新"
           git push
 
@@ -67,7 +67,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✅ OpenAPI仕様が自動的に更新されました。\n\n📄 変更内容は `docs/api/openapi.json` で確認できます。'
+              body: '✅ OpenAPI仕様が自動的に更新されました。\n\n📄 変更内容は `apps/backend/api/openapi.json` で確認できます。'
             })
 
       - name: No changes message

@@ -20,7 +20,7 @@ async function generateOpenApiSpec() {
   const document = SwaggerModule.createDocument(app, config);
 
   // Output directory
-  const outputDir = path.join(__dirname, '..', '..', '..', 'docs', 'api');
+  const outputDir = path.join(__dirname, '..', 'api');
   const outputPath = path.join(outputDir, 'openapi.json');
 
   // Create directory if it doesn't exist

@@ -104,6 +104,6 @@ Authorization: Bearer <your-jwt-token>
 
 ## 関連ドキュメント
 
-- [Backend README](../../apps/backend/README.md)
-- [Architecture Documentation](../architecture/README.md)
-- [DynamoDB Clock Table Design](../architecture/dynamodb-clock-table.md)
+- [Backend README](../README.md)
+- [Architecture Documentation](../../../docs/architecture/README.md)
+- [DynamoDB Clock Table Design](../../../docs/architecture/dynamodb-clock-table.md)
