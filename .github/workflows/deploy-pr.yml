@@ -1,0 +1,37 @@
+name: Deploy Infrastructure PR Workflows
+
+on:
+  pull_request:
+    paths:
+      - 'infrastructure/deploy/**'
+      - '.github/workflows/deploy-pr.yml'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  # CDK Validation
+  validate-cdk:
+    if: |
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/lib') ||
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/bin') ||
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/test') ||
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/package') ||
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/tsconfig.json') ||
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/docker-compose.yml') ||
+      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/scripts/validate-cdk-localstack.sh')
+    uses: ./.github/workflows/premerge-cdk-impl.yml
+    secrets: inherit
+
+  # Snapshot Update
+  update-snapshots:
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      (contains(github.event.pull_request.changed_files, 'infrastructure/deploy/lib') ||
+       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/bin') ||
+       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/test') ||
+       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/package') ||
+       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/tsconfig.json'))
+    uses: ./.github/workflows/update-cdk-snapshots-impl.yml
+    secrets: inherit
