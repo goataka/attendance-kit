@@ -27,5 +27,10 @@ jobs:
   update-frontend-snapshots:
     needs: check-paths
     if: needs.check-paths.outputs.frontend == 'true'
-    uses: ./apps/frontend/workflows/visual-snapshots.yml
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: ./apps/frontend/workflows/visual-snapshots
 

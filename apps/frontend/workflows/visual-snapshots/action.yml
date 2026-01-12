@@ -1,0 +1,68 @@
+name: 'Frontend Visual Snapshots'
+description: 'フロントエンドのビジュアルリグレッションスナップショットを更新'
+
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - run: npm ci
+      shell: bash
+
+    - name: Install Playwright browsers
+      working-directory: apps/frontend
+      run: npx playwright install chromium --with-deps
+      shell: bash
+
+    - name: Start dev server
+      working-directory: apps/frontend
+      run: |
+        npm run dev &
+        timeout 60 bash -c 'until curl -s http://localhost:5173 > /dev/null; do sleep 1; done'
+      shell: bash
+
+    - name: Capture screenshots
+      working-directory: apps/frontend
+      run: |
+        chmod +x scripts/capture-screenshots.sh
+        ./scripts/capture-screenshots.sh
+      shell: bash
+
+    - name: Check for changes
+      id: check_changes
+      run: |
+        if git diff --quiet apps/frontend/src/*/*.screenshot.png; then
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
+    - name: Commit changes
+      if: steps.check_changes.outputs.has_changes == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add apps/frontend/src/*/*.screenshot.png
+        git commit -m "chore: update visual regression snapshots [skip ci]"
+        git push
+      shell: bash
+
+    - name: Comment on PR
+      if: steps.check_changes.outputs.has_changes == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '🎨 Visual regression snapshots have been automatically updated.'
+          })
