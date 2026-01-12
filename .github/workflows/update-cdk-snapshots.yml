@@ -1,7 +1,12 @@
-# This workflow is defined in infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml
-# For implementation details, see: infrastructure/deploy/.github/workflows/README.md
+# ⚠️ WORKFLOW DEFINITION LOCATION
+# This workflow is defined in: infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml
+# For documentation, see: infrastructure/deploy/.github/workflows/README.md
+# 
+# GitHub Actions can only execute workflows from .github/workflows/ directory,
+# so this file serves as a reference pointer. The actual implementation is maintained
+# in the infrastructure/deploy directory for better organization.
 
-name: Update CDK Snapshots
+name: Update CDK Snapshots (See infrastructure/deploy/.github/workflows/)
 
 on:
   pull_request:

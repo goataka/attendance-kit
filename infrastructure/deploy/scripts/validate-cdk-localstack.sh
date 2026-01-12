@@ -2,9 +2,23 @@
 set -e
 
 # LocalStack validation script for CDK deployment
-# This script performs LocalStack setup, CDK deployment, and integration tests
+# This script performs LocalStack startup, setup, CDK deployment, integration tests, and shutdown
 
 echo "=== Starting LocalStack CDK Validation ==="
+
+# Function to cleanup LocalStack on exit
+cleanup() {
+  echo "=== Stopping LocalStack ==="
+  npm run localstack:stop || true
+  echo "✅ LocalStack stopped"
+}
+
+# Ensure LocalStack is stopped even if script fails
+trap cleanup EXIT
+
+# Start LocalStack
+echo "=== Starting LocalStack ==="
+npm run localstack:start
 
 # Environment variables for LocalStack
 export AWS_ACCESS_KEY_ID="test"

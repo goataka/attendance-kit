@@ -43,18 +43,9 @@ jobs:
         working-directory: infrastructure/deploy
         run: npm test -- --testPathIgnorePatterns=test/integration
 
-      - name: Start LocalStack
-        working-directory: infrastructure/deploy
-        run: npm run localstack:start
-
       - name: Run LocalStack validation
         working-directory: infrastructure/deploy
         run: ./scripts/validate-cdk-localstack.sh
-
-      - name: Stop LocalStack
-        if: always()
-        working-directory: infrastructure/deploy
-        run: npm run localstack:stop
 
       - name: Comment on PR
         if: success()
