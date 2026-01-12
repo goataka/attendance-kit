@@ -1,4 +1,4 @@
-name: Frontend Visual Snapshots (Reusable)
+name: Frontend Visual Snapshots
 
 on:
   workflow_call:
@@ -11,20 +11,16 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
 
       - name: Install Playwright browsers
         working-directory: apps/frontend
@@ -34,28 +30,24 @@ jobs:
         working-directory: apps/frontend
         run: |
           npm run dev &
-          echo "Waiting for dev server to start..."
           timeout 60 bash -c 'until curl -s http://localhost:5173 > /dev/null; do sleep 1; done'
-          echo "Dev server is ready"
 
       - name: Capture screenshots
         working-directory: apps/frontend
         run: |
-          chmod +x capture-screenshots.sh
-          ./capture-screenshots.sh
+          chmod +x scripts/capture-screenshots.sh
+          ./scripts/capture-screenshots.sh
 
-      - name: Check for screenshot changes
+      - name: Check for changes
         id: check_changes
         run: |
           if git diff --quiet apps/frontend/src/*/*.screenshot.png; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No screenshot changes detected"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Screenshot changes detected"
           fi
 
-      - name: Commit and push screenshot updates
+      - name: Commit changes
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -73,5 +65,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🎨 Visual regression snapshots have been automatically updated. Please review the screenshot changes in the latest commit.'
+              body: '🎨 Visual regression snapshots have been automatically updated.'
             })

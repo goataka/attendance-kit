@@ -67,19 +67,8 @@ apps/frontend/
 
 ## 画面一覧
 
-### 1. 打刻画面
-
-- **パス**: `/`
-- **フォルダ**: `src/ClockInOutPage/`
-- **仕様書**: [src/ClockInOutPage/README.md](src/ClockInOutPage/README.md)
-- **テスト方針**: [src/ClockInOutPage/TESTING.md](src/ClockInOutPage/TESTING.md)
-
-### 2. 打刻一覧画面
-
-- **パス**: `/clocks`
-- **フォルダ**: `src/ClocksListPage/`
-- **仕様書**: [src/ClocksListPage/README.md](src/ClocksListPage/README.md)
-- **テスト方針**: [src/ClocksListPage/TESTING.md](src/ClocksListPage/TESTING.md)
+- [打刻画面 (ClockInOutPage)](src/ClockInOutPage/README.md)
+- [打刻一覧画面 (ClocksListPage)](src/ClocksListPage/README.md)
 
 ## ビルド・実行方法
 

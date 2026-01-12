@@ -38,7 +38,7 @@ npm run capture-screenshots
 
 ```bash
 cd apps/frontend
-./capture-screenshots.sh
+./scripts/capture-screenshots.sh
 ```
 
 ### 動作
@@ -78,7 +78,7 @@ Pull Requestで以下のファイルが変更された場合に自動実行：
 
 ### ワークフローファイル
 
-`.github/workflows/update-visual-snapshots.yml`
+`.github/workflows/pr.yml`
 
 ## トラブルシューティング
 
@@ -127,7 +127,7 @@ npm run capture-screenshots
 
 ## 新しいページの追加
 
-新しいページを追加した場合、`capture-screenshots.sh` を更新してください：
+新しいページを追加した場合、`scripts/capture-screenshots.sh` を更新してください：
 
 ```bash
 PAGES=(
