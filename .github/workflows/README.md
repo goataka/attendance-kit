@@ -18,22 +18,9 @@ GitHub Copilot Coding Agent の実行環境をセットアップするワーク�
 
 ## CDK関連ワークフロー
 
-CDK関連のワークフロー（`premerge-cdk.yml`, `update-cdk-snapshots.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
+CDK関連のワークフロー（`deploy-pr.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
 
 **詳細**: [infrastructure/deploy/.github/workflows/README.md](../../infrastructure/deploy/.github/workflows/README.md)
-
-### premerge-cdk.yml
-
-CDK関連ファイルが変更されたPull Requestで、LocalStackを使用してCDKスタックの検証を行うワークフロー。
-
-- **実装**: `infrastructure/deploy/.github/workflows/premerge-cdk.yml`
-- **検証スクリプト**: `infrastructure/deploy/scripts/validate-cdk-localstack.sh`
-
-### update-cdk-snapshots.yml
-
-CDK関連ファイルが変更されたPull Requestで、スナップショットを自動更新するワークフロー。
-
-- **実装**: `infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml`
 
 ### deploy-environment-stack.yml
 
