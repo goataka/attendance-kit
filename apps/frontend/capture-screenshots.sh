@@ -28,7 +28,8 @@ fi
 
 # Create a temporary Node.js script to capture screenshots
 cat > /tmp/capture-screenshots.mjs << 'EOF'
-import { chromium } from '@playwright/test';
+import pkg from 'playwright/index.js';
+const { chromium } = pkg;
 import { promises as fs } from 'fs';
 import { createHash } from 'crypto';
 import path from 'path';
@@ -131,7 +132,7 @@ EOF
 # Run the screenshot capture
 echo "🚀 Capturing screenshots..."
 cd "$FRONTEND_DIR"
-node /tmp/capture-screenshots.mjs
+NODE_PATH="$FRONTEND_DIR/node_modules:$FRONTEND_DIR/../node_modules:$FRONTEND_DIR/../../node_modules" node /tmp/capture-screenshots.mjs
 
 # Clean up
 rm -f /tmp/capture-screenshots.mjs
