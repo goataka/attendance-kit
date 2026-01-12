@@ -11,28 +11,46 @@ permissions:
   pull-requests: write
 
 jobs:
+  # Detect changes using paths-filter
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      cdk: ${{ steps.filter.outputs.cdk }}
+      snapshot: ${{ steps.filter.outputs.snapshot }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            cdk:
+              - 'infrastructure/deploy/lib/**'
+              - 'infrastructure/deploy/bin/**'
+              - 'infrastructure/deploy/test/**'
+              - 'infrastructure/deploy/package*.json'
+              - 'infrastructure/deploy/tsconfig.json'
+              - 'infrastructure/deploy/docker-compose.yml'
+              - 'infrastructure/deploy/scripts/validate-cdk-localstack.sh'
+            snapshot:
+              - 'infrastructure/deploy/lib/**'
+              - 'infrastructure/deploy/bin/**'
+              - 'infrastructure/deploy/test/**'
+              - 'infrastructure/deploy/package*.json'
+              - 'infrastructure/deploy/tsconfig.json'
+
   # CDK Validation
   validate-cdk:
-    if: |
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/lib') ||
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/bin') ||
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/test') ||
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/package') ||
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/tsconfig.json') ||
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/docker-compose.yml') ||
-      contains(github.event.pull_request.changed_files, 'infrastructure/deploy/scripts/validate-cdk-localstack.sh')
+    needs: changes
+    if: needs.changes.outputs.cdk == 'true'
     uses: ./infrastructure/deploy/.github/workflows/premerge-cdk.yml
     secrets: inherit
 
   # Snapshot Update
   update-snapshots:
+    needs: changes
     if: |
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      (contains(github.event.pull_request.changed_files, 'infrastructure/deploy/lib') ||
-       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/bin') ||
-       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/test') ||
-       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/package') ||
-       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/tsconfig.json'))
+      needs.changes.outputs.snapshot == 'true' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     uses: ./infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml
     secrets: inherit
 
