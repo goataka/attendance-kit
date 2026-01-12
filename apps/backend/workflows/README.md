@@ -5,7 +5,6 @@
 ## ワークフロー一覧
 
 - **[update-openapi](./update-openapi/)** - OpenAPI仕様書の自動生成・更新
-  - [詳細ドキュメント](./update-openapi.md)
 
 ## 関連リンク
 
