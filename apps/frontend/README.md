@@ -20,8 +20,8 @@
 ```
 apps/frontend/
 ├── .storybook/              # Storybook設定
-├── workflows/               # フロントエンド専用ワークフロー参照
-│   └── README.md            # ワークフロー説明（実体は.github/workflows/）
+├── workflows/               # フロントエンド専用ワークフロー
+│   └── visual-snapshots.yml # ビジュアルスナップショット更新
 ├── scripts/                 # スクリプト
 │   └── capture-screenshots.sh  # スクリーンショット自動生成
 ├── src/

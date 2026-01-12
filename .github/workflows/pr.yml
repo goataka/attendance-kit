@@ -27,5 +27,5 @@ jobs:
   update-frontend-snapshots:
     needs: check-paths
     if: needs.check-paths.outputs.frontend == 'true'
-    uses: ./.github/workflows/frontend-visual-snapshots.yml
+    uses: ./apps/frontend/workflows/visual-snapshots.yml
 
