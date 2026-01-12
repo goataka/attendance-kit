@@ -79,7 +79,7 @@ exports[`App Snapshot > matches snapshot 1`] = `
       >
         <a
           class="link"
-          href="/records"
+          href="/clocks"
         >
           打刻一覧を見る →
         </a>

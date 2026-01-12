@@ -6,12 +6,12 @@
 
 ## スクリーンショット
 
-![打刻一覧画面](./RecordsListPage.screenshot.png)
+![打刻一覧画面](./ClocksListPage.screenshot.png)
 
 ## 画面パス
 
-- **URL**: `/records`
-- **ページコンポーネント**: `RecordsListPage.tsx`
+- **URL**: `/clocks`
+- **ページコンポーネント**: `ClocksListPage.tsx`
 
 ## 機能仕様
 
@@ -197,10 +197,10 @@ interface ClockRecord {
 
 ## 関連ファイル
 
-- `RecordsListPage.tsx` - コンポーネント本体
-- `RecordsListPage.css` - スタイル定義
-- `RecordsListPage.test.tsx` - 単体テスト（7テスト）
-- `RecordsListPage.stories.tsx` - Storybookストーリー
+- `ClocksListPage.tsx` - コンポーネント本体
+- `ClocksListPage.css` - スタイル定義
+- `ClocksListPage.test.tsx` - 単体テスト（7テスト）
+- `ClocksListPage.stories.tsx` - Storybookストーリー
 
 ## 今後の拡張予定
 

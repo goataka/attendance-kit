@@ -1,9 +1,9 @@
-.records-list-page {
+.clocks-list-page {
   min-height: 100vh;
   padding: 2rem;
 }
 
-.records-list-page .container {
+.clocks-list-page .container {
   max-width: 1200px;
   margin: 0 auto;
   background: white;
@@ -12,7 +12,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.records-list-page h1 {
+.clocks-list-page h1 {
   font-size: 1.875rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
@@ -74,21 +74,21 @@
   font-size: 1.125rem;
 }
 
-.records-table-container {
+.clocks-table-container {
   overflow-x: auto;
   margin-bottom: 1.5rem;
 }
 
-.records-table {
+.clocks-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.records-table thead {
+.clocks-table thead {
   background-color: var(--background-color);
 }
 
-.records-table th {
+.clocks-table th {
   padding: 0.75rem;
   text-align: left;
   font-weight: 600;
@@ -97,13 +97,13 @@
   border-bottom: 2px solid var(--border-color);
 }
 
-.records-table td {
+.clocks-table td {
   padding: 0.75rem;
   border-bottom: 1px solid var(--border-color);
   font-size: 0.875rem;
 }
 
-.records-table tbody tr:hover {
+.clocks-table tbody tr:hover {
   background-color: var(--background-color);
 }
 
@@ -131,7 +131,7 @@
   color: #d97706;
 }
 
-.records-list-page .navigation {
+.clocks-list-page .navigation {
   margin-top: 1.5rem;
   text-align: center;
 }

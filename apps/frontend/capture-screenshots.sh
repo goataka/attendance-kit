@@ -9,7 +9,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRONTEND_DIR="$SCRIPT_DIR"
 PAGES=(
   "ClockInOutPage"
-  "RecordsListPage"
+  "ClocksListPage"
 )
 
 echo "📸 Starting visual regression screenshot capture..."
@@ -42,9 +42,9 @@ const pages = [
     waitFor: 'h1',
   },
   {
-    name: 'RecordsListPage',
+    name: 'ClocksListPage',
     url: '/records',
-    dir: 'src/RecordsListPage',
+    dir: 'src/ClocksListPage',
     waitFor: '.records-table',
   },
 ];

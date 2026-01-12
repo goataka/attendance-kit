@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BrowserRouter } from 'react-router-dom';
-import { RecordsListPage } from './RecordsListPage';
+import { ClocksListPage } from './ClocksListPage';
 
 const meta = {
-  title: 'Pages/RecordsListPage',
-  component: RecordsListPage,
+  title: 'Pages/ClocksListPage',
+  component: ClocksListPage,
   parameters: {
     layout: 'fullscreen',
   },
@@ -16,7 +16,7 @@ const meta = {
     ),
   ],
   tags: ['autodocs'],
-} satisfies Meta<typeof RecordsListPage>;
+} satisfies Meta<typeof ClocksListPage>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

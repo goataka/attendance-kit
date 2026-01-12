@@ -29,12 +29,12 @@ apps/frontend/
 │   │   ├── ClockInOutPage.stories.tsx
 │   │   ├── README.md        # 画面仕様
 │   │   └── TESTING.md       # テスト方針
-│   ├── RecordsListPage/     # 打刻一覧画面（ページ単位）
-│   │   ├── RecordsListPage.tsx
-│   │   ├── RecordsListPage.css
-│   │   ├── RecordsListPage.test.tsx
-│   │   ├── RecordsListPage.e2e.spec.ts
-│   │   ├── RecordsListPage.stories.tsx
+│   ├── ClocksListPage/     # 打刻一覧画面（ページ単位）
+│   │   ├── ClocksListPage.tsx
+│   │   ├── ClocksListPage.css
+│   │   ├── ClocksListPage.test.tsx
+│   │   ├── ClocksListPage.e2e.spec.ts
+│   │   ├── ClocksListPage.stories.tsx
 │   │   ├── README.md        # 画面仕様
 │   │   └── TESTING.md       # テスト方針
 │   ├── shared/              # 共通リソース
@@ -76,10 +76,10 @@ apps/frontend/
 
 ### 2. 打刻一覧画面
 
-- **パス**: `/records`
-- **フォルダ**: `src/RecordsListPage/`
-- **仕様書**: [src/RecordsListPage/README.md](src/RecordsListPage/README.md)
-- **テスト方針**: [src/RecordsListPage/TESTING.md](src/RecordsListPage/TESTING.md)
+- **パス**: `/clocks`
+- **フォルダ**: `src/ClocksListPage/`
+- **仕様書**: [src/ClocksListPage/README.md](src/ClocksListPage/README.md)
+- **テスト方針**: [src/ClocksListPage/TESTING.md](src/ClocksListPage/TESTING.md)
 
 ## ビルド・実行方法
 

@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ClockInOutPage } from './ClockInOutPage/ClockInOutPage';
-import { RecordsListPage } from './RecordsListPage/RecordsListPage';
+import { ClocksListPage } from './ClocksListPage/ClocksListPage';
 
 export function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<ClockInOutPage />} />
-        <Route path="/records" element={<RecordsListPage />} />
+        <Route path="/clocks" element={<ClocksListPage />} />
       </Routes>
     </BrowserRouter>
   );

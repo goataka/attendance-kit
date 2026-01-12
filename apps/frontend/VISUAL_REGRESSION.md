@@ -16,9 +16,9 @@ src/
 │   ├── ClockInOutPage.tsx
 │   ├── ClockInOutPage.screenshot.png  ← スクリーンショット
 │   └── ...
-└── RecordsListPage/
-    ├── RecordsListPage.tsx
-    ├── RecordsListPage.screenshot.png  ← スクリーンショット
+└── ClocksListPage/
+    ├── ClocksListPage.tsx
+    ├── ClocksListPage.screenshot.png  ← スクリーンショット
     └── ...
 ```
 
@@ -132,7 +132,7 @@ npm run capture-screenshots
 ```bash
 PAGES=(
   "ClockInOutPage"
-  "RecordsListPage"
+  "ClocksListPage"
   "NewPage"  # ← 追加
 )
 ```

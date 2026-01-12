@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { RecordsListPage } from './RecordsListPage';
+import { ClocksListPage } from './ClocksListPage';
 import { mockApi } from '../shared/api/mockApi';
 
 // Mock the API
@@ -15,7 +15,7 @@ function renderWithRouter(component: React.ReactElement) {
   return render(<BrowserRouter>{component}</BrowserRouter>);
 }
 
-describe('RecordsListPage', () => {
+describe('ClocksListPage', () => {
   const mockRecords = [
     {
       id: '1',
@@ -38,7 +38,7 @@ describe('RecordsListPage', () => {
   it('renders the records list page', async () => {
     vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     expect(screen.getByText('打刻一覧')).toBeInTheDocument();
     
@@ -50,15 +50,15 @@ describe('RecordsListPage', () => {
   it('displays loading state initially', () => {
     vi.mocked(mockApi.getRecords).mockImplementation(() => new Promise(() => {}));
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it('displays records after loading', async () => {
+  it('displays clocks after loading', async () => {
     vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getByText('1')).toBeInTheDocument();
@@ -67,20 +67,20 @@ describe('RecordsListPage', () => {
     });
   });
 
-  it('displays no data message when records are empty', async () => {
+  it('displays no data message when clocks are empty', async () => {
     vi.mocked(mockApi.getRecords).mockResolvedValue([]);
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getByText('打刻データがありません')).toBeInTheDocument();
     });
   });
 
-  it('filters records by user ID', async () => {
+  it('filters clocks by user ID', async () => {
     vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
@@ -99,10 +99,10 @@ describe('RecordsListPage', () => {
     });
   });
 
-  it('filters records by type', async () => {
+  it('filters clocks by type', async () => {
     vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
@@ -124,7 +124,7 @@ describe('RecordsListPage', () => {
   it('resets filters', async () => {
     vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithRouter(<RecordsListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);

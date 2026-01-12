@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { mockApi } from '../shared/api/mockApi';
 import { ClockRecord, RecordsFilter } from '../shared/types';
-import './RecordsListPage.css';
+import './ClocksListPage.css';
 
-export function RecordsListPage() {
+export function ClocksListPage() {
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<RecordsFilter>({
@@ -74,7 +74,7 @@ export function RecordsListPage() {
   };
 
   return (
-    <div className="records-list-page">
+    <div className="clocks-list-page">
       <div className="container">
         <h1>打刻一覧</h1>
 

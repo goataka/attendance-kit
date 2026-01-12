@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Records List Page', () => {
+test.describe('Clocks List Page', () => {
   test('should display records list', async ({ page }) => {
     await page.goto('/records');
     
@@ -18,7 +18,7 @@ test.describe('Records List Page', () => {
     await expect(page.locator('.records-table th').first()).toContainText('ID');
     
     // Visual regression test
-    await expect(page).toHaveScreenshot('records-list-page.png', {
+    await expect(page).toHaveScreenshot('clocks-list-page.png', {
       fullPage: true,
     });
   });
@@ -42,7 +42,7 @@ test.describe('Records List Page', () => {
   });
 
   test('should reset filters', async ({ page }) => {
-    await page.goto('/records');
+    await page.goto('/clocks');
     
     // Set some filters
     await page.locator('#filterUserId').fill('user001');
@@ -57,7 +57,7 @@ test.describe('Records List Page', () => {
   });
 
   test('should navigate back to clock in page', async ({ page }) => {
-    await page.goto('/records');
+    await page.goto('/clocks');
     
     // Click link to clock in page
     await page.getByRole('link', { name: '打刻画面に戻る' }).click();

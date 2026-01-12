@@ -101,7 +101,7 @@ export function ClockInOutPage() {
         </div>
 
         <div className="navigation">
-          <Link to="/records" className="link">
+          <Link to="/clocks" className="link">
             打刻一覧を見る →
           </Link>
         </div>

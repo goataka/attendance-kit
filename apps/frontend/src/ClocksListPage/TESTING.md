@@ -2,7 +2,7 @@
 
 ## テスト概要
 
-打刻一覧画面（RecordsListPage）の品質を保証するための包括的なテスト戦略を定義します。
+打刻一覧画面（ClocksListPage）の品質を保証するための包括的なテスト戦略を定義します。
 
 ## テストレベル
 
@@ -11,7 +11,7 @@
 #### テストフレームワーク
 - **ツール**: Vitest 2.1.8 + React Testing Library 16.1.0
 - **実行コマンド**: `npm test`
-- **ファイル**: `RecordsListPage.test.tsx`
+- **ファイル**: `ClocksListPage.test.tsx`
 
 #### テストケース（7テスト）
 
@@ -84,7 +84,7 @@
 #### テストフレームワーク
 - **ツール**: Playwright 1.48.0
 - **実行コマンド**: `npm run test:e2e`
-- **ファイル**: `RecordsListPage.e2e.spec.ts`
+- **ファイル**: `ClocksListPage.e2e.spec.ts`
 
 #### テストケース（4テスト）
 
@@ -129,8 +129,8 @@
 
 #### ビジュアルリグレッションテスト
 - **実行コマンド**: `npm run test:visual`
-- **スクリーンショット保存先**: `e2e/records-list.spec.ts-snapshots/`
-- **比較対象**: `records-list-page.png`
+- **スクリーンショット保存先**: `e2e/clocks-list.spec.ts-snapshots/`
+- **比較対象**: `clocks-list-page.png`
 - **許容差分**: ピクセル単位で0（完全一致）
 
 ### 3. Storybookストーリー
@@ -138,7 +138,7 @@
 #### ツール
 - **Storybook**: 8.4.7
 - **実行コマンド**: `npm run storybook`
-- **ファイル**: `RecordsListPage.stories.tsx`
+- **ファイル**: `ClocksListPage.stories.tsx`
 
 #### ストーリー（2ストーリー）
 
