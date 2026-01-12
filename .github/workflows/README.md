@@ -16,46 +16,24 @@ GitHub Copilot Coding Agent の実行環境をセットアップするワーク�
 
 **詳細**: [copilot-setup-steps.md](./copilot-setup-steps.md)
 
-### update-cdk-snapshots.yml
+## CDK関連ワークフロー
 
-CDK関連ファイルが変更されたPull Requestで、スナップショットを自動更新するワークフロー。
+CDK関連のワークフロー（`premerge-cdk.yml`, `update-cdk-snapshots.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
 
-- **トリガー**: 
-  - CDK関連ファイルが変更されたPull Request
-- **対象**: Dev, Staging, Accountスタックのスナップショット
-- **自動化**: スナップショット更新、コミット、PRコメント
-- **権限**: contents:write, pull-requests:write
-
-**監視ファイル**:
-- `infrastructure/deploy/lib/**/*.ts`
-- `infrastructure/deploy/bin/**/*.ts`
-- `infrastructure/deploy/test/**/*.test.ts`
-- `infrastructure/deploy/package*.json`
-
-**詳細**: [update-cdk-snapshots.md](./update-cdk-snapshots.md)
+**詳細**: [infrastructure/deploy/.github/workflows/README.md](../../infrastructure/deploy/.github/workflows/README.md)
 
 ### premerge-cdk.yml
 
 CDK関連ファイルが変更されたPull Requestで、LocalStackを使用してCDKスタックの検証を行うワークフロー。
 
-- **トリガー**: 
-  - CDK関連ファイルが変更されたPull Request
-- **検証内容**: 
-  - TypeScriptビルド
-  - ユニットテスト
-  - LocalStackへのCDKデプロイ
-  - DynamoDB操作テスト
-- **自動化**: 検証結果をPRにコメント
-- **権限**: contents:read, pull-requests:write
+- **実装**: `infrastructure/deploy/.github/workflows/premerge-cdk.yml`
+- **検証スクリプト**: `infrastructure/deploy/scripts/validate-cdk-localstack.sh`
 
-**監視ファイル**:
-- `infrastructure/deploy/lib/**/*.ts`
-- `infrastructure/deploy/bin/**/*.ts`
-- `infrastructure/deploy/test/**/*.test.ts`
-- `infrastructure/deploy/package*.json`
-- `infrastructure/deploy/docker-compose.yml`
+### update-cdk-snapshots.yml
 
-**詳細**: [premerge-cdk.md](./premerge-cdk.md)
+CDK関連ファイルが変更されたPull Requestで、スナップショットを自動更新するワークフロー。
+
+- **実装**: `infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml`
 
 ### deploy-environment-stack.yml
 

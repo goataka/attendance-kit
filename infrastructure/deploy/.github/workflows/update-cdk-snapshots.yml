@@ -1,6 +1,3 @@
-# This workflow is defined in infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml
-# For implementation details, see: infrastructure/deploy/.github/workflows/README.md
-
 name: Update CDK Snapshots
 
 on:
@@ -11,8 +8,6 @@ on:
       - 'infrastructure/deploy/test/**/*.test.ts'
       - 'infrastructure/deploy/package*.json'
       - 'infrastructure/deploy/tsconfig.json'
-      - 'infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml'
-      - '.github/workflows/update-cdk-snapshots.yml'
 
 permissions:
   contents: write
