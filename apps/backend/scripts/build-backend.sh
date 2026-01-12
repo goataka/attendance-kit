@@ -7,8 +7,11 @@ set -e
 
 echo "🔨 Building backend for Lambda deployment..."
 
-# Navigate to backend directory
-cd "$(dirname "$0")/../apps/backend"
+# Get the script directory and navigate to backend directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKEND_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+cd "$BACKEND_DIR"
 
 # Install dependencies
 echo "📦 Installing dependencies..."
