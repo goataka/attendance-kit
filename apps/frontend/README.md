@@ -20,14 +20,12 @@
 ```
 apps/frontend/
 ├── .storybook/              # Storybook設定
-├── e2e/                     # E2Eテスト
-│   ├── clock-in-out.spec.ts
-│   └── records-list.spec.ts
 ├── src/
 │   ├── ClockInOutPage/      # 打刻画面（ページ単位）
 │   │   ├── ClockInOutPage.tsx
 │   │   ├── ClockInOutPage.css
 │   │   ├── ClockInOutPage.test.tsx
+│   │   ├── ClockInOutPage.e2e.spec.ts
 │   │   ├── ClockInOutPage.stories.tsx
 │   │   ├── README.md        # 画面仕様
 │   │   └── TESTING.md       # テスト方針
@@ -35,6 +33,7 @@ apps/frontend/
 │   │   ├── RecordsListPage.tsx
 │   │   ├── RecordsListPage.css
 │   │   ├── RecordsListPage.test.tsx
+│   │   ├── RecordsListPage.e2e.spec.ts
 │   │   ├── RecordsListPage.stories.tsx
 │   │   ├── README.md        # 画面仕様
 │   │   └── TESTING.md       # テスト方針

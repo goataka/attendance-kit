@@ -77,7 +77,7 @@
 #### テストフレームワーク
 - **ツール**: Playwright 1.48.0
 - **実行コマンド**: `npm run test:e2e`
-- **ファイル**: `../../e2e/clock-in-out.spec.ts`
+- **ファイル**: `ClockInOutPage.e2e.spec.ts`
 
 #### テストケース（4テスト）
 

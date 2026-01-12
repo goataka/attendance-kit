@@ -12,7 +12,7 @@ export default defineConfig({
     exclude: [
       '**/node_modules/**',
       '**/dist/**',
-      '**/e2e/**',
+      '**/*.e2e.spec.ts',
       '**/.storybook/**',
       '**/storybook-static/**',
     ],

@@ -84,7 +84,7 @@
 #### テストフレームワーク
 - **ツール**: Playwright 1.48.0
 - **実行コマンド**: `npm run test:e2e`
-- **ファイル**: `../../e2e/records-list.spec.ts`
+- **ファイル**: `RecordsListPage.e2e.spec.ts`
 
 #### テストケース（4テスト）
 
