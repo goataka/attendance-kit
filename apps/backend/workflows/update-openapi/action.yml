@@ -1,0 +1,71 @@
+name: 'Update OpenAPI Documentation'
+description: 'Generate and update OpenAPI specification from NestJS code'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '22'
+  github-token:
+    description: 'GitHub token for authentication'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        npm ci
+        cd apps/backend
+        npm ci
+
+    - name: Generate OpenAPI specification
+      shell: bash
+      run: |
+        bash apps/backend/scripts/generate-openapi.sh
+
+    - name: Check for changes
+      id: check_changes
+      shell: bash
+      run: |
+        if git diff --quiet apps/backend/api/openapi.json; then
+          echo "changes=false" >> $GITHUB_OUTPUT
+        else
+          echo "changes=true" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Commit and push if changed
+      if: steps.check_changes.outputs.changes == 'true'
+      shell: bash
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add apps/backend/api/openapi.json
+        git commit -m "docs: OpenAPI仕様を自動更新"
+        git push
+
+    - name: Comment on PR
+      if: steps.check_changes.outputs.changes == 'true'
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '✅ OpenAPI仕様が自動的に更新されました。\n\n📄 変更内容は `apps/backend/api/openapi.json` で確認できます。'
+          })
+
+    - name: No changes message
+      if: steps.check_changes.outputs.changes == 'false'
+      shell: bash
+      run: |
+        echo "✅ OpenAPI仕様に変更はありません。"

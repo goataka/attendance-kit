@@ -1,0 +1,28 @@
+name: Backend PR Checks
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/backend/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-openapi:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update OpenAPI Documentation
+        uses: ./apps/backend/workflows/update-openapi
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
