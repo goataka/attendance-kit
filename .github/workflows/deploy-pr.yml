@@ -21,7 +21,7 @@ jobs:
       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/tsconfig.json') ||
       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/docker-compose.yml') ||
       contains(github.event.pull_request.changed_files, 'infrastructure/deploy/scripts/validate-cdk-localstack.sh')
-    uses: ./.github/workflows/premerge-cdk-impl.yml
+    uses: ./infrastructure/deploy/.github/workflows/premerge-cdk.yml
     secrets: inherit
 
   # Snapshot Update
@@ -33,5 +33,7 @@ jobs:
        contains(github.event.pull_request.changed_files, 'infrastructure/deploy/test') ||
        contains(github.event.pull_request.changed_files, 'infrastructure/deploy/package') ||
        contains(github.event.pull_request.changed_files, 'infrastructure/deploy/tsconfig.json'))
-    uses: ./.github/workflows/update-cdk-snapshots-impl.yml
+    uses: ./infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml
     secrets: inherit
+
+

@@ -1,16 +1,7 @@
 name: Pre-merge CDK Validation
 
 on:
-  pull_request:
-    paths:
-      - 'infrastructure/deploy/lib/**/*.ts'
-      - 'infrastructure/deploy/bin/**/*.ts'
-      - 'infrastructure/deploy/test/**/*.test.ts'
-      - 'infrastructure/deploy/package*.json'
-      - 'infrastructure/deploy/tsconfig.json'
-      - 'infrastructure/deploy/docker-compose.yml'
-      - 'infrastructure/deploy/.github/workflows/premerge-cdk.yml'
-      - 'infrastructure/deploy/scripts/validate-cdk-localstack.sh'
+  workflow_call:
 
 permissions:
   contents: read
