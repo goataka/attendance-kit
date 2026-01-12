@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { mockApi } from '../api/mockApi';
-import '../styles/ClockInOutPage.css';
+import { mockApi } from '../shared/api/mockApi';
+import './ClockInOutPage.css';
 
 export function ClockInOutPage() {
   const [userId, setUserId] = useState('');

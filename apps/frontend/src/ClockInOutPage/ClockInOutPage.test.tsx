@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ClockInOutPage } from '../pages/ClockInOutPage';
-import { mockApi } from '../api/mockApi';
+import { ClockInOutPage } from './ClockInOutPage';
+import { mockApi } from '../shared/api/mockApi';
 
 // Mock the API
-vi.mock('../api/mockApi', () => ({
+vi.mock('../shared/api/mockApi', () => ({
   mockApi: {
     clockInOut: vi.fn(),
   },

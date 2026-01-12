@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ClockInOutPage } from '../pages/ClockInOutPage';
+import { ClockInOutPage } from './ClockInOutPage';
 
 const meta = {
   title: 'Pages/ClockInOutPage',

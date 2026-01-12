@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ClockInOutPage } from './pages/ClockInOutPage';
-import { RecordsListPage } from './pages/RecordsListPage';
+import { ClockInOutPage } from './ClockInOutPage/ClockInOutPage';
+import { RecordsListPage } from './RecordsListPage/RecordsListPage';
 
 export function App() {
   return (

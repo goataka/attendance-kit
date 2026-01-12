@@ -19,154 +19,69 @@
 
 ```
 apps/frontend/
-├── .storybook/           # Storybook設定
-├── e2e/                  # Playwrightテスト
+├── .storybook/              # Storybook設定
+├── e2e/                     # E2Eテスト
 │   ├── clock-in-out.spec.ts
 │   └── records-list.spec.ts
 ├── src/
-│   ├── api/              # モックAPI
-│   │   └── mockApi.ts
-│   ├── pages/            # ページコンポーネント
+│   ├── ClockInOutPage/      # 打刻画面（ページ単位）
 │   │   ├── ClockInOutPage.tsx
-│   │   └── RecordsListPage.tsx
-│   ├── stories/          # Storybookストーリー
-│   │   ├── ClockInOutPage.stories.tsx
-│   │   └── RecordsListPage.stories.tsx
-│   ├── styles/           # CSSスタイル
-│   │   ├── index.css
 │   │   ├── ClockInOutPage.css
-│   │   └── RecordsListPage.css
-│   ├── test/             # 単体テスト
-│   │   ├── setup.ts
-│   │   ├── App.snapshot.test.tsx
 │   │   ├── ClockInOutPage.test.tsx
-│   │   └── RecordsListPage.test.tsx
-│   ├── types/            # 型定義
-│   │   └── index.ts
-│   ├── App.tsx           # アプリケーションルート
-│   └── main.tsx          # エントリーポイント
-├── index.html            # HTMLテンプレート
-├── vite.config.ts        # Vite設定
-├── playwright.config.ts  # Playwright設定
+│   │   ├── ClockInOutPage.stories.tsx
+│   │   ├── README.md        # 画面仕様
+│   │   └── TESTING.md       # テスト方針
+│   ├── RecordsListPage/     # 打刻一覧画面（ページ単位）
+│   │   ├── RecordsListPage.tsx
+│   │   ├── RecordsListPage.css
+│   │   ├── RecordsListPage.test.tsx
+│   │   ├── RecordsListPage.stories.tsx
+│   │   ├── README.md        # 画面仕様
+│   │   └── TESTING.md       # テスト方針
+│   ├── shared/              # 共通リソース
+│   │   ├── api/             # API関連
+│   │   │   └── mockApi.ts
+│   │   ├── types/           # 型定義
+│   │   │   └── index.ts
+│   │   ├── styles/          # グローバルスタイル
+│   │   │   └── index.css
+│   │   └── test/            # テスト共通設定
+│   │       ├── setup.ts
+│   │       └── App.snapshot.test.tsx
+│   ├── App.tsx              # アプリケーションルート
+│   └── main.tsx             # エントリーポイント
+├── index.html               # HTMLテンプレート
+├── vite.config.ts           # Vite設定
+├── playwright.config.ts     # Playwright設定
+├── tsconfig.json            # TypeScript設定
+├── tsconfig.test.json       # テスト用TypeScript設定
+├── tsconfig.storybook.json  # Storybook用TypeScript設定
 └── package.json
 ```
 
-## 実装機能
+### フォルダ構成の特徴
 
-### 1. 打刻画面（/）
+- **ページ単位の構成**: 各画面に関連するすべてのファイル（コンポーネント、スタイル、テスト、ストーリー、ドキュメント）を1つのフォルダにまとめています
+- **shared フォルダ**: 複数画面で共有されるリソース（API、型定義、グローバルスタイル）を配置
+- **ドキュメントの分離**: 各画面の仕様書とテスト方針を独立したファイルで管理
 
-**機能**:
-- ユーザーID入力
-- パスワード入力
-- 出勤ボタン
-- 退勤ボタン
-- 打刻一覧へのリンク
-- テストアカウント情報の表示
+## 画面一覧
 
-**テストアカウント**:
-- user001 / password123
-- user002 / password456
+### 1. 打刻画面
 
-**バリデーション**:
-- 未入力チェック
-- 認証エラー表示
-- 成功メッセージ表示
+- **パス**: `/`
+- **フォルダ**: `src/ClockInOutPage/`
+- **仕様書**: [src/ClockInOutPage/README.md](src/ClockInOutPage/README.md)
+- **テスト方針**: [src/ClockInOutPage/TESTING.md](src/ClockInOutPage/TESTING.md)
 
-### 2. 打刻一覧画面（/records）
+### 2. 打刻一覧画面
 
-**機能**:
-- 打刻データの一覧表示
-- ユーザーIDによる検索
-- 日時範囲による検索
-- 打刻種別（出勤/退勤）による検索
-- フィルタのリセット
-- 打刻画面へのリンク
+- **パス**: `/records`
+- **フォルダ**: `src/RecordsListPage/`
+- **仕様書**: [src/RecordsListPage/README.md](src/RecordsListPage/README.md)
+- **テスト方針**: [src/RecordsListPage/TESTING.md](src/RecordsListPage/TESTING.md)
 
-**表示項目**:
-- ID
-- ユーザーID
-- 日時
-- 種別（出勤/退勤）
-
-### 3. モックAPI
-
-**エンドポイント**:
-- `clockInOut(request)`: 打刻実行
-- `getRecords(filter)`: 打刻一覧取得（フィルタリング対応）
-
-**モックデータ**:
-- 初期データとして4件の打刻レコードを用意
-- 新規打刻はメモリ上に追加
-
-## テスト
-
-### 単体テスト（Vitest）
-
-**実行方法**:
-```bash
-npm test
-```
-
-**テスト内容**:
-- App.snapshot.test.tsx: アプリケーション全体のスナップショットテスト
-- ClockInOutPage.test.tsx: 打刻画面の単体テスト（5テスト）
-  - レンダリングテスト
-  - 未入力エラーテスト
-  - 成功時の動作テスト
-  - 失敗時の動作テスト
-  - パスワードクリアテスト
-- RecordsListPage.test.tsx: 打刻一覧画面の単体テスト（7テスト）
-  - レンダリングテスト
-  - ローディング状態テスト
-  - データ表示テスト
-  - フィルタリングテスト（ユーザーID、種別）
-  - リセットテスト
-  - データなし表示テスト
-
-**結果**: 13テスト全て合格
-
-### E2Eテスト（Playwright）
-
-**実行方法**:
-```bash
-npm run test:e2e
-```
-
-**テスト内容**:
-- clock-in-out.spec.ts: 打刻画面のE2Eテスト（4テスト）
-  - フォーム表示確認
-  - 打刻成功フロー
-  - エラーハンドリング
-  - ナビゲーション
-  - ビジュアルリグレッションテスト
-- records-list.spec.ts: 打刻一覧画面のE2Eテスト（4テスト）
-  - 一覧表示確認
-  - フィルタリング動作
-  - リセット動作
-  - ナビゲーション
-  - ビジュアルリグレッションテスト
-
-**ビジュアルリグレッション**:
-- 各画面のスクリーンショットを自動比較
-- UIの意図しない変更を検出
-
-### Storybook
-
-**実行方法**:
-```bash
-npm run storybook
-```
-
-**ストーリー**:
-- ClockInOutPage: 打刻画面のストーリー
-- RecordsListPage: 打刻一覧画面のストーリー
-
-**用途**:
-- コンポーネントのビジュアル確認
-- デザインレビュー
-- コンポーネントドキュメント
-
-## ビルド
+## ビルド・実行方法
 
 ### 開発サーバー
 
@@ -183,6 +98,30 @@ npm run build
 ```
 
 ビルド成果物は `dist/` ディレクトリに出力されます。
+
+## テスト実行
+
+### 単体テスト
+
+```bash
+npm test                # 全テスト実行
+```
+
+**結果**: 13テスト全て合格
+
+### E2Eテスト
+
+```bash
+npm run test:e2e        # E2Eテスト実行
+```
+
+**結果**: 8テスト（ビジュアルリグレッション含む）
+
+### Storybook
+
+```bash
+npm run storybook       # Storybook起動（http://localhost:6006）
+```
 
 ## Lint
 
@@ -204,11 +143,26 @@ npm run build
 
 すべて成功すればマージ可能な状態です。
 
+## 共通リソース
+
+### モックAPI
+
+- **ファイル**: `src/shared/api/mockApi.ts`
+- **テストアカウント**: user001/password123, user002/password456
+
+### 型定義
+
+- **ファイル**: `src/shared/types/index.ts`
+
+### グローバルスタイル
+
+- **ファイル**: `src/shared/styles/index.css`
+
 ## NestJSとの連携（将来対応）
 
 現在はモックAPIを使用していますが、NestJSバックエンドが実装された際は以下の手順で連携します:
 
-1. `src/api/mockApi.ts` を実際のAPIクライアントに置き換え
+1. `src/shared/api/mockApi.ts` を実際のAPIクライアントに置き換え
 2. 環境変数でAPIエンドポイントを設定
 3. CORS設定を確認
 
@@ -220,36 +174,3 @@ npm run build
 - ビルド成果物の自動デプロイ
 - カスタムドメインの設定
 - CI/CDパイプラインの統合
-
-## トラブルシューティング
-
-### ビルドエラー
-
-```bash
-rm -rf node_modules dist
-npm install
-npm run build
-```
-
-### テスト失敗
-
-```bash
-# スナップショット更新
-npm test -- -u
-
-# E2Eテストのスクリーンショット更新
-npm run test:visual
-```
-
-## MVP機能チェックリスト
-
-- [x] 出勤・退勤打刻機能
-- [x] ユーザー認証（モック）
-- [x] 打刻一覧表示
-- [x] フィルタリング機能
-- [x] ページ間ナビゲーション
-- [x] レスポンシブデザイン
-- [x] 単体テスト
-- [x] E2Eテスト
-- [x] Storybook
-- [ ] CDKデプロイ

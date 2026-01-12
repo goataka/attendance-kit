@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { RecordsListPage } from '../pages/RecordsListPage';
-import { mockApi } from '../api/mockApi';
+import { RecordsListPage } from './RecordsListPage';
+import { mockApi } from '../shared/api/mockApi';
 
 // Mock the API
-vi.mock('../api/mockApi', () => ({
+vi.mock('../shared/api/mockApi', () => ({
   mockApi: {
     getRecords: vi.fn(),
   },

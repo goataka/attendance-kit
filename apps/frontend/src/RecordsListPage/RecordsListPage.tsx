@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { mockApi } from '../api/mockApi';
-import { ClockRecord, RecordsFilter } from '../types';
-import '../styles/RecordsListPage.css';
+import { mockApi } from '../shared/api/mockApi';
+import { ClockRecord, RecordsFilter } from '../shared/types';
+import './RecordsListPage.css';
 
 export function RecordsListPage() {
   const [records, setRecords] = useState<ClockRecord[]>([]);

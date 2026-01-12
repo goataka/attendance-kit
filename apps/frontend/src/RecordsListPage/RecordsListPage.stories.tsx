@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { BrowserRouter } from 'react-router-dom';
-import { RecordsListPage } from '../pages/RecordsListPage';
+import { RecordsListPage } from './RecordsListPage';
 
 const meta = {
   title: 'Pages/RecordsListPage',
