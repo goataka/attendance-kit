@@ -20,6 +20,10 @@
 ```
 apps/frontend/
 ├── .storybook/              # Storybook設定
+├── workflows/               # フロントエンド専用ワークフロー参照
+│   └── README.md            # ワークフロー説明（実体は.github/workflows/）
+├── scripts/                 # スクリプト
+│   └── capture-screenshots.sh  # スクリーンショット自動生成
 ├── src/
 │   ├── ClockInOutPage/      # 打刻画面（ページ単位）
 │   │   ├── ClockInOutPage.tsx
@@ -27,6 +31,8 @@ apps/frontend/
 │   │   ├── ClockInOutPage.test.tsx
 │   │   ├── ClockInOutPage.e2e.spec.ts
 │   │   ├── ClockInOutPage.stories.tsx
+│   │   ├── ClockInOutPage.screenshot.png  # ビジュアルリグレッション
+│   │   ├── ClockInOutPage.snapshot.html   # HTMLスナップショット
 │   │   ├── README.md        # 画面仕様
 │   │   └── TESTING.md       # テスト方針
 │   ├── ClocksListPage/     # 打刻一覧画面（ページ単位）
@@ -35,6 +41,8 @@ apps/frontend/
 │   │   ├── ClocksListPage.test.tsx
 │   │   ├── ClocksListPage.e2e.spec.ts
 │   │   ├── ClocksListPage.stories.tsx
+│   │   ├── ClocksListPage.screenshot.png  # ビジュアルリグレッション
+│   │   ├── ClocksListPage.snapshot.html   # HTMLスナップショット
 │   │   ├── README.md        # 画面仕様
 │   │   └── TESTING.md       # テスト方針
 │   ├── shared/              # 共通リソース
