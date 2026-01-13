@@ -21,7 +21,7 @@
 apps/frontend/
 ├── .storybook/              # Storybook設定
 ├── workflows/               # フロントエンド専用ワークフロー
-│   └── visual-snapshots.yml # ビジュアルスナップショット更新
+│   └── capture-snapshots/  # ビジュアルスナップショット更新
 ├── scripts/                 # スクリプト
 │   └── capture-screenshots.sh  # スクリーンショット自動生成
 ├── src/

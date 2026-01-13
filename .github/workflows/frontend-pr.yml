@@ -32,5 +32,5 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: ./apps/frontend/workflows/visual-snapshots
+      - uses: ./apps/frontend/workflows/capture-snapshots
 

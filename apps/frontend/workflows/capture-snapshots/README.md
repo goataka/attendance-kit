@@ -1,4 +1,4 @@
-# Visual Snapshots Composite Action
+# Capture Snapshots Composite Action
 
 ## 概要
 
@@ -26,7 +26,7 @@ update-frontend-snapshots:
     contents: write
     pull-requests: write
   steps:
-    - uses: ./apps/frontend/workflows/visual-snapshots
+    - uses: ./apps/frontend/workflows/capture-snapshots
 ```
 
 ### 前提条件

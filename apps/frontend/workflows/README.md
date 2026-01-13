@@ -4,4 +4,4 @@
 
 ## 利用可能なワークフロー
 
-- [Visual Snapshots](visual-snapshots/README.md) - ビジュアルリグレッションテスト用スナップショット自動生成
+- [Capture Snapshots](capture-snapshots/README.md) - ビジュアルリグレッションテスト用スナップショット自動生成
