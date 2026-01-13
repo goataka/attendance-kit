@@ -42,35 +42,6 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 ## 💻 ローカル開発
 
-### LocalStackを使用した開発（推奨）
-
-LocalStackを使用すると、実際のAWSアカウントを使用せずにローカル環境でDynamoDBテーブルの作成とテストが可能です。
-
-詳細は [deploy/LOCALSTACK.md](deploy/LOCALSTACK.md) を参照してください。
-
-**クイックスタート**:
-```bash
-cd infrastructure/deploy
-
-# 依存関係のインストール
-npm install
-
-# ビルド
-npm run build
-
-# LocalStackを起動
-npm run localstack:start
-
-# DynamoDBテーブルをデプロイ
-npm run localstack:deploy
-
-# ログを確認
-npm run localstack:logs
-
-# 使用後、LocalStackを停止
-npm run localstack:stop
-```
-
 ### 依存関係のインストール
 
 ```bash
@@ -197,3 +168,8 @@ CloudFormationが差分更新を実行します。RETAIN削除ポリシーによ
 - IAMロールは特定のリソースパターンにスコープ
 - DynamoDBテーブルはAWS管理キーで暗号化
 - Point-in-Time Recovery有効
+
+## 関連ドキュメント
+
+- [LocalStack開発環境](deploy/LOCALSTACK.md)
+- [セットアップガイド](setup/README.md)

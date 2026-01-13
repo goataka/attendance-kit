@@ -22,17 +22,9 @@ jobs:
           cache: 'npm'
           cache-dependency-path: infrastructure/deploy/package-lock.json
 
-      - name: Install dependencies
+      - name: Run common tests
         working-directory: infrastructure/deploy
-        run: npm ci
-
-      - name: Build TypeScript
-        working-directory: infrastructure/deploy
-        run: npm run build
-
-      - name: Run unit tests
-        working-directory: infrastructure/deploy
-        run: npm test -- --testPathIgnorePatterns=test/integration
+        run: ./scripts/run-tests.sh
 
       - name: Run LocalStack validation
         working-directory: infrastructure/deploy

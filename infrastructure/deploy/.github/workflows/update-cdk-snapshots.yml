@@ -25,17 +25,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: infrastructure/deploy/package-lock.json
 
-      - name: Install dependencies
+      - name: Run common tests and update snapshots
         working-directory: infrastructure/deploy
-        run: npm ci
-
-      - name: Build TypeScript
-        working-directory: infrastructure/deploy
-        run: npm run build
-
-      - name: Update snapshots
-        working-directory: infrastructure/deploy
-        run: npm test -- -u --testPathIgnorePatterns=test/integration
+        run: |
+          ./scripts/run-tests.sh
+          npm test -- -u --testPathIgnorePatterns=test/integration
 
       - name: Check for snapshot changes
         id: snapshot-changes

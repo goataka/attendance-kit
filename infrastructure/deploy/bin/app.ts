@@ -16,8 +16,10 @@ const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || '
 // AWS environment configuration
 // For LocalStack, use default dummy account if not set
 // For real AWS deployments, use the actual account from environment
+const LOCALSTACK_ACCOUNT_ID = '000000000000';
+
 const env = {
-  account: process.env.CDK_DEFAULT_ACCOUNT || '000000000000',
+  account: process.env.CDK_DEFAULT_ACCOUNT || LOCALSTACK_ACCOUNT_ID,
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
@@ -25,13 +27,13 @@ const env = {
 if (['all', 'account'].includes(stackType)) {
   // Use dummy email for LocalStack/development, or real email from environment
   const alertEmail = process.env.COST_ALERT_EMAIL || 'dummy@example.com';
-  if (!alertEmail.trim()) {
+  if (!alertEmail) {
     throw new Error('COST_ALERT_EMAIL must not be empty');
   }
   new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
     env,
     budgetAmountUsd: 10,
-    alertEmail: alertEmail.trim(),
+    alertEmail,
     description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
     tags: {
       Project: 'attendance-kit',
