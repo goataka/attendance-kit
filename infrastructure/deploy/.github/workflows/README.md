@@ -12,7 +12,7 @@ CDKスナップショットを自動更新します。
 
 ## 関連ドキュメント
 
-- [スクリプトREADME](../../scripts/README.md)
+- [スクリプト](../../scripts/README.md)
 - [LocalStack使用方法](../../LOCALSTACK.md)
-- [インフラストラクチャREADME](../../README.md)
-- [ルートワークフローREADME](../../../../.github/workflows/README.md)
+- [インフラストラクチャ](../../README.md)
+- [ルートワークフロー](../../../../.github/workflows/README.md)

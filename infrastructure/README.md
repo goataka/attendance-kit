@@ -32,7 +32,7 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
 
 ## 🚀 初回セットアップ手順
 
-詳細なセットアップ手順は [setup/README.md](setup/README.md) を参照してください。
+詳細なセットアップ手順は [セットアップガイド](setup/README.md) を参照してください。
 
 **概要**:
 1. CloudFormationでOIDCプロバイダーとIAMロールを作成（[setup/](setup/)ディレクトリ）
@@ -97,7 +97,7 @@ npx cdk deploy --context environment=dev
 
 ### CloudFormation管理のリソース（OIDC、IAMロール）
 
-CloudFormationテンプレートの更新手順は [setup/README.md](setup/README.md#テンプレートの更新) を参照してください。
+CloudFormationテンプレートの更新手順は [セットアップガイド](setup/README.md#テンプレートの更新) を参照してください。
 
 または、手動でデプロイを実行：
 

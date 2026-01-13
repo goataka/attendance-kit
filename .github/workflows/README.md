@@ -20,7 +20,7 @@ GitHub Copilot Coding Agent の実行環境をセットアップするワーク�
 
 CDK関連のワークフロー（`deploy-pr.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
 
-**詳細**: [infrastructure/deploy/.github/workflows/README.md](../../infrastructure/deploy/.github/workflows/README.md)
+**詳細**: [Deploy Workflows](../../infrastructure/deploy/.github/workflows/README.md)
 
 ### deploy-environment-stack.yml
 
