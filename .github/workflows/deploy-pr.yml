@@ -40,18 +40,31 @@ jobs:
 
   # CDK Validation
   validate-cdk:
+    runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.cdk == 'true'
-    uses: ./infrastructure/deploy/.github/workflows/premerge-cdk.yml
-    secrets: inherit
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run CDK Validation
+        uses: ./infrastructure/deploy/.github/actions/premerge-cdk
 
   # Snapshot Update
   update-snapshots:
+    runs-on: ubuntu-latest
     needs: changes
     if: |
       needs.changes.outputs.snapshot == 'true' &&
       github.event.pull_request.head.repo.full_name == github.repository
-    uses: ./infrastructure/deploy/.github/workflows/update-cdk-snapshots.yml
-    secrets: inherit
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update CDK Snapshots
+        uses: ./infrastructure/deploy/.github/actions/update-cdk-snapshots
 
 
