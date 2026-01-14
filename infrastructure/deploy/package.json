@@ -6,6 +6,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
+    "test:unit": "jest --testPathIgnorePatterns=test/integration",
     "test:integration": "jest --testPathPattern=test/integration",
     "cdk": "cdk",
     "localstack:start": "docker compose -f localstack/docker-compose.yml up -d",

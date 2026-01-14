@@ -27,9 +27,6 @@ const env = {
 if (['all', 'account'].includes(stackType)) {
   // Use dummy email for LocalStack/development, or real email from environment
   const alertEmail = process.env.COST_ALERT_EMAIL || 'dummy@example.com';
-  if (!alertEmail) {
-    throw new Error('COST_ALERT_EMAIL must not be empty');
-  }
   new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
     env,
     budgetAmountUsd: 10,

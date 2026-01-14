@@ -11,6 +11,6 @@ echo "==> Building TypeScript..."
 npm run build
 
 echo "==> Running unit tests (excluding integration tests)..."
-npm test -- --testPathIgnorePatterns=test/integration
+npm run test:unit
 
 echo "✅ Tests completed successfully"
