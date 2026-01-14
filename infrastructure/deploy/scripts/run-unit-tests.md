@@ -1,4 +1,4 @@
-# run-tests.sh
+# run-unit-tests.sh
 
 依存関係のインストール、TypeScriptビルド、ユニットテスト実行を行う共通スクリプトです。
 
@@ -17,5 +17,5 @@
 
 ```bash
 cd infrastructure/deploy
-./scripts/run-tests.sh
+./scripts/run-unit-tests.sh
 ```

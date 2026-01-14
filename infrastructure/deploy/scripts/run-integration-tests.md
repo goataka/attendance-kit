@@ -1,4 +1,4 @@
-# validate-cdk-localstack.sh
+# run-integration-tests.sh
 
 LocalStackを使用したCDK検証を実行するスクリプトです。
 

@@ -15,7 +15,7 @@ runs:
       working-directory: infrastructure/deploy
       shell: bash
       run: |
-        ./scripts/run-tests.sh
+        ./scripts/run-unit-tests.sh
         npm test -- -u --testPathIgnorePatterns=test/integration
 
     - name: Check for snapshot changes
@@ -46,11 +46,7 @@ runs:
       with:
         github-token: ${{ github.token }}
         script: |
-          const comment = `## 📸 CDKスナップショット自動更新
-
-CDK関連ファイルの変更を検知し、スナップショットを自動更新しました。
-
-### 更新されたスナップショット
+          const comment = `## 📸 スナップショット自動更新完了
 
 \`\`\`
 infrastructure/deploy/test/__snapshots__/

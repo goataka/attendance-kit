@@ -13,9 +13,6 @@ const app = new cdk.App();
 //   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is required)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
-// AWS environment configuration
-// For LocalStack, use default dummy account if not set
-// For real AWS deployments, use the actual account from environment
 const LOCALSTACK_ACCOUNT_ID = '000000000000';
 
 const env = {

@@ -14,7 +14,7 @@ runs:
     - name: Run common tests
       working-directory: infrastructure/deploy
       shell: bash
-      run: ./scripts/run-tests.sh
+      run: ./scripts/run-unit-tests.sh
 
     - name: Run LocalStack validation
       working-directory: infrastructure/deploy
@@ -27,19 +27,12 @@ runs:
       with:
         github-token: ${{ github.token }}
         script: |
-          const comment = [
-            '## ✅ CDK Pre-merge Validation Passed',
-            '',
-            'すべてのCDK検証が成功しました:',
-            '',
-            '- ✅ TypeScriptビルド成功',
-            '- ✅ ユニットテスト通過',
-            '- ✅ CDK Synth成功',
-            '- ✅ LocalStackへのデプロイ成功',
-            '- ✅ DynamoDB統合テスト通過 (jest)',
-            '',
-            'このPRはマージ可能です。'
-          ].join('\n');
+          const comment = `## ✅ CDK検証成功
+
+- ✅ ビルド成功
+- ✅ ユニットテスト通過
+- ✅ LocalStackデプロイ成功
+- ✅ 統合テスト通過`;
 
           await github.rest.issues.createComment({
             owner: context.repo.owner,
@@ -54,16 +47,9 @@ runs:
       with:
         github-token: ${{ github.token }}
         script: |
-          const comment = [
-            '## ❌ CDK Pre-merge Validation Failed',
-            '',
-            'CDK検証中にエラーが発生しました。',
-            '',
-            '詳細はワークフローログを確認してください:',
-            `[ワークフロー実行ログ](${context.payload.repository.html_url}/actions/runs/${context.runId})`,
-            '',
-            '問題を修正してから再度プッシュしてください。'
-          ].join('\n');
+          const comment = `## ❌ CDK検証失敗
+
+詳細: ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
 
           await github.rest.issues.createComment({
             owner: context.repo.owner,
