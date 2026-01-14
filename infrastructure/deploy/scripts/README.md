@@ -5,7 +5,7 @@
 ## スクリプト一覧
 
 - [run-unit-tests.sh](./run-unit-tests.md) - 依存関係のインストール、ビルド、ユニットテスト実行
-- [validate-cdk-localstack.sh](./run-integration-tests.md) - LocalStackを使用したCDK検証
+- [run-integration-tests.sh](./run-integration-tests.md) - LocalStackを使用したCDK検証
 
 ## 注意事項
 

@@ -12,10 +12,10 @@
     "localstack:start": "docker compose -f localstack/docker-compose.yml up -d",
     "localstack:stop": "docker compose -f localstack/docker-compose.yml down",
     "localstack:logs": "docker compose -f localstack/docker-compose.yml logs -f localstack",
-    "localstack:bootstrap": "cdklocal bootstrap aws://000000000000/ap-northeast-1",
-    "localstack:deploy": "cdklocal deploy --context stack=environment --context environment=dev --require-approval never",
-    "localstack:synth": "cdklocal synth --context stack=environment --context environment=dev",
-    "localstack:destroy": "cdklocal destroy --context stack=environment --context environment=dev --force"
+    "cdklocal:bootstrap": "cdklocal bootstrap aws://000000000000/ap-northeast-1",
+    "cdklocal:deploy": "cdklocal deploy --context stack=environment --context environment=dev --require-approval never",
+    "cdklocal:synth": "cdklocal synth --context stack=environment --context environment=dev",
+    "cdklocal:destroy": "cdklocal destroy --context stack=environment --context environment=dev --force"
   },
   "keywords": [
     "aws",

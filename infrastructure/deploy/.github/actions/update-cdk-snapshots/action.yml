@@ -14,9 +14,7 @@ runs:
     - name: Run common tests and update snapshots
       working-directory: infrastructure/deploy
       shell: bash
-      run: |
-        ./scripts/run-unit-tests.sh
-        npm test -- -u --testPathIgnorePatterns=test/integration
+      run: npm test -- -u --testPathIgnorePatterns=test/integration
 
     - name: Check for snapshot changes
       id: snapshot-changes
@@ -46,17 +44,17 @@ runs:
       with:
         github-token: ${{ github.token }}
         script: |
-          const comment = `## 📸 スナップショット自動更新完了
-
-\`\`\`
-infrastructure/deploy/test/__snapshots__/
-\`\`\`
-
-変更内容を確認してください：
-- [最新のコミットを表示](${context.payload.pull_request.html_url}/commits)
-- [スナップショットの差分を確認](${context.payload.pull_request.html_url}/files)
-
-> ⚠️ スナップショットの変更が意図したものであることを確認してください。`;
+          const commits = await github.rest.repos.listCommits({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.sha,
+            per_page: 1
+          });
+          const commitUrl = commits.data[0].html_url;
+          
+          const comment = `## 📸 スナップショット自動更新
+          
+変更: [${context.sha.substring(0, 7)}](${commitUrl})`;
 
           github.rest.issues.createComment({
             owner: context.repo.owner,
@@ -64,9 +62,3 @@ infrastructure/deploy/test/__snapshots__/
             issue_number: context.issue.number,
             body: comment
           });
-
-    - name: No changes message
-      if: steps.snapshot-changes.outputs.has_changes == 'false'
-      shell: bash
-      run: |
-        echo "✅ スナップショットに変更はありませんでした。テストは既存のスナップショットと一致しています。"
