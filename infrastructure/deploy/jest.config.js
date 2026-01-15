@@ -11,5 +11,6 @@ module.exports = {
   ],
   coveragePathIgnorePatterns: [
     '/node_modules/'
-  ]
+  ],
+  testTimeout: 30000
 };

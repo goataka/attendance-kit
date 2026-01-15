@@ -1,0 +1,30 @@
+name: 'Update CDK Snapshots'
+description: 'CDKスナップショットを更新し、変更があればコミットします'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: 'npm'
+        cache-dependency-path: infrastructure/deploy/package-lock.json
+
+    - name: Install dependencies
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm ci
+
+    - name: Run unit tests and update snapshots
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm run test:unit -- --updateSnapshot
+
+    - name: Commit snapshot changes and comment on PR
+      uses: ./.github/actions/commit-and-comment
+      with:
+        files: infrastructure/deploy/test/__snapshots__/
+        commit-message: 'CDKスナップショットを自動更新'
+        pr-comment: '## 📸 スナップショット自動更新'
+        github-token: ${{ github.token }}
