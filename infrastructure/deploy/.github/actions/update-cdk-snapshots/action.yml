@@ -11,6 +11,11 @@ runs:
         cache: 'npm'
         cache-dependency-path: infrastructure/deploy/package-lock.json
 
+    - name: Install dependencies
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm ci
+
     - name: Run unit tests and update snapshots
       working-directory: infrastructure/deploy
       shell: bash
