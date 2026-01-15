@@ -120,6 +120,8 @@ npm run test:cov
 
 ## 🔨 ビルド
 
+詳細は[scripts/build-backend.sh](./scripts/build-backend.sh)を参照してください。
+
 \`\`\`bash
 npm run build
 \`\`\`
@@ -249,6 +251,8 @@ npm run lint
 \`\`\`
 
 ### OpenAPI仕様書の生成
+
+詳細は[scripts/generate-openapi.sh](./scripts/generate-openapi.sh)を参照してください。
 
 \`\`\`bash
 npm run generate:openapi

@@ -35,18 +35,16 @@ http://localhost:3000/api/docs
 
 ## 仕様書の更新
 
-OpenAPI仕様書は以下の方法で更新されます:
-
 ### 自動更新（推奨）
 
 Pull Requestを作成すると、GitHub Actionsが自動的にOpenAPI仕様書を更新します。
+詳細は[../workflows/update-openapi/README.md](../workflows/update-openapi/README.md)を参照してください。
 
 ### 手動更新
 
-バックエンドコードを変更した後、手動で仕様書を生成する場合:
+詳細は[../scripts/generate-openapi.sh](../scripts/generate-openapi.sh)を参照してください。
 
 ```bash
-cd apps/backend
 npm run generate:openapi
 ```
 
