@@ -232,8 +232,8 @@ graph TD
 2. 適切なセクション（例: 命名規則）を探す
 3. なければ新規セクションを作成
 4. 命名規則とその理由を記載
-5. `copilot-instructions.md` の「セキュリティ要件」または「コスト最適化」セクションに参照を追加
-6. または `docs/architecture/` に専用ドキュメントを作成（例: `aws-naming-conventions.md`）
+5. または `docs/architecture/` に専用ドキュメントを作成（例: `aws-naming-conventions.md`）
+6. インフラやアーキテクチャに関連する場合、`copilot-instructions.md` から参照可能にするか、`docs/architecture/README.md` に索引を追加
 
 ## ベストプラクティス
 
