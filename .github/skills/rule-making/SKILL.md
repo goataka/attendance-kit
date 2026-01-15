@@ -102,9 +102,9 @@ description: ユーザーから「ルール化してください」というリ�
 
 #### リンクの確認
 
-```
-# 記載場所から既存ドキュメントへのリンクを検索
-grep --pattern="\[.*\](.*\.md)" --output_mode="content" -n
+```bash
+# 記載場所から既存ドキュメントへのリンクを検索（bashツールを使用）
+grep -n '\[.*\](.*\.md)'
 ```
 
 以下のリンクが適切に設定されているか確認:
@@ -153,8 +153,8 @@ GitHub Copilot Agentが参照できる状態を確認:
 ルールを記載した後、以下を確認します:
 
 ```bash
-# リンク切れチェック
-grep --pattern="\[.*\](.*\.md)" --output_mode="content"
+# リンク切れチェック（bashツールを使用）
+grep '\[.*\](.*\.md)'
 
 # Markdownフォーマットチェック（ヘッダー、リスト構造）
 view path/to/updated/file.md
@@ -230,6 +230,7 @@ graph TD
 3. なければ新規セクションを作成
 4. 命名規則とその理由を記載
 5. `copilot-instructions.md` の「セキュリティ要件」または「コスト最適化」セクションに参照を追加
+6. または `docs/architecture/` に専用ドキュメントを作成（例: `aws-naming-conventions.md`）
 
 ## ベストプラクティス
 
