@@ -1,0 +1,39 @@
+name: 'Pre-merge CDK Validation'
+description: 'CDK検証を実行し、LocalStackでデプロイをテストします'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js 24
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: 'npm'
+        cache-dependency-path: infrastructure/deploy/package-lock.json
+
+    - name: Run common tests
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: ./scripts/run-unit-tests.sh
+
+    - name: Run LocalStack validation
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: ./scripts/run-integration-tests.sh
+
+    - name: Comment on PR failure
+      if: failure()
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ github.token }}
+        script: |
+          const comment = `## ❌ CDK検証失敗
+          
+          詳細: ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+          
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: comment
+          });

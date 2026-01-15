@@ -13,22 +13,21 @@ const app = new cdk.App();
 //   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is required)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
-// AWS environment configuration
+const LOCALSTACK_ACCOUNT_ID = '000000000000';
+
 const env = {
-  account: process.env.CDK_DEFAULT_ACCOUNT,
+  account: process.env.CDK_DEFAULT_ACCOUNT || LOCALSTACK_ACCOUNT_ID,
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
 // Account-level resources (deployed once per AWS account)
 if (['all', 'account'].includes(stackType)) {
-  const alertEmail = process.env.COST_ALERT_EMAIL;
-  if (!alertEmail || !alertEmail.trim()) {
-    throw new Error('COST_ALERT_EMAIL environment variable must be set for account stack deployment');
-  }
+  // Use dummy email for LocalStack/development, or real email from environment
+  const alertEmail = process.env.COST_ALERT_EMAIL || 'dummy@example.com';
   new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
     env,
     budgetAmountUsd: 10,
-    alertEmail: alertEmail.trim(),
+    alertEmail,
     description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
     tags: {
       Project: 'attendance-kit',
