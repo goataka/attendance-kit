@@ -55,9 +55,7 @@ runs:
           const commitUrl = commits.data[0].html_url;
           const commitSha = commits.data[0].sha.substring(0, 7);
           
-          const comment = `${{ inputs.pr-comment }}
-
-変更: [${commitSha}](${commitUrl})`;
+          const comment = `${{ inputs.pr-comment }}\n\n変更: [${commitSha}](${commitUrl})`;
 
           await github.rest.issues.createComment({
             owner: context.repo.owner,

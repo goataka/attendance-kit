@@ -31,13 +31,13 @@ show_environment() {
 
 run_cdk_operations() {
   echo "=== CDK Bootstrap ==="
-  npm run localstack:bootstrap
+  npm run cdklocal:bootstrap
   
   echo "=== CDK Synth ==="
-  npm run localstack:synth
+  npm run cdklocal:synth
   
   echo "=== CDK Deploy to LocalStack ==="
-  npm run localstack:deploy
+  npm run cdklocal:deploy
 }
 
 run_integration_tests() {
