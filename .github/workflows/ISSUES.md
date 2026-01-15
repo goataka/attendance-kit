@@ -4,6 +4,20 @@
 
 ## 課題一覧
 
+### Lint・品質チェック
+
+#### 候補
+
+- [ ] markdown-lintをプレマージチェックに追加
+  - 参考: [markdownlint-cli2](https://github.com/DavidAnson/markdownlint-cli2)
+
+- [ ] shellcheckをプレマージチェックに追加
+  - 参考: [ShellCheck](https://github.com/koalaman/shellcheck)
+
+- [ ] その他のlint導入を検討
+  - YAML lint (yamllint/actionlint)
+  - 参考: [actionlint](https://github.com/rhysd/actionlint)
+
 ### ワークフロー改善
 
 #### 候補
