@@ -6,7 +6,7 @@ LocalStackを使用したローカル開発環境のセットアップと使用�
 
 - Docker
 - Docker Compose
-- Node.js 20以上
+- Node.js 24以上
 
 ## 基本的な使い方
 
