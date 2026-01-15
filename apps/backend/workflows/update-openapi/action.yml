@@ -5,7 +5,7 @@ inputs:
   node-version:
     description: 'Node.js version to use'
     required: false
-    default: '22'
+    default: '24'
   github-token:
     description: 'GitHub token for authentication'
     required: true
@@ -21,38 +21,27 @@ runs:
 
     - name: Install dependencies
       shell: bash
+      working-directory: apps/backend
       run: |
-        npm ci
-        cd apps/backend
         npm ci
 
     - name: Generate OpenAPI specification
       shell: bash
+      working-directory: apps/backend
       run: |
-        bash apps/backend/scripts/generate-openapi.sh
+        bash scripts/generate-openapi.sh
 
-    - name: Check for changes
-      id: check_changes
-      shell: bash
-      run: |
-        if git diff --quiet apps/backend/api/openapi.json; then
-          echo "changes=false" >> $GITHUB_OUTPUT
-        else
-          echo "changes=true" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Commit and push if changed
-      if: steps.check_changes.outputs.changes == 'true'
-      shell: bash
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add apps/backend/api/openapi.json
-        git commit -m "docs: OpenAPI仕様を自動更新"
-        git push
+    - name: Commit and comment
+      uses: stefanzweifel/git-auto-commit-action@v5
+      id: auto-commit
+      with:
+        commit_message: 'docs: OpenAPI仕様を自動更新'
+        file_pattern: 'apps/backend/api/openapi.json'
+        commit_user_name: 'github-actions[bot]'
+        commit_user_email: 'github-actions[bot]@users.noreply.github.com'
 
     - name: Comment on PR
-      if: steps.check_changes.outputs.changes == 'true'
+      if: steps.auto-commit.outputs.changes_detected == 'true'
       uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.github-token }}
@@ -65,7 +54,7 @@ runs:
           })
 
     - name: No changes message
-      if: steps.check_changes.outputs.changes == 'false'
+      if: steps.auto-commit.outputs.changes_detected == 'false'
       shell: bash
       run: |
         echo "✅ OpenAPI仕様に変更はありません。"

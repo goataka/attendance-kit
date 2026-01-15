@@ -143,6 +143,62 @@ npm run build
 - READMEでは「Node.js 24.x以上」と記載
 - 具体的なマイナーバージョンは記載しない
 
+## CDK Construct構造ルール
+
+### コンストラクタの構造
+
+**原則**: コンストラクタ直下は関数呼び出しを主とし、`new`による初期化は別関数に切り出す
+
+**OK例**:
+```typescript
+constructor(scope: Construct, id: string, props: MyProps) {
+  super(scope, id);
+  
+  this.resource1 = this.createResource1(props);
+  this.resource2 = this.createResource2(props);
+  this.setupIntegration();
+  this.createOutputs();
+  this.applyTags();
+}
+
+private createResource1(props: MyProps): ResourceType {
+  return new ResourceType(this, 'Resource1', {
+    // ... configuration
+  });
+}
+```
+
+**NG例**:
+```typescript
+constructor(scope: Construct, id: string, props: MyProps) {
+  super(scope, id);
+  
+  // NG: コンストラクタ内で直接newを使用
+  this.resource1 = new ResourceType(this, 'Resource1', {
+    // ... long configuration
+  });
+  
+  this.resource2 = new ResourceType(this, 'Resource2', {
+    // ... long configuration
+  });
+}
+```
+
+### ユーティリティ関数の使用
+
+共通処理は`lib/utils/`に配置し、再利用する:
+
+- **環境名のフォーマット**: `formatEnvironmentName()`
+- **エクスポート名の生成**: `formatExportName()`
+- **タグの追加**: `addStandardTags()`
+
+### 適用対象
+
+このルールは以下のConstructに適用:
+- `BackendApiConstruct` (完了)
+- `DynamoDBConstruct` (TODO: Issue作成済み)
+- その他、すべての新規Construct
+
 ## 関連ドキュメント
 
 - [Agent開発ガイドライン](../.github/agents/AGENTS.md)

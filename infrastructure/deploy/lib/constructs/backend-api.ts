@@ -5,6 +5,10 @@ import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as path from 'path';
+import {
+  formatExportName,
+  addStandardTags,
+} from '../utils/cdk-helpers';
 
 export interface BackendApiConstructProps {
   environment: string;
@@ -21,8 +25,19 @@ export class BackendApiConstruct extends Construct {
 
     const { environment, clockTable, jwtSecret } = props;
 
-    // Lambda function for the NestJS backend
-    this.apiFunction = new lambda.Function(this, 'ApiFunction', {
+    this.apiFunction = this.createLambdaFunction(environment, clockTable, jwtSecret);
+    this.api = this.createApiGateway(environment);
+    this.setupIntegration();
+    this.createOutputs(environment);
+    this.applyTags(environment);
+  }
+
+  private createLambdaFunction(
+    environment: string,
+    clockTable: dynamodb.Table,
+    jwtSecret: string,
+  ): lambda.Function {
+    const lambdaFunction = new lambda.Function(this, 'ApiFunction', {
       functionName: `attendance-kit-${environment}-api`,
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'lambda.handler',
@@ -40,11 +55,12 @@ export class BackendApiConstruct extends Construct {
       description: `Attendance Kit Backend API (${environment})`,
     });
 
-    // Grant DynamoDB permissions to Lambda
-    clockTable.grantReadWriteData(this.apiFunction);
+    clockTable.grantReadWriteData(lambdaFunction);
+    return lambdaFunction;
+  }
 
-    // API Gateway
-    this.api = new apigateway.RestApi(this, 'Api', {
+  private createApiGateway(environment: string): apigateway.RestApi {
+    return new apigateway.RestApi(this, 'Api', {
       restApiName: `attendance-kit-${environment}-api`,
       description: `Attendance Kit REST API (${environment})`,
       deployOptions: {
@@ -64,49 +80,47 @@ export class BackendApiConstruct extends Construct {
         ],
       },
     });
+  }
 
-    // Lambda integration
+  private setupIntegration(): void {
     const integration = new apigateway.LambdaIntegration(this.apiFunction, {
       proxy: true,
     });
 
-    // Add API proxy resource
     this.api.root.addProxy({
       defaultIntegration: integration,
       anyMethod: true,
     });
+  }
 
-    // CloudFormation Outputs
+  private createOutputs(environment: string): void {
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.api.url,
       description: `API Gateway URL (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ApiUrl`,
+      exportName: formatExportName(environment, 'ApiUrl'),
     });
 
     new cdk.CfnOutput(this, 'ApiId', {
       value: this.api.restApiId,
       description: `API Gateway ID (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ApiId`,
+      exportName: formatExportName(environment, 'ApiId'),
     });
 
     new cdk.CfnOutput(this, 'LambdaFunctionName', {
       value: this.apiFunction.functionName,
       description: `Lambda function name (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-LambdaFunctionName`,
+      exportName: formatExportName(environment, 'LambdaFunctionName'),
     });
 
     new cdk.CfnOutput(this, 'LambdaFunctionArn', {
       value: this.apiFunction.functionArn,
       description: `Lambda function ARN (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-LambdaFunctionArn`,
+      exportName: formatExportName(environment, 'LambdaFunctionArn'),
     });
+  }
 
-    // Tags
-    cdk.Tags.of(this.apiFunction).add('Environment', environment);
-    cdk.Tags.of(this.apiFunction).add('Project', 'attendance-kit');
-    cdk.Tags.of(this.apiFunction).add('ManagedBy', 'CDK');
-    cdk.Tags.of(this.api).add('Environment', environment);
-    cdk.Tags.of(this.api).add('Project', 'attendance-kit');
-    cdk.Tags.of(this.api).add('ManagedBy', 'CDK');
+  private applyTags(environment: string): void {
+    addStandardTags(this.apiFunction, environment);
+    addStandardTags(this.api, environment);
   }
 }
