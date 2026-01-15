@@ -73,6 +73,10 @@ CDK関連ファイルが変更されたPull Requestで、スナップショッ�
 
 **詳細**: [deploy-account-stack.md](./deploy-account-stack.md)
 
+## ワークフロー課題
+
+GitHub Actionsとワークフローに関する課題については、[ISSUES.md](./ISSUES.md) を参照してください。
+
 ## 関連ドキュメント
 
 - [デプロイ手順](../../infrastructure/DEPLOYMENT.md) - 各ワークフローの使い方
