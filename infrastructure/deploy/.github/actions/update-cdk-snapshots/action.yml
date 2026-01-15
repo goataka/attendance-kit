@@ -14,7 +14,7 @@ runs:
     - name: Run unit tests and update snapshots
       working-directory: infrastructure/deploy
       shell: bash
-      run: npm run test:unit -- -u
+      run: npm run test:unit -- --updateSnapshot
 
     - name: Commit snapshot changes and comment on PR
       uses: ./.github/actions/commit-and-comment

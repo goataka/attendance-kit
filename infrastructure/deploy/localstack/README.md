@@ -15,6 +15,7 @@ LocalStackを使用したローカル開発環境のセットアップと使用�
 主なコマンド:
 - `localstack:start` - LocalStackの起動
 - `localstack:stop` - LocalStackの停止
+- `localstack:logs` - LocalStackのログ表示
 - `cdklocal:bootstrap` - CDK Bootstrap
 - `cdklocal:deploy` - スタックのデプロイ
 - `cdklocal:synth` - CloudFormationテンプレート生成

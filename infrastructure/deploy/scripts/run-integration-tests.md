@@ -11,7 +11,7 @@ LocalStackを使用したCDK統合テストを実行するスクリプトです�
 1. LocalStackコンテナの起動
 2. LocalStackの起動待機とヘルスチェック
 3. CDK Bootstrap/Synth/Deploy
-4. DynamoDB統合テスト実行
+4. CDK統合テスト実行
 5. クリーンアップ（trap機能による確実なLocalStack停止）
 
 ## 実行方法
