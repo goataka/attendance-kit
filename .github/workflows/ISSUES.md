@@ -14,6 +14,12 @@
 - [ ] shellcheckをプレマージチェックに追加
   - 参考: [ShellCheck](https://github.com/koalaman/shellcheck)
 
+- [ ] ESLintの導入を検討
+  - 参考: [ESLint](https://eslint.org/)
+
+- [ ] Prettierの導入を検討
+  - 参考: [Prettier](https://prettier.io/)
+
 - [ ] その他のlint導入を検討
   - YAML lint (yamllint/actionlint)
   - 参考: [actionlint](https://github.com/rhysd/actionlint)
