@@ -61,6 +61,10 @@ CDK関連のワークフロー（`deploy-pr.yml`）の実装詳細とドキュ�
 
 **詳細**: [deploy-account-stack.md](./deploy-account-stack.md)
 
+## ワークフロー課題
+
+GitHub Actionsとワークフローに関する課題については、[ISSUES.md](./ISSUES.md) を参照してください。
+
 ## 関連ドキュメント
 
 - [デプロイ手順](../../infrastructure/DEPLOYMENT.md) - 各ワークフローの使い方
