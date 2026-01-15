@@ -4,10 +4,10 @@ description: 'CDKスナップショットを更新し、変更があればコミ
 runs:
   using: "composite"
   steps:
-    - name: Setup Node.js 22
+    - name: Setup Node.js 24
       uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: '24'
         cache: 'npm'
         cache-dependency-path: infrastructure/deploy/package-lock.json
 
