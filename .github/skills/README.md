@@ -23,6 +23,14 @@ npm run premerge:local
 
 **詳細**: [premerge-check/SKILL.md](./premerge-check/SKILL.md)
 
+### rule-making
+
+**説明**: 「ルール化してください」というリクエストに対応し、ルールの内容に応じて適切な記載箇所を特定します。
+
+**使用タイミング**: ユーザーからルール化・規約化のリクエストがあった場合
+
+**詳細**: [rule-making/SKILL.md](./rule-making/SKILL.md)
+
 ## Agent Skillsについて
 
 Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機能を定義したものです。
@@ -45,7 +53,9 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 ├── README.md               # このファイル
 ├── file-refactor/          # ファイル/フォルダのリネーム・削除スキル
 │   └── SKILL.md            # スキル定義ファイル
-└── premerge-check/         # プレマージチェックスキル
+├── premerge-check/         # プレマージチェックスキル
+│   └── SKILL.md            # スキル定義ファイル
+└── rule-making/            # ルール化スキル
     └── SKILL.md            # スキル定義ファイル
 ```
 
