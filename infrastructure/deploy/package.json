@@ -6,7 +6,16 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "test:unit": "jest --testPathIgnorePatterns=test/integration",
+    "test:integration": "jest --testPathPattern=test/integration",
+    "cdk": "cdk",
+    "localstack:start": "docker compose -f localstack/docker-compose.yml up -d",
+    "localstack:stop": "docker compose -f localstack/docker-compose.yml down",
+    "localstack:logs": "docker compose -f localstack/docker-compose.yml logs -f localstack",
+    "cdklocal:bootstrap": "cdklocal bootstrap aws://000000000000/ap-northeast-1",
+    "cdklocal:deploy": "cdklocal deploy --context stack=environment --context environment=dev --require-approval never",
+    "cdklocal:synth": "cdklocal synth --context stack=environment --context environment=dev",
+    "cdklocal:destroy": "cdklocal destroy --context stack=environment --context environment=dev --force"
   },
   "keywords": [
     "aws",
@@ -16,9 +25,11 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.x",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.x",
     "aws-cdk": "^2.x",
+    "aws-cdk-local": "^2.x",
     "jest": "^29.5.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
@@ -30,6 +41,6 @@
     "source-map-support": "^0.5.21"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   }
 }
