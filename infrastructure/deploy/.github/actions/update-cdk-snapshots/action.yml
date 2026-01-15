@@ -11,54 +11,15 @@ runs:
         cache: 'npm'
         cache-dependency-path: infrastructure/deploy/package-lock.json
 
-    - name: Run common tests and update snapshots
+    - name: Run unit tests and update snapshots
       working-directory: infrastructure/deploy
       shell: bash
-      run: npm test -- -u --testPathIgnorePatterns=test/integration
+      run: npm run test:unit -- -u
 
-    - name: Check for snapshot changes
-      id: snapshot-changes
-      shell: bash
-      run: |
-        if git diff --quiet infrastructure/deploy/test/__snapshots__/; then
-          echo "has_changes=false" >> $GITHUB_OUTPUT
-          echo "No snapshot changes detected"
-        else
-          echo "has_changes=true" >> $GITHUB_OUTPUT
-          echo "Snapshot changes detected"
-        fi
-
-    - name: Commit and push snapshot updates
-      if: steps.snapshot-changes.outputs.has_changes == 'true'
-      shell: bash
-      run: |
-        git config --local user.email "github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add infrastructure/deploy/test/__snapshots__/
-        git commit -m "CDKスナップショットを自動更新"
-        git push
-
-    - name: Comment on PR
-      if: steps.snapshot-changes.outputs.has_changes == 'true'
-      uses: actions/github-script@v7
+    - name: Commit snapshot changes and comment on PR
+      uses: ./.github/actions/commit-and-comment
       with:
+        files: infrastructure/deploy/test/__snapshots__/
+        commit-message: 'CDKスナップショットを自動更新'
+        pr-comment: '## 📸 スナップショット自動更新'
         github-token: ${{ github.token }}
-        script: |
-          const commits = await github.rest.repos.listCommits({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            sha: context.sha,
-            per_page: 1
-          });
-          const commitUrl = commits.data[0].html_url;
-          
-          const comment = `## 📸 スナップショット自動更新
-          
-変更: [${context.sha.substring(0, 7)}](${commitUrl})`;
-
-          github.rest.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: comment
-          });
