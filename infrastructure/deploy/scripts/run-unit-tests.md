@@ -9,13 +9,10 @@
 
 ## 実行内容
 
-1. `npm ci` - 依存関係のインストール
-2. `npm run build` - TypeScriptのビルド
-3. `npm run test:unit` - ユニットテスト実行（統合テストを除外）
+1. 依存関係のインストール
+2. TypeScriptのビルド
+3. ユニットテスト実行（統合テストを除外）
 
-## 使用方法
+## 実行方法
 
-```bash
-cd infrastructure/deploy
-./scripts/run-unit-tests.sh
-```
+詳細は[スクリプトファイル](./run-unit-tests.sh)を参照してください。

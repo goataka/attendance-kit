@@ -1,6 +1,6 @@
 # run-integration-tests.sh
 
-LocalStackを使用したCDK検証を実行するスクリプトです。
+LocalStackを使用したCDK統合テストを実行するスクリプトです。
 
 ## 使用場所
 
@@ -10,22 +10,10 @@ LocalStackを使用したCDK検証を実行するスクリプトです。
 
 1. LocalStackコンテナの起動
 2. LocalStackの起動待機とヘルスチェック
-3. 環境変数の確認とデバッグ出力
-4. CDK Bootstrap
-5. CDK Synth
-6. CDK Deploy
-7. DynamoDB統合テスト実行
-8. クリーンアップ（trap機能による確実なLocalStack停止）
+3. CDK Bootstrap/Synth/Deploy
+4. DynamoDB統合テスト実行
+5. クリーンアップ（trap機能による確実なLocalStack停止）
 
-## 使用方法
+## 実行方法
 
-```bash
-cd infrastructure/deploy
-./scripts/validate-cdk-localstack.sh
-```
-
-## 必要な環境変数
-
-- `AWS_ACCESS_KEY_ID`: テスト用ダミー認証情報
-- `AWS_SECRET_ACCESS_KEY`: テスト用ダミー認証情報
-- `AWS_DEFAULT_REGION`: デプロイ先リージョン
+詳細は[スクリプトファイル](./run-integration-tests.sh)を参照してください。
