@@ -10,6 +10,10 @@ npm ci
 echo "==> Building TypeScript..."
 npm run build
 
+echo "==> Creating placeholder backend dist for CDK tests..."
+mkdir -p ../../apps/backend/dist
+echo '// Placeholder for CDK tests' > ../../apps/backend/dist/lambda.js
+
 echo "==> Running unit tests (excluding integration tests)..."
 npm run test:unit
 

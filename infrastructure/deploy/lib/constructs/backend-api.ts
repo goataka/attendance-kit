@@ -48,7 +48,6 @@ export class BackendApiConstruct extends Construct {
       memorySize: 512,
       environment: {
         NODE_ENV: environment,
-        AWS_REGION: cdk.Stack.of(this).region,
         DYNAMODB_TABLE_NAME: clockTable.tableName,
         JWT_SECRET: jwtSecret,
       },

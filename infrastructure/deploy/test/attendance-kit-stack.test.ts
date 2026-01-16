@@ -130,7 +130,28 @@ describe('AttendanceKitStack', () => {
   });
 
   test('GitHub Actions IAM Role is NOT created (managed by CloudFormation)', () => {
-    template.resourceCountIs('AWS::IAM::Role', 0);
+    // Lambda function creates an execution role, but GitHub Actions role is NOT created
+    // Check that there's no role with GitHub-specific trust policy
+    const roles = template.findResources('AWS::IAM::Role');
+    const roleKeys = Object.keys(roles);
+    
+    // Lambda execution role should exist
+    expect(roleKeys.length).toBeGreaterThan(0);
+    
+    // Verify no GitHub Actions OIDC provider role exists
+    roleKeys.forEach(key => {
+      const role = roles[key];
+      const trustPolicy = role.Properties?.AssumeRolePolicyDocument;
+      if (trustPolicy?.Statement) {
+        trustPolicy.Statement.forEach((statement: any) => {
+          // GitHub OIDC provider should not be in trust policy
+          const federated = statement.Principal?.Federated;
+          if (federated && typeof federated === 'string') {
+            expect(federated).not.toMatch(/oidc-provider\/token\.actions\.githubusercontent\.com/);
+          }
+        });
+      }
+    });
   });
 
   test('Stack Matches Snapshot', () => {

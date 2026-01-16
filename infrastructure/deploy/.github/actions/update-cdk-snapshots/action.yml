@@ -16,6 +16,17 @@ runs:
       shell: bash
       run: npm ci
 
+    - name: Build CDK TypeScript
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm run build
+
+    - name: Create placeholder backend dist for CDK tests
+      shell: bash
+      run: |
+        mkdir -p apps/backend/dist
+        echo '// Placeholder for CDK tests' > apps/backend/dist/lambda.js
+
     - name: Run unit tests and update snapshots
       working-directory: infrastructure/deploy
       shell: bash
