@@ -130,21 +130,21 @@ describe('AttendanceKitStack', () => {
   });
 
   test('GitHub Actions IAM Role is NOT created (managed by CloudFormation)', () => {
-    // Lambda function creates an execution role, but GitHub Actions role is NOT created
-    // Check that there's no role with GitHub-specific trust policy
+    // Lambda関数が実行ロールを作成するが、GitHub Actions用ロールは作成されない
+    // GitHub固有のトラストポリシーを持つロールが存在しないことを確認
     const roles = template.findResources('AWS::IAM::Role');
     const roleKeys = Object.keys(roles);
     
-    // Lambda execution role should exist
+    // Lambda実行ロールは存在するはず
     expect(roleKeys.length).toBeGreaterThan(0);
     
-    // Verify no GitHub Actions OIDC provider role exists
+    // GitHub Actions OIDC プロバイダーロールが存在しないことを確認
     roleKeys.forEach(key => {
       const role = roles[key];
       const trustPolicy = role.Properties?.AssumeRolePolicyDocument;
       if (trustPolicy?.Statement) {
         trustPolicy.Statement.forEach((statement: any) => {
-          // GitHub OIDC provider should not be in trust policy
+          // GitHub OIDC プロバイダーはトラストポリシーに含まれていないはず
           const federated = statement.Principal?.Federated;
           if (federated && typeof federated === 'string') {
             expect(federated).not.toMatch(/oidc-provider\/token\.actions\.githubusercontent\.com/);

@@ -4,15 +4,6 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
 {
   "Description": "DynamoDB clock table for attendance-kit (staging environment)",
   "Outputs": {
-    "BackendApiApiId820ECD75": {
-      "Description": "API Gateway ID (staging)",
-      "Export": {
-        "Name": "AttendanceKit-Staging-ApiId",
-      },
-      "Value": {
-        "Ref": "BackendApiC9FA6A88",
-      },
-    },
     "BackendApiApiUrlE43572B5": {
       "Description": "API Gateway URL (staging)",
       "Export": {
@@ -67,27 +58,6 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             "/",
           ],
         ],
-      },
-    },
-    "BackendApiLambdaFunctionArnEA7B73C2": {
-      "Description": "Lambda function ARN (staging)",
-      "Export": {
-        "Name": "AttendanceKit-Staging-LambdaFunctionArn",
-      },
-      "Value": {
-        "Fn::GetAtt": [
-          "BackendApiApiFunction20C2BCCB",
-          "Arn",
-        ],
-      },
-    },
-    "BackendApiLambdaFunctionNameA016E750": {
-      "Description": "Lambda function name (staging)",
-      "Export": {
-        "Name": "AttendanceKit-Staging-LambdaFunctionName",
-      },
-      "Value": {
-        "Ref": "BackendApiApiFunction20C2BCCB",
       },
     },
     "Environment": {
@@ -797,15 +767,6 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
 {
   "Description": "DynamoDB clock table for attendance-kit (dev environment)",
   "Outputs": {
-    "BackendApiApiId820ECD75": {
-      "Description": "API Gateway ID (dev)",
-      "Export": {
-        "Name": "AttendanceKit-Dev-ApiId",
-      },
-      "Value": {
-        "Ref": "BackendApiC9FA6A88",
-      },
-    },
     "BackendApiApiUrlE43572B5": {
       "Description": "API Gateway URL (dev)",
       "Export": {
@@ -860,27 +821,6 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             "/",
           ],
         ],
-      },
-    },
-    "BackendApiLambdaFunctionArnEA7B73C2": {
-      "Description": "Lambda function ARN (dev)",
-      "Export": {
-        "Name": "AttendanceKit-Dev-LambdaFunctionArn",
-      },
-      "Value": {
-        "Fn::GetAtt": [
-          "BackendApiApiFunction20C2BCCB",
-          "Arn",
-        ],
-      },
-    },
-    "BackendApiLambdaFunctionNameA016E750": {
-      "Description": "Lambda function name (dev)",
-      "Export": {
-        "Name": "AttendanceKit-Dev-LambdaFunctionName",
-      },
-      "Value": {
-        "Ref": "BackendApiApiFunction20C2BCCB",
       },
     },
     "Environment": {

@@ -23,6 +23,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update OpenAPI Documentation
-        uses: ./apps/backend/workflows/update-openapi
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+        uses: ./apps/backend/.github/actions/update-openapi

@@ -1,0 +1,31 @@
+name: 'Update OpenAPI Documentation'
+description: 'Generate and update OpenAPI specification from NestJS code'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+        cache: 'npm'
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: apps/backend
+      run: |
+        npm ci
+
+    - name: Generate OpenAPI specification
+      shell: bash
+      working-directory: apps/backend
+      run: |
+        bash scripts/generate-openapi.sh
+
+    - name: Commit and comment
+      uses: ./.github/actions/commit-and-comment
+      with:
+        files: 'apps/backend/api/openapi.json'
+        commit-message: 'docs: OpenAPI仕様を自動更新'
+        pr-comment: '✅ OpenAPI仕様が自動的に更新されました。\n\n📄 変更内容は `apps/backend/api/openapi.json` で確認できます。'
+        github-token: ${{ github.token }}

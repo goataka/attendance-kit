@@ -25,11 +25,15 @@ export class BackendApiConstruct extends Construct {
 
     const { environment, clockTable, jwtSecret } = props;
 
-    this.apiFunction = this.createLambdaFunction(environment, clockTable, jwtSecret);
-    this.api = this.createApiGateway(environment);
-    this.setupIntegration();
-    this.createOutputs(environment);
-    this.applyTags(environment);
+    const lambdaFunction = this.createLambdaFunction(environment, clockTable, jwtSecret);
+    const api = this.createApiGateway(environment);
+    this.setupIntegration(lambdaFunction, api);
+    this.createOutputs(environment, api);
+    this.applyTags(environment, lambdaFunction, api);
+
+    // コンストラクタ最後でpublicプロパティに割り当て
+    this.apiFunction = lambdaFunction;
+    this.api = api;
   }
 
   private createLambdaFunction(
@@ -81,45 +85,38 @@ export class BackendApiConstruct extends Construct {
     });
   }
 
-  private setupIntegration(): void {
-    const integration = new apigateway.LambdaIntegration(this.apiFunction, {
+  private setupIntegration(
+    lambdaFunction: lambda.Function,
+    api: apigateway.RestApi,
+  ): void {
+    const integration = new apigateway.LambdaIntegration(lambdaFunction, {
       proxy: true,
     });
 
-    this.api.root.addProxy({
+    api.root.addProxy({
       defaultIntegration: integration,
       anyMethod: true,
     });
   }
 
-  private createOutputs(environment: string): void {
+  private createOutputs(
+    environment: string,
+    api: apigateway.RestApi,
+  ): void {
+    // 後続で必要なOutputのみ追加
     new cdk.CfnOutput(this, 'ApiUrl', {
-      value: this.api.url,
+      value: api.url,
       description: `API Gateway URL (${environment})`,
       exportName: formatExportName(environment, 'ApiUrl'),
     });
-
-    new cdk.CfnOutput(this, 'ApiId', {
-      value: this.api.restApiId,
-      description: `API Gateway ID (${environment})`,
-      exportName: formatExportName(environment, 'ApiId'),
-    });
-
-    new cdk.CfnOutput(this, 'LambdaFunctionName', {
-      value: this.apiFunction.functionName,
-      description: `Lambda function name (${environment})`,
-      exportName: formatExportName(environment, 'LambdaFunctionName'),
-    });
-
-    new cdk.CfnOutput(this, 'LambdaFunctionArn', {
-      value: this.apiFunction.functionArn,
-      description: `Lambda function ARN (${environment})`,
-      exportName: formatExportName(environment, 'LambdaFunctionArn'),
-    });
   }
 
-  private applyTags(environment: string): void {
-    addStandardTags(this.apiFunction, environment);
-    addStandardTags(this.api, environment);
+  private applyTags(
+    environment: string,
+    lambdaFunction: lambda.Function,
+    api: apigateway.RestApi,
+  ): void {
+    addStandardTags(lambdaFunction, environment);
+    addStandardTags(api, environment);
   }
 }
