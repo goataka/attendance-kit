@@ -36,6 +36,10 @@ runs:
         USE_LOCALSTACK: 'true'
         AWS_REGION: ${{ inputs.aws-region }}
         DYNAMODB_TABLE_NAME: 'attendance-kit-test-clock'
+        DYNAMODB_ENDPOINT: 'http://localhost:4566'
+        AWS_ACCESS_KEY_ID: 'test'
+        AWS_SECRET_ACCESS_KEY: 'test'
+        JWT_SECRET: 'test-secret-key'
       run: npm run test:integration
 
     - name: Stop LocalStack

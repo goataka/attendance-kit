@@ -13,17 +13,19 @@ describe('ClockController (Integration)', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    // 統合テスト用環境変数の確認
+    // 統合テスト用のLocalStack環境変数を設定
+    process.env.USE_LOCALSTACK = 'true';
+    process.env.AWS_REGION = 'ap-northeast-1';
+    process.env.DYNAMODB_TABLE_NAME = 'attendance-kit-dev-clock';
+    process.env.DYNAMODB_ENDPOINT = 'http://localhost:4566';
+    process.env.AWS_ACCESS_KEY_ID = 'test';
+    process.env.AWS_SECRET_ACCESS_KEY = 'test';
+    process.env.JWT_SECRET = 'test-secret-key';
+
     const useLocalStack = process.env.USE_LOCALSTACK === 'true';
     console.log(
       `Integration test mode: ${useLocalStack ? 'LocalStack' : 'Local'}`,
     );
-
-    // LocalStackを使用する場合は環境変数が設定されているはず
-    if (useLocalStack) {
-      expect(process.env.AWS_REGION).toBeDefined();
-      expect(process.env.DYNAMODB_TABLE_NAME).toBeDefined();
-    }
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
