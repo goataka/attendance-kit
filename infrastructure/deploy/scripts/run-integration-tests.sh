@@ -4,9 +4,15 @@ set -euo pipefail
 # LocalStack validation script for CDK deployment
 # This script performs LocalStack startup, setup, CDK deployment, integration tests, and shutdown
 
+# Get the script directory and repository root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INFRA_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+REPO_ROOT="$(cd "${INFRA_DIR}/../.." && pwd)"
+BACKEND_DIR="${REPO_ROOT}/apps/backend"
+
 cleanup() {
   echo "=== Stopping LocalStack ==="
-  npm run localstack:stop || true
+  (cd "${INFRA_DIR}" && npm run localstack:stop) || true
   echo "✅ LocalStack stopped"
 }
 
@@ -31,18 +37,18 @@ show_environment() {
 
 run_cdk_operations() {
   echo "=== CDK Bootstrap ==="
-  npm run cdklocal:bootstrap
+  (cd "${INFRA_DIR}" && npm run cdklocal:bootstrap)
   
   echo "=== CDK Synth DynamoDB Stack ==="
-  cdklocal synth AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test
+  (cd "${INFRA_DIR}" && cdklocal synth AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test)
   
   echo "=== CDK Deploy DynamoDB Stack to LocalStack ==="
-  cdklocal deploy AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test --require-approval never
+  (cd "${INFRA_DIR}" && cdklocal deploy AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test --require-approval never)
 }
 
 run_integration_tests() {
   echo "=== Running DynamoDB Integration Tests ==="
-  npm run test:integration
+  (cd "${BACKEND_DIR}" && npm run test:integration)
 }
 
 main() {
@@ -53,7 +59,7 @@ main() {
   
   # Start LocalStack
   echo "=== Starting LocalStack ==="
-  npm run localstack:start
+  (cd "${INFRA_DIR}" && npm run localstack:start)
   
   # Set minimal required environment variables
   export AWS_ACCESS_KEY_ID="test"
