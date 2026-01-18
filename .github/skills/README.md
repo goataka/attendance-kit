@@ -73,4 +73,4 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 
 - [GitHub Copilot Agent Skills Documentation](https://docs.github.com/ja/copilot/concepts/agents/about-agent-skills)
 - [Agent Skills Open Standard](https://github.com/agentskills/agentskills)
-- [Agent開発ガイドライン](../agents/AGENTS.md)
+- [Copilotインストラクション](../copilot-instructions.md)

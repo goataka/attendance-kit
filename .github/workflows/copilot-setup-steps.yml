@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
           
-      - name: Run spec-kit setup
+      - name: Verify Node.js version
         run: |
-          uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
-          echo "Setup complete. spec-kit is ready to use."
-          
+          node --version
+          npm --version
+          echo "Node.js 24 setup complete."

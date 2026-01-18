@@ -4,18 +4,6 @@
 
 このディレクトリには、プロジェクトの CI/CD ワークフローが含まれています。
 
-### copilot-setup-steps.yml
-
-GitHub Copilot Coding Agent の実行環境をセットアップするワークフロー。
-
-- **トリガー**: 
-  - ワークフローファイル自体の変更時
-  - 手動実行（通常は不要）
-- **目的**: spec-kit CLI のインストールと初期化
-- **実行者**: GitHub Copilot Coding Agent（自動）
-
-**詳細**: [copilot-setup-steps.md](./copilot-setup-steps.md)
-
 ## CDK関連ワークフロー
 
 CDK関連のワークフロー（`deploy-pr.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
