@@ -33,6 +33,9 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
       
       - uses: ./apps/frontend/workflows/capture-snapshots
 
