@@ -1,4 +1,4 @@
-name: Pull Request
+name: Frontend Pull Request
 
 on:
   pull_request:
@@ -25,8 +25,16 @@ jobs:
               - '!apps/frontend/src/**/*.spec.ts'
 
   pre-merge-checks:
+    needs: check-paths
+    if: needs.check-paths.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: apps/frontend/package-lock.json
       
       - uses: ./apps/frontend/workflows/pre-merge
