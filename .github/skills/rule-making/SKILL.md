@@ -28,9 +28,8 @@ description: ユーザーから「ルール化してください」というリ�
 
 ユーザーから提示されたルールの内容を分析し、以下のカテゴリに分類します:
 
-- **プロジェクトの核心原則**: 開発方針、設計思想、重要な意思決定基準
+- **プロジェクトガイドライン**: 開発方針、設計思想、重要な意思決定基準
 - **Copilot固有の指示**: Copilot Agentの動作、コミット形式、PRの書き方
-- **Agent開発ガイドライン**: Spec-Kitの使い方、ワークフロー、ドキュメント構造
 - **コーディング規約**: 言語固有のスタイル、命名規則、ベストプラクティス
 - **運用ルール**: デプロイ手順、レビュー基準、セキュリティ要件
 
@@ -38,31 +37,16 @@ description: ユーザーから「ルール化してください」というリ�
 
 ルールのカテゴリに応じて、以下のドキュメントから適切な記載場所を特定します:
 
-#### memory/constitution.md
-
-**対象**: プロジェクトの核心原則、設計思想、開発方針
-
-**記載セクション**:
-- `Core Principles` - 新しい原則として追加
-- `Documentation Language Policy` - 言語ポリシー関連
-- `Documentation Structure Policy` - ドキュメント構造関連
-- `Tools and Workflow` - ツールやワークフロー関連
-- `Governance` - ガバナンス関連
-
-**追加時の注意**:
-- 既存の原則（Principle）に追加する場合は、番号を振らず既存フォーマットに従う
-- 新しい原則の場合は、`Rule`と`Rationale`を含める
-- バージョン番号を適切に更新（MINOR: 新原則追加、PATCH: 明確化）
-
 #### .github/copilot-instructions.md
 
-**対象**: GitHub Copilot Agent固有の動作指示
+**対象**: GitHub Copilot Agent固有の動作指示、プロジェクトガイドライン
 
 **記載セクション**:
 - `言語ポリシー` - 日本語/英語の使い分け
 - `コミットID提示のルール` - コミットメッセージやリンク形式
 - `変更時の確認手順` - ビルド、テスト、検証手順
-- `Spec-Kitワークフロー` - Spec-Kitの使用方法
+- `ドキュメント配置の原則` - ドキュメント構造関連
+- `Mermaid図の活用` - 図の作成方針
 - `セキュリティ要件` - セキュリティ関連の指示
 - `コスト最適化` - AWSコスト管理
 
@@ -70,22 +54,6 @@ description: ユーザーから「ルール化してください」というリ�
 - Copilotが実行時に参照する内容であることを確認
 - 具体的なコマンドや例を含める
 - 既存のフォーマット（箇条書き、コードブロック）に従う
-
-#### .github/agents/AGENTS.md
-
-**対象**: Agent開発ガイドライン、Spec-Kit使用方法
-
-**記載セクション**:
-- `Spec-Kit使用の原則` - Spec-Kitのワークフロー
-- `重要なルール` - Agentの動作ルール
-- `ドキュメント構造` - ファイル配置
-- `実装時のドキュメント更新` - ドキュメントメンテナンス
-- `言語ポリシー` - エージェント用の言語ルール
-
-**追加時の注意**:
-- Agent向けの具体的な指示を記載
-- ドキュメント構造や配置ルールは図を含める
-- 参考資料へのリンクを含める
 
 #### プロジェクト固有のドキュメント
 
@@ -104,15 +72,8 @@ description: ユーザーから「ルール化してください」というリ�
 
 ```bash
 # 記載場所のファイルから既存ドキュメントへのリンクを検索（bashツールを使用）
-# 例: grep -n '\[.*\](.*\.md)' memory/constitution.md
 grep -n '\[.*\](.*\.md)' <記載場所のファイルパス>
 ```
-
-以下のリンクが適切に設定されているか確認:
-- `copilot-instructions.md` → `agents/AGENTS.md`
-- `copilot-instructions.md` → `memory/constitution.md`
-- `agents/AGENTS.md` → `copilot-instructions.md`
-- `agents/AGENTS.md` → `memory/constitution.md`
 
 #### 参照可能性の確認
 
@@ -159,7 +120,6 @@ GitHub Copilot Agentが参照できる状態を確認:
 grep '\[.*\](.*\.md)' <更新したファイルパス>
 
 # Markdownフォーマットチェック（ヘッダー、リスト構造）
-# 例: view memory/constitution.md
 view <更新したファイルパス>
 
 # 言語ポリシー準拠確認（日本語で記述されているか）
@@ -171,20 +131,17 @@ view <更新したファイルパス>
 ```mermaid
 graph TD
     A[ルール内容を分析] --> B{カテゴリは?}
-    B -->|プロジェクトの核心原則| C[constitution.md]
-    B -->|Copilot固有の動作| D[copilot-instructions.md]
-    B -->|Agent開発ガイドライン| E[agents/AGENTS.md]
+    B -->|プロジェクトガイドライン| C[copilot-instructions.md]
+    B -->|Copilot固有の動作| C
     B -->|特定機能のルール| F[対象ドキュメント]
     
     C --> G[適切なセクションを特定]
-    D --> G
-    E --> G
     F --> G
     
     G --> H[既存フォーマットに従って記述]
     H --> I[リンクと導線を確認]
     I --> J{エージェントから参照可能?}
-    J -->|No| K[copilot-instructions.mdにリンク追加]
+    J -->|No| K[copilot-instructions.mdに追加]
     J -->|Yes| L[変更をコミット]
     K --> L
 ```
@@ -205,19 +162,19 @@ graph TD
 3. なければ、日本語使用箇所に「コミットメッセージ」を追加
 4. 理由を記載（一貫性、チーム理解の容易さ）
 
-### 例2: テスト実装の原則化
+### 例2: 開発原則のルール化
 
 **ユーザー要望**: 「すべての機能は必ずテストを書いてください」をルール化してください
 
 **分析**:
-- カテゴリ: プロジェクトの核心原則
-- 記載場所: `memory/constitution.md`
+- カテゴリ: プロジェクトガイドライン
+- 記載場所: `.github/copilot-instructions.md`
 
 **手順**:
-1. `constitution.md` の「Core Principles」セクションを確認
-2. 既に「Principle 4: テスト可能性」が存在することを確認
-3. 既存の原則で十分カバーされているため、新規追加は不要
-4. ユーザーに既存の原則を案内
+1. `copilot-instructions.md` の適切なセクションを確認
+2. テスト要件に関するセクションがあるか確認
+3. なければ、新しいセクション「テスト要件」を追加
+4. 理由を記載（品質保証、リグレッション防止）
 
 ### 例3: AWS命名規則のルール化
 
@@ -272,14 +229,11 @@ graph TD
 
 ## 注意事項
 
-- **バージョン管理**: constitution.mdを更新する場合は、バージョン番号と日付を更新
 - **影響範囲の確認**: ルールの追加が既存の動作に影響しないか確認
 - **チームへの周知**: 重要なルール追加はPRで説明し、レビューを受ける
 - **定期的な見直し**: ルールが陳腐化していないか定期的に確認
 
 ## 参考資料
 
-- **プロジェクト憲法**: `memory/constitution.md`
 - **Copilotカスタムインストラクション**: `.github/copilot-instructions.md`
-- **Agent開発ガイドライン**: `.github/agents/AGENTS.md`
 - **GitHub Agent Skills**: [公式ドキュメント](https://docs.github.com/ja/copilot/concepts/agents/about-agent-skills)
