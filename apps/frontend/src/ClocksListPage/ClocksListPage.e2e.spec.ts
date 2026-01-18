@@ -27,7 +27,7 @@ test.describe('Clocks List Page', () => {
   });
 
   test('should filter records by user ID', async ({ page }) => {
-    await page.goto('/records');
+    await page.goto('/clocks');
     
     // Wait for initial data to load
     await page.waitForSelector('.records-table tbody tr');
