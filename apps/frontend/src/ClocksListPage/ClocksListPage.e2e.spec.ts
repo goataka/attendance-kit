@@ -21,7 +21,7 @@ test.describe('Clocks List Page', () => {
     await page.waitForTimeout(500);
     
     // Visual regression test - saves to ClocksListPage.screenshot.png
-    await expect(page).toHaveScreenshot('ClocksListPage.screenshot.png', {
+    await expect(page).toHaveScreenshot(['ClocksListPage.screenshot.png'], {
       fullPage: true,
     });
   });

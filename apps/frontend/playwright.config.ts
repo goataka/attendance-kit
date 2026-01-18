@@ -15,6 +15,7 @@ export default defineConfig({
   },
 
   // Configure snapshot path to save screenshots in the same directory as the test
+  // Using array format with {arg} and {ext} to properly handle dots in filenames
   snapshotPathTemplate: '{testDir}/{testFileDir}/{arg}{ext}',
 
   projects: [
