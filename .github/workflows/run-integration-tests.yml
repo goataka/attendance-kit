@@ -1,0 +1,45 @@
+name: Integration Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'apps/backend/**'
+      - 'infrastructure/deploy/**'
+      - 'scripts/run-integration-tests.sh'
+      - '.github/workflows/run-integration-tests.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Run Integration Tests
+        env:
+          AWS_ACCESS_KEY_ID: 'test'
+          AWS_SECRET_ACCESS_KEY: 'test'
+          AWS_DEFAULT_REGION: 'ap-northeast-1'
+          CDK_DEFAULT_ACCOUNT: '000000000000'
+          CDK_DEFAULT_REGION: 'ap-northeast-1'
+          USE_LOCALSTACK: 'true'
+          DYNAMODB_TABLE_NAME: 'attendance-kit-test-clock'
+          DYNAMODB_ENDPOINT: 'http://localhost:4566'
+          JWT_SECRET: 'test-secret-key'
+        run: ./scripts/run-integration-tests.sh
