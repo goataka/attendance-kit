@@ -24,6 +24,13 @@ jobs:
               - '!apps/frontend/src/**/*.test.tsx'
               - '!apps/frontend/src/**/*.spec.ts'
 
+  pre-merge-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: ./apps/frontend/workflows/pre-merge
+
   update-frontend-snapshots:
     needs: check-paths
     if: needs.check-paths.outputs.frontend == 'true'

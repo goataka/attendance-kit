@@ -1,0 +1,20 @@
+name: 'Frontend Pre-Merge Checks'
+description: 'フロントエンドのpre-mergeチェック（ユニットテスト、インテグレーションテスト）を実行'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      working-directory: apps/frontend
+      run: npm ci
+      shell: bash
+
+    - name: Run unit tests
+      working-directory: apps/frontend
+      run: ./scripts/run-unit-tests.sh
+      shell: bash
+
+    - name: Run integration tests
+      working-directory: apps/frontend
+      run: ./scripts/run-integration-tests.sh
+      shell: bash
