@@ -28,8 +28,7 @@ fi
 
 # Create a temporary Node.js script to capture screenshots
 cat > /tmp/capture-screenshots.mjs << 'EOF'
-import pkg from 'playwright/index.js';
-const { chromium } = pkg;
+import { chromium } from 'playwright';
 import { promises as fs } from 'fs';
 import { createHash } from 'crypto';
 import path from 'path';
