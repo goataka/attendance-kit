@@ -1,0 +1,15 @@
+name: 'Run Backend Unit Tests'
+description: 'バックエンドAPIのユニットテストを実行'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      shell: bash
+      working-directory: apps/backend
+      run: npm ci
+
+    - name: Run unit tests
+      shell: bash
+      working-directory: apps/backend
+      run: npm run test:unit

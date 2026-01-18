@@ -10,9 +10,13 @@ npm ci
 echo "==> Building TypeScript..."
 npm run build
 
-echo "==> Creating placeholder backend dist for CDK tests..."
-mkdir -p ../../apps/backend/dist
-echo '// Placeholder for CDK tests' > ../../apps/backend/dist/lambda.js
+echo "==> Ensuring backend dist exists for CDK tests..."
+# プレースホルダーを作成（CDKがLambdaアセットを参照するため）
+# Note: 実際のビルドプロセスではバックエンドビルドが先に実行される
+if [ ! -d "../../apps/backend/dist" ]; then
+  mkdir -p ../../apps/backend/dist
+  echo '// Placeholder for CDK tests' > ../../apps/backend/dist/lambda.js
+fi
 
 echo "==> Running unit tests (excluding integration tests)..."
 npm run test:unit

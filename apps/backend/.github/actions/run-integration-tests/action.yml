@@ -1,0 +1,47 @@
+name: 'Run Backend Integration Tests'
+description: 'バックエンドAPIの統合テストをLocalStackで実行'
+
+inputs:
+  aws-region:
+    description: 'AWS Region'
+    required: false
+    default: 'ap-northeast-1'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install dependencies
+      shell: bash
+      working-directory: apps/backend
+      run: npm ci
+
+    - name: Start LocalStack
+      shell: bash
+      working-directory: infrastructure/deploy/localstack
+      run: |
+        docker-compose up -d
+        echo "Waiting for LocalStack to be ready..."
+        timeout 60 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "running"; do sleep 2; done'
+
+    - name: Deploy DynamoDB to LocalStack
+      shell: bash
+      working-directory: infrastructure/deploy
+      run: |
+        npm ci
+        npm install -g aws-cdk-local aws-cdk
+        ./localstack/deploy-to-localstack.sh
+
+    - name: Run integration tests
+      shell: bash
+      working-directory: apps/backend
+      env:
+        USE_LOCALSTACK: 'true'
+        AWS_REGION: ${{ inputs.aws-region }}
+        DYNAMODB_TABLE_NAME: 'attendance-kit-test-clock'
+      run: npm run test:integration
+
+    - name: Stop LocalStack
+      if: always()
+      shell: bash
+      working-directory: infrastructure/deploy/localstack
+      run: docker-compose down
