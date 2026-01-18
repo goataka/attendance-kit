@@ -1,6 +1,6 @@
 # 勤怠管理キット
 
-このプロジェクトは勤怠管理システムを構築するモノレポです。
+このプロジェクトはエージェントのみで構築する勤怠管理システムです。
 
 ## 🌏 言語ポリシー
 
@@ -146,26 +146,9 @@ npm run premerge:local
 
 `.devcontainer/devcontainer.json` により：
 
-- ✅ Node.js 22+ (モノレポ開発用)
+- ✅ Node.js 24
 - ✅ VS Code extensions (Copilot)
 - ✅ 必要な環境変数とPATH設定
-
-### 手動セットアップ
-
-DevContainerを使わずにローカル環境で開発する場合：
-
-#### 前提条件
-
-- Node.js 22+
-- npm 8+
-- Git
-
-#### インストール
-
-```bash
-# Install npm dependencies
-npm install
-```
 
 ## 📝 ドキュメント
 
