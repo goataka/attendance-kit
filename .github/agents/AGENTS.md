@@ -101,9 +101,10 @@ GitHub Copilot Agentのみで構築する、モダンなクラウドベースの
 - コミットメッセージ
 - Issue、レビューコメント
 - ドキュメント（README、仕様書等）
+- コードのコメント
 
 **英語を使用**:
-- コード（変数名、関数名、クラス名、コメント）
+- コード（変数名、関数名、クラス名）
 - 技術用語（固有名詞）
 
 詳細は [copilot-instructions.md](../copilot-instructions.md) を参照。
