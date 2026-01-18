@@ -1,4 +1,4 @@
-# Spec-Kit Infrastructure
+# Infrastructure
 
 AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコードです。
 

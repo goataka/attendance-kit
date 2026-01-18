@@ -1,71 +1,143 @@
 # Agent開発ガイドライン
 
-最終更新: 2025-12-27
+最終更新: 2026-01-18
 
-## Spec-Kit使用の原則
+## このプロジェクトでのエージェントの役割
 
-**このプロジェクトでは、すべての開発作業においてspec-kitを使用します。**
+GitHub Copilot Coding Agentは、このプロジェクトにおいて**自律的な開発パートナー**として機能します。エージェントは以下の原則に基づいて行動します。
 
-### Spec-Kitワークフロー
+### MVP原則
 
-**コアワークフロー**:
-- **`/constitution`** - プロジェクト憲法の作成・更新
-- **`/specify`** - 機能仕様の作成
-- **`/plan`** - 技術計画の作成
-- **`/tasks`** - 実装タスクの作成
-- **`/implement`** - タスクの実装
+**最小実装を優先し、段階的に機能を拡張する**
 
-**補助コマンド**:
-- **`/clarify`** - 仕様の不明瞭な部分を対話的に明確化（最大5つの質問）
-- **`/analyze`** - spec.md、plan.md、tasks.mdの一貫性と品質を分析
-- **`/checklist`** - ユーザー要件に基づくカスタムチェックリストを生成
-- **`/taskstoissues`** - タスクをGitHub Issueに変換（依存関係順序付け）
+- 完璧を目指すより、動作する最小限の実装を優先
+- 必要な機能のみを実装し、過剰な設計を避ける
+- フィードバックを受けて反復的に改善
 
-### 重要なルール
+### 理解容易性の優先
 
-- 直接実装を行わない
-- 必ず `/specify` → `/plan` → `/tasks` → `/implement` の順で進める
-- すべての実装は承認された仕様書から開始
-- コードを書く前にドキュメントを作成
+**コードとドキュメントは誰にでも理解できるシンプルさを保つ**
 
-### ドキュメント構造
+- 複雑な抽象化よりも明確な実装を選択
+- コメントや説明は必要最小限に、コード自体が意図を表現
+- 一貫した命名規則とパターンを使用
+
+### 自己検証性の確保
+
+**変更後は必ず動作確認とテストを実施**
+
+- コード変更後は必ずビルドとテストを実行
+- エラーや警告は即座に修正
+- 手動での動作確認も適宜実施
+
+## プロジェクトサマリ
+
+### プロジェクト概要
+
+**勤怠管理システム (Attendance Kit)**
+
+GitHub Copilot Agentのみで構築する、モダンなクラウドベースの勤怠管理システム。
+
+### 技術スタック
+
+- **フロントエンド**: 未実装（将来的にReact/Next.js等を検討）
+- **バックエンド**: 未実装（将来的にNode.js/TypeScript等を検討）
+- **インフラストラクチャ**: AWS CDK (TypeScript)
+- **データベース**: Amazon DynamoDB
+- **CI/CD**: GitHub Actions
+- **認証**: AWS OIDC (GitHub Actions用)
+
+### プロジェクト構造
 
 ```
-.specify/           # spec-kit設定とテンプレート
-memory/             # プロジェクト記憶と憲法
-specs/              # 機能仕様書（開発中、ブランチごと）
-docs/
-  architecture/     # アーキテクチャ仕様
-  business/         # ビジネス仕様
+.
+├── .devcontainer/          # DevContainer設定 (Node.js 24)
+├── .github/
+│   ├── agents/            # エージェント開発ガイドライン（このファイル）
+│   ├── skills/            # GitHub Copilot Agent Skills定義
+│   └── workflows/         # CI/CDワークフロー
+├── apps/                  # アプリケーション（npmワークスペース）
+│   ├── frontend/          # フロントエンドアプリケーション（未実装）
+│   ├── backend/           # バックエンドアプリケーション（未実装）
+│   └── website/           # Webサイト（未実装）
+├── infrastructure/        # インフラストラクチャコード
+│   ├── deploy/           # CDKプロジェクト
+│   │   ├── lib/          # CDKスタック定義
+│   │   └── test/         # インフラテスト
+│   ├── setup/            # 初回セットアップ用CloudFormation
+│   └── issues/           # 実装記録
+├── docs/                 # ドキュメント
+└── scripts/              # 開発・CI/CD支援スクリプト
 ```
 
-### 実装時のドキュメント更新
+### 現在の実装状況
 
-- 実装と同時に `docs/` 配下のドキュメントを作成・更新
-- アーキテクチャ仕様: `docs/architecture/`
-- ビジネス仕様: `docs/business/`
-- コード変更とドキュメント更新は同一コミット
+**完了**:
+- DynamoDB Clock Tableのデプロイ（CDK）
+- AWS Cost/Usage Alerts（AWS Budget）
+- OIDC認証によるGitHub Actions → AWS接続
+- DevContainer環境構築
 
-## 言語ポリシー
+**未実装**:
+- フロントエンドアプリケーション
+- バックエンドAPI
+- 認証・認可機能
+- 実際の勤怠記録機能
 
-### 日本語を使用する箇所
+### 開発フロー
 
-- **仕様書**: spec.md、plan.md、tasks.mdなど、すべての仕様書とドキュメント
-- **PRとコミット**: Pull Requestのタイトル・説明、コミットメッセージ
-- **レビューとコメント**: コードレビューコメント、Issueのタイトル・説明
-- **Agentとのやり取り**: GitHub Copilot Agentとのすべてのやり取り
+1. **Issue/要件の確認**: 実装する機能を明確化
+2. **設計**: 必要に応じてドキュメントを作成
+3. **実装**: MVP原則に基づき最小限の実装
+4. **テスト**: 自己検証（ビルド、ユニットテスト、手動確認）
+5. **レビュー**: `code_review`ツールでレビュー依頼
+6. **セキュリティチェック**: `codeql_checker`でスキャン
+7. **PR作成**: 変更内容をまとめてPR
 
-### 英語を使用する箇所
+### 言語ポリシー
 
-- **コード**: 変数名、関数名、クラス名、コードコメント
-- **技術用語**: OIDC、CDK、CloudFormationなど技術的な固有名詞
+**日本語を使用**:
+- PRのタイトル・説明
+- コミットメッセージ
+- Issue、レビューコメント
+- ドキュメント（README、仕様書等）
+- コードのコメント
 
-### GitHub Copilotへの指示
+**英語を使用**:
+- コード（変数名、関数名、クラス名）
+- 技術用語（固有名詞）
 
-GitHub Copilotが自動的にこの言語ポリシーを適用できるよう、[copilot-instructions.md](../.github/copilot-instructions.md)に詳細な指示を記載しています。
+詳細は [copilot-instructions.md](../copilot-instructions.md) を参照。
+
+### 重要なドキュメント
+
+- [Copilotインストラクション](../copilot-instructions.md): Copilot Agentの動作指示
+- [インフラストラクチャREADME](../../infrastructure/README.md): AWSリソースの概要
+- [デプロイ手順](../../infrastructure/DEPLOYMENT.md): デプロイワークフローの使い方
+- [セットアップガイド](../../infrastructure/setup/README.md): 初回セットアップ手順
+
+## 開発時の注意事項
+
+### セキュリティ
+
+- IAM権限は特定のリソースパターンにスコープ
+- ワイルドカード(`*`)の使用を避ける
+- シークレットはGitHub Secretsで管理
+
+### コスト最適化
+
+- CloudWatchアラームなど、コストがかかる監視機能は初期段階では実装しない
+- DynamoDBはOn-Demand課金モデルを使用
+- 無料枠の範囲で利用できる基本的なメトリクスのみを使用
+
+### コーディング規約
+
+- TypeScript: strict モード有効
+- ESLint/Prettierの設定に従う
+- テストカバレッジ: 重要なロジックは必ずテスト
 
 ## 参考資料
 
-- [GitHub Copilotカスタムインストラクション](../copilot-instructions.md)
-- [プロジェクト憲法](../../memory/constitution.md)
-- [Spec-Kit GitHubリポジトリ](https://github.com/github/spec-kit)
+- [GitHub Copilot Coding Agent Documentation](https://gh.io/copilot-coding-agent-docs)
+- [AWS CDK Documentation](https://docs.aws.amazon.com/cdk/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
