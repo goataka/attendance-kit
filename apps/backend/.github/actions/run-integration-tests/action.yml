@@ -21,8 +21,9 @@ runs:
         docker compose up -d
         echo "Waiting for LocalStack to be ready..."
         for i in {1..60}; do
-          if curl -s http://localhost:4566/_localstack/health | grep -q "running"; then
+          if curl -s http://localhost:4566/_localstack/health | grep -q '"dynamodb"'; then
             echo "LocalStack is ready!"
+            curl -s http://localhost:4566/_localstack/health | jq '.'
             exit 0
           fi
           echo "Waiting... ($i/60)"
@@ -35,6 +36,10 @@ runs:
     - name: Deploy DynamoDB to LocalStack
       shell: bash
       working-directory: infrastructure/deploy
+      env:
+        AWS_ACCESS_KEY_ID: 'test'
+        AWS_SECRET_ACCESS_KEY: 'test'
+        AWS_DEFAULT_REGION: 'ap-northeast-1'
       run: |
         npm install -g aws-cdk-local aws-cdk
         ./localstack/deploy-to-localstack.sh
