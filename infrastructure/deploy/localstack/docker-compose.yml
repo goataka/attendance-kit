@@ -5,7 +5,6 @@ services:
     ports:
       - "4566:4566"
     environment:
-      - SERVICES=dynamodb
       - DEBUG=0
       - LAMBDA_EXECUTOR=local
     networks:
