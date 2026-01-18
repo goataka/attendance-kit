@@ -33,11 +33,11 @@ run_cdk_operations() {
   echo "=== CDK Bootstrap ==="
   npm run cdklocal:bootstrap
   
-  echo "=== CDK Synth ==="
-  npm run cdklocal:synth
+  echo "=== CDK Synth DynamoDB Stack ==="
+  cdklocal synth AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test
   
-  echo "=== CDK Deploy to LocalStack ==="
-  npm run cdklocal:deploy
+  echo "=== CDK Deploy DynamoDB Stack to LocalStack ==="
+  cdklocal deploy AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test --require-approval never
 }
 
 run_integration_tests() {
