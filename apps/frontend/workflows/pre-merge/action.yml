@@ -9,6 +9,11 @@ runs:
       run: npm ci
       shell: bash
 
+    - name: Install Playwright browsers with dependencies
+      working-directory: apps/frontend
+      run: npx playwright install --with-deps chromium
+      shell: bash
+
     - name: Run unit tests
       working-directory: apps/frontend
       run: ./scripts/run-unit-tests.sh
