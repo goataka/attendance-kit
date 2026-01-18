@@ -14,6 +14,12 @@ runs:
       working-directory: infrastructure/deploy
       run: npm run build
 
+    - name: Create backend dist placeholder
+      shell: bash
+      run: |
+        mkdir -p apps/backend/dist
+        echo '// Placeholder for CDK tests' > apps/backend/dist/lambda.js
+
     - name: Run unit tests
       shell: bash
       working-directory: infrastructure/deploy

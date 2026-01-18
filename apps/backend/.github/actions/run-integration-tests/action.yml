@@ -20,7 +20,17 @@ runs:
       run: |
         docker compose up -d
         echo "Waiting for LocalStack to be ready..."
-        timeout 60 bash -c 'until curl -s http://localhost:4566/_localstack/health | grep -q "running"; do sleep 2; done'
+        for i in {1..60}; do
+          if curl -s http://localhost:4566/_localstack/health | grep -q "running"; then
+            echo "LocalStack is ready!"
+            exit 0
+          fi
+          echo "Waiting... ($i/60)"
+          sleep 2
+        done
+        echo "Error: LocalStack did not start within 120 seconds"
+        docker compose logs
+        exit 1
 
     - name: Deploy DynamoDB to LocalStack
       shell: bash
