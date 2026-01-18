@@ -2,15 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../app.module';
-import { ClockService } from './clock.service';
 import { JwtService } from '@nestjs/jwt';
 import { ClockType } from './dto/clock.dto';
 
-// 統合テスト用の環境変数設定
+// 統合テスト: LocalStackのDynamoDBを使用した実際のAPI呼び出しテスト
 // LocalStack使用時は USE_LOCALSTACK=true を設定
 describe('ClockController (Integration)', () => {
   let app: INestApplication;
-  let clockService: ClockService;
   let jwtService: JwtService;
   let authToken: string;
 
@@ -18,19 +16,18 @@ describe('ClockController (Integration)', () => {
     // 統合テスト用環境変数の確認
     const useLocalStack = process.env.USE_LOCALSTACK === 'true';
     console.log(
-      `Integration test mode: ${useLocalStack ? 'LocalStack' : 'Mock'}`,
+      `Integration test mode: ${useLocalStack ? 'LocalStack' : 'Local'}`,
     );
+
+    // LocalStackを使用する場合は環境変数が設定されているはず
+    if (useLocalStack) {
+      expect(process.env.AWS_REGION).toBeDefined();
+      expect(process.env.DYNAMODB_TABLE_NAME).toBeDefined();
+    }
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(ClockService)
-      .useValue({
-        clockIn: jest.fn(),
-        clockOut: jest.fn(),
-        getRecords: jest.fn(),
-      })
-      .compile();
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(
@@ -42,7 +39,6 @@ describe('ClockController (Integration)', () => {
     app.setGlobalPrefix('api');
     await app.init();
 
-    clockService = moduleFixture.get<ClockService>(ClockService);
     jwtService = moduleFixture.get<JwtService>(JwtService);
 
     // Generate test JWT token
@@ -55,17 +51,6 @@ describe('ClockController (Integration)', () => {
 
   describe('/api/clock/in (POST)', () => {
     it('should record clock-in successfully', () => {
-      const mockResponse = {
-        userId: 'test-user',
-        timestamp: '2025-12-25T09:00:00Z',
-        date: '2025-12-25',
-        type: ClockType.CLOCK_IN,
-        location: 'Tokyo Office',
-        deviceId: 'device-123',
-      };
-
-      jest.spyOn(clockService, 'clockIn').mockResolvedValue(mockResponse);
-
       return request(app.getHttpServer())
         .post('/api/clock/in')
         .set('Authorization', `Bearer ${authToken}`)
@@ -77,6 +62,7 @@ describe('ClockController (Integration)', () => {
         .expect((res) => {
           expect(res.body.userId).toBe('test-user');
           expect(res.body.type).toBe(ClockType.CLOCK_IN);
+          expect(res.body.location).toBe('Tokyo Office');
         });
     });
 
@@ -92,17 +78,6 @@ describe('ClockController (Integration)', () => {
 
   describe('/api/clock/out (POST)', () => {
     it('should record clock-out successfully', () => {
-      const mockResponse = {
-        userId: 'test-user',
-        timestamp: '2025-12-25T18:00:00Z',
-        date: '2025-12-25',
-        type: ClockType.CLOCK_OUT,
-        location: 'Tokyo Office',
-        deviceId: 'device-123',
-      };
-
-      jest.spyOn(clockService, 'clockOut').mockResolvedValue(mockResponse);
-
       return request(app.getHttpServer())
         .post('/api/clock/out')
         .set('Authorization', `Bearer ${authToken}`)
@@ -114,6 +89,7 @@ describe('ClockController (Integration)', () => {
         .expect((res) => {
           expect(res.body.userId).toBe('test-user');
           expect(res.body.type).toBe(ClockType.CLOCK_OUT);
+          expect(res.body.location).toBe('Tokyo Office');
         });
     });
 
@@ -129,50 +105,23 @@ describe('ClockController (Integration)', () => {
 
   describe('/api/clock/records (GET)', () => {
     it('should retrieve clock records successfully', () => {
-      const mockRecords = [
-        {
-          userId: 'test-user',
-          timestamp: '2025-12-25T09:00:00Z',
-          date: '2025-12-25',
-          type: ClockType.CLOCK_IN,
-          location: 'Tokyo Office',
-        },
-        {
-          userId: 'test-user',
-          timestamp: '2025-12-25T18:00:00Z',
-          date: '2025-12-25',
-          type: ClockType.CLOCK_OUT,
-          location: 'Tokyo Office',
-        },
-      ];
-
-      jest.spyOn(clockService, 'getRecords').mockResolvedValue(mockRecords);
-
       return request(app.getHttpServer())
         .get('/api/clock/records')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200)
         .expect((res) => {
-          expect(res.body).toHaveLength(2);
-          expect(res.body[0].type).toBe(ClockType.CLOCK_IN);
-          expect(res.body[1].type).toBe(ClockType.CLOCK_OUT);
+          expect(Array.isArray(res.body)).toBe(true);
+          // 統合テストでは実際のデータが返る
+          if (res.body.length > 0) {
+            expect(res.body[0]).toHaveProperty('userId');
+            expect(res.body[0]).toHaveProperty('timestamp');
+            expect(res.body[0]).toHaveProperty('type');
+          }
         });
     });
 
     it('should return 401 without authentication', () => {
       return request(app.getHttpServer()).get('/api/clock/records').expect(401);
-    });
-
-    it('should return empty array when no records exist', () => {
-      jest.spyOn(clockService, 'getRecords').mockResolvedValue([]);
-
-      return request(app.getHttpServer())
-        .get('/api/clock/records')
-        .set('Authorization', `Bearer ${authToken}`)
-        .expect(200)
-        .expect((res) => {
-          expect(res.body).toHaveLength(0);
-        });
     });
   });
 });
