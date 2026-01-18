@@ -14,10 +14,16 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  // Configure snapshot path to save screenshots in the same directory as the test
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{arg}{ext}',
+
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
+      },
     },
   ],
 

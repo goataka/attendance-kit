@@ -13,8 +13,11 @@ test.describe('Clock In/Out Page', () => {
     await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
     await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
     
-    // Visual regression test
-    await expect(page).toHaveScreenshot('clock-in-out-page.png', {
+    // Wait for any animations to complete
+    await page.waitForTimeout(500);
+    
+    // Visual regression test - saves to ClockInOutPage.screenshot.png
+    await expect(page).toHaveScreenshot('ClockInOutPage.screenshot.png', {
       fullPage: true,
     });
   });
@@ -52,7 +55,7 @@ test.describe('Clock In/Out Page', () => {
     await page.getByRole('link', { name: '打刻一覧を見る' }).click();
     
     // Should navigate to records page
-    await expect(page).toHaveURL('/records');
+    await expect(page).toHaveURL('/clocks');
     await expect(page.locator('h1')).toHaveText('打刻一覧');
   });
 });

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Clocks List Page', () => {
   test('should display records list', async ({ page }) => {
-    await page.goto('/records');
+    await page.goto('/clocks');
     
     // Check page title
     await expect(page.locator('h1')).toHaveText('打刻一覧');
@@ -17,8 +17,11 @@ test.describe('Clocks List Page', () => {
     await expect(page.locator('.records-table')).toBeVisible();
     await expect(page.locator('.records-table th').first()).toContainText('ID');
     
-    // Visual regression test
-    await expect(page).toHaveScreenshot('clocks-list-page.png', {
+    // Wait for any animations to complete
+    await page.waitForTimeout(500);
+    
+    // Visual regression test - saves to ClocksListPage.screenshot.png
+    await expect(page).toHaveScreenshot('ClocksListPage.screenshot.png', {
       fullPage: true,
     });
   });

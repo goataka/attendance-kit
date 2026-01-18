@@ -30,19 +30,3 @@ jobs:
       - uses: actions/checkout@v4
       
       - uses: ./apps/frontend/workflows/pre-merge
-
-  update-frontend-snapshots:
-    needs: check-paths
-    if: needs.check-paths.outputs.frontend == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
-      
-      - uses: ./apps/frontend/workflows/capture-snapshots
-

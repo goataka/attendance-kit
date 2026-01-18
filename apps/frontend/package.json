@@ -18,8 +18,7 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "test:e2e": "playwright test",
-    "test:visual": "playwright test --project=chromium --update-snapshots",
-    "capture-screenshots": "./scripts/capture-screenshots.sh"
+    "test:visual": "playwright test --update-snapshots"
   },
   "keywords": [
     "frontend",
