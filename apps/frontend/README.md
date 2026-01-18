@@ -21,9 +21,10 @@
 apps/frontend/
 ├── .storybook/              # Storybook設定
 ├── workflows/               # フロントエンド専用ワークフロー
-│   └── capture-snapshots/  # ビジュアルスナップショット更新
+│   └── pre-merge/           # Pre-mergeチェック（ユニット・E2Eテスト）
 ├── scripts/                 # スクリプト
-│   └── capture-screenshots.sh  # スクリーンショット自動生成
+│   ├── run-unit-tests.sh    # ユニットテスト実行
+│   └── run-integration-tests.sh  # E2Eテスト実行
 ├── src/
 │   ├── ClockInOutPage/      # 打刻画面（ページ単位）
 │   │   ├── ClockInOutPage.tsx
@@ -106,24 +107,18 @@ npm test                # 全テスト実行
 
 **結果**: 13テスト全て合格
 
-### E2Eテスト
+### E2Eテスト（ビジュアルリグレッション含む）
 
 ```bash
-npm run test:e2e        # E2Eテスト実行
+npm run test:integration    # E2Eテスト実行
+npm run test:visual         # スクリーンショット更新
 ```
 
 **結果**: 8テスト（ビジュアルリグレッション含む）
 
-### ビジュアルリグレッション（スクリーンショット）
-
-```bash
-npm run capture-screenshots  # スクリーンショット自動生成
-```
-
-各ページのスクリーンショットを自動的にキャプチャします：
+E2Eテスト実行時に各ページのスクリーンショットが自動生成されます：
 - **保存場所**: 各ページフォルダ内（`{PageName}.screenshot.png`）
-- **更新方式**: 変更がある場合のみ更新
-- **自動化**: PRで自動実行され、変更があれば自動コミット
+- **更新方式**: `--update-snapshots`オプションで更新
 
 ### Storybook
 
