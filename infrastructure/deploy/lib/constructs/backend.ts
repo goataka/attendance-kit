@@ -20,7 +20,7 @@ export class BackendConstruct extends Construct {
   public readonly api: apigateway.RestApi;
   public readonly apiFunction: lambda.Function;
 
-  constructor(scope: Construct, id: string, props: BackendApiConstructProps) {
+  constructor(scope: Construct, id: string, props: BackendConstructProps) {
     super(scope, id);
 
     const { environment, clockTable, jwtSecret } = props;

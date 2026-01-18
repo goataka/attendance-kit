@@ -17,7 +17,9 @@ describe('ClockController (Integration)', () => {
   beforeAll(async () => {
     // 統合テスト用環境変数の確認
     const useLocalStack = process.env.USE_LOCALSTACK === 'true';
-    console.log(`Integration test mode: ${useLocalStack ? 'LocalStack' : 'Mock'}`);
+    console.log(
+      `Integration test mode: ${useLocalStack ? 'LocalStack' : 'Mock'}`,
+    );
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

@@ -6,7 +6,6 @@ runs:
   steps:
     - name: Install dependencies
       shell: bash
-      working-directory: apps/backend
       run: npm ci
 
     - name: Run unit tests

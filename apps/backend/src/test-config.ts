@@ -4,7 +4,7 @@
  */
 export const getTestConfig = () => {
   const isLocalStack = process.env.USE_LOCALSTACK === 'true';
-  
+
   return {
     dynamodb: {
       endpoint: isLocalStack ? 'http://localhost:4566' : undefined,

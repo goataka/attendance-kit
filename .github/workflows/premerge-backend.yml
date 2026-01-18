@@ -19,7 +19,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: apps/backend/package-lock.json
+          cache-dependency-path: package-lock.json
       
       - name: Run Backend Unit Tests
         uses: ./apps/backend/.github/actions/run-unit-tests
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: apps/backend/package-lock.json
+          cache-dependency-path: package-lock.json
       
       - name: Run Backend Integration Tests
         uses: ./apps/backend/.github/actions/run-integration-tests
@@ -69,10 +69,9 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: apps/backend/package-lock.json
+          cache-dependency-path: package-lock.json
       
       - name: Install dependencies
-        working-directory: apps/backend
         run: npm ci
       
       - name: Run lint
@@ -90,10 +89,9 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: apps/backend/package-lock.json
+          cache-dependency-path: package-lock.json
       
       - name: Install dependencies
-        working-directory: apps/backend
         run: npm ci
       
       - name: Build

@@ -12,7 +12,6 @@ runs:
   steps:
     - name: Install dependencies
       shell: bash
-      working-directory: apps/backend
       run: npm ci
 
     - name: Start LocalStack
@@ -27,7 +26,6 @@ runs:
       shell: bash
       working-directory: infrastructure/deploy
       run: |
-        npm ci
         npm install -g aws-cdk-local aws-cdk
         ./localstack/deploy-to-localstack.sh
 
