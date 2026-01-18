@@ -32,5 +32,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@v4
+      
       - uses: ./apps/frontend/workflows/capture-snapshots
 
