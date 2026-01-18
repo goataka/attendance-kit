@@ -38,6 +38,11 @@ runs:
       working-directory: infrastructure/deploy
       run: npm ci
 
+    - name: Build Backend for CDK
+      shell: bash
+      working-directory: apps/backend
+      run: npm run build
+
     - name: Deploy DynamoDB to LocalStack
       shell: bash
       env:

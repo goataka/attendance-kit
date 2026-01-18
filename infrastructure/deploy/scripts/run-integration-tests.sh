@@ -36,6 +36,9 @@ show_environment() {
 }
 
 run_cdk_operations() {
+  echo "=== Installing CDK Tools ==="
+  npm install -g aws-cdk-local aws-cdk
+  
   echo "=== CDK Bootstrap ==="
   (cd "${INFRA_DIR}" && npm run cdklocal:bootstrap)
   
