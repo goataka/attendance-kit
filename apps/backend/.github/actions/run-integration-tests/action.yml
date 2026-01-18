@@ -33,16 +33,20 @@ runs:
         docker compose logs
         exit 1
 
-    - name: Deploy DynamoDB to LocalStack
+    - name: Install CDK dependencies
       shell: bash
       working-directory: infrastructure/deploy
+      run: npm ci
+
+    - name: Deploy DynamoDB to LocalStack
+      shell: bash
       env:
         AWS_ACCESS_KEY_ID: 'test'
         AWS_SECRET_ACCESS_KEY: 'test'
         AWS_DEFAULT_REGION: 'ap-northeast-1'
       run: |
         npm install -g aws-cdk-local aws-cdk
-        npm ci
+        cd infrastructure/deploy
         ./localstack/deploy-to-localstack.sh
 
     - name: Run integration tests
