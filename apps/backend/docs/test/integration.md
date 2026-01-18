@@ -37,7 +37,7 @@ LocalStack（DynamoDB）
 
 ```bash
 cd apps/backend
-npm run test:e2e
+npm run test:integration
 ```
 
 ## テストカバレッジ目標

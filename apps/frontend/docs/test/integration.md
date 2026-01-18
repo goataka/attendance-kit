@@ -40,14 +40,11 @@
 ```bash
 cd apps/frontend
 
+# 統合テスト
+npm run test:integration
+
 # Storybook起動
 npm run storybook
-
-# Storybookビルド
-npm run build-storybook
-
-# Storybook統合テスト実行（test-storybook）
-npm run test-storybook
 ```
 
 ## 参考資料

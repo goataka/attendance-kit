@@ -39,7 +39,7 @@
 
 ```bash
 cd apps/backend
-npm test
+npm run test:unit
 ```
 
 ## テストカバレッジ目標

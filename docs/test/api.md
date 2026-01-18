@@ -37,7 +37,7 @@ Local / AWS
 
 ```bash
 # APIテスト
-npx playwright test tests/api
+npm run test:api
 
 # 特定のテストファイル実行
 npx playwright test tests/api/attendance.api.test.ts

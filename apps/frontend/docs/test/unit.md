@@ -38,7 +38,7 @@ UI非依存のロジックとカスタムフックの動作検証
 
 ```bash
 cd apps/frontend
-npm test
+npm run test:unit
 ```
 
 ## テストカバレッジ目標

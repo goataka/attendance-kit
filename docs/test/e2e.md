@@ -43,7 +43,7 @@ Local / AWS
 
 ```bash
 # E2Eテスト
-npx playwright test tests/e2e
+npm run test:e2e
 
 # 特定のブラウザでテスト
 npx playwright test --project=chromium

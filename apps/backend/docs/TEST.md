@@ -21,13 +21,13 @@ NestJSバックエンドは、ビジネスロジックとデータアクセス�
 ```bash
 # ユニットテスト
 cd apps/backend
-npm test
+npm run test:unit
 
 # 統合テスト
-npm run test:e2e
+npm run test:integration
 
 # カバレッジ付き
-npm test -- --coverage
+npm run test:unit -- --coverage
 ```
 
 ## テストカバレッジ目標

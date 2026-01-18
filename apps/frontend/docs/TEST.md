@@ -21,16 +21,16 @@ UI非依存のロジックとカスタムフックの動作を検証します。
 ```bash
 # ユニットテスト
 cd apps/frontend
-npm test
+npm run test:unit
+
+# 統合テスト
+npm run test:integration
 
 # カバレッジ付き
-npm test -- --coverage
+npm run test:unit -- --coverage
 
 # Storybook起動
 npm run storybook
-
-# Storybook統合テスト
-npm run test-storybook
 ```
 
 ## テストカバレッジ目標
