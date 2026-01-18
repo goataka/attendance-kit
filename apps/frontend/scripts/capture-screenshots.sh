@@ -26,12 +26,15 @@ if [ ! -d "$HOME/.cache/ms-playwright" ]; then
   npx playwright install chromium --with-deps
 fi
 
-# Create a temporary Node.js script to capture screenshots
-cat > /tmp/capture-screenshots.mjs << 'EOF'
+# Run the screenshot capture
+echo "🚀 Capturing screenshots..."
+cd "$FRONTEND_DIR"
+node --input-type=module -e "
 import { chromium } from 'playwright';
 import { promises as fs } from 'fs';
 import { createHash } from 'crypto';
 import path from 'path';
+import { dirname } from 'path';
 
 const pages = [
   {
@@ -59,10 +62,10 @@ async function captureScreenshots() {
   let unchangedCount = 0;
 
   for (const pageConfig of pages) {
-    console.log(`\n📸 Capturing screenshot for ${pageConfig.name}...`);
+    console.log(\`\n📸 Capturing screenshot for \${pageConfig.name}...\`);
     
     try {
-      await page.goto(`http://localhost:5173${pageConfig.url}`, {
+      await page.goto(\`http://localhost:5173\${pageConfig.url}\`, {
         waitUntil: 'networkidle',
       });
       await page.waitForSelector(pageConfig.waitFor, { timeout: 5000 });
@@ -72,7 +75,7 @@ async function captureScreenshots() {
 
       const screenshotPath = path.join(
         pageConfig.dir,
-        `${pageConfig.name}.screenshot.png`
+        \`\${pageConfig.name}.screenshot.png\`
       );
 
       // Capture screenshot to buffer
@@ -88,31 +91,33 @@ async function captureScreenshots() {
         const newHash = createHash('sha256').update(screenshotBuffer).digest('hex');
         
         if (existingHash === newHash) {
-          console.log(`   ✓ Screenshot unchanged for ${pageConfig.name}`);
+          console.log(\`   ✓ Screenshot unchanged for \${pageConfig.name}\`);
           shouldUpdate = false;
           unchangedCount++;
         }
       } catch (error) {
         // File doesn't exist, will create new
-        console.log(`   ℹ️  No existing screenshot found for ${pageConfig.name}`);
+        console.log(\`   ℹ️  No existing screenshot found for \${pageConfig.name}\`);
       }
 
       if (shouldUpdate) {
+        // Ensure directory exists
+        await fs.mkdir(dirname(screenshotPath), { recursive: true });
         await fs.writeFile(screenshotPath, screenshotBuffer);
-        console.log(`   ✓ Screenshot updated for ${pageConfig.name}`);
+        console.log(\`   ✓ Screenshot updated for \${pageConfig.name}\`);
         updatedCount++;
       }
     } catch (error) {
-      console.error(`   ✗ Failed to capture ${pageConfig.name}: ${error.message}`);
+      console.error(\`   ✗ Failed to capture \${pageConfig.name}: \${error.message}\`);
       throw error;
     }
   }
 
   await browser.close();
 
-  console.log(`\n📊 Summary:`);
-  console.log(`   Updated: ${updatedCount}`);
-  console.log(`   Unchanged: ${unchangedCount}`);
+  console.log(\`\n📊 Summary:\`);
+  console.log(\`   Updated: \${updatedCount}\`);
+  console.log(\`   Unchanged: \${unchangedCount}\`);
   
   return { updatedCount, unchangedCount };
 }
@@ -126,14 +131,7 @@ captureScreenshots()
     console.error('\n❌ Screenshot capture failed:', error);
     process.exit(1);
   });
-EOF
+"
 
-# Run the screenshot capture
-echo "🚀 Capturing screenshots..."
-cd "$FRONTEND_DIR"
-NODE_PATH="$FRONTEND_DIR/node_modules:$FRONTEND_DIR/../node_modules:$FRONTEND_DIR/../../node_modules" node /tmp/capture-screenshots.mjs
-
-# Clean up
-rm -f /tmp/capture-screenshots.mjs
-
+# Clean up is no longer needed
 echo "✅ Visual regression screenshot capture completed"
