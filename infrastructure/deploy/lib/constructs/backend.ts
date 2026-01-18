@@ -10,13 +10,13 @@ import {
   addStandardTags,
 } from '../utils/cdk-helpers';
 
-export interface BackendApiConstructProps {
+export interface BackendConstructProps {
   environment: string;
   clockTable: dynamodb.Table;
   jwtSecret: string;
 }
 
-export class BackendApiConstruct extends Construct {
+export class BackendConstruct extends Construct {
   public readonly api: apigateway.RestApi;
   public readonly apiFunction: lambda.Function;
 
@@ -31,7 +31,6 @@ export class BackendApiConstruct extends Construct {
     this.createOutputs(environment, api);
     this.applyTags(environment, lambdaFunction, api);
 
-    // コンストラクタ最後でpublicプロパティに割り当て
     this.apiFunction = lambdaFunction;
     this.api = api;
   }

@@ -1,7 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
-import { BackendApiConstruct } from './constructs/backend';
+import { BackendConstruct } from './constructs/backend';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
@@ -10,7 +10,7 @@ export interface AttendanceKitStackProps extends cdk.StackProps {
 
 export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
-  public readonly backendApi: BackendApiConstruct;
+  public readonly backendApi: BackendConstruct;
 
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
@@ -64,7 +64,7 @@ export class AttendanceKitStack extends cdk.Stack {
     cdk.Tags.of(this.clockTable).add('CostCenter', 'Engineering');
 
     // Backend API (Lambda + API Gateway)
-    this.backendApi = new BackendApiConstruct(this, 'BackendApi', {
+    this.backendApi = new BackendConstruct(this, 'BackendApi', {
       environment,
       clockTable: this.clockTable,
       jwtSecret: jwtSecret || 'default-secret-change-in-production',

@@ -67,39 +67,6 @@ npm run generate:openapi
 Authorization: Bearer <your-jwt-token>
 ```
 
-## データモデル
-
-### ClockInDto
-
-```json
-{
-  "location": "Tokyo Office",
-  "deviceId": "device-abc123"
-}
-```
-
-### ClockOutDto
-
-```json
-{
-  "location": "Tokyo Office",
-  "deviceId": "device-abc123"
-}
-```
-
-### ClockRecordResponseDto
-
-```json
-{
-  "userId": "user123",
-  "timestamp": "2025-12-25T09:00:00Z",
-  "date": "2025-12-25",
-  "type": "clock-in",
-  "location": "Tokyo Office",
-  "deviceId": "device-abc123"
-}
-```
-
 ## 関連ドキュメント
 
 - [Backend README](../README.md)
