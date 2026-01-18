@@ -10,6 +10,9 @@ if ! curl -s http://localhost:4566/_localstack/health > /dev/null 2>&1; then
   exit 1
 fi
 
+echo "==> Bootstrapping CDK for LocalStack..."
+cdklocal bootstrap aws://000000000000/ap-northeast-1
+
 echo "==> Deploying DynamoDB stack to LocalStack..."
 cdklocal deploy AttendanceKit-test-DynamoDB \
   --context stack=dynamodb \
