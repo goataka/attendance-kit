@@ -233,4 +233,4 @@ npm run build && npm test
   - `glob` - ファイル名パターン検索
   - `edit` - ファイル編集
   - `bash` - コマンド実行
-- [Agent開発ガイドライン](../agents/AGENTS.md)
+- [Copilotインストラクション](../../copilot-instructions.md)

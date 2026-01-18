@@ -1,8 +1,7 @@
 # GitHub Copilot カスタムインストラクション
 
 このドキュメントに記載された指示に加えて、以下のリンク先ドキュメントの内容も指示として考慮してください:
-- [Agent開発ガイドライン](./agents/AGENTS.md) - Spec-kitワークフローの詳細
-- [プロジェクト憲法](../memory/constitution.md) - プロジェクトの核心原則
+- [Agent開発ガイドライン](./agents/AGENTS.md) - エージェントの役割とプロジェクトサマリー
 
 ## 言語ポリシー
 
@@ -28,12 +27,12 @@
 
 **形式**:
 ```
-Commit: [短縮SHA](https://github.com/goataka/spec-kit-with-coding-agent/commit/完全SHA)
+Commit: [短縮SHA](https://github.com/goataka/attendance-kit/commit/完全SHA)
 ```
 
 **例**:
 ```
-Commit: [be9f233](https://github.com/goataka/spec-kit-with-coding-agent/commit/be9f233)
+Commit: [be9f233](https://github.com/goataka/attendance-kit/commit/be9f233)
 ```
 
 **理由**:
@@ -63,16 +62,73 @@ Commit: [be9f233](https://github.com/goataka/spec-kit-with-coding-agent/commit/b
 - 類似パターンの箇所を検索し、一貫性を確保
 - 変更後に影響範囲を再チェック
 
-## Spec-Kitワークフロー
+## ドキュメント配置の原則
 
-このプロジェクトでは spec-kit を使用した開発フローを採用しています:
+### ドキュメント構造ポリシー
 
-1. `/specify` - 機能仕様の作成
-2. `/plan` - 技術計画の作成
-3. `/tasks` - 実装タスクの作成
-4. `/implement` - タスクの実装
+1. **戦略的・概念的なドキュメント**: `docs/`ディレクトリに配置
+   - アーキテクチャ設計
+   - ビジネス要件
+   - デプロイメント戦略
 
-詳細は [Agent開発ガイドライン](./agents/AGENTS.md) を参照してください。
+2. **運用的・手順的なドキュメント**: 該当ファイルと同じフォルダに配置
+   - ワークフロー詳細: `.github/workflows/`に`{workflow-name}.md`
+   - インフラ運用: `infrastructure/`に`DEPLOYMENT.md`等
+   - セットアップ手順: `infrastructure/setup/`に`README.md`
+
+3. **アクションドキュメントの命名規則**
+   - ワークフローファイル: `{name}.yml`
+   - ドキュメント: `{name}.md`（同じフォルダに配置）
+   - サマリー: `README.md`（ディレクトリ全体の概要）
+
+4. **冗長性の回避**
+   - 「関連ドキュメント」セクションは記載しない
+   - システム名など変更箇所が増える記述は必須でない場所には記載しない
+   - 保守負担を最小化するため、重複情報を避ける
+
+5. **ナンバリングの回避**
+   - タスクやステップの番号付けは極力しない（変更箇所が増えるため）
+   - 順序を示す必要がある場合は、リスト構造で表現し、タスク内容には番号を含めない
+   - 例: ❌ "タスク 1: XXX" → ✅ "タスク: XXX"（リストの順序で表現）
+
+### マークダウンファイルの言語ルール
+
+1. **日本語の説明に続く英語翻訳は削除する**
+   - 例: "概要 / Overview" → "概要"
+
+2. **保持すべき英語**:
+   - 技術用語（Docker, Python, Git, etc.）
+   - コマンド名とコード例
+   - ファイル名とパス
+   - URL と外部参照
+
+3. **確認方法**:
+   ```bash
+   # 日本語/英語の形式をチェック
+   grep -n " / " [file.md]
+   ```
+
+## Mermaid図の活用
+
+### ルール
+
+- Markdown内の図はMermaidを使用して作成してください
+
+### 理由
+
+- テキストベースでバージョン管理可能
+- レビューが容易
+- 保守性が高い
+- GitHubで直接レンダリング可能
+
+### 図の種類
+
+- システムアーキテクチャ: `graph` または `flowchart`
+- シーケンス図: `sequenceDiagram`
+- ER図: `erDiagram`
+- 状態遷移図: `stateDiagram-v2`
+- クラス図: `classDiagram`
+- ガントチャート: `gantt`
 
 ## セキュリティ要件
 
