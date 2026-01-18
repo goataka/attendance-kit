@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   localstack:
     image: localstack/localstack:latest
@@ -9,10 +7,7 @@ services:
     environment:
       - SERVICES=dynamodb
       - DEBUG=0
-      - DATA_DIR=/tmp/localstack/data
       - LAMBDA_EXECUTOR=local
-    volumes:
-      - "./localstack-data:/tmp/localstack"
     networks:
       - localstack-network
 
