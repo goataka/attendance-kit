@@ -42,7 +42,7 @@ const pages = [
   },
   {
     name: 'ClocksListPage',
-    url: '/records',
+    url: '/clocks',
     dir: 'src/ClocksListPage',
     waitFor: '.records-table',
   },
