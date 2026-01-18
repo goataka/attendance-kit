@@ -4,6 +4,24 @@ import request from 'supertest';
 import { AppModule } from '../app.module';
 import { JwtService } from '@nestjs/jwt';
 import { ClockType } from './dto/clock.dto';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// 統合テスト用の環境変数をモジュール読み込み前に設定
+process.env.USE_LOCALSTACK = 'true';
+process.env.AWS_REGION = 'ap-northeast-1';
+process.env.DYNAMODB_TABLE_NAME = 'attendance-kit-test-clock';
+process.env.DYNAMODB_ENDPOINT = 'http://localhost:4566';
+process.env.AWS_ACCESS_KEY_ID = 'test';
+process.env.AWS_SECRET_ACCESS_KEY = 'test';
+process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-secret-key';
+
+// .envファイルが存在する場合は読み込む
+try {
+  dotenv.config({ path: path.join(__dirname, '../../.env') });
+} catch (error) {
+  // .envファイルが存在しない場合は環境変数のみを使用
+}
 
 // 統合テスト: LocalStackのDynamoDBを使用した実際のAPI呼び出しテスト
 // LocalStack使用時は USE_LOCALSTACK=true を設定
@@ -13,14 +31,7 @@ describe('ClockController (Integration)', () => {
   let authToken: string;
 
   beforeAll(async () => {
-    // 統合テスト用のLocalStack環境変数を設定
-    process.env.USE_LOCALSTACK = 'true';
-    process.env.AWS_REGION = 'ap-northeast-1';
-    process.env.DYNAMODB_TABLE_NAME = 'attendance-kit-dev-clock';
-    process.env.DYNAMODB_ENDPOINT = 'http://localhost:4566';
-    process.env.AWS_ACCESS_KEY_ID = 'test';
-    process.env.AWS_SECRET_ACCESS_KEY = 'test';
-    process.env.JWT_SECRET = 'test-secret-key';
+    // 環境変数が正しく設定されているか確認
 
     const useLocalStack = process.env.USE_LOCALSTACK === 'true';
     console.log(
