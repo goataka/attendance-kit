@@ -40,13 +40,17 @@ run_cdk_operations() {
   npm install -g aws-cdk-local aws-cdk
   
   echo "=== CDK Bootstrap ==="
-  (cd "${INFRA_DIR}" && npm run cdklocal:bootstrap)
+  (cd "${INFRA_DIR}" && cdklocal bootstrap aws://000000000000/ap-northeast-1 --force)
+  
+  # Wait a moment for LocalStack to persist the bootstrap resources
+  echo "=== Waiting for bootstrap to complete ==="
+  sleep 3
   
   echo "=== CDK Synth DynamoDB Stack ==="
   (cd "${INFRA_DIR}" && cdklocal synth AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test)
   
   echo "=== CDK Deploy DynamoDB Stack to LocalStack ==="
-  (cd "${INFRA_DIR}" && cdklocal deploy AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test --require-approval never)
+  (cd "${INFRA_DIR}" && cdklocal deploy AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters)
 }
 
 run_integration_tests() {
@@ -68,6 +72,10 @@ main() {
   export AWS_ACCESS_KEY_ID="test"
   export AWS_SECRET_ACCESS_KEY="test"
   export AWS_DEFAULT_REGION="ap-northeast-1"
+  
+  # Ensure CDK uses LocalStack endpoints
+  export CDK_DEFAULT_ACCOUNT="000000000000"
+  export CDK_DEFAULT_REGION="ap-northeast-1"
   
   wait_localstack
   show_environment
