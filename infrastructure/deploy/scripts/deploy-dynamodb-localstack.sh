@@ -17,6 +17,7 @@ main() {
   cdklocal bootstrap aws://000000000000/ap-northeast-1 --force
   
   # LocalStackがbootstrapリソースを永続化するまで待機
+  # CloudFormationスタックの作成完了に時間がかかるため
   echo "==> Bootstrap完了待機..."
   sleep 3
   

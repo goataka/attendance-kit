@@ -18,14 +18,15 @@ main() {
   for i in {1..60}; do
     if curl --silent http://localhost:4566/_localstack/health | grep --quiet '"dynamodb"'; then
       echo "✅ LocalStackが準備完了しました"
-      curl --silent http://localhost:4566/_localstack/health | jq '.' || true
+      # jqが利用可能な場合はJSON整形表示（オプション）
+      curl --silent http://localhost:4566/_localstack/health | jq '.' 2>/dev/null || true
       return 0
     fi
     echo "待機中... (${i}/60)"
     sleep 2
   done
   
-  echo "❌ エラー: LocalStackが120秒以内に起動しませんでした"
+  echo "❌ エラー: LocalStackが60回のヘルスチェック（120秒）以内に起動しませんでした"
   docker compose logs
   exit 1
 }

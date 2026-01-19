@@ -12,6 +12,7 @@ main() {
   echo "=== LocalStack停止 ==="
   
   cd "${localstack_dir}"
+  # クリーンアップ時のエラーは無視（既に停止している場合など）
   docker compose down || true
   
   echo "✅ LocalStackを停止しました"
