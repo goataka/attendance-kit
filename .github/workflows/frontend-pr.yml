@@ -6,27 +6,7 @@ on:
       - 'apps/frontend/**'
 
 jobs:
-  check-paths:
-    runs-on: ubuntu-latest
-    outputs:
-      frontend: ${{ steps.filter.outputs.frontend }}
-    steps:
-      - uses: actions/checkout@v4
-      
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            frontend:
-              - 'apps/frontend/src/**/*.tsx'
-              - 'apps/frontend/src/**/*.css'
-              - 'apps/frontend/src/**/*.ts'
-              - '!apps/frontend/src/**/*.test.tsx'
-              - '!apps/frontend/src/**/*.spec.ts'
-
   pre-merge-checks:
-    needs: check-paths
-    if: needs.check-paths.outputs.frontend == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
