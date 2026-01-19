@@ -2,6 +2,58 @@
 
 このディレクトリには、開発とCI/CDプロセスをサポートするスクリプトが含まれています。
 
+## Integration Tests
+
+### 概要
+
+統合テストを実行するためのスクリプト群です。LocalStackを使用してAWSサービスをエミュレートし、アプリケーション全体の動作を検証します。
+
+### スクリプト一覧
+
+#### run-integration-tests.sh
+
+メインの統合テストオーケストレータスクリプトです。以下の処理を順次実行します:
+
+1. 依存関係のインストール (`npm ci`)
+2. 全ワークスペースのビルド (`npm run build --workspaces --if-present`)
+3. インフラストラクチャのセットアップ（LocalStack起動、DynamoDBデプロイ）
+4. バックエンド統合テストの実行
+
+**使用方法:**
+```bash
+./scripts/run-integration-tests.sh
+```
+
+#### start-localstack.sh
+
+LocalStackを起動し、準備完了まで待機する共通スクリプトです。
+
+**使用方法:**
+```bash
+./scripts/start-localstack.sh <repo_root>
+```
+
+**引数:**
+- `repo_root`: リポジトリのルートディレクトリパス
+
+#### stop-localstack.sh
+
+LocalStackを停止する共通スクリプトです。
+
+**使用方法:**
+```bash
+./scripts/stop-localstack.sh <repo_root>
+```
+
+**引数:**
+- `repo_root`: リポジトリのルートディレクトリパス
+
+### 必要条件
+
+- Docker が起動していること
+- Node.js 24以上
+- npm 10以上
+
 ## プレマージワークフローのローカル実行
 
 ### 概要
