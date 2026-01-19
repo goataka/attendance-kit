@@ -1,56 +1,27 @@
 #!/bin/bash
 set -euo pipefail
 
-# Script-level variables accessible to cleanup trap
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-INFRA_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-LOCALSTACK_DIR="${INFRA_DIR}/localstack"
-
-cleanup() {
-  echo "=== Stopping LocalStack ==="
-  (cd "${LOCALSTACK_DIR}" && docker compose down) || true
-  echo "✅ LocalStack stopped"
-}
+# Infrastructure Integration Tests
+# LocalStackを使用してDynamoDB Stackをデプロイし、動作を検証する
 
 # Ensure cleanup runs on exit
-trap cleanup EXIT
+cleanup() {
+  local -r repo_root="${1}"
+  
+  "${repo_root}/scripts/stop-localstack.sh" "${repo_root}"
+}
 
 main() {
+  local -r script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local -r infra_dir="$(cd "${script_dir}/.." && pwd)"
+  local -r repo_root="$(cd "${infra_dir}/../.." && pwd)"
+
+  # Set trap for cleanup
+  trap "cleanup ${repo_root}" EXIT
+
   echo "=== Infrastructure Integration Setup ==="
-  echo "Infrastructure directory: ${INFRA_DIR}"
+  echo "Infrastructure directory: ${infra_dir}"
   echo ""
-
-  start_localstack() {
-    echo "==> Starting LocalStack..."
-    cd "${LOCALSTACK_DIR}"
-    docker compose up -d
-    
-    echo "==> Waiting for LocalStack to be ready..."
-    for i in {1..60}; do
-      if curl -s http://localhost:4566/_localstack/health | grep -q '"dynamodb"'; then
-        echo "✅ LocalStack is ready!"
-        curl -s http://localhost:4566/_localstack/health | jq '.' || true
-        return 0
-      fi
-      echo "Waiting... ($i/60)"
-      sleep 2
-    done
-    
-    echo "❌ Error: LocalStack did not start within 120 seconds"
-    docker compose logs
-    exit 1
-  }
-
-  install_dependencies() {
-    echo "==> Installing infrastructure dependencies..."
-    cd "${INFRA_DIR}"
-    npm ci
-    
-    echo "==> Installing CDK tools globally..."
-    npm install -g aws-cdk-local aws-cdk
-    
-    echo "✅ Infrastructure dependencies installed"
-  }
 
   show_environment() {
     echo "==> Environment variables:"
@@ -64,32 +35,26 @@ main() {
     echo ""
   }
 
-  deploy_cdk() {
-    echo "==> CDK Bootstrap..."
-    cd "${INFRA_DIR}"
-    cdklocal bootstrap aws://000000000000/ap-northeast-1 --force
+  install_dependencies() {
+    echo "==> Installing infrastructure dependencies..."
+    cd "${infra_dir}"
+    npm ci
     
-    # Wait for LocalStack to persist bootstrap resources
-    echo "==> Waiting for bootstrap to complete..."
-    sleep 3
+    echo "==> Installing CDK tools globally..."
+    npm install --global aws-cdk-local aws-cdk
     
-    echo "==> CDK Synth DynamoDB Stack..."
-    cdklocal synth AttendanceKit-test-DynamoDB --context stack=dynamodb --context environment=test
-    
-    echo "==> CDK Deploy DynamoDB Stack..."
-    cdklocal deploy AttendanceKit-test-DynamoDB \
-      --context stack=dynamodb \
-      --context environment=test \
-      --require-approval never \
-      --no-previous-parameters
-    
-    echo "✅ Infrastructure deployed"
+    echo "✅ Infrastructure dependencies installed"
   }
 
-  start_localstack
+  echo "==> Starting LocalStack..."
+  "${repo_root}/scripts/start-localstack.sh" "${repo_root}"
+  echo ""
+  
   install_dependencies
   show_environment
-  deploy_cdk
+  
+  echo "==> Deploying DynamoDB Stack..."
+  "${infra_dir}/scripts/deploy-dynamodb-localstack.sh" "${repo_root}"
   
   echo ""
   echo "✅ Infrastructure setup completed successfully"
