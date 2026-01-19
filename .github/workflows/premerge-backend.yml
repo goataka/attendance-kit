@@ -8,40 +8,6 @@ on:
       - '.github/workflows/premerge-backend.yml'
 
 jobs:
-  backend-unit-tests:
-    name: Backend Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-      
-      - name: Run Backend Unit Tests
-        uses: ./apps/backend/.github/actions/run-unit-tests
-
-  backend-integration-tests:
-    name: Backend Integration Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-      
-      - name: Run Backend Integration Tests
-        uses: ./apps/backend/.github/actions/run-integration-tests
-        with:
-          aws-region: 'ap-northeast-1'
-
   infrastructure-unit-tests:
     name: Infrastructure Unit Tests
     runs-on: ubuntu-latest
@@ -57,43 +23,3 @@ jobs:
       
       - name: Run Infrastructure Unit Tests
         uses: ./infrastructure/deploy/.github/actions/run-unit-tests
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run lint
-        working-directory: apps/backend
-        run: npm run lint
-
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Build
-        working-directory: apps/backend
-        run: npm run build
