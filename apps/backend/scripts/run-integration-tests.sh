@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Backend integration tests script
-# This script installs dependencies, builds the backend, and runs integration tests
-# Assumes LocalStack and infrastructure are already set up
+# This script runs integration tests
+# Assumes LocalStack, infrastructure, and backend build are already done
 
 # Get the script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -22,14 +22,6 @@ if [ -f ".env" ]; then
   source .env
   set +a
 fi
-
-# Install dependencies
-echo "==> Installing backend dependencies..."
-npm ci
-
-# Build backend
-echo "==> Building backend..."
-npm run build
 
 # Check LocalStack availability
 echo "==> Checking LocalStack availability..."

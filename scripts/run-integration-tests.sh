@@ -23,6 +23,15 @@ main() {
   export DYNAMODB_ENDPOINT="http://localhost:4566"
   export JWT_SECRET="test-secret-key"
 
+  echo "=== Phase 0: Backend Build (Required for CDK) ==="
+  cd "${backend_dir}"
+  echo "==> Installing backend dependencies..."
+  npm ci
+  echo "==> Building backend..."
+  npm run build
+  echo "✅ Backend build completed"
+  echo ""
+
   echo "=== Phase 1: Infrastructure Setup and Deployment ==="
   "${infra_dir}/scripts/run-integration-tests.sh"
   echo ""
@@ -32,6 +41,7 @@ main() {
   echo ""
   
   echo "=== Integration Test Summary ==="
+  echo "✅ Backend built"
   echo "✅ Infrastructure deployed"
   echo "✅ Backend integration tests passed"
   echo ""

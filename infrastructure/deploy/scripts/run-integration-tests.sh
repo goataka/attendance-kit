@@ -1,28 +1,28 @@
 #!/bin/bash
 set -euo pipefail
 
+# Script-level variables accessible to cleanup trap
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INFRA_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+LOCALSTACK_DIR="${INFRA_DIR}/localstack"
+
+cleanup() {
+  echo "=== Stopping LocalStack ==="
+  (cd "${LOCALSTACK_DIR}" && docker compose down) || true
+  echo "✅ LocalStack stopped"
+}
+
+# Ensure cleanup runs on exit
+trap cleanup EXIT
+
 main() {
-  # Get the script directory
-  local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-  local infra_dir="$(cd "${script_dir}/.." && pwd)"
-  local localstack_dir="${infra_dir}/localstack"
-
   echo "=== Infrastructure Integration Setup ==="
-  echo "Infrastructure directory: ${infra_dir}"
+  echo "Infrastructure directory: ${INFRA_DIR}"
   echo ""
-
-  cleanup() {
-    echo "=== Stopping LocalStack ==="
-    (cd "${localstack_dir}" && docker compose down) || true
-    echo "✅ LocalStack stopped"
-  }
-
-  # Ensure cleanup runs on exit
-  trap cleanup EXIT
 
   start_localstack() {
     echo "==> Starting LocalStack..."
-    cd "${localstack_dir}"
+    cd "${LOCALSTACK_DIR}"
     docker compose up -d
     
     echo "==> Waiting for LocalStack to be ready..."
@@ -43,7 +43,7 @@ main() {
 
   install_dependencies() {
     echo "==> Installing infrastructure dependencies..."
-    cd "${infra_dir}"
+    cd "${INFRA_DIR}"
     npm ci
     
     echo "==> Installing CDK tools globally..."
@@ -66,7 +66,7 @@ main() {
 
   deploy_cdk() {
     echo "==> CDK Bootstrap..."
-    cd "${infra_dir}"
+    cd "${INFRA_DIR}"
     cdklocal bootstrap aws://000000000000/ap-northeast-1 --force
     
     # Wait for LocalStack to persist bootstrap resources
