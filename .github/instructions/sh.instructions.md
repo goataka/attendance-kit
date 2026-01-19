@@ -5,7 +5,7 @@ applyTo: "**/*.sh"
 
 ## 基本
 
-- shbangは`bash`とする。
+- shebangは`bash`とする。
 - 実行オプションの基本は`-euo pipefail`とする。
 
 ## 関数
@@ -38,4 +38,4 @@ applyTo: "**/*.sh"
 
 ## テスト
 
-- [test.instructions.md](.github/instructions/test.instructions.md)を参照する。
+- [test.instructions.md](./test.instructions.md)を参照する。
