@@ -15,6 +15,6 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: apps/frontend/package-lock.json
+          cache-dependency-path: package-lock.json
       
       - uses: ./apps/frontend/workflows/pre-merge
