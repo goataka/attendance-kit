@@ -1,20 +1,53 @@
 #!/bin/bash
 set -euo pipefail
 
-# Integration tests with LocalStack
-echo "==> Loading environment variables..."
+# Backend integration tests script
+# This script installs dependencies, builds the backend, and runs integration tests
+# Assumes LocalStack and infrastructure are already set up
+
+# Get the script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKEND_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+echo "=== Backend Integration Tests ==="
+echo "Backend directory: ${BACKEND_DIR}"
+echo ""
+
+cd "${BACKEND_DIR}"
+
+# Load environment variables from .env if it exists
 if [ -f ".env" ]; then
-  export $(cat .env | grep -v '^#' | xargs)
+  echo "==> Loading environment variables from .env..."
+  set -a
+  source .env
+  set +a
 fi
 
+# Install dependencies
+echo "==> Installing backend dependencies..."
+npm ci
+
+# Build backend
+echo "==> Building backend..."
+npm run build
+
+# Check LocalStack availability
 echo "==> Checking LocalStack availability..."
 if ! curl -s http://localhost:4566/_localstack/health > /dev/null 2>&1; then
-  echo "Error: LocalStack is not running on localhost:4566"
-  echo "Please start LocalStack first: npm run localstack:start"
+  echo "❌ Error: LocalStack is not running on localhost:4566"
+  echo "Please ensure infrastructure setup has been completed first"
   exit 1
 fi
 
+# Display test environment
+echo "==> Test environment:"
+echo "  DYNAMODB_ENDPOINT: ${DYNAMODB_ENDPOINT:-not set}"
+echo "  DYNAMODB_TABLE_NAME: ${DYNAMODB_TABLE_NAME:-not set}"
+echo "  USE_LOCALSTACK: ${USE_LOCALSTACK:-not set}"
+echo ""
+
+# Run integration tests
 echo "==> Running integration tests..."
 npm run test:integration
 
-echo "✅ Integration tests completed successfully"
+echo "✅ Backend integration tests completed successfully"
