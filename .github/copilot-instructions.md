@@ -3,8 +3,7 @@
 このドキュメントに記載された指示に加えて、以下のリンク先ドキュメントの内容も指示として考慮してください:
 - [Agent開発ガイドライン](./agents/AGENTS.md) - エージェントの役割とプロジェクトサマリー
 - [コーディング規約](./instructions/coding.instructions.md) - 一般的なコーディング原則と理解しやすいコードの書き方
-- [シェルスクリプト規約](./instructions/sh.instructions.md) - シェルスクリプト固有のコーディングルール
-- [テスト規約](./instructions/test.instructions.md) - テストコードの記述ルール
+- [シェルスクリプト規約](./instructions/sh.instructions.md) - シェルスクリプト固有のコーディングルールとテスト規約
 
 ## 言語ポリシー
 

@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.sh"
+applyTo: "**/*.{sh,ts,js,tsx,jsx,py,yml}"
 ---
 # Copilot Instruction for Coding
 
