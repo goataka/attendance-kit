@@ -10,6 +10,7 @@
     "test:integration": "jest --testPathPattern=test/integration",
     "cdk": "cdk",
     "localstack:start": "docker compose -f localstack/docker-compose.yml up -d",
+    "localstack:wait": "bash localstack/wait-localstack.sh",
     "localstack:stop": "docker compose -f localstack/docker-compose.yml down",
     "localstack:logs": "docker compose -f localstack/docker-compose.yml logs -f localstack",
     "cdklocal:bootstrap": "cdklocal bootstrap aws://000000000000/ap-northeast-1",

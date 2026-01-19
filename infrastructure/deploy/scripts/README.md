@@ -10,7 +10,7 @@
 
 ### deploy-dynamodb-localstack.sh
 
-LocalStackにDynamoDB Stackのみをデプロイする共通スクリプトです。
+LocalStackにDynamoDB Stackのみをデプロイするスクリプトです。
 
 **使用方法:**
 ```bash
@@ -25,15 +25,15 @@ LocalStackにDynamoDB Stackのみをデプロイする共通スクリプトで�
 2. DynamoDB StackのSynth実行
 3. DynamoDB StackのDeploy実行
 
-## 共通スクリプト
+## LocalStack管理
 
-以下のスクリプトは `scripts/` ディレクトリに配置されており、複数のワークフローから共有されます:
+LocalStackの起動・停止・待機は `package.json` のスクリプトを使用:
 
-- `scripts/start-localstack.sh` - LocalStackの起動と準備完了待機
-- `scripts/stop-localstack.sh` - LocalStackの停止
+- `npm run localstack:start --workspace=attendance-kit-infrastructure`
+- `npm run localstack:wait --workspace=attendance-kit-infrastructure`
+- `npm run localstack:stop --workspace=attendance-kit-infrastructure`
 
 ## 注意事項
 
-- すべてのスクリプトは実行可能にする必要があります（`chmod +x scripts/*.sh`）
-- スクリプトは `infrastructure/deploy` ディレクトリで実行されることを前提としています
+- すべてのスクリプトは実行可能にする必要があります
 - エラー発生時は即座に停止します（`set -euo pipefail`）
