@@ -26,7 +26,6 @@ main() {
   npm ci
   npm run build --workspaces --if-present
   
-  npm ci --workspace=attendance-kit-infrastructure
   npm install --global aws-cdk-local aws-cdk
   
   npm run localstack:start --workspace=attendance-kit-infrastructure
