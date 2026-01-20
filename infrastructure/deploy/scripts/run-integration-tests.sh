@@ -2,27 +2,30 @@
 set -euo pipefail
 
 cleanup() {
-  local -r repo_root="${1}"
-  
-  cd "${repo_root}"
-  npm run localstack:stop --workspace=attendance-kit-infrastructure
+  npm run localstack:stop
 }
 
 main() {
   local -r script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
   local -r infra_dir="$(cd "${script_dir}/.." && pwd)"
-  local -r repo_root="$(cd "${infra_dir}/../.." && pwd)"
 
-  trap "cleanup ${repo_root}" EXIT
+  trap cleanup EXIT
 
-  cd "${repo_root}"
+  cd "${infra_dir}"
   
-  npm ci --workspace=attendance-kit-infrastructure
+  npm ci
   npm install --global aws-cdk-local aws-cdk
+  npm run build
   
-  npm run localstack:start --workspace=attendance-kit-infrastructure
-  npm run localstack:wait --workspace=attendance-kit-infrastructure
-  npm run localstack:deploy --workspace=attendance-kit-infrastructure
+  # プレースホルダーを作成（CDKがLambdaアセットを参照するため）
+  if [ ! -d "../../apps/backend/dist" ]; then
+    mkdir -p ../../apps/backend/dist
+    echo '// Placeholder for CDK tests' > ../../apps/backend/dist/lambda.js
+  fi
+  
+  npm run localstack:start
+  npm run localstack:wait
+  npm run localstack:deploy
 }
 
 main
