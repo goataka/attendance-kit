@@ -6,7 +6,7 @@ runs:
   steps:
     - name: Install dependencies
       shell: bash
-      run: npm ci
+      run: npm run setup
 
     - name: Run unit tests
       shell: bash

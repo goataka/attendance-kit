@@ -14,7 +14,7 @@ runs:
       shell: bash
       working-directory: apps/backend
       run: |
-        npm ci
+        npm run setup
 
     - name: Generate OpenAPI specification
       shell: bash

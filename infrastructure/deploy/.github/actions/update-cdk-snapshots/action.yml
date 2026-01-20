@@ -13,9 +13,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: |
-        npm ci --workspaces --if-present
-        cd infrastructure/deploy && npm ci
+      run: npm run setup
 
     - name: Build CDK TypeScript
       working-directory: infrastructure/deploy
