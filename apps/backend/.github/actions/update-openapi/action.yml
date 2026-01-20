@@ -20,7 +20,7 @@ runs:
       shell: bash
       working-directory: apps/backend
       run: |
-        bash scripts/generate-openapi.sh
+        npm run generate:openapi
 
     - name: Commit and comment
       uses: ./.github/actions/commit-and-comment
