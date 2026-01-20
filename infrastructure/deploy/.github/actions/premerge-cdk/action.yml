@@ -12,9 +12,10 @@ runs:
         cache-dependency-path: infrastructure/deploy/package-lock.json
 
     - name: Install dependencies
-      working-directory: infrastructure/deploy
       shell: bash
-      run: npm ci
+      run: |
+        npm ci --workspaces --if-present
+        cd infrastructure/deploy && npm ci
 
     - name: Build TypeScript
       working-directory: infrastructure/deploy
