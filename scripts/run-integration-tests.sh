@@ -19,13 +19,12 @@ main() {
 
   cd "${repo_root}"
   
-  npm ci
+  npm ci --workspaces --if-present
   npm run build --workspaces --if-present
   
   npm install --global aws-cdk-local aws-cdk
   
   npm run localstack:start --workspace=attendance-kit-infrastructure
-  npm run localstack:wait --workspace=attendance-kit-infrastructure
   npm run localstack:deploy --workspace=attendance-kit-infrastructure
   
   npm run test:integration --workspace=@attendance-kit/backend
