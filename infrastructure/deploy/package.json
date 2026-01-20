@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "AWS CDK infrastructure for attendance-kit clock table",
   "scripts": {
-    "setup": "cd ../.. && npm run setup",
+    "setup": "npm run setup --prefix ../..",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",

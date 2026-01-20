@@ -4,7 +4,7 @@
   "private": true,
   "description": "勤怠管理キット - Backend API",
   "scripts": {
-    "setup": "cd ../.. && npm run setup",
+    "setup": "npm run setup --prefix ../..",
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
