@@ -35,8 +35,10 @@ description: ワークフローのエラーに対応するスキルです。エ�
 
 ```
 # 最新のワークフロー実行を取得
-list_workflow_runs --owner=goataka --repo=attendance-kit
+list_workflow_runs --owner=<owner> --repo=<repo>
 ```
+
+**注**: `<owner>`と`<repo>`は実際のリポジトリのオーナー名とリポジトリ名に置き換えてください。
 
 エラーとなったワークフロー実行を特定し、以下の情報を記録:
 - ワークフロー名
@@ -48,7 +50,7 @@ list_workflow_runs --owner=goataka --repo=attendance-kit
 
 ```
 # 失敗したジョブのログを取得
-get_job_logs --owner=goataka --repo=attendance-kit --run_id=<run_id> --failed_only=true --return_content=true
+get_job_logs --owner=<owner> --repo=<repo> --run_id=<run_id> --failed_only=true --return_content=true
 ```
 
 エラーログから以下を抽出:
@@ -377,8 +379,10 @@ npm run build
 ```
 ## コミット
 
-Commit: [<短縮SHA>](https://github.com/goataka/attendance-kit/commit/<完全SHA>)
+Commit: [<短縮SHA>](https://github.com/<owner>/<repo>/commit/<完全SHA>)
 ```
+
+**注**: `<owner>`、`<repo>`、`<短縮SHA>`、`<完全SHA>`は実際の値に置き換えてください。
 
 ## エラー別対応例
 
@@ -446,10 +450,10 @@ error  'unusedVar' is defined but never used  no-unused-vars
 **エラーメッセージ**:
 ```
 The engine "node" is incompatible with this module.
-Expected version ">=24.0.0". Got "22.0.0"
+Expected version ">=24.0.0". Got "18.0.0"
 ```
 
-**原因**: Node.jsバージョンの不一致
+**原因**: Node.jsバージョンの不一致（ワークフローがNode.js 24を要求しているが、ローカル環境が18を使用）
 
 **対処**:
 1. `.nvmrc`やpackage.jsonの`engines`フィールドを確認
@@ -509,15 +513,15 @@ DEBUG=* npm run <command>
 // ワークフロー一覧の取得
 list_workflows({
   method: "list_workflows",
-  owner: "goataka",
-  repo: "attendance-kit"
+  owner: "<owner>",
+  repo: "<repo>"
 })
 
 // ワークフロー実行履歴の取得
 list_workflow_runs({
   method: "list_workflow_runs",
-  owner: "goataka",
-  repo: "attendance-kit",
+  owner: "<owner>",
+  repo: "<repo>",
   resource_id: "premerge.yml", // ワークフローファイル名
   per_page: 10
 })
@@ -525,8 +529,8 @@ list_workflow_runs({
 // 特定の実行の詳細取得
 get_workflow_run({
   method: "get_workflow_run",
-  owner: "goataka",
-  repo: "attendance-kit",
+  owner: "<owner>",
+  repo: "<repo>",
   resource_id: "<run_id>"
 })
 ```
@@ -536,8 +540,8 @@ get_workflow_run({
 ```javascript
 // 失敗したジョブのログを取得
 get_job_logs({
-  owner: "goataka",
-  repo: "attendance-kit",
+  owner: "<owner>",
+  repo: "<repo>",
   run_id: <run_id>,
   failed_only: true,
   return_content: true,
@@ -546,8 +550,8 @@ get_job_logs({
 
 // 特定ジョブのログを取得
 get_job_logs({
-  owner: "goataka",
-  repo: "attendance-kit",
+  owner: "<owner>",
+  repo: "<repo>",
   job_id: <job_id>,
   return_content: true,
   tail_lines: 1000
