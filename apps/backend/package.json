@@ -19,7 +19,7 @@
     "test:unit": "jest",
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-integration.json",
     "dev": "nest start --watch",
-    "generate:openapi": "ts-node src/generate-openapi.ts"
+    "generate:openapi": "ts-node tools/generate-openapi.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
