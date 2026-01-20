@@ -4,7 +4,8 @@
   "private": true,
   "description": "勤怠管理キット - Monorepo",
   "workspaces": [
-    "apps/*"
+    "apps/*",
+    "infrastructure/deploy"
   ],
   "scripts": {
     "dev": "npm run dev --workspaces --if-present",
