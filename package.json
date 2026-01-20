@@ -12,7 +12,8 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
-    "premerge:local": "bash scripts/run-premerge.sh"
+    "premerge:local": "bash scripts/run-premerge.sh",
+    "setenv:integration": "[ -f .env.integration-test ] && export $(cat .env.integration-test | xargs) || true"
   },
   "keywords": [
     "monorepo",

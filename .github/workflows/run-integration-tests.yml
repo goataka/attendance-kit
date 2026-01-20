@@ -7,7 +7,6 @@ on:
     paths:
       - 'apps/backend/**'
       - 'infrastructure/deploy/**'
-      - 'scripts/run-integration-tests.sh'
       - '.github/workflows/run-integration-tests.yml'
 
 permissions:
@@ -17,6 +16,15 @@ permissions:
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
+    
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-northeast-1
+      USE_LOCALSTACK: true
+      DYNAMODB_TABLE_NAME: attendance-kit-test-clock
+      DYNAMODB_ENDPOINT: http://localhost:4566
+      JWT_SECRET: test-secret-key
     
     steps:
       - name: Checkout code
@@ -28,8 +36,24 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install root dependencies
-        run: npm ci
+      - name: Install dependencies
+        run: npm ci --workspaces --if-present
 
-      - name: Run Integration Tests
-        run: ./scripts/run-integration-tests.sh
+      - name: Build all workspaces
+        run: npm run build --workspaces --if-present
+
+      - name: Install CDK CLI
+        run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Start LocalStack
+        run: npm run localstack:start --workspace=attendance-kit-infrastructure
+
+      - name: Deploy to LocalStack
+        run: npm run localstack:deploy --workspace=attendance-kit-infrastructure
+
+      - name: Run Backend Integration Tests
+        run: npm run test:integration --workspace=@attendance-kit/backend
+
+      - name: Stop LocalStack
+        if: always()
+        run: npm run localstack:stop --workspace=attendance-kit-infrastructure
