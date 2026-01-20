@@ -25,14 +25,6 @@ LocalStackにDynamoDB Stackのみをデプロイするスクリプトです。
 2. DynamoDB StackのSynth実行
 3. DynamoDB StackのDeploy実行
 
-## LocalStack管理
-
-LocalStackの起動・停止・待機は `package.json` のスクリプトを使用:
-
-- `npm run localstack:start --workspace=attendance-kit-infrastructure`
-- `npm run localstack:wait --workspace=attendance-kit-infrastructure`
-- `npm run localstack:stop --workspace=attendance-kit-infrastructure`
-
 ## 注意事項
 
 - すべてのスクリプトは実行可能にする必要があります

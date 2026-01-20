@@ -16,11 +16,7 @@ LocalStackを使用したCDK統合テストを実行するスクリプトです�
 
 ## LocalStack管理
 
-LocalStackの管理は `package.json` のスクリプトを使用:
-
-- `npm run localstack:start --workspace=attendance-kit-infrastructure`
-- `npm run localstack:wait --workspace=attendance-kit-infrastructure`
-- `npm run localstack:stop --workspace=attendance-kit-infrastructure`
+詳細は[LocalStack README](../localstack/README.md)を参照してください。
 
 ## 実行方法
 

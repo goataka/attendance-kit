@@ -1,6 +1,6 @@
-# LocalStack Development Environment
+# LocalStack
 
-LocalStackを使用したローカル開発環境のセットアップと使用方法について説明します。
+LocalStackは、AWSサービスをローカル環境でエミュレートするツールです。
 
 ## 前提条件
 
@@ -8,18 +8,49 @@ LocalStackを使用したローカル開発環境のセットアップと使用�
 - Docker Compose
 - Node.js 24以上
 
-## 基本的な使い方
+## スクリプト
 
-利用可能なコマンドは[package.json](../package.json)の`scripts`セクションを参照してください。
+### wait-localstack.sh
 
-主なコマンド:
-- `localstack:start` - LocalStackの起動
-- `localstack:stop` - LocalStackの停止
-- `localstack:logs` - LocalStackのログ表示
-- `cdklocal:bootstrap` - CDK Bootstrap
-- `cdklocal:deploy` - スタックのデプロイ
-- `cdklocal:synth` - CloudFormationテンプレート生成
-- `cdklocal:destroy` - スタックの削除
+LocalStackの起動完了を待機するスクリプトです。DynamoDBサービスが利用可能になるまでポーリングします。
+
+**使用方法:**
+```bash
+npm run localstack:wait --workspace=attendance-kit-infrastructure
+```
+
+## Docker Compose
+
+`docker-compose.yml`を使用してLocalStackコンテナを管理します。
+
+### 起動・停止
+
+```bash
+# 起動
+npm run localstack:start --workspace=attendance-kit-infrastructure
+
+# 停止
+npm run localstack:stop --workspace=attendance-kit-infrastructure
+
+# ログ確認
+npm run localstack:logs --workspace=attendance-kit-infrastructure
+```
+
+### CDKコマンド
+
+```bash
+# Bootstrap
+npm run cdklocal:bootstrap --workspace=attendance-kit-infrastructure
+
+# デプロイ
+npm run cdklocal:deploy --workspace=attendance-kit-infrastructure
+
+# テンプレート生成
+npm run cdklocal:synth --workspace=attendance-kit-infrastructure
+
+# スタック削除
+npm run cdklocal:destroy --workspace=attendance-kit-infrastructure
+```
 
 ## AWS CLIでの操作
 

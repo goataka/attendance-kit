@@ -1,9 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# Infrastructure Integration Tests
-# LocalStackを使用してDynamoDB Stackをデプロイし、動作を検証する
-
 cleanup() {
   local -r repo_root="${1}"
   
@@ -25,8 +22,7 @@ main() {
   
   npm run localstack:start --workspace=attendance-kit-infrastructure
   npm run localstack:wait --workspace=attendance-kit-infrastructure
-  
-  "${infra_dir}/scripts/deploy-dynamodb-localstack.sh" "${repo_root}"
+  npm run localstack:deploy --workspace=attendance-kit-infrastructure
 }
 
 main

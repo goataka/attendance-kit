@@ -11,14 +11,7 @@ NestJS製のバックエンドAPI - AWS Lambda + API Gatewayにデプロイ
 - Jest + Supertest
 - OpenAPI 3.0 (Swagger)
 
-## インストール
-
-### 前提条件
-
-- Node.js 24.x以上
-- npm 10.x以上
-
-### セットアップ
+## セットアップ
 
 ```bash
 npm install
@@ -51,7 +44,7 @@ npm run start:dev
 | コマンド | 説明 |
 |---------|------|
 | `npm test` | ユニットテスト |
-| `npm run test:api` | APIテスト |
+| `npm run test:integration` | 統合テスト |
 | `npm run test:cov` | カバレッジ付きテスト |
 
 ## ビルド
@@ -59,8 +52,6 @@ npm run start:dev
 ```bash
 npm run build
 ```
-
-詳細は[scripts/build-backend.sh](./scripts/build-backend.sh)を参照してください。
 
 ## デプロイ
 
@@ -83,18 +74,6 @@ src/
 └── lambda.ts       # Lambdaハンドラー
 ```
 
-## 認証
-
-JWT Bearer認証を使用しています。
-
-環境変数`JWT_SECRET`でシークレットキーを設定してください。
-
-## データベース
-
-DynamoDB `attendance-kit-{env}-clock`テーブルを使用します。
-
-詳細は[DynamoDB設計ドキュメント](../../docs/architecture/dynamodb-clock-table.md)を参照してください。
-
 ## 開発
 
 | コマンド | 説明 |
@@ -104,18 +83,7 @@ DynamoDB `attendance-kit-{env}-clock`テーブルを使用します。
 | `npm run format` | コード整形 |
 | `npm run generate:openapi` | OpenAPI仕様書生成 |
 
-詳細は[Scripts README](./scripts/README.md)を参照してください。
-
-## CI/CD
-
-GitHub Actionsでlint、test、buildを自動実行します。
-
-詳細は[Workflows README](./workflows/README.md)を参照してください。
-
 ## 関連ドキュメント
 
 - [API Documentation](./api/README.md)
-- [Scripts README](./scripts/README.md)
-- [Workflows README](./workflows/README.md)
 - [DynamoDB Design](../../docs/architecture/dynamodb-clock-table.md)
-- [ドキュメント作成ルール](../../memory/documentation-rules.md)
