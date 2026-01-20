@@ -12,7 +12,6 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      working-directory: apps/backend
       run: |
         npm run setup
 
