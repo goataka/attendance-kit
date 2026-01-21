@@ -45,7 +45,7 @@ jobs:
       - name: Commit and comment if changes
         uses: ./.github/actions/commit-and-comment
         with:
-          files: '**/__snapshots__/** apps/backend/openapi.yaml'
+          files: '**/__snapshots__/** apps/backend/api/openapi.yaml'
           commit-message: "自動生成ファイル更新: スナップショットとOpenAPI"
           pr-comment: "✅ 自動生成ファイルを更新しました（スナップショットテスト、OpenAPI仕様）"
           github-token: ${{ secrets.GITHUB_TOKEN }}
