@@ -14,7 +14,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  test:
+  unit-test:
     runs-on: ubuntu-latest
     
     steps:
@@ -51,3 +51,94 @@ jobs:
           commit-message: "自動生成ファイル更新: スナップショットとOpenAPI"
           pr-comment: "✅ 自動生成ファイルを更新しました（スナップショットテスト、OpenAPI仕様）"
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  backend-integration-test:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-northeast-1
+      USE_LOCALSTACK: true
+      DYNAMODB_TABLE_NAME: attendance-kit-test-clock
+      DYNAMODB_ENDPOINT: http://localhost:4566
+      JWT_SECRET: test-secret-key
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm run setup
+
+      - name: Build all workspaces
+        run: npm run build --workspaces --if-present
+
+      - name: Install CDK CLI
+        run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Start LocalStack
+        run: npm run localstack:start --workspace=attendance-kit-infrastructure
+
+      - name: Deploy to LocalStack
+        run: npm run localstack:deploy --workspace=attendance-kit-infrastructure
+
+      - name: Run Backend Integration Tests
+        run: npm run test:integration --workspace=@attendance-kit/backend
+
+      - name: Stop LocalStack
+        if: always()
+        run: npm run localstack:stop --workspace=attendance-kit-infrastructure
+
+  deploy-integration-test:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-northeast-1
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm run setup
+
+      - name: Build TypeScript
+        working-directory: infrastructure/deploy
+        run: npm run build
+
+      - name: Run Unit Tests
+        working-directory: infrastructure/deploy
+        run: npm run test:unit
+
+      - name: Install CDK CLI
+        run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Start LocalStack
+        working-directory: infrastructure/deploy
+        run: npm run localstack:start
+
+      - name: Deploy to LocalStack
+        working-directory: infrastructure/deploy
+        run: npm run localstack:deploy
+
+      - name: Stop LocalStack
+        if: always()
+        working-directory: infrastructure/deploy
+        run: npm run localstack:stop
