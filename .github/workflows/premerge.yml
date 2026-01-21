@@ -10,7 +10,8 @@ on:
       - '.github/workflows/premerge.yml'
 
 permissions:
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   test:
@@ -37,3 +38,16 @@ jobs:
 
       - name: Run unit tests
         run: npm run test:unit
+
+      - name: Generate artifacts
+        run: npm run generate
+
+      - name: Commit and comment if changes
+        uses: ./.github/actions/commit-and-comment
+        with:
+          files: |
+            **/__snapshots__/**
+            apps/backend/openapi.yaml
+          commit-message: "自動生成ファイル更新: スナップショットとOpenAPI"
+          pr-comment: "✅ 自動生成ファイルを更新しました（スナップショットテスト、OpenAPI仕様）"
+          github-token: ${{ secrets.GITHUB_TOKEN }}

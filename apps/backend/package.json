@@ -17,10 +17,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:unit": "jest",
+    "test:unit": "jest --updateSnapshot",
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-integration.json",
     "dev": "nest start --watch",
-    "generate:openapi": "ts-node tools/generate-openapi.ts"
+    "generate:openapi": "ts-node tools/generate-openapi.ts",
+    "generate": "npm run generate:openapi"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
