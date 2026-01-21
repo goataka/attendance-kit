@@ -12,6 +12,7 @@
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
+    "test:unit": "npm run test:unit --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "premerge:local": "bash scripts/run-premerge.sh",
     "setenv:integration": "export $(cat .env.integration-test | xargs)"
