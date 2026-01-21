@@ -28,12 +28,19 @@
 ├── docs/              # ドキュメント
 ├── infrastructure/    # インフラストラクチャコード
 ├── package.json       # モノレポルート設定
+├── turbo.json         # Turborepo設定
 └── README.md          # このファイル
 ```
 
 ## 📦 モノレポ構成
 
-このプロジェクトは **npm workspaces** を使用したモノレポ構成です。
+このプロジェクトは **npm workspaces** と **Turborepo** を使用したモノレポ構成です。
+
+### Turborepoの利点
+
+- **高速なビルド**: タスクの並列実行とインクリメンタルビルド
+- **スマートキャッシング**: 変更されていないタスクは再実行されません
+- **依存関係の自動解決**: パッケージ間の依存関係を自動的に処理
 
 ### アプリケーション
 
@@ -62,6 +69,27 @@ npm run lint
 # プレマージワークフローのローカル実行
 npm run premerge:local
 ```
+
+### Turborepoの使用
+
+Turborepoを使用することで、変更されたパッケージのみが再ビルドされ、キャッシュされた結果が利用されます。
+
+```bash
+# キャッシュの効果を確認
+npm run build  # 初回実行
+npm run build  # 2回目はキャッシュから実行（高速）
+
+# 特定のパッケージのみ実行
+npm run build -- --filter=@attendance-kit/frontend
+
+# キャッシュをクリア
+npx turbo clean
+```
+
+**設定ファイル**:
+- `turbo.json`: Turborepoの設定（タスクの依存関係、キャッシュルール）
+- `package.json`: packageManager フィールドで npm のバージョンを指定
+
 
 ### プレマージワークフローのローカル実行
 
