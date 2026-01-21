@@ -33,18 +33,45 @@ description: ワークフローのエラーに対応するスキルです。エ�
 
 #### 1.1 ワークフロー実行履歴の取得
 
+**効率的な調査のための優先順位**:
+
+1. **PRが指定されている場合**: そのPRがトリガーとなっているワークフローのみを調査対象とする
+2. **URLが直接指定されている場合**: そのワークフロー実行のみを確認する
+3. **いずれも指定されていない場合**: 
+   - 直近のワークフロー実行から確認
+   - 同一ジョブ名の重複は調査対象としない（最新のもののみ）
+   - **最大5件まで**とする
+
+**実行例**:
+
 ```
-# 最新のワークフロー実行を取得
-list_workflow_runs --owner=<owner> --repo=<repo>
+# PRが指定されている場合
+# PR番号をevent filterに使用
+list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request"}' --per_page=5
+
+# URLが指定されている場合
+# URLからrun_idを抽出して直接取得
+get_workflow_run --method=get_workflow_run --owner=<owner> --repo=<repo> --resource_id=<run_id>
+
+# いずれも指定されていない場合
+# 直近5件の実行を取得し、同一ジョブ名の重複を除外
+list_workflow_runs --owner=<owner> --repo=<repo> --per_page=5
 ```
 
-**注**: `<owner>`と`<repo>`は実際のリポジトリのオーナー名とリポジトリ名に置き換えてください。
+**注**: 
+- `<owner>`と`<repo>`は実際のリポジトリのオーナー名とリポジトリ名に置き換えてください
+- `<run_id>`はワークフローURLから抽出（例: `https://github.com/owner/repo/actions/runs/12345` → `12345`）
 
 エラーとなったワークフロー実行を特定し、以下の情報を記録:
 - ワークフロー名
 - 実行ID（run_id）
 - 失敗したジョブ名
 - エラー発生時刻
+
+**調査対象の絞り込み**:
+- 失敗ステータス（`conclusion: failure`）のみを対象
+- 既に調査したジョブ名は重複調査を避ける
+- 最大5件までに制限して調査時間を短縮
 
 #### 1.2 エラーログの取得
 
