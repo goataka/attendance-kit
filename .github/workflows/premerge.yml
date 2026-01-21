@@ -1,6 +1,7 @@
 name: Premerge Checks
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
