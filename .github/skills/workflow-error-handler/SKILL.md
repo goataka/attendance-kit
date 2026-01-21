@@ -51,19 +51,23 @@ description: ワークフローのエラーに対応するスキルです。エ�
 get_workflow_run --method=get_workflow_run --owner=<owner> --repo=<repo> --resource_id=<run_id>
 
 # 2. PRベースの調査
-# PRが明示的に指定されている場合
-list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request"}' --per_page=5
+# PRが明示的に指定されている場合（例: PR #123）
+# まずPR情報からブランチ名を取得し、そのブランチのワークフロー実行を検索
+# GitHub MCP Serverでブランチ名を使用してフィルタリング
+list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request", "branch": "<pr-branch-name>"}' --per_page=5
 
 # PRが指定されていない場合は作業ブランチからPR番号を特定
-# git branch --show-current でブランチ名を取得
-# GitHub APIでブランチに紐づくPRを検索
-# そのPRに関連するワークフローのみを調査
-list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request"}' --per_page=5
+# Step 1: 作業ブランチ名を取得
+# git branch --show-current
+# Step 2: そのブランチ名でフィルタリング
+list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request", "branch": "<current-branch-name>"}' --per_page=5
 ```
 
 **注**: 
 - `<owner>`と`<repo>`は実際のリポジトリのオーナー名とリポジトリ名に置き換えてください
 - `<run_id>`はワークフローURLから抽出（例: `https://github.com/owner/repo/actions/runs/12345` → `12345`）
+- `<pr-branch-name>`は指定されたPRのブランチ名に置き換えてください
+- `<current-branch-name>`は`git branch --show-current`で取得した現在のブランチ名に置き換えてください
 
 エラーとなったワークフロー実行を特定し、以下の情報を記録:
 - ワークフロー名
