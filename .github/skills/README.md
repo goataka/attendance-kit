@@ -31,6 +31,14 @@ npm run premerge:local
 
 **詳細**: [rule-making/SKILL.md](./rule-making/SKILL.md)
 
+### workflow-error-handler
+
+**説明**: ワークフローのエラーに対応し、エラーの確認、再現、原因特定、対処、検証を体系的に行います。
+
+**使用タイミング**: GitHub Actionsワークフローの失敗やCI/CDエラーへの対応を依頼された場合
+
+**詳細**: [workflow-error-handler/SKILL.md](./workflow-error-handler/SKILL.md)
+
 ## Agent Skillsについて
 
 Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機能を定義したものです。
@@ -55,7 +63,9 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 │   └── SKILL.md            # スキル定義ファイル
 ├── premerge-check/         # プレマージチェックスキル
 │   └── SKILL.md            # スキル定義ファイル
-└── rule-making/            # ルール化スキル
+├── rule-making/            # ルール化スキル
+│   └── SKILL.md            # スキル定義ファイル
+└── workflow-error-handler/ # ワークフローエラー対応スキル
     └── SKILL.md            # スキル定義ファイル
 ```
 
