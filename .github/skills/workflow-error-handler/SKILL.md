@@ -35,9 +35,10 @@ description: ワークフローのエラーに対応するスキルです。エ�
 
 **効率的な調査のための優先順位**:
 
-1. **PRが指定されている場合**: そのPRがトリガーとなっているワークフローのみを調査対象とする
-2. **URLが直接指定されている場合**: そのワークフロー実行のみを確認する
-3. **いずれも指定されていない場合**: 
+1. **URLが直接指定されている場合**: そのワークフロー実行のみを確認する
+2. **PRベースの調査**:
+   - PRが明示的に指定されている場合: そのPRがトリガーとなっているワークフローのみを調査対象
+   - PRが指定されていない場合: エージェントが作業するブランチに紐づくPRがトリガーとなっているワークフローのみを調査対象
    - 直近のワークフロー実行から確認
    - 同一ジョブ名の重複は調査対象としない（最新のもののみ）
    - **最大5件まで**とする
@@ -45,17 +46,19 @@ description: ワークフローのエラーに対応するスキルです。エ�
 **実行例**:
 
 ```
-# PRが指定されている場合
-# PR番号をevent filterに使用
-list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request"}' --per_page=5
-
-# URLが指定されている場合
+# 1. URLが指定されている場合（最優先）
 # URLからrun_idを抽出して直接取得
 get_workflow_run --method=get_workflow_run --owner=<owner> --repo=<repo> --resource_id=<run_id>
 
-# いずれも指定されていない場合
-# 直近5件の実行を取得し、同一ジョブ名の重複を除外
-list_workflow_runs --owner=<owner> --repo=<repo> --per_page=5
+# 2. PRベースの調査
+# PRが明示的に指定されている場合
+list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request"}' --per_page=5
+
+# PRが指定されていない場合は作業ブランチからPR番号を特定
+# git branch --show-current でブランチ名を取得
+# GitHub APIでブランチに紐づくPRを検索
+# そのPRに関連するワークフローのみを調査
+list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request"}' --per_page=5
 ```
 
 **注**: 
