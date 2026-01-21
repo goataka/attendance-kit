@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'apps/**'
+      - 'infrastructure/**'
       - 'package.json'
       - '.github/workflows/premerge.yml'
 

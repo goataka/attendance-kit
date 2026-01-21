@@ -45,6 +45,7 @@ runs:
         fi
 
     - name: Commit and push changes
+      id: commit-changes
       if: steps.check-changes.outputs.has_changes == 'true'
       shell: bash
       run: |
@@ -61,11 +62,19 @@ runs:
           git add -- "$pattern" 2>/dev/null || true
         done <<< "${{ inputs.files }}"
         
+        # 変更がステージングされているか確認
+        if git diff --cached --quiet; then
+          echo "No changes staged, skipping commit"
+          echo "committed=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
         git commit -m "${{ inputs.commit-message }}"
         git push
+        echo "committed=true" >> $GITHUB_OUTPUT
 
     - name: Comment on PR
-      if: steps.check-changes.outputs.has_changes == 'true'
+      if: steps.commit-changes.outputs.committed == 'true'
       uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.github-token }}
