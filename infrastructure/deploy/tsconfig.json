@@ -27,12 +27,11 @@
   },
   "include": [
     "bin/**/*.ts",
-    "lib/**/*.ts",
-    "test/**/*.ts"
+    "lib/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "cdk.out",
-    "test/integration"
+    "test"
   ]
 }
