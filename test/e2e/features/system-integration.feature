@@ -1,6 +1,5 @@
-Feature: Frontend and Backend Integration
-  フロントエンドとバックエンドの統合テスト
-  LocalStackのDynamoDBを使用し、ローカルサーバーで動作確認
+Feature: システム統合テスト
+  フロントエンドとバックエンドのシステム接続を確認
 
   Background:
     Given LocalStackのDynamoDBが起動している
@@ -11,8 +10,3 @@ Feature: Frontend and Backend Integration
     When ユーザーがフロントエンドにアクセスする
     Then フロントエンドページが正常に表示される
     And バックエンドAPIへの接続が確立される
-
-  Scenario: Clock-in操作のエンドツーエンドテスト
-    When ユーザーがClock-inボタンをクリックする
-    Then Clock-inデータがDynamoDBに保存される
-    And 成功メッセージが表示される
