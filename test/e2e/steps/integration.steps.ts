@@ -15,6 +15,10 @@ let page: Page;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 
+// Test credentials
+const TEST_USER_ID = 'user001';
+const TEST_PASSWORD = 'password123';
+
 // LocalStack DynamoDB client
 const dynamoClient = new DynamoDBClient({
   region: 'ap-northeast-1',
@@ -96,8 +100,8 @@ When('ユーザーがClock-inボタンをクリックする', async function () 
   await page.goto(FRONTEND_URL);
   
   // User IDとPasswordを入力
-  await page.fill('#userId', 'user001');
-  await page.fill('#password', 'password123');
+  await page.fill('#userId', TEST_USER_ID);
+  await page.fill('#password', TEST_PASSWORD);
   
   // Clock-inボタンをクリック（"出勤"ボタン）
   await page.click('text=出勤');
@@ -122,22 +126,22 @@ Then('Clock-inデータがDynamoDBに保存される', async function () {
   });
   const result = await dynamoClient.send(command);
   
-  // user001のclock-inレコードが存在することを確認
+  // TEST_USER_IDのclock-inレコードが存在することを確認
   const clockInRecord = result.Items?.find(
-    item => item.userId?.S === 'user001' && item.type?.S === 'clock-in'
+    item => item.userId?.S === TEST_USER_ID && item.type?.S === 'clock-in'
   );
   expect(clockInRecord).toBeDefined();
   
-  console.log(`✓ Found clock-in record for user001 in DynamoDB`);
+  console.log(`✓ Found clock-in record for ${TEST_USER_ID} in DynamoDB`);
 });
 
 Then('成功メッセージが表示される', async function () {
-  // ホームページに戻る
+  // ホームページに戻って成功メッセージを確認
   await page.goto(FRONTEND_URL);
   
-  // 再度ログイン
-  await page.fill('#userId', 'user001');
-  await page.fill('#password', 'password123');
+  // 最後のテストとして、もう一度clock-inして成功メッセージを確認
+  await page.fill('#userId', TEST_USER_ID);
+  await page.fill('#password', TEST_PASSWORD);
   await page.click('text=出勤');
   
   // 成功メッセージを確認
