@@ -13,7 +13,6 @@ Feature: Frontend and Backend Integration
     And バックエンドAPIへの接続が確立される
 
   Scenario: Clock-in操作のエンドツーエンドテスト
-    Given ユーザーが認証されている
     When ユーザーがClock-inボタンをクリックする
     Then Clock-inデータがDynamoDBに保存される
     And 成功メッセージが表示される

@@ -91,34 +91,61 @@ Then('バックエンドAPIへの接続が確立される', async function () {
 });
 
 // Scenario: Clock-in操作のエンドツーエンドテスト
-Given('ユーザーが認証されている', async function () {
-  // 認証ロジックをここに実装（将来的に）
-  // 現在はスキップ
-  console.log('⚠ Authentication not implemented yet - skipping');
-});
-
 When('ユーザーがClock-inボタンをクリックする', async function () {
-  // Clock-inボタンを探してクリック
-  // 現在はページが存在することだけ確認
+  // ページにアクセス
   await page.goto(FRONTEND_URL);
-  console.log('⚠ Clock-in button not implemented yet - skipping click');
+  
+  // User IDとPasswordを入力
+  await page.fill('#userId', 'user001');
+  await page.fill('#password', 'password123');
+  
+  // Clock-inボタンをクリック（"出勤"ボタン）
+  await page.click('text=出勤');
+  
+  // メッセージが表示されるまで待機
+  await page.waitForSelector('.message.success', { timeout: 5000 });
 });
 
 Then('Clock-inデータがDynamoDBに保存される', async function () {
-  // DynamoDBにデータが保存されたか確認
-  // 現在はテーブルがスキャンできることだけ確認
+  // 打刻一覧ページに移動
+  await page.click('text=打刻一覧を見る');
+  await page.waitForLoadState('networkidle');
+  
+  // テーブルが表示されることを確認
+  const table = await page.waitForSelector('table', { timeout: 5000 });
+  expect(table).toBeDefined();
+  
+  // DynamoDBから直接確認
   const command = new ScanCommand({
     TableName: TABLE_NAME,
     Limit: 10,
   });
   const result = await dynamoClient.send(command);
-  console.log(`⚠ DynamoDB scan returned ${result.Items?.length || 0} items`);
-  expect(result).toBeDefined();
+  
+  // user001のclock-inレコードが存在することを確認
+  const clockInRecord = result.Items?.find(
+    item => item.userId?.S === 'user001' && item.type?.S === 'clock-in'
+  );
+  expect(clockInRecord).toBeDefined();
+  
+  console.log(`✓ Found clock-in record for user001 in DynamoDB`);
 });
 
 Then('成功メッセージが表示される', async function () {
-  // 成功メッセージの確認（将来的に）
-  console.log('⚠ Success message not implemented yet - skipping');
+  // ホームページに戻る
+  await page.goto(FRONTEND_URL);
+  
+  // 再度ログイン
+  await page.fill('#userId', 'user001');
+  await page.fill('#password', 'password123');
+  await page.click('text=出勤');
+  
+  // 成功メッセージを確認
+  const successMessage = await page.waitForSelector('.message.success', { timeout: 5000 });
+  const messageText = await successMessage.textContent();
+  expect(messageText).toContain('Clock in successful');
+  
+  console.log(`✓ Success message displayed: ${messageText}`);
   
   // ブラウザのクリーンアップ
   if (browser) {
