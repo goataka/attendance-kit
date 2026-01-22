@@ -40,12 +40,10 @@ export class FrontendConstruct extends Construct {
   private createS3Bucket(environment: string): s3.Bucket {
     return new s3.Bucket(this, 'FrontendBucket', {
       bucketName: `attendance-kit-${environment}-frontend`,
-      // LocalStackではバージョニングをサポートしないためバージョニングなし
       versioned: false,
       // PublicReadAccessはOAI経由のみ許可
       publicReadAccess: false,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      // LocalStackではS3の暗号化をスキップ
       encryption: s3.BucketEncryption.S3_MANAGED,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,

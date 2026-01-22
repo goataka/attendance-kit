@@ -22,7 +22,7 @@ describe('Frontend E2E Tests on LocalStack', () => {
   describe('S3 Bucket (LocalStack)', () => {
     // LocalStack Community版ではCloudFrontがサポートされていないため、
     // S3のみの基本的なテストを実施
-    // 実際のCloudFront+S3統合テストは実AW環境でのデプロイ時に検証
+    // 実際のCloudFront+S3統合テストは実AWS環境でのデプロイ時に検証
     
     it.skip('should have frontend bucket created (requires full LocalStack deploy)', async () => {
       // このテストは実際のLocalStackデプロイ時にのみ実行

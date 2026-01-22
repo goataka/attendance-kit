@@ -27,12 +27,12 @@ export class ClockService {
     const clientConfig: any = {
       region: process.env.AWS_REGION || 'ap-northeast-1',
     };
-    
+
     // LocalStackエンドポイントが設定されている場合はそれを使用
     if (process.env.DYNAMODB_ENDPOINT) {
       clientConfig.endpoint = process.env.DYNAMODB_ENDPOINT;
     }
-    
+
     const client = new DynamoDBClient(clientConfig);
     this.docClient = DynamoDBDocumentClient.from(client);
     this.tableName =
