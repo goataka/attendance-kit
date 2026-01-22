@@ -100,10 +100,6 @@ jobs:
       - name: Run Backend Integration Tests
         run: npm run test:integration --workspace=@attendance-kit/backend
 
-      - name: Run E2E Tests
-        working-directory: infrastructure/deploy
-        run: npm run test:integration
-
   deploy-integration-test:
     runs-on: ubuntu-latest
     needs: unit-test
@@ -151,6 +147,9 @@ jobs:
       - name: Run E2E Tests
         working-directory: infrastructure/deploy
         run: npm run test:integration
+        env:
+          # LocalStack Community版ではCloudFrontが未サポートのため、
+          # e2e testは基本的な検証のみ実施
 
   frontend-integration-test:
     runs-on: ubuntu-latest
@@ -177,8 +176,4 @@ jobs:
 
       - name: Run frontend integration tests
         working-directory: apps/frontend
-        run: npm run test:integration
-
-      - name: Run E2E Tests (Frontend deployment verification)
-        working-directory: infrastructure/deploy
         run: npm run test:integration
