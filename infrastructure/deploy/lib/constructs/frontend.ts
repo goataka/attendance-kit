@@ -74,7 +74,7 @@ export class FrontendConstruct extends Construct {
     return new cloudfront.Distribution(this, 'Distribution', {
       comment: `Attendance Kit Frontend Distribution (${environment})`,
       defaultBehavior: {
-        origin: new origins.S3Origin(bucket, {
+        origin: origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
           originAccessIdentity: oai,
         }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,

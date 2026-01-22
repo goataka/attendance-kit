@@ -23,6 +23,17 @@ AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコ�
   - Point-in-Time Recovery有効
   - AWS管理キー暗号化
 
+- **Backend API**
+  - Lambda関数: Node.js 20.x
+  - API Gateway: REST API
+  - DynamoDBテーブルへのアクセス権限
+
+- **Frontend**
+  - S3バケット: 静的ファイルホスティング
+  - CloudFront: CDN配信
+  - Origin Access Identity: S3への安全なアクセス
+  - API Gateway統合: `/api/*` パスでバックエンドAPIにルーティング
+
 ### CloudFormation管理（setup/ディレクトリ）
 - **OIDC Provider**: GitHub Actions用（`infrastructure/setup/attendance-kit-setup.yaml`）
 - **IAM Role**: GitHub ActionsがAWSリソースにアクセスするためのロール
