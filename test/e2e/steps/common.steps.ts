@@ -45,13 +45,18 @@ Given('LocalStackのDynamoDBが起動している', async function () {
 });
 
 Given('バックエンドサーバーがローカルで起動している', async function () {
-  // バックエンドの接続確認 - サーバーが応答していればOK（404も許容）
+  // バックエンドのヘルスチェック
   try {
-    const response = await fetch(`${BACKEND_URL}/`, {
+    const response = await fetch(`${BACKEND_URL}/api/health`, {
       method: 'GET',
     });
-    // サーバーが応答していればOK（ステータスコードは問わない）
-    console.log(`✓ Backend server is accessible (status: ${response.status})`);
+    
+    if (!response.ok) {
+      throw new Error(`Backend health check failed: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log(`✓ Backend server is healthy: ${JSON.stringify(data)}`);
   } catch (error) {
     throw new Error(`Backend server is not accessible: ${error}`);
   }

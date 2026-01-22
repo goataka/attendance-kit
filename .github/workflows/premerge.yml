@@ -195,6 +195,9 @@ jobs:
       - name: Install dependencies
         run: npm run setup
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
 
@@ -216,7 +219,7 @@ jobs:
         run: |
           npm run dev &
           sleep 10
-          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/ || echo "Backend not ready"
+          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/api/health || echo "Backend not ready"
 
       - name: Start Frontend Server
         working-directory: apps/frontend
