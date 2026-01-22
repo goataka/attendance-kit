@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { BackendConstruct } from './constructs/backend';
+import { FrontendConstruct } from './constructs/frontend';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
@@ -11,6 +12,7 @@ export interface AttendanceKitStackProps extends cdk.StackProps {
 export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
   public readonly backendApi: BackendConstruct;
+  public readonly frontend: FrontendConstruct;
 
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
@@ -68,6 +70,12 @@ export class AttendanceKitStack extends cdk.Stack {
       environment,
       clockTable: this.clockTable,
       jwtSecret: jwtSecret || 'default-secret-change-in-production',
+    });
+
+    // Frontend (CloudFront + S3)
+    this.frontend = new FrontendConstruct(this, 'Frontend', {
+      environment,
+      api: this.backendApi.api,
     });
 
     // CloudFormation Outputs
