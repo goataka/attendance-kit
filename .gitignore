@@ -48,3 +48,15 @@ yarn-error.log*
 *.tsbuildinfo
 .npm
 .eslintcache
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Storybook
+storybook-static/
+debug-storybook.log
+
+*storybook.log
+storybook-static

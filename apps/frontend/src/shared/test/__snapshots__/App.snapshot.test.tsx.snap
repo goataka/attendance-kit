@@ -1,0 +1,90 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`App Snapshot > matches snapshot 1`] = `
+<div>
+  <div
+    class="clock-in-out-page"
+  >
+    <div
+      class="container"
+    >
+      <h1>
+        勤怠打刻
+      </h1>
+      <div
+        class="form-section"
+      >
+        <div
+          class="form-group"
+        >
+          <label
+            for="userId"
+          >
+            User ID
+          </label>
+          <input
+            id="userId"
+            placeholder="Enter your user ID"
+            type="text"
+            value=""
+          />
+        </div>
+        <div
+          class="form-group"
+        >
+          <label
+            for="password"
+          >
+            Password
+          </label>
+          <input
+            id="password"
+            placeholder="Enter your password"
+            type="password"
+            value=""
+          />
+        </div>
+        <div
+          class="button-group"
+        >
+          <button
+            class="btn btn-primary"
+          >
+            出勤
+          </button>
+          <button
+            class="btn btn-secondary"
+          >
+            退勤
+          </button>
+        </div>
+      </div>
+      <div
+        class="help-text"
+      >
+        <p>
+          テスト用アカウント:
+        </p>
+        <ul>
+          <li>
+            user001 / password123
+          </li>
+          <li>
+            user002 / password456
+          </li>
+        </ul>
+      </div>
+      <div
+        class="navigation"
+      >
+        <a
+          class="link"
+          href="/clocks"
+        >
+          打刻一覧を見る →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;

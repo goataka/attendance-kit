@@ -1,0 +1,137 @@
+.clocks-list-page {
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.clocks-list-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.clocks-list-page h1 {
+  font-size: 1.875rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+}
+
+.filter-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: var(--background-color);
+  border-radius: 4px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.filter-group input,
+.filter-group select {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.filter-section .button-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+.filter-section .btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--secondary-color);
+  font-size: 1.125rem;
+}
+
+.clocks-table-container {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.clocks-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.clocks-table thead {
+  background-color: var(--background-color);
+}
+
+.clocks-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.clocks-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+}
+
+.clocks-table tbody tr:hover {
+  background-color: var(--background-color);
+}
+
+.no-data {
+  text-align: center;
+  color: var(--secondary-color);
+  padding: 2rem !important;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge.clock-in {
+  background-color: #dcfce7;
+  color: var(--success-color);
+}
+
+.badge.clock-out {
+  background-color: #fef3c7;
+  color: #d97706;
+}
+
+.clocks-list-page .navigation {
+  margin-top: 1.5rem;
+  text-align: center;
+}
