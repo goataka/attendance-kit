@@ -13,6 +13,7 @@
     "build": "npm run build --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
+    "test:e2e": "cucumber-js test/e2e/features/**/*.feature",
     "generate": "npm run generate --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
   },
@@ -26,5 +27,12 @@
   "engines": {
     "node": ">=24.0.0",
     "npm": ">=10.0.0"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^12.6.0",
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.10",
+    "playwright-bdd": "^8.4.2",
+    "ts-node": "^10.9.2"
   }
 }

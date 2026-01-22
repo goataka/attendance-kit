@@ -147,6 +147,66 @@ jobs:
           # LocalStack Community版ではCloudFrontが未サポートのため、
           # e2e testは基本的な検証のみ実施
 
+  e2e-test:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    
+    env:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: ap-northeast-1
+      JWT_SECRET: test-secret-key
+      FRONTEND_URL: http://localhost:5173
+      BACKEND_URL: http://localhost:3000
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm run setup
+
+      - name: Build all workspaces
+        run: npm run build --workspaces --if-present
+
+      - name: Install CDK CLI
+        run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Start LocalStack
+        uses: LocalStack/setup-localstack@v0.2.3
+        with:
+          image-tag: 'latest'
+          install-awslocal: 'true'
+
+      - name: Deploy DynamoDB to LocalStack
+        working-directory: infrastructure/deploy
+        run: npm run deploy:local-db
+
+      - name: Start Backend Server
+        working-directory: apps/backend
+        run: |
+          npm run dev &
+          sleep 10
+          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/api/health || echo "Backend not ready"
+
+      - name: Start Frontend Server
+        working-directory: apps/frontend
+        run: |
+          npm run dev &
+          sleep 10
+
+      - name: Run E2E Tests
+        run: npm run test:e2e
+        continue-on-error: true
+
   frontend-integration-test:
     runs-on: ubuntu-latest
     needs: unit-test

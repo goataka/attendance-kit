@@ -60,3 +60,6 @@ debug-storybook.log
 
 *storybook.log
 storybook-static
+
+# E2E Test Reports
+test/e2e/reports/
