@@ -1,18 +1,21 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { BackendConstruct } from './constructs/backend';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
+  jwtSecret?: string; // JWT secret from GitHub Secrets
 }
 
 export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
+  public readonly backendApi: BackendConstruct;
 
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
 
-    const { environment } = props;
+    const { environment, jwtSecret } = props;
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
     // (infrastructure/setup/attendance-kit-setup.yaml)
@@ -59,6 +62,13 @@ export class AttendanceKitStack extends cdk.Stack {
     cdk.Tags.of(this.clockTable).add('Project', 'attendance-kit');
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
     cdk.Tags.of(this.clockTable).add('CostCenter', 'Engineering');
+
+    // Backend API (Lambda + API Gateway)
+    this.backendApi = new BackendConstruct(this, 'BackendApi', {
+      environment,
+      clockTable: this.clockTable,
+      jwtSecret: jwtSecret || 'default-secret-change-in-production',
+    });
 
     // CloudFormation Outputs
     new cdk.CfnOutput(this, 'TableName', {

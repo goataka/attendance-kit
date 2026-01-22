@@ -27,6 +27,8 @@ pip-delete-this-directory.txt
 dist/
 build/
 *.egg-info/
+# Exception: Keep placeholder file for CDK tests
+!apps/backend/dist/lambda.js
 
 # Temporary files
 *.tmp

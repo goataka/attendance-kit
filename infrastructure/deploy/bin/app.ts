@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 import { AttendanceKitAccountStack } from '../lib/attendance-kit-account-stack';
+import { DynamoDBStack } from '../lib/dynamodb-stack';
 
 const app = new cdk.App();
 
@@ -10,7 +11,8 @@ const app = new cdk.App();
 // Valid values:
 //   - 'account': Deploy only Account Stack (requires COST_ALERT_EMAIL)
 //   - 'environment': Deploy only Environment Stack (requires environment context)
-//   - 'all': Deploy both stacks (default, COST_ALERT_EMAIL is required)
+//   - 'dynamodb': Deploy only DynamoDB Stack (for integration testing)
+//   - 'all': Deploy all stacks (default, COST_ALERT_EMAIL is required)
 const stackType = app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'all';
 
 const LOCALSTACK_ACCOUNT_ID = '000000000000';
@@ -53,12 +55,30 @@ if (['all', 'environment'].includes(stackType)) {
   new AttendanceKitStack(app, stackName, {
     env,
     environment,
-    description: `DynamoDB clock table for attendance-kit (${environment} environment)`,
+    jwtSecret: process.env.JWT_SECRET, // From GitHub Secrets
+    description: `DynamoDB clock table and Backend API for attendance-kit (${environment} environment)`,
     tags: {
       Environment: environment,
       Project: 'attendance-kit',
       ManagedBy: 'CDK',
       CostCenter: 'Engineering',
+    },
+  });
+}
+
+// DynamoDB-only stack (for integration testing with LocalStack)
+if (stackType === 'dynamodb') {
+  const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'test';
+  
+  new DynamoDBStack(app, `AttendanceKit-${environment}-DynamoDB`, {
+    env,
+    environment,
+    description: `DynamoDB Clock Table for integration testing (${environment})`,
+    tags: {
+      Environment: environment,
+      Project: 'attendance-kit',
+      ManagedBy: 'CDK',
+      Purpose: 'IntegrationTest',
     },
   });
 }

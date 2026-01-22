@@ -1,0 +1,220 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/clock/in": {
+      "post": {
+        "operationId": "ClockController_clockIn",
+        "summary": "出勤打刻",
+        "description": "Register clock-in time",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClockInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Clock-in recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClockRecordResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "clock"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/clock/out": {
+      "post": {
+        "operationId": "ClockController_clockOut",
+        "summary": "退勤打刻",
+        "description": "Register clock-out time",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClockOutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Clock-out recorded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClockRecordResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "clock"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/clock/records": {
+      "get": {
+        "operationId": "ClockController_getRecords",
+        "summary": "打刻記録一覧取得",
+        "description": "Get all clock records for the authenticated user",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of clock records",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClockRecordResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "tags": [
+          "clock"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Attendance Kit API",
+    "description": "勤怠管理キット API ドキュメント",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [
+    {
+      "name": "clock",
+      "description": "打刻API"
+    }
+  ],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "ClockInDto": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Location where clock-in occurred",
+            "example": "Tokyo Office"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "Device ID used for clock-in",
+            "example": "device-abc123"
+          }
+        }
+      },
+      "ClockRecordResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user123"
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Timestamp in ISO 8601 format",
+            "example": "2025-12-25T09:00:00Z"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date in YYYY-MM-DD format",
+            "example": "2025-12-25"
+          },
+          "type": {
+            "type": "string",
+            "description": "Clock type",
+            "enum": [
+              "clock-in",
+              "clock-out"
+            ],
+            "example": "clock-in"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location",
+            "example": "Tokyo Office"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "Device ID",
+            "example": "device-abc123"
+          }
+        },
+        "required": [
+          "userId",
+          "timestamp",
+          "date",
+          "type"
+        ]
+      },
+      "ClockOutDto": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "Location where clock-out occurred",
+            "example": "Tokyo Office"
+          },
+          "deviceId": {
+            "type": "string",
+            "description": "Device ID used for clock-out",
+            "example": "device-abc123"
+          }
+        }
+      }
+    }
+  }
+}

@@ -22,26 +22,59 @@ runs:
       id: check-changes
       shell: bash
       run: |
-        if git diff --quiet ${{ inputs.files }}; then
-          echo "has_changes=false" >> $GITHUB_OUTPUT
-          echo "No changes detected"
-        else
+        # ファイルパターンを改行区切りで処理
+        has_changes=false
+        while IFS= read -r pattern; do
+          # 空行をスキップ
+          if [[ -z "$pattern" ]]; then
+            continue
+          fi
+          # 各パターンについて変更をチェック
+          if ! git diff --quiet -- "$pattern" 2>/dev/null; then
+            has_changes=true
+            break
+          fi
+        done <<< "${{ inputs.files }}"
+        
+        if [[ "$has_changes" == "true" ]]; then
           echo "has_changes=true" >> $GITHUB_OUTPUT
           echo "Changes detected"
+        else
+          echo "has_changes=false" >> $GITHUB_OUTPUT
+          echo "No changes detected"
         fi
 
     - name: Commit and push changes
+      id: commit-changes
       if: steps.check-changes.outputs.has_changes == 'true'
       shell: bash
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add ${{ inputs.files }}
+        
+        # ファイルパターンを改行区切りで処理してgit addを実行
+        while IFS= read -r pattern; do
+          # 空行をスキップ
+          if [[ -z "$pattern" ]]; then
+            continue
+          fi
+          # 各パターンを個別にgit add
+          git add -- "$pattern" 2>/dev/null || true
+        done <<< "${{ inputs.files }}"
+        
+        # 変更がステージングされているか確認
+        if git diff --cached --quiet; then
+          echo "No changes staged, skipping commit"
+          echo "committed=false" >> $GITHUB_OUTPUT
+          exit 0
+        fi
+        
         git commit -m "${{ inputs.commit-message }}"
         git push
+        echo "committed=true" >> $GITHUB_OUTPUT
 
     - name: Comment on PR
-      if: steps.check-changes.outputs.has_changes == 'true'
+      if: steps.commit-changes.outputs.committed == 'true'
       uses: actions/github-script@v7
       with:
         github-token: ${{ inputs.github-token }}

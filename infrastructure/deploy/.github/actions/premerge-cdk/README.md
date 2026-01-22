@@ -22,5 +22,4 @@ Pull RequestでCDK関連ファイルに変更があった場合に自動実行�
 
 ## 関連ドキュメント
 
-- [LocalStack環境](../../localstack/README.md)
 - [スクリプト](../../scripts/README.md)

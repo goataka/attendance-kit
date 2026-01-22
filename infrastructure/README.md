@@ -171,5 +171,4 @@ CloudFormationが差分更新を実行します。RETAIN削除ポリシーによ
 
 ## 関連ドキュメント
 
-- [LocalStack開発環境](deploy/localstack/)
 - [セットアップガイド](setup/README.md)
