@@ -6,7 +6,7 @@ import { FrontendConstruct } from './constructs/frontend';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
-  jwtSecret?: string; // JWT secret from GitHub Secrets
+  jwtSecret: string; // JWT secret from GitHub Secrets (required)
 }
 
 export class AttendanceKitStack extends cdk.Stack {
@@ -69,7 +69,7 @@ export class AttendanceKitStack extends cdk.Stack {
     this.backendApi = new BackendConstruct(this, 'BackendApi', {
       environment,
       clockTable: this.clockTable,
-      jwtSecret: jwtSecret || 'default-secret-change-in-production',
+      jwtSecret,
     });
 
     // Frontend (CloudFront + S3)

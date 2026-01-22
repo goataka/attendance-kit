@@ -135,12 +135,6 @@ export class FrontendConstruct extends Construct {
       description: `CloudFront distribution URL (${environment})`,
       exportName: formatExportName(environment, 'CloudFrontUrl'),
     });
-
-    new cdk.CfnOutput(this, 'CloudFrontDistributionId', {
-      value: distribution.distributionId,
-      description: `CloudFront distribution ID (${environment})`,
-      exportName: formatExportName(environment, 'CloudFrontDistributionId'),
-    });
   }
 
   private applyTags(

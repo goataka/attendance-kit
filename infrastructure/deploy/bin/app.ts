@@ -50,12 +50,18 @@ if (['all', 'environment'].includes(stackType)) {
     throw new Error(`Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`);
   }
 
+  // Validate JWT_SECRET is provided
+  const jwtSecret = process.env.JWT_SECRET;
+  if (!jwtSecret) {
+    throw new Error('JWT_SECRET environment variable is required for environment stack deployment');
+  }
+
   const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
 
   new AttendanceKitStack(app, stackName, {
     env,
     environment,
-    jwtSecret: process.env.JWT_SECRET, // From GitHub Secrets
+    jwtSecret,
     description: `DynamoDB clock table and Backend API for attendance-kit (${environment} environment)`,
     tags: {
       Environment: environment,

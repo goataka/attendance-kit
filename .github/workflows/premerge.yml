@@ -124,11 +124,7 @@ jobs:
       - name: Install dependencies
         run: npm run setup
 
-      - name: Build TypeScript
-        working-directory: infrastructure/deploy
-        run: npm run build
-
-      - name: Build Frontend and Backend
+      - name: Build all workspaces
         run: npm run build --workspaces --if-present
 
       - name: Install CDK CLI

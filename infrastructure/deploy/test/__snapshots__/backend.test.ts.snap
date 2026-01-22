@@ -67,15 +67,6 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       },
       "Value": "staging",
     },
-    "FrontendCloudFrontDistributionIdC60423D7": {
-      "Description": "CloudFront distribution ID (staging)",
-      "Export": {
-        "Name": "AttendanceKit-Staging-CloudFrontDistributionId",
-      },
-      "Value": {
-        "Ref": "FrontendDistributionC0C89627",
-      },
-    },
     "FrontendCloudFrontUrlD7235372": {
       "Description": "CloudFront distribution URL (staging)",
       "Export": {
@@ -186,7 +177,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             "DYNAMODB_TABLE_NAME": {
               "Ref": "ClockTable9AA4DD3D",
             },
-            "JWT_SECRET": "default-secret-change-in-production",
+            "JWT_SECRET": "test-jwt-secret",
             "NODE_ENV": "staging",
           },
         },
@@ -1507,15 +1498,6 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       },
       "Value": "dev",
     },
-    "FrontendCloudFrontDistributionIdC60423D7": {
-      "Description": "CloudFront distribution ID (dev)",
-      "Export": {
-        "Name": "AttendanceKit-Dev-CloudFrontDistributionId",
-      },
-      "Value": {
-        "Ref": "FrontendDistributionC0C89627",
-      },
-    },
     "FrontendCloudFrontUrlD7235372": {
       "Description": "CloudFront distribution URL (dev)",
       "Export": {
@@ -1626,7 +1608,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             "DYNAMODB_TABLE_NAME": {
               "Ref": "ClockTable9AA4DD3D",
             },
-            "JWT_SECRET": "default-secret-change-in-production",
+            "JWT_SECRET": "test-jwt-secret",
             "NODE_ENV": "dev",
           },
         },

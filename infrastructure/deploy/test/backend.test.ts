@@ -10,6 +10,7 @@ describe('AttendanceKitStack', () => {
     app = new App();
     const stack = new AttendanceKitStack(app, 'AttendanceKit-Dev-Stack', {
       environment: 'dev',
+      jwtSecret: 'test-jwt-secret',
       description: 'DynamoDB clock table for attendance-kit (dev environment)',
       tags: {
         Environment: 'dev',
@@ -167,6 +168,7 @@ describe('AttendanceKitStack - Staging Environment', () => {
     app = new App();
     const stack = new AttendanceKitStack(app, 'AttendanceKit-Staging-Stack', {
       environment: 'staging',
+      jwtSecret: 'test-jwt-secret',
       description: 'DynamoDB clock table for attendance-kit (staging environment)',
       tags: {
         Environment: 'staging',
