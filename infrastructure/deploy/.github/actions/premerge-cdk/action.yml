@@ -11,15 +11,43 @@ runs:
         cache: 'npm'
         cache-dependency-path: infrastructure/deploy/package-lock.json
 
-    - name: Run common tests
-      working-directory: infrastructure/deploy
+    - name: Install dependencies
       shell: bash
-      run: ./scripts/run-unit-tests.sh
+      run: npm run setup
 
-    - name: Run LocalStack validation
+    - name: Build TypeScript
       working-directory: infrastructure/deploy
       shell: bash
-      run: ./scripts/run-integration-tests.sh
+      run: npm run build
+
+    - name: Run Unit Tests
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm run test:unit
+
+    - name: Install CDK CLI
+      shell: bash
+      run: npm install --global aws-cdk-local aws-cdk
+
+    - name: Start LocalStack
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm run localstack:start
+
+    - name: Deploy to LocalStack
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm run localstack:deploy
+      env:
+        AWS_ACCESS_KEY_ID: test
+        AWS_SECRET_ACCESS_KEY: test
+        AWS_DEFAULT_REGION: ap-northeast-1
+
+    - name: Stop LocalStack
+      if: always()
+      working-directory: infrastructure/deploy
+      shell: bash
+      run: npm run localstack:stop
 
     - name: Comment on PR failure
       if: failure()
