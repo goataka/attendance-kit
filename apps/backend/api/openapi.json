@@ -1,6 +1,22 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "HealthController_healthCheck",
+        "summary": "ヘルスチェック",
+        "description": "Health check endpoint",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
     "/clock/in": {
       "post": {
         "operationId": "ClockController_clockIn",
