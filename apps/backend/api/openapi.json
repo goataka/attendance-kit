@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/health": {
+    "/health": {
       "get": {
         "operationId": "HealthController_healthCheck",
         "summary": "ヘルスチェック",
