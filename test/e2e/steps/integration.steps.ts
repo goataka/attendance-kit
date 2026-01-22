@@ -119,10 +119,8 @@ Then('Clock-inデータがDynamoDBに保存される', async function () {
 Then('成功メッセージが表示される', async function () {
   // 成功メッセージの確認（将来的に）
   console.log('⚠ Success message not implemented yet - skipping');
-});
-
-// クリーンアップ
-process.on('exit', async () => {
+  
+  // ブラウザのクリーンアップ
   if (browser) {
     await browser.close();
   }

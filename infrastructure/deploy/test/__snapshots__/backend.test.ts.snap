@@ -169,7 +169,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "ac94076bcadf94390c8a3f4dba857a70df2647cec6405935a51da3eb1e36b4bb.zip",
+          "S3Key": "9ea88aa34f176ec2d3e75afc79bd2f883156abec79b34f45dca5391827eb22c8.zip",
         },
         "Description": "Attendance Kit Backend API (staging)",
         "Environment": {
@@ -1600,7 +1600,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "ac94076bcadf94390c8a3f4dba857a70df2647cec6405935a51da3eb1e36b4bb.zip",
+          "S3Key": "9ea88aa34f176ec2d3e75afc79bd2f883156abec79b34f45dca5391827eb22c8.zip",
         },
         "Description": "Attendance Kit Backend API (dev)",
         "Environment": {
