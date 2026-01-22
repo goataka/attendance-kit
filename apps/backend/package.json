@@ -20,7 +20,7 @@
     "test:unit": "jest --updateSnapshot",
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-integration.json",
     "dev": "nest start --watch",
-    "generate:openapi": "JWT_SECRET=dummy-for-openapi-generation npx -y ts-node --project ./tsconfig.json tools/generate-openapi.ts",
+    "generate:openapi": "npx -y ts-node --project ./tsconfig.json tools/generate-openapi.ts",
     "generate": "npm run generate:openapi"
   },
   "dependencies": {

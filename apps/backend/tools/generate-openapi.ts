@@ -5,6 +5,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 async function generateOpenApiSpec() {
+  // Set dummy JWT_SECRET for OpenAPI generation
+  // OpenAPI generation doesn't perform actual authentication
+  if (!process.env.JWT_SECRET) {
+    process.env.JWT_SECRET = 'dummy-for-openapi-generation';
+  }
   const app = await NestFactory.create(AppModule, {
     logger: false,
   });
