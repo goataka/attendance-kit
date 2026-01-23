@@ -1,6 +1,7 @@
 import { When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { FRONTEND_URL, BACKEND_URL, CustomWorld } from './common.steps';
+import { FRONTEND_URL, BACKEND_URL } from './common.steps';
+import { CustomWorld } from './world';
 
 // Scenario: フロントエンドからバックエンドAPIへの接続確認
 When('ユーザーがフロントエンドにアクセスする', async function (this: CustomWorld) {

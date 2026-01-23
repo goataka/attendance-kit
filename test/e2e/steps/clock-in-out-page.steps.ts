@@ -1,51 +1,26 @@
 import { When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { FRONTEND_URL, CustomWorld } from './common.steps';
+import { FRONTEND_URL } from './common.steps';
+import { CustomWorld } from './world';
+import { fillLoginCredentials, clickClockInAndWaitForMessage } from './helpers';
 
-// Test credentials
-const TEST_USER_ID = 'user001';
-const TEST_PASSWORD = 'password123';
-
-// ClockInOutPage - 打刻ページのステップ
-When('ユーザーがClock-inボタンをクリックする', { timeout: 30000 }, async function (this: CustomWorld) {
+// 打刻ページのステップ
+When('ユーザーが出勤を打刻する', { timeout: 30000 }, async function (this: CustomWorld) {
   if (!this.page) {
     throw new Error('Page is not initialized');
   }
   
-  console.log(`📝 Starting clock-in for user: ${TEST_USER_ID}`);
-  
-  // ページにアクセス
   await this.page.goto(FRONTEND_URL);
-  console.log(`✓ Navigated to ${FRONTEND_URL}`);
+  await fillLoginCredentials(this.page);
+  await clickClockInAndWaitForMessage(this.page);
   
-  // User IDとPasswordを入力
-  await this.page.fill('#userId', TEST_USER_ID);
-  await this.page.fill('#password', TEST_PASSWORD);
-  console.log(`✓ Filled userId and password`);
+  // Verify success message appeared
+  const messageElement = await this.page.locator('.message').first();
+  const messageClass = await messageElement.getAttribute('class');
   
-  // Clock-inボタンをクリック（"出勤"ボタン）
-  await this.page.click('text=出勤');
-  console.log(`✓ Clicked clock-in button`);
-  
-  // メッセージが表示されるまで待機（成功または失敗）
-  try {
-    await this.page.waitForSelector('.message', { timeout: 15000 });
-    const messageElement = await this.page.locator('.message').first();
+  if (!messageClass?.includes('success')) {
     const messageText = await messageElement.textContent();
-    const messageClass = await messageElement.getAttribute('class');
-    console.log(`✓ Message appeared: ${messageText}`);
-    console.log(`✓ Message class: ${messageClass}`);
-    
-    // 成功メッセージかどうか確認
-    if (!messageClass?.includes('success')) {
-      throw new Error(`Expected success message but got: ${messageText}`);
-    }
-  } catch (error) {
-    console.error(`❌ Error waiting for message:`, error);
-    // ページの現在の状態をログ
-    const bodyText = await this.page.textContent('body');
-    console.log('Page content:', bodyText?.substring(0, 500));
-    throw error;
+    throw new Error(`Expected success message but got: ${messageText}`);
   }
 });
 
@@ -54,18 +29,11 @@ Then('成功メッセージが表示される', { timeout: 30000 }, async functi
     throw new Error('Page is not initialized');
   }
   
-  // ホームページに戻って成功メッセージを確認
   await this.page.goto(FRONTEND_URL);
+  await fillLoginCredentials(this.page);
+  await clickClockInAndWaitForMessage(this.page);
   
-  // 最後のテストとして、もう一度clock-inして成功メッセージを確認
-  await this.page.fill('#userId', TEST_USER_ID);
-  await this.page.fill('#password', TEST_PASSWORD);
-  await this.page.click('text=出勤');
-  
-  // 成功メッセージを確認
   const successMessage = await this.page.waitForSelector('.message.success', { timeout: 15000 });
   const messageText = await successMessage.textContent();
   expect(messageText).toContain('Clock in successful');
-  
-  console.log(`✓ Success message displayed: ${messageText}`);
 });
