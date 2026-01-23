@@ -25,6 +25,8 @@ on:
 permissions:
   id-token: write   # OIDC認証に必要
   contents: read
+  issues: write     # Issue作成に必要
+  pull-requests: write  # PRコメントに必要
 
 jobs:
   deploy:
@@ -91,6 +93,14 @@ jobs:
       - name: Comment on failure
         if: failure()
         uses: ./.github/actions/comment-on-failure
+        with:
+          workflow-name: 'Deploy Environment Stack'
+          failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Issue on deploy failure
+        if: failure()
+        uses: ./.github/actions/create-failure-issue
         with:
           workflow-name: 'Deploy Environment Stack'
           failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'

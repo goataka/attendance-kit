@@ -1,0 +1,114 @@
+name: 'Create Issue on Deploy Failure'
+description: 'デプロイワークフロー失敗時にIssueを作成し、元のPRがあればコメントする'
+
+inputs:
+  workflow-name:
+    description: 'ワークフロー名'
+    required: true
+  failure-message:
+    description: '失敗メッセージ'
+    required: true
+  github-token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Issue on failure
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const workflowName = '${{ inputs.workflow-name }}';
+          const failureMessage = '${{ inputs.failure-message }}';
+          const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+          const commitSha = context.sha;
+          const commitUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/commit/${commitSha}`;
+          
+          // Issue本文を作成
+          const issueBody = `## デプロイ失敗の詳細
+          
+          ${failureMessage}
+          
+          ### ワークフロー情報
+          - **ワークフロー**: ${workflowName}
+          - **実行ログ**: [ワークフロー実行 #${context.runNumber}](${runUrl})
+          - **コミット**: [${commitSha.substring(0, 7)}](${commitUrl})
+          - **ブランチ**: ${context.ref}
+          - **失敗日時**: ${new Date().toISOString()}
+          
+          ### 対応が必要なアクション
+          1. 実行ログを確認してエラーの原因を特定
+          2. 必要に応じてロールバックを検討
+          3. 修正後に再デプロイを実行
+          `;
+          
+          // Issueを作成
+          const issue = await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: `🚨 デプロイ失敗: ${workflowName}`,
+            body: issueBody,
+            labels: ['deploy-failure', 'bug']
+          });
+          
+          console.log(`Created issue #${issue.data.number}: ${issue.data.html_url}`);
+          
+          // 元のPRを探す
+          let prNumber = null;
+          
+          // context.payloadからPR番号を取得（push eventの場合、head_commitに含まれることがある）
+          if (context.payload.head_commit && context.payload.head_commit.message) {
+            const prMatch = context.payload.head_commit.message.match(/#(\d+)/);
+            if (prMatch) {
+              prNumber = parseInt(prMatch[1]);
+              console.log(`Found PR number from commit message: #${prNumber}`);
+            }
+          }
+          
+          // PRが見つからない場合、コミットに関連するPRを検索
+          if (!prNumber) {
+            try {
+              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                commit_sha: commitSha
+              });
+              
+              if (prs.data.length > 0) {
+                // マージされたPRを優先的に選択
+                const mergedPr = prs.data.find(pr => pr.merged_at);
+                prNumber = mergedPr ? mergedPr.number : prs.data[0].number;
+                console.log(`Found PR number from commit: #${prNumber}`);
+              }
+            } catch (error) {
+              console.log('No PR found for this commit');
+            }
+          }
+          
+          // PRが見つかった場合、コメントを追加
+          if (prNumber) {
+            const prComment = `## ⚠️ デプロイ失敗通知
+          
+            このPRに関連するデプロイ（**${workflowName}**）が失敗しました。
+            
+            📋 **Issue**: #${issue.data.number}
+            🔗 **詳細**: ${issue.data.html_url}
+            
+            対応をお願いします。
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: prComment
+            });
+            
+            console.log(`Added comment to PR #${prNumber}`);
+          }
+          
+          // Issueの番号を出力に設定（後続のステップで使用可能）
+          core.setOutput('issue-number', issue.data.number);
+          core.setOutput('issue-url', issue.data.html_url);
