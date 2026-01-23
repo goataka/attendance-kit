@@ -254,7 +254,7 @@ jobs:
             3. \`cucumber-report.html\` をブラウザで開く
             `;
             
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
