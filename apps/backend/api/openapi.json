@@ -132,6 +132,42 @@
           }
         ]
       }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "ユーザーログイン",
+        "description": "Login and get JWT token",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
     }
   },
   "info": {
@@ -230,6 +266,14 @@
             "example": "device-abc123"
           }
         }
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {}
       }
     }
   }
