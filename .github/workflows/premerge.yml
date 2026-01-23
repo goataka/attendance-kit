@@ -226,7 +226,7 @@ jobs:
 
       - name: Run E2E Tests
         run: npm run test:e2e
-        timeout-minutes: 5
+        timeout-minutes: 2
 
       - name: Upload E2E Test Reports
         if: always()
