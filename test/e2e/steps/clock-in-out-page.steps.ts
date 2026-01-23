@@ -1,6 +1,6 @@
 import { When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { page, FRONTEND_URL, browser } from './common.steps';
+import { page, FRONTEND_URL } from './common.steps';
 
 // Test credentials
 const TEST_USER_ID = 'user001';
@@ -60,9 +60,4 @@ Then('成功メッセージが表示される', { timeout: 30000 }, async functi
   expect(messageText).toContain('Clock in successful');
   
   console.log(`✓ Success message displayed: ${messageText}`);
-  
-  // ブラウザのクリーンアップ
-  if (browser) {
-    await browser.close();
-  }
 });

@@ -1,4 +1,4 @@
-import { Given, AfterAll, After } from '@cucumber/cucumber';
+import { Given, Before, After, AfterAll } from '@cucumber/cucumber';
 import { chromium, Browser, Page, BrowserContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import {
@@ -63,19 +63,31 @@ Given('バックエンドサーバーがローカルで起動している', asyn
 });
 
 Given('フロントエンドサーバーがローカルで起動している', async function () {
-  // ブラウザとページの初期化
-  browser = await chromium.launch({ headless: true });
-  context = await browser.newContext();
-  page = await context.newPage();
+  // ブラウザの初期化（1回だけ）
+  if (!browser) {
+    browser = await chromium.launch({ headless: true });
+  }
 
   // フロントエンドの接続確認
+  const testPage = await browser.newPage();
   try {
-    await page.goto(FRONTEND_URL, { waitUntil: 'networkidle', timeout: 10000 });
+    await testPage.goto(FRONTEND_URL, { waitUntil: 'networkidle', timeout: 10000 });
     console.log('✓ Frontend server is accessible');
   } catch (error) {
-    await browser.close();
     throw new Error(`Frontend server is not accessible: ${error}`);
+  } finally {
+    await testPage.close();
   }
+});
+
+// Setup before each scenario
+Before(async function () {
+  if (!browser) {
+    browser = await chromium.launch({ headless: true });
+  }
+  context = await browser.newContext();
+  page = await context.newPage();
+  console.log('✓ Browser context and page created for scenario');
 });
 
 // Cleanup after each scenario
@@ -86,11 +98,13 @@ After(async function () {
   if (context) {
     await context.close().catch(() => {});
   }
+  console.log('✓ Browser context and page closed after scenario');
 });
 
 // Cleanup after all tests
 AfterAll(async function () {
   if (browser) {
     await browser.close().catch(() => {});
+    console.log('✓ Browser closed after all tests');
   }
 });
