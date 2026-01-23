@@ -93,5 +93,4 @@ jobs:
         uses: ./.github/actions/start-agent-task
         with:
           workflow-name: 'Deploy Account Stack'
-          failure-message: 'アカウントスタックのデプロイに失敗しました。ログを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}

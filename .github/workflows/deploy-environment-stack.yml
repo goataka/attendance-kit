@@ -103,5 +103,4 @@ jobs:
         uses: ./.github/actions/start-agent-task
         with:
           workflow-name: 'Deploy Environment Stack'
-          failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}

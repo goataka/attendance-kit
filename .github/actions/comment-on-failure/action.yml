@@ -20,10 +20,9 @@ runs:
       with:
         header: workflow-failure-${{ inputs.workflow-name }}
         message: |
-          ## ❌ ワークフロー失敗: ${{ inputs.workflow-name }}
+          ## ❌ ${{ inputs.workflow-name }} 失敗
           
           ${{ inputs.failure-message }}
           
-          **実行ログ**: [ワークフロー実行 #${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          **コミット**: ${{ github.sha }}
+          [実行ログ](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         GITHUB_TOKEN: ${{ inputs.github-token }}

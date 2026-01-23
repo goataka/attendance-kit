@@ -1,12 +1,9 @@
 name: 'Start Agent Task on Deploy Failure'
-description: 'デプロイワークフロー失敗時にCopilot Agentタスクを開始し、元のPRにコメントする'
+description: 'デプロイワークフロー失敗時にCopilot Agentタスクを開始する'
 
 inputs:
   workflow-name:
     description: 'ワークフロー名'
-    required: true
-  failure-message:
-    description: '失敗メッセージ'
     required: true
   github-token:
     description: 'GitHub token'
@@ -19,125 +16,12 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
+        WORKFLOW_NAME: ${{ inputs.workflow-name }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        REPO: ${{ github.repository }}
       run: |
-        # ワークフロー情報を取得
-        WORKFLOW_NAME="${{ inputs.workflow-name }}"
-        FAILURE_MESSAGE="${{ inputs.failure-message }}"
-        RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        COMMIT_SHA="${{ github.sha }}"
-        COMMIT_URL="${{ github.server_url }}/${{ github.repository }}/commit/${COMMIT_SHA}"
-        BRANCH="${{ github.ref }}"
-        TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        TASK_DESCRIPTION="ワークフロー ${WORKFLOW_NAME} が失敗しました。workflow-error-handler スキルを使用してエラー対応してください。
+
+        URL: ${RUN_URL}"
         
-        # エージェントタスクの説明を作成
-        TASK_DESCRIPTION="## デプロイワークフローエラー対応
-        
-        **ワークフロー**: ${WORKFLOW_NAME}
-        **エラー内容**: ${FAILURE_MESSAGE}
-        
-        ### ワークフロー情報
-        - **実行ログ**: [ワークフロー実行 #${{ github.run_number }}](${RUN_URL})
-        - **コミット**: [${COMMIT_SHA:0:7}](${COMMIT_URL})
-        - **ブランチ**: ${BRANCH}
-        - **失敗日時**: ${TIMESTAMP}
-        
-        ### 依頼内容
-        上記のデプロイワークフローが失敗しました。workflow-error-handlerスキルを使用して、以下の対応をお願いします：
-        
-        1. ワークフロー実行ログを確認し、エラーの詳細を把握
-        2. エラーの原因を特定（依存関係、ビルド、テスト、環境設定など）
-        3. 必要に応じてローカルでエラーを再現
-        4. 問題を修正し、修正内容を検証
-        5. 修正内容をコミットし、結果を報告
-        
-        **ワークフローURL**: ${RUN_URL}"
-        
-        echo "Creating Copilot Agent Task..."
-        echo "${TASK_DESCRIPTION}"
-        
-        # gh agent-task createコマンドでエージェントタスクを作成
-        AGENT_OUTPUT=$(echo "${TASK_DESCRIPTION}" | gh agent-task create -F - --repo ${{ github.repository }} 2>&1)
-        AGENT_EXIT_CODE=$?
-        
-        echo "Agent task creation output:"
-        echo "${AGENT_OUTPUT}"
-        
-        if [ ${AGENT_EXIT_CODE} -eq 0 ]; then
-          echo "✅ Copilot Agent Taskが正常に作成されました"
-          
-          # エージェントタスクのURLを抽出（GitHub CLIの出力から）
-          AGENT_TASK_URL=$(echo "${AGENT_OUTPUT}" | grep -oP 'https://github\.com/[^\s]+' | head -1)
-          
-          if [ -n "${AGENT_TASK_URL}" ]; then
-            echo "Agent Task URL: ${AGENT_TASK_URL}"
-            echo "agent-task-url=${AGENT_TASK_URL}" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "❌ Copilot Agent Taskの作成に失敗しました"
-          echo "Exit code: ${AGENT_EXIT_CODE}"
-          exit 1
-        fi
-    
-    - name: Comment on PR with Agent Task
-      uses: actions/github-script@v7
-      if: success()
-      with:
-        github-token: ${{ inputs.github-token }}
-        script: |
-          const commitSha = context.sha;
-          let prNumber = null;
-          
-          // context.payloadからPR番号を取得（push eventの場合、head_commitに含まれることがある）
-          if (context.payload.head_commit && context.payload.head_commit.message) {
-            const prMatch = context.payload.head_commit.message.match(/#(\d+)/);
-            if (prMatch) {
-              prNumber = parseInt(prMatch[1]);
-              console.log(`Found PR number from commit message: #${prNumber}`);
-            }
-          }
-          
-          // PRが見つからない場合、コミットに関連するPRを検索
-          if (!prNumber) {
-            try {
-              const prs = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                commit_sha: commitSha
-              });
-              
-              if (prs.data.length > 0) {
-                // マージされたPRを優先的に選択
-                const mergedPr = prs.data.find(pr => pr.merged_at);
-                prNumber = mergedPr ? mergedPr.number : prs.data[0].number;
-                console.log(`Found PR number from commit: #${prNumber}`);
-              }
-            } catch (error) {
-              console.log('No PR found for this commit');
-            }
-          }
-          
-          // PRが見つかった場合、コメントを追加
-          if (prNumber) {
-            const workflowName = '${{ inputs.workflow-name }}';
-            const agentTaskUrl = process.env.AGENT_TASK_URL || '';
-            
-            let prComment = `## 🤖 Copilot Agent によるデプロイエラー対応
-          
-            このPRに関連するデプロイ（**${workflowName}**）が失敗しました。
-            Copilot Agentがエラー対応タスクを開始しました。`;
-            
-            if (agentTaskUrl) {
-              prComment += `\n\n🔗 **Agent Task**: ${agentTaskUrl}`;
-            }
-            
-            prComment += `\n\nエージェントがワークフローエラーを分析し、修正を試みます。`;
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: prComment
-            });
-            
-            console.log(`Added comment to PR #${prNumber}`);
-          }
+        echo "${TASK_DESCRIPTION}" | gh agent-task create -F - --repo ${REPO}
