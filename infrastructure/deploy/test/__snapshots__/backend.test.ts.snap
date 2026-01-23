@@ -169,7 +169,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "fcfdd20e4e5eec0cabf6b0cb93498ef8846d1378603e89ebf7d7a54789175e99.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Description": "Attendance Kit Backend API (staging)",
         "Environment": {
@@ -762,7 +762,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "3423a042b818e31c1e34a19d6689ab2e5f9b70fcbe9e71df66f241b20a200bd9.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Environment": {
           "Variables": {
@@ -928,7 +928,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Description": {
           "Fn::Join": [
@@ -983,7 +983,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "c82567645316e1499ecd064c937f1183bb4a74e95800ff64fab4d308451ba5f0.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -1015,7 +1015,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           },
         ],
         "SourceObjectKeys": [
-          "13b5ad56abbf1a752c70802be77d067576e59e37f88974d9bcc2bbcfcc6016d3.zip",
+          "<MASKED_S3_KEY>.zip",
         ],
         "WaitForDistributionInvalidation": true,
       },
@@ -1600,7 +1600,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "fcfdd20e4e5eec0cabf6b0cb93498ef8846d1378603e89ebf7d7a54789175e99.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Description": "Attendance Kit Backend API (dev)",
         "Environment": {
@@ -2193,7 +2193,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "3423a042b818e31c1e34a19d6689ab2e5f9b70fcbe9e71df66f241b20a200bd9.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Environment": {
           "Variables": {
@@ -2359,7 +2359,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Description": {
           "Fn::Join": [
@@ -2414,7 +2414,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "c82567645316e1499ecd064c937f1183bb4a74e95800ff64fab4d308451ba5f0.zip",
+          "S3Key": "<MASKED_S3_KEY>.zip",
         },
         "Description": "/opt/awscli/aws",
       },
@@ -2446,7 +2446,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           },
         ],
         "SourceObjectKeys": [
-          "13b5ad56abbf1a752c70802be77d067576e59e37f88974d9bcc2bbcfcc6016d3.zip",
+          "<MASKED_S3_KEY>.zip",
         ],
         "WaitForDistributionInvalidation": true,
       },

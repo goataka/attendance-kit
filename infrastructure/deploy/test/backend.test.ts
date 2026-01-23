@@ -2,6 +2,51 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
+/**
+ * S3Key値を固定文字列に置換する関数
+ * 
+ * Lambda関数コードが変更されるたびにS3Keyハッシュが変わるため、
+ * スナップショットテストでコード変更の差分が大量に発生します。
+ * インフラ構造の変更を検出することが目的なので、S3Keyハッシュは
+ * 固定値にマスクします。
+ * 
+ * この関数を削除しないでください。
+ */
+function maskS3Keys(obj: any): any {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  if (typeof obj === 'string') {
+    // S3Keyのハッシュパターン（64文字のhex + .zip）を検出してマスク
+    if (/^[a-f0-9]{64}\.zip$/.test(obj)) {
+      return '<MASKED_S3_KEY>.zip';
+    }
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(item => maskS3Keys(item));
+  }
+
+  if (typeof obj === 'object') {
+    const masked: any = {};
+    for (const key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        if (key === 'S3Key' && typeof obj[key] === 'string') {
+          // S3Keyプロパティを固定値に置換
+          masked[key] = '<MASKED_S3_KEY>.zip';
+        } else {
+          masked[key] = maskS3Keys(obj[key]);
+        }
+      }
+    }
+    return masked;
+  }
+
+  return obj;
+}
+
 describe('AttendanceKitStack', () => {
   let app: App;
   let template: Template;
@@ -156,7 +201,9 @@ describe('AttendanceKitStack', () => {
   });
 
   test('Stack Matches Snapshot', () => {
-    expect(template.toJSON()).toMatchSnapshot();
+    const templateJson = template.toJSON();
+    const maskedTemplate = maskS3Keys(templateJson);
+    expect(maskedTemplate).toMatchSnapshot();
   });
 });
 
@@ -187,6 +234,8 @@ describe('AttendanceKitStack - Staging Environment', () => {
   });
 
   test('Staging Stack Matches Snapshot', () => {
-    expect(template.toJSON()).toMatchSnapshot();
+    const templateJson = template.toJSON();
+    const maskedTemplate = maskS3Keys(templateJson);
+    expect(maskedTemplate).toMatchSnapshot();
   });
 });
