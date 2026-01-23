@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "test:unit": "jest --testPathIgnorePatterns=test/integration",
+    "test:unit": "jest --testPathIgnorePatterns=test/integration --updateSnapshot",
     "test:integration": "jest --testPathPattern=test/integration",
     "cdk": "cdk",
     "deploy:local-all": "npm run cdklocal:bootstrap && npm run cdklocal:deploy-all",
