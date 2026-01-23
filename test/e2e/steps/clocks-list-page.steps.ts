@@ -23,10 +23,19 @@ Then('Clock-inデータがDynamoDBに保存される', async function () {
   });
   const result = await dynamoClient.send(command);
   
+  console.log(`📊 DynamoDB scan result: ${JSON.stringify(result, null, 2)}`);
+  console.log(`📊 Found ${result.Items?.length || 0} items in DynamoDB`);
+  
   // TEST_USER_IDのclock-inレコードが存在することを確認
   const clockInRecord = result.Items?.find(
     item => item.userId?.S === TEST_USER_ID && item.type?.S === 'clock-in'
   );
+  
+  if (!clockInRecord) {
+    console.error(`❌ Clock-in record not found for ${TEST_USER_ID}`);
+    console.error(`Available items: ${JSON.stringify(result.Items, null, 2)}`);
+  }
+  
   expect(clockInRecord).toBeDefined();
   
   console.log(`✓ Found clock-in record for ${TEST_USER_ID} in DynamoDB`);
