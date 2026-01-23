@@ -2,18 +2,53 @@ import { ClockRecord, ClockInOutRequest, ClockInOutResponse, RecordsFilter } fro
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
+// ログインしてJWTトークンを取得
+const login = async (userId: string, password: string): Promise<string | null> => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId, password }),
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data.accessToken;
+  } catch (error) {
+    console.error('Login failed:', error);
+    return null;
+  }
+};
+
 export const api = {
   // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
+      // まずログインしてトークンを取得
+      const token = await login(request.userId, request.password);
+      
+      if (!token) {
+        return {
+          success: false,
+          message: 'Authentication failed',
+        };
+      }
+
+      // トークンを使ってClock APIを呼び出し
       const response = await fetch(`${BACKEND_URL}/api/clock/${request.type === 'clock-in' ? 'in' : 'out'}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: request.userId,
-          password: request.password,
+          location: 'Remote',
+          deviceId: 'web-client',
         }),
       });
 

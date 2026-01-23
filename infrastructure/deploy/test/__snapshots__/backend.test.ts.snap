@@ -169,7 +169,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "7a1671635057cc91204305362b5f441753b630e156c7fb022443519a97c126db.zip",
+          "S3Key": "c8b8b3567b6d8ab423a09e075f507f3dc34fcec3f2774cc6b3f92183d9cdac3c.zip",
         },
         "Description": "Attendance Kit Backend API (staging)",
         "Environment": {
@@ -1015,7 +1015,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           },
         ],
         "SourceObjectKeys": [
-          "6897f07522cb0b81841135b1307be0eecec143ce79a40c3663f3294f62cd1ab1.zip",
+          "13b5ad56abbf1a752c70802be77d067576e59e37f88974d9bcc2bbcfcc6016d3.zip",
         ],
         "WaitForDistributionInvalidation": true,
       },
@@ -1600,7 +1600,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "7a1671635057cc91204305362b5f441753b630e156c7fb022443519a97c126db.zip",
+          "S3Key": "c8b8b3567b6d8ab423a09e075f507f3dc34fcec3f2774cc6b3f92183d9cdac3c.zip",
         },
         "Description": "Attendance Kit Backend API (dev)",
         "Environment": {
@@ -2446,7 +2446,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           },
         ],
         "SourceObjectKeys": [
-          "6897f07522cb0b81841135b1307be0eecec143ce79a40c3663f3294f62cd1ab1.zip",
+          "13b5ad56abbf1a752c70802be77d067576e59e37f88974d9bcc2bbcfcc6016d3.zip",
         ],
         "WaitForDistributionInvalidation": true,
       },
