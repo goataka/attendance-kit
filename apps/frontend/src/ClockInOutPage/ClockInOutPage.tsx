@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../shared/api/api';
+import { api } from '../shared/api';
 import './ClockInOutPage.css';
 
 export function ClockInOutPage() {

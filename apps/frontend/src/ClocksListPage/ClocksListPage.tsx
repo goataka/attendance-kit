@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../shared/api/api';
+import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import './ClocksListPage.css';
 

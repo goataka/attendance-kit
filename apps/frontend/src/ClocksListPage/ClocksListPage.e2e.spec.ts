@@ -1,6 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clocks List Page', () => {
+  // Seed data before each test
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    
+    // Add test data via clock-in
+    await page.locator('#userId').fill('user001');
+    await page.locator('#password').fill('password123');
+    await page.getByRole('button', { name: '出勤' }).click();
+    await page.waitForSelector('.message.success');
+  });
+
   test('should display records list', async ({ page }) => {
     await page.goto('/clocks');
     
