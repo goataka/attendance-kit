@@ -1,4 +1,4 @@
-import { Given } from '@cucumber/cucumber';
+import { Given, AfterAll, After } from '@cucumber/cucumber';
 import { chromium, Browser, Page, BrowserContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import {
@@ -75,5 +75,22 @@ Given('フロントエンドサーバーがローカルで起動している', a
   } catch (error) {
     await browser.close();
     throw new Error(`Frontend server is not accessible: ${error}`);
+  }
+});
+
+// Cleanup after each scenario
+After(async function () {
+  if (page) {
+    await page.close().catch(() => {});
+  }
+  if (context) {
+    await context.close().catch(() => {});
+  }
+});
+
+// Cleanup after all tests
+AfterAll(async function () {
+  if (browser) {
+    await browser.close().catch(() => {});
   }
 });

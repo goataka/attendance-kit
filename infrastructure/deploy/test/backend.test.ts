@@ -3,49 +3,25 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
 /**
- * S3Key値を固定文字列に置換する関数
+ * S3Key値を固定文字列に置換するスナップショットシリアライザー
  * 
  * Lambda関数コードが変更されるたびにS3Keyハッシュが変わるため、
  * スナップショットテストでコード変更の差分が大量に発生します。
  * インフラ構造の変更を検出することが目的なので、S3Keyハッシュは
  * 固定値にマスクします。
  * 
- * この関数を削除しないでください。
+ * このシリアライザーを削除しないでください。
  */
-function maskS3Keys(obj: any): any {
-  if (obj === null || obj === undefined) {
-    return obj;
-  }
-
-  if (typeof obj === 'string') {
-    // S3Keyのハッシュパターン（64文字のhex + .zip）を検出してマスク
-    if (/^[a-f0-9]{64}\.zip$/.test(obj)) {
-      return '<MASKED_S3_KEY>.zip';
-    }
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj.map(item => maskS3Keys(item));
-  }
-
-  if (typeof obj === 'object') {
-    const masked: any = {};
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (key === 'S3Key' && typeof obj[key] === 'string') {
-          // S3Keyプロパティを固定値に置換
-          masked[key] = '<MASKED_S3_KEY>.zip';
-        } else {
-          masked[key] = maskS3Keys(obj[key]);
-        }
-      }
-    }
-    return masked;
-  }
-
-  return obj;
-}
+expect.addSnapshotSerializer({
+  test: (val) => {
+    // S3Keyハッシュパターン（64文字のhex + .zip）を持つ文字列かどうかをチェック
+    return typeof val === 'string' && /^[a-f0-9]{64}\.zip$/.test(val);
+  },
+  serialize: (val) => {
+    // S3Keyハッシュを固定値に置換
+    return '"<MASKED_S3_KEY>.zip"';
+  },
+});
 
 describe('AttendanceKitStack', () => {
   let app: App;
@@ -201,9 +177,7 @@ describe('AttendanceKitStack', () => {
   });
 
   test('Stack Matches Snapshot', () => {
-    const templateJson = template.toJSON();
-    const maskedTemplate = maskS3Keys(templateJson);
-    expect(maskedTemplate).toMatchSnapshot();
+    expect(template.toJSON()).toMatchSnapshot();
   });
 });
 
@@ -234,8 +208,6 @@ describe('AttendanceKitStack - Staging Environment', () => {
   });
 
   test('Staging Stack Matches Snapshot', () => {
-    const templateJson = template.toJSON();
-    const maskedTemplate = maskS3Keys(templateJson);
-    expect(maskedTemplate).toMatchSnapshot();
+    expect(template.toJSON()).toMatchSnapshot();
   });
 });

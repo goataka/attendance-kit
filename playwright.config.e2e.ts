@@ -1,13 +1,5 @@
 import { defineConfig } from '@playwright/test';
 
-/**
- * E2E Test Configuration for Playwright
- * 
- * このconfigはGherkin形式のe2eテストで使用します。
- * - LocalStackのDynamoDBを使用
- * - バックエンドとフロントエンドをローカルで起動
- * - Cucumber/Gherkinでテストシナリオを記述
- */
 export default defineConfig({
   testDir: './test/e2e',
   testMatch: '**/*.feature',
