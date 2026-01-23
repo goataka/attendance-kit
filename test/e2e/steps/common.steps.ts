@@ -1,4 +1,4 @@
-import { Given, Before, After, AfterAll } from '@cucumber/cucumber';
+import { Given, Before, After, AfterAll, setWorldConstructor, World } from '@cucumber/cucumber';
 import { chromium, Browser, Page, BrowserContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import {
@@ -6,16 +6,13 @@ import {
   ScanCommand,
 } from '@aws-sdk/client-dynamodb';
 
-// Global state
-let browser: Browser;
-let context: BrowserContext;
-let page: Page;
+// Constants
+export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+export const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
+export const TABLE_NAME = 'attendance-kit-test-clock';
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
-const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
-
-// LocalStack DynamoDB client
-const dynamoClient = new DynamoDBClient({
+// LocalStack DynamoDB client (shared across all scenarios)
+export const dynamoClient = new DynamoDBClient({
   region: 'ap-northeast-1',
   endpoint: 'http://localhost:4566',
   credentials: {
@@ -24,13 +21,18 @@ const dynamoClient = new DynamoDBClient({
   },
 });
 
-const TABLE_NAME = 'attendance-kit-test-clock';
+// Custom World to hold browser instances per scenario
+export class CustomWorld extends World {
+  browser?: Browser;
+  context?: BrowserContext;
+  page?: Page;
+}
 
-// Export for use in other step files
-export { browser, context, page, FRONTEND_URL, BACKEND_URL, dynamoClient, TABLE_NAME };
+// Set custom World
+setWorldConstructor(CustomWorld);
 
 // Setup and Teardown
-Given('LocalStackのDynamoDBが起動している', async function () {
+Given('LocalStackのDynamoDBが起動している', async function (this: CustomWorld) {
   // DynamoDBの接続確認
   try {
     const command = new ScanCommand({
@@ -44,7 +46,7 @@ Given('LocalStackのDynamoDBが起動している', async function () {
   }
 });
 
-Given('バックエンドサーバーがローカルで起動している', async function () {
+Given('バックエンドサーバーがローカルで起動している', async function (this: CustomWorld) {
   // バックエンドのヘルスチェック
   try {
     const response = await fetch(`${BACKEND_URL}/api/health`, {
@@ -62,14 +64,14 @@ Given('バックエンドサーバーがローカルで起動している', asyn
   }
 });
 
-Given('フロントエンドサーバーがローカルで起動している', async function () {
-  // ブラウザの初期化（1回だけ）
-  if (!browser) {
-    browser = await chromium.launch({ headless: true });
+Given('フロントエンドサーバーがローカルで起動している', async function (this: CustomWorld) {
+  // ブラウザの初期化（シナリオごと）
+  if (!this.browser) {
+    this.browser = await chromium.launch({ headless: true });
   }
 
   // フロントエンドの接続確認
-  const testPage = await browser.newPage();
+  const testPage = await this.browser.newPage();
   try {
     await testPage.goto(FRONTEND_URL, { waitUntil: 'networkidle', timeout: 10000 });
     console.log('✓ Frontend server is accessible');
@@ -81,30 +83,32 @@ Given('フロントエンドサーバーがローカルで起動している', a
 });
 
 // Setup before each scenario
-Before(async function () {
-  if (!browser) {
-    browser = await chromium.launch({ headless: true });
+Before(async function (this: CustomWorld) {
+  // Create browser if not exists
+  if (!this.browser) {
+    this.browser = await chromium.launch({ headless: true });
   }
-  context = await browser.newContext();
-  page = await context.newPage();
+  // Create new context and page for each scenario
+  this.context = await this.browser.newContext();
+  this.page = await this.context.newPage();
   console.log('✓ Browser context and page created for scenario');
 });
 
 // Cleanup after each scenario
-After(async function () {
-  if (page) {
-    await page.close().catch(() => {});
+After(async function (this: CustomWorld) {
+  if (this.page) {
+    await this.page.close().catch(() => {});
   }
-  if (context) {
-    await context.close().catch(() => {});
+  if (this.context) {
+    await this.context.close().catch(() => {});
   }
   console.log('✓ Browser context and page closed after scenario');
 });
 
 // Cleanup after all tests
-AfterAll(async function () {
-  if (browser) {
-    await browser.close().catch(() => {});
+AfterAll(async function (this: CustomWorld) {
+  if (this.browser) {
+    await this.browser.close().catch(() => {});
     console.log('✓ Browser closed after all tests');
   }
 });

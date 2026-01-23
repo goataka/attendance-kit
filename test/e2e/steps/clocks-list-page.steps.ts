@@ -1,19 +1,23 @@
 import { Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
-import { page, dynamoClient, TABLE_NAME } from './common.steps';
+import { dynamoClient, TABLE_NAME, CustomWorld } from './common.steps';
 
 // Test credentials
 const TEST_USER_ID = 'user001';
 
 // ClocksListPage - 打刻一覧ページのステップ
-Then('Clock-inデータがDynamoDBに保存される', async function () {
+Then('Clock-inデータがDynamoDBに保存される', async function (this: CustomWorld) {
+  if (!this.page) {
+    throw new Error('Page is not initialized');
+  }
+  
   // 打刻一覧ページに移動
-  await page.click('text=打刻一覧を見る');
-  await page.waitForLoadState('networkidle');
+  await this.page.click('text=打刻一覧を見る');
+  await this.page.waitForLoadState('networkidle');
   
   // テーブルが表示されることを確認
-  const table = await page.waitForSelector('table', { timeout: 5000 });
+  const table = await this.page.waitForSelector('table', { timeout: 5000 });
   expect(table).toBeDefined();
   
   // DynamoDBから直接確認
