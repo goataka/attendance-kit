@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { mockApi } from '../shared/api/mockApi';
+import { api } from '../shared/api/api';
 import './ClockInOutPage.css';
 
 export function ClockInOutPage() {
@@ -19,7 +19,7 @@ export function ClockInOutPage() {
     setMessage(null);
 
     try {
-      const response = await mockApi.clockInOut({ userId, password, type });
+      const response = await api.clockInOut({ userId, password, type });
 
       if (response.success) {
         setMessage({

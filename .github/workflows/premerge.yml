@@ -173,6 +173,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
+      VITE_BACKEND_URL: http://localhost:3000
       FRONTEND_URL: http://localhost:5173
       BACKEND_URL: http://localhost:3000
     

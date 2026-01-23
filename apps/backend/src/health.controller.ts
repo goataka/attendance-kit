@@ -5,7 +5,10 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @Controller()
 export class HealthController {
   @Get('health')
-  @ApiOperation({ summary: 'ヘルスチェック', description: 'Health check endpoint' })
+  @ApiOperation({
+    summary: 'ヘルスチェック',
+    description: 'Health check endpoint',
+  })
   @ApiResponse({
     status: 200,
     description: 'Service is healthy',

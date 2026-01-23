@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { mockApi } from '../shared/api/mockApi';
+import { api } from '../shared/api/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import './ClocksListPage.css';
 
@@ -18,7 +18,7 @@ export function ClocksListPage() {
     const fetchRecords = async () => {
       setLoading(true);
       try {
-        const data = await mockApi.getRecords();
+        const data = await api.getRecords();
         setRecords(data);
       } catch (error) {
         console.error('Failed to load records:', error);
@@ -34,7 +34,7 @@ export function ClocksListPage() {
     setLoading(true);
     try {
       const filterToUse = newFilter || filter;
-      const data = await mockApi.getRecords(filterToUse);
+      const data = await api.getRecords(filterToUse);
       setRecords(data);
     } catch (error) {
       console.error('Failed to load records:', error);
