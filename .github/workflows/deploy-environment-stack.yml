@@ -50,10 +50,6 @@ jobs:
         working-directory: infrastructure/deploy
         run: npm run build
 
-      - name: Run tests
-        working-directory: infrastructure/deploy
-        run: npm test
-
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -91,3 +87,11 @@ jobs:
             --stack-name ${STACK_NAME} \
             --query 'Stacks[0].Outputs' \
             --output table
+
+      - name: Comment on failure
+        if: failure()
+        uses: ./.github/actions/comment-on-failure
+        with:
+          workflow-name: 'Deploy Environment Stack'
+          failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

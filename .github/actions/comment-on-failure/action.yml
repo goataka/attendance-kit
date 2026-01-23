@@ -1,0 +1,68 @@
+name: 'Comment on Workflow Failure'
+description: 'ワークフロー失敗時にPRにコメントし、同じワークフローの過去のコメントを削除する'
+
+inputs:
+  workflow-name:
+    description: 'ワークフロー名（コメント識別用）'
+    required: true
+  failure-message:
+    description: '失敗メッセージ'
+    required: true
+  github-token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Delete old comments from this workflow
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const workflowName = '${{ inputs.workflow-name }}';
+          const marker = `<!-- workflow-failure: ${workflowName} -->`;
+          
+          // PRの全コメントを取得
+          const comments = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          
+          // 同じワークフローの過去のコメントを削除
+          for (const comment of comments.data) {
+            if (comment.body && comment.body.includes(marker)) {
+              console.log(`Deleting old comment: ${comment.id}`);
+              await github.rest.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+              });
+            }
+          }
+
+    - name: Post failure comment
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const workflowName = '${{ inputs.workflow-name }}';
+          const marker = `<!-- workflow-failure: ${workflowName} -->`;
+          const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+          
+          const comment = `${marker}
+          ## ❌ ワークフロー失敗: ${workflowName}
+          
+          ${{ inputs.failure-message }}
+          
+          **実行ログ**: [ワークフロー実行 #${context.runNumber}](${runUrl})
+          **コミット**: ${context.sha.substring(0, 7)}
+          `;
+
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: comment
+          });
