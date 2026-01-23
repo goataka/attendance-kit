@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
 
@@ -39,7 +39,7 @@ export class AuthController {
       !validUsers.includes(loginDto.userId) ||
       loginDto.password !== validPassword
     ) {
-      throw new Error('Invalid credentials');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     // JWTトークンを生成
