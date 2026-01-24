@@ -277,6 +277,9 @@ jobs:
 
       - name: Start Backend Server
         working-directory: apps/backend
+        env:
+          DYNAMODB_ENDPOINT: http://localhost:4566
+          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: |
           npm run dev &
           sleep 10
@@ -289,6 +292,9 @@ jobs:
           sleep 10
 
       - name: Run E2E Tests
+        env:
+          DYNAMODB_ENDPOINT: http://localhost:4566
+          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: npm run test:e2e
         timeout-minutes: 2
 
