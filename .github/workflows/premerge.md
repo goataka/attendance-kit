@@ -17,11 +17,7 @@ Pull Requestに対して自動的に実行される統合テストとチェッ�
 
 同じPRで新しいコミットがプッシュされた場合、実行中のワークフローは自動的にキャンセルされ、新しいワークフローが開始されます。
 
-```yaml
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
-```
+詳細な設定は[premerge.yml](./premerge.yml)を参照してください。
 
 これにより、以下の利点があります：
 - 不要なワークフロー実行をキャンセルし、リソースを節約
@@ -30,7 +26,7 @@ concurrency:
 
 ## ジョブ構成
 
-### 1. unit-test
+### unit-test
 
 基本的なコード品質チェックとユニットテスト。
 
@@ -39,7 +35,7 @@ concurrency:
 - ユニットテスト実行
 - 自動生成ファイル（スナップショット、OpenAPI仕様）の更新とコミット
 
-### 2. backend-integration-test
+### backend-integration-test
 
 バックエンドの統合テスト。`unit-test`完了後に実行。
 
@@ -47,14 +43,14 @@ concurrency:
 - DynamoDBテーブルのデプロイ
 - バックエンドAPIの統合テスト実行
 
-### 3. deploy-integration-test
+### deploy-integration-test
 
 CDKデプロイの統合テスト。`unit-test`完了後に実行。
 
 - LocalStackへの全スタックデプロイ
 - インフラストラクチャコードの検証
 
-### 4. frontend-integration-test
+### frontend-integration-test
 
 フロントエンドの統合テスト。`unit-test`完了後に実行。
 
