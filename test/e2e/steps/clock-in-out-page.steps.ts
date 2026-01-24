@@ -6,8 +6,16 @@ import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
 
 // Fill login credentials
 async function fillLoginCredentials(page: any, userId: string = TEST_USER_ID, password: string = TEST_PASSWORD): Promise<void> {
+  // Wait for the form to be fully loaded
+  await page.waitForSelector('#userId', { state: 'visible' });
+  await page.waitForSelector('#password', { state: 'visible' });
+  
+  // Fill the form fields
   await page.fill('#userId', userId);
   await page.fill('#password', password);
+  
+  // Give React time to update state
+  await page.waitForTimeout(500);
 }
 
 // Click clock button and wait for message
