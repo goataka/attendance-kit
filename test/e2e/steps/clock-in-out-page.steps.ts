@@ -10,12 +10,15 @@ async function fillLoginCredentials(page: any, userId: string = TEST_USER_ID, pa
   await page.waitForSelector('#userId', { state: 'visible' });
   await page.waitForSelector('#password', { state: 'visible' });
   
-  // Fill the form fields
-  await page.fill('#userId', userId);
-  await page.fill('#password', password);
+  // Fill the form fields with type instead of fill to trigger onChange events properly
+  await page.locator('#userId').fill(userId);
+  await page.locator('#userId').blur(); // Trigger onBlur to ensure state update
   
-  // Give React time to update state
-  await page.waitForTimeout(500);
+  await page.locator('#password').fill(password);
+  await page.locator('#password').blur(); // Trigger onBlur to ensure state update
+  
+  // Wait for React to process the events and update state
+  await page.waitForTimeout(1000);
 }
 
 // Click clock button and wait for message

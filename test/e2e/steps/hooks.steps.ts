@@ -1,7 +1,13 @@
-import { Before, After, AfterAll, BeforeAll } from '@cucumber/cucumber';
-import { chromium } from '@playwright/test';
+import { Before, After, AfterAll, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber';
+import { chromium, Browser } from '@playwright/test';
 import { CustomWorld } from './world';
 import { verifyServicesRunning } from './services.helper';
+
+// Set default timeout for all steps
+setDefaultTimeout(30000);
+
+// Global browser instance to be shared and properly closed
+let globalBrowser: Browser | null = null;
 
 // Setup before all scenarios
 BeforeAll(async function () {
@@ -12,9 +18,10 @@ BeforeAll(async function () {
 // Setup before each scenario
 Before(async function (this: CustomWorld) {
   // Create browser if not exists
-  if (!this.browser) {
-    this.browser = await chromium.launch({ headless: true });
+  if (!globalBrowser) {
+    globalBrowser = await chromium.launch({ headless: true });
   }
+  this.browser = globalBrowser;
   
   // Create new context and page for each scenario
   this.context = await this.browser.newContext();
@@ -32,8 +39,9 @@ After(async function (this: CustomWorld) {
 });
 
 // Cleanup after all tests
-AfterAll(async function (this: CustomWorld) {
-  if (this.browser) {
-    await this.browser.close().catch(() => {});
+AfterAll(async function () {
+  if (globalBrowser) {
+    await globalBrowser.close().catch(() => {});
+    globalBrowser = null;
   }
 });
