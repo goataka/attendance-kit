@@ -269,7 +269,22 @@
       },
       "LoginDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user001"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "userId",
+          "password"
+        ]
       },
       "LoginResponseDto": {
         "type": "object",
