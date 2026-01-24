@@ -46,6 +46,7 @@ runs:
       with:
         number: ${{ steps.find-pr.outputs.pr_number }}
         header: workflow-failure-${{ inputs.workflow-name }}
+        recreate: true
         message: |
           ## ❌ ${{ inputs.workflow-name }} 失敗
           
