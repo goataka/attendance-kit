@@ -10,15 +10,25 @@ async function fillLoginCredentials(page: any, userId: string = TEST_USER_ID, pa
   await page.waitForSelector('#userId', { state: 'visible' });
   await page.waitForSelector('#password', { state: 'visible' });
   
-  // Fill the form fields with type instead of fill to trigger onChange events properly
-  await page.locator('#userId').fill(userId);
-  await page.locator('#userId').blur(); // Trigger onBlur to ensure state update
+  // Clear any existing values first
+  await page.locator('#userId').clear();
+  await page.locator('#password').clear();
   
-  await page.locator('#password').fill(password);
-  await page.locator('#password').blur(); // Trigger onBlur to ensure state update
+  // Use pressSequentially to type character by character, which better simulates real user input
+  // and ensures onChange events fire properly for each character
+  await page.locator('#userId').pressSequentially(userId, { delay: 50 });
+  await page.locator('#password').pressSequentially(password, { delay: 50 });
   
-  // Wait for React to process the events and update state
-  await page.waitForTimeout(1000);
+  // Give React a moment to process the final character
+  await page.waitForTimeout(200);
+  
+  // Verify the values were actually set
+  const userIdValue = await page.locator('#userId').inputValue();
+  const passwordValue = await page.locator('#password').inputValue();
+  
+  if (userIdValue !== userId || passwordValue !== password) {
+    throw new Error(`Form values not set correctly. Expected userId='${userId}', got='${userIdValue}'. Expected password='${password}', got='${passwordValue}'`);
+  }
 }
 
 // Click clock button and wait for message
