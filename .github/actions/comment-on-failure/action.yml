@@ -15,10 +15,36 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Find PR number
+      id: find-pr
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        REPO: ${{ github.repository }}
+        EVENT_NAME: ${{ github.event_name }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        COMMIT_SHA: ${{ github.sha }}
+      run: |
+        if [ "${EVENT_NAME}" = "pull_request" ] || [ "${EVENT_NAME}" = "pull_request_target" ]; then
+          echo "pr_number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "PR context found: #${PR_NUMBER}"
+        else
+          echo "Not a PR event, searching for PR..."
+          PR_NUM=$(gh pr list --repo ${REPO} --state all --search "${COMMIT_SHA}" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -n "${PR_NUM}" ]; then
+            echo "pr_number=${PR_NUM}" >> $GITHUB_OUTPUT
+            echo "Found PR: #${PR_NUM}"
+          else
+            echo "No PR found for commit ${COMMIT_SHA}"
+            echo "pr_number=" >> $GITHUB_OUTPUT
+          fi
+        fi
+    
     - name: Post or update failure comment
-      if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
+      if: steps.find-pr.outputs.pr_number != ''
       uses: marocchino/sticky-pull-request-comment@v2
       with:
+        number: ${{ steps.find-pr.outputs.pr_number }}
         header: workflow-failure-${{ inputs.workflow-name }}
         message: |
           ## ❌ ${{ inputs.workflow-name }} 失敗
