@@ -4,6 +4,18 @@
 
 このディレクトリには、プロジェクトの CI/CD ワークフローが含まれています。
 
+### premerge.yml
+
+プルリクエスト作成時の品質チェックワークフロー。
+
+- **トリガー**: `main` ブランチへのプルリクエスト作成時
+- **ジョブ**:
+  - `actionlint`: GitHub Actions ワークフローファイルの検証
+  - `unit-test`: Lint、ビルド、ユニットテストの実行
+  - `backend-integration-test`: バックエンド統合テスト（LocalStack使用）
+  - `deploy-integration-test`: デプロイ統合テスト（LocalStack使用）
+  - `frontend-integration-test`: フロントエンド統合テスト（Playwright使用）
+
 ## CDK関連ワークフロー
 
 CDK関連のワークフロー（`deploy-pr.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
