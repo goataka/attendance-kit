@@ -1,9 +1,17 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiProperty } from '@nestjs/swagger';
 import { JwtService } from '@nestjs/jwt';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class LoginDto {
+  @ApiProperty({ description: 'User ID', example: 'user001' })
+  @IsString()
+  @IsNotEmpty()
   userId: string;
+
+  @ApiProperty({ description: 'Password', example: 'password123' })
+  @IsString()
+  @IsNotEmpty()
   password: string;
 }
 

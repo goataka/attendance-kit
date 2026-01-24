@@ -6,35 +6,23 @@ import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
 
 // Fill login credentials
 async function fillLoginCredentials(page: any, userId: string = TEST_USER_ID, password: string = TEST_PASSWORD): Promise<void> {
-  // Wait for the form to be fully loaded
-  await page.waitForSelector('#userId', { state: 'visible' });
-  await page.waitForSelector('#password', { state: 'visible' });
+  await page.locator('#userId').fill(userId);
+  await page.locator('#password').fill(password);
   
-  // Clear any existing values first
-  await page.locator('#userId').clear();
-  await page.locator('#password').clear();
-  
-  // Use pressSequentially to type character by character, which better simulates real user input
-  // and ensures onChange events fire properly for each character
-  await page.locator('#userId').pressSequentially(userId, { delay: 50 });
-  await page.locator('#password').pressSequentially(password, { delay: 50 });
-  
-  // Give React more time to process all onChange events and update state
-  // React batches state updates, so we need to wait for the event loop to complete
-  await page.waitForTimeout(1000);
-  
-  // Verify the values were actually set in the DOM
-  const userIdValue = await page.locator('#userId').inputValue();
-  const passwordValue = await page.locator('#password').inputValue();
-  
-  if (userIdValue !== userId || passwordValue !== password) {
-    throw new Error(`Form values not set correctly. Expected userId='${userId}', got='${userIdValue}'. Expected password='${password}', got='${passwordValue}'`);
-  }
+  // Wait for React to update state
+  await page.waitForFunction(
+    ({ userId, password }) => {
+      const userIdInput = document.querySelector('#userId') as HTMLInputElement;
+      const passwordInput = document.querySelector('#password') as HTMLInputElement;
+      return userIdInput?.value === userId && passwordInput?.value === password;
+    },
+    { userId, password }
+  );
 }
 
 // Click clock button and wait for message
 async function clickClockButtonAndWaitForMessage(page: any, buttonText: string): Promise<void> {
-  await page.click(`text=${buttonText}`);
+  await page.getByRole('button', { name: buttonText }).click();
   await page.waitForSelector('.message', { timeout: 15000 });
 }
 

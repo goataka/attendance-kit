@@ -7,7 +7,7 @@ import { TEST_USER_ID } from './helpers';
 
 // Navigate to clocks list page
 async function navigateToClocksListPage(page: any): Promise<void> {
-  await page.click('text=打刻一覧を見る');
+  await page.getByRole('link', { name: '打刻一覧を見る' }).click();
   await page.waitForLoadState('networkidle');
 }
 

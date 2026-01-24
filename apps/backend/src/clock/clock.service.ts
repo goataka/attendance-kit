@@ -6,8 +6,10 @@ import {
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { ClockType, ClockRecordResponseDto } from './dto/clock.dto';
+import { randomUUID } from 'crypto';
 
 export interface ClockRecord {
+  id: string;
   userId: string;
   timestamp: string;
   date: string;
@@ -47,8 +49,10 @@ export class ClockService {
     const now = new Date();
     const timestamp = now.toISOString();
     const date = timestamp.split('T')[0]; // YYYY-MM-DD
+    const id = randomUUID();
 
     const record: ClockRecord = {
+      id,
       userId,
       timestamp,
       date,
@@ -76,8 +80,10 @@ export class ClockService {
     const now = new Date();
     const timestamp = now.toISOString();
     const date = timestamp.split('T')[0]; // YYYY-MM-DD
+    const id = randomUUID();
 
     const record: ClockRecord = {
+      id,
       userId,
       timestamp,
       date,
