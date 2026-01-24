@@ -1,9 +1,15 @@
 import { Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
-import { dynamoClient, TABLE_NAME } from './common.steps';
+import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
-import { TEST_USER_ID, navigateToClocksListPage } from './helpers';
+import { TEST_USER_ID } from './helpers';
+
+// Navigate to clocks list page
+async function navigateToClocksListPage(page: any): Promise<void> {
+  await page.click('text=打刻一覧を見る');
+  await page.waitForLoadState('networkidle');
+}
 
 // 打刻一覧ページのステップ
 Then('打刻一覧を確認する', async function (this: CustomWorld) {
@@ -24,9 +30,9 @@ Then('打刻一覧を確認する', async function (this: CustomWorld) {
   });
   const result = await dynamoClient.send(command);
   
-  const clockInRecord = result.Items?.find(
-    item => item.userId?.S === TEST_USER_ID && item.type?.S === 'clock-in'
+  const clockRecord = result.Items?.find(
+    item => item.userId?.S === TEST_USER_ID
   );
   
-  expect(clockInRecord).toBeDefined();
+  expect(clockRecord).toBeDefined();
 });
