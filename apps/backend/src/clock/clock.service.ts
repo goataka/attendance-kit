@@ -106,6 +106,7 @@ export class ClockService {
   async getRecords(userId: string): Promise<ClockRecordResponseDto[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
+      IndexName: 'UserIdTimestampIndex',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
         ':userId': userId,
