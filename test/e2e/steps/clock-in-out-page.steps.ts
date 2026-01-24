@@ -19,10 +19,11 @@ async function fillLoginCredentials(page: any, userId: string = TEST_USER_ID, pa
   await page.locator('#userId').pressSequentially(userId, { delay: 50 });
   await page.locator('#password').pressSequentially(password, { delay: 50 });
   
-  // Give React a moment to process the final character
-  await page.waitForTimeout(200);
+  // Give React more time to process all onChange events and update state
+  // React batches state updates, so we need to wait for the event loop to complete
+  await page.waitForTimeout(1000);
   
-  // Verify the values were actually set
+  // Verify the values were actually set in the DOM
   const userIdValue = await page.locator('#userId').inputValue();
   const passwordValue = await page.locator('#password').inputValue();
   
