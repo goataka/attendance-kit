@@ -1,0 +1,58 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad16" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#16a34a;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="64" height="64" fill="url(#grad16)"/>
+  
+  <!-- Outer plastic model frame -->
+  <rect x="2" y="2" width="60" height="60" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="4,2"/>
+  <circle cx="4" cy="4" r="2" fill="#2563eb"/>
+  <circle cx="60" cy="4" r="2" fill="#2563eb"/>
+  <circle cx="4" cy="60" r="2" fill="#2563eb"/>
+  <circle cx="60" cy="60" r="2" fill="#2563eb"/>
+  
+  <!-- Inner plastic model frame -->
+  <rect x="11" y="11" width="42" height="42" fill="none" stroke="#16a34a" stroke-width="1.2" stroke-dasharray="3,1"/>
+  <circle cx="13" cy="13" r="1.5" fill="#16a34a"/>
+  <circle cx="51" cy="13" r="1.5" fill="#16a34a"/>
+  <circle cx="13" cy="51" r="1.5" fill="#16a34a"/>
+  <circle cx="51" cy="51" r="1.5" fill="#16a34a"/>
+  
+  <!-- Large clock -->
+  <circle cx="32" cy="32" r="12.5" fill="#2563eb"/>
+  <circle cx="32" cy="32" r="11" fill="white"/>
+  <line x1="32" y1="32" x2="32" y2="25" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="32" y1="32" x2="37" y2="32" stroke="#16a34a" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="32" cy="32" r="1.8" fill="#1e293b"/>
+  
+  <!-- Medium check mark -->
+  <g transform="translate(50, 50)">
+    <circle r="5.5" fill="#16a34a"/>
+    <path d="M -2,-0.5 L -0.5,1.5 L 2.5,-2" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Small sun -->
+  <g transform="translate(14, 14)">
+    <circle r="3" fill="#fbbf24"/>
+    <circle r="2" fill="#fef3c7"/>
+  </g>
+  
+  <!-- Small ID card -->
+  <g transform="translate(50, 14)">
+    <rect x="-2.5" y="-3.5" width="5" height="7" rx="0.5" fill="#2563eb"/>
+    <rect x="-1.5" y="-2.5" width="3" height="1.5" rx="0.3" fill="white"/>
+    <line x1="-1.5" y1="0.2" x2="1.5" y2="0.2" stroke="white" stroke-width="0.4"/>
+    <line x1="-1.5" y1="1.2" x2="1.5" y2="1.2" stroke="white" stroke-width="0.4"/>
+  </g>
+  
+  <!-- Small moon -->
+  <g transform="translate(14, 50)">
+    <circle r="2.8" fill="#64748b"/>
+    <circle cx="1.2" cy="0" r="2.2" fill="white"/>
+  </g>
+</svg>
