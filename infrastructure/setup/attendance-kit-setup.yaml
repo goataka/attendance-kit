@@ -80,6 +80,33 @@ Resources:
           Value: attendance-kit
         - Key: ManagedBy
           Value: CloudFormation
+  
+  GitHubCopilotInvestigationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: GitHubCopilotInvestigationRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOIDCProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: 'repo:goataka/attendance-kit:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      Description: Read-only role for GitHub Copilot Agent to investigate AWS resources via MCP
+      Tags:
+        - Key: Project
+          Value: attendance-kit
+        - Key: ManagedBy
+          Value: CloudFormation
+        - Key: Purpose
+          Value: CopilotInvestigation
 
 Outputs:
   OIDCProviderArn:
@@ -102,9 +129,24 @@ Outputs:
     Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
     Value: !GetAtt GitHubActionsRole.Arn
   
+  InvestigationRoleArn:
+    Description: ARN of the GitHub Copilot Investigation IAM Role
+    Value: !GetAtt GitHubCopilotInvestigationRole.Arn
+    Export:
+      Name: AttendanceKit-CopilotInvestigationRoleArn
+  
+  InvestigationRoleName:
+    Description: Name of the GitHub Copilot Investigation IAM Role
+    Value: !Ref GitHubCopilotInvestigationRole
+  
+  CopilotSecretValue:
+    Description: Value to set in GitHub Secrets as AWS_INVESTIGATION_ROLE_ARN
+    Value: !GetAtt GitHubCopilotInvestigationRole.Arn
+  
   SetupInstructions:
     Description: Next steps after deploying this stack
     Value: |
       Stack Name: AttendanceKit-Setup-Stack
       1. Copy the GitHubSecretValue output and set it as AWS_ROLE_TO_ASSUME in GitHub Secrets
-      2. Run GitHub Actions workflow to deploy the CDK stack
+      2. Copy the CopilotSecretValue output and set it as AWS_INVESTIGATION_ROLE_ARN in GitHub Secrets
+      3. Run GitHub Actions workflow to deploy the CDK stack
