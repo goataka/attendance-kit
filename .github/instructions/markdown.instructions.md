@@ -104,7 +104,6 @@ npm run build
 ## 関連ドキュメント
 
 - [API Documentation](./api/README.md)
-- [Scripts](./scripts/README.md)
 ```
 
 ### 含めるべきもの
@@ -201,11 +200,6 @@ constructor(scope: Construct, id: string, props: MyProps) {
 - `BackendApiConstruct` (完了)
 - `DynamoDBConstruct` (TODO: Issue作成済み)
 - その他、すべての新規Construct
-
-## 関連ドキュメント
-
-- [Agent開発ガイドライン](../.github/agents/AGENTS.md)
-- [プロジェクト憲法](./constitution.md)
 
 ### CloudFormation Outputs
 

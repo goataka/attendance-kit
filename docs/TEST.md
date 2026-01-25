@@ -87,8 +87,6 @@ npm run premerge:local
 - ビルド
 - 統合テスト（LocalStack使用）
 
-詳細は [scripts/README.md](../scripts/README.md) を参照してください。
-
 ## テストツール構成
 
 主要なテストツールの概要です。詳細な使用方法は各ターゲットのドキュメントを参照してください。
