@@ -16,43 +16,53 @@ export const dynamoClient = new DynamoDBClient({
 });
 
 /**
+ * Generic service verification wrapper
+ */
+async function verifyService(
+  name: string,
+  verifyFn: () => Promise<void>,
+): Promise<void> {
+  try {
+    await verifyFn();
+  } catch (error) {
+    throw new Error(`${name} verification failed: ${error}`);
+  }
+}
+
+/**
  * Verify that DynamoDB is accessible
  */
 async function verifyDynamoDB(): Promise<void> {
-  try {
+  await verifyService('DynamoDB', async () => {
     const command = new ScanCommand({ TableName: TABLE_NAME, Limit: 1 });
     await dynamoClient.send(command);
-  } catch (error) {
-    throw new Error(`LocalStack DynamoDB is not accessible: ${error}`);
-  }
+  });
 }
 
 /**
  * Verify that Backend server is accessible
  */
 async function verifyBackend(): Promise<void> {
-  try {
-    const response = await fetch(`${BACKEND_URL}/api/health`, { method: 'GET' });
+  await verifyService('Backend', async () => {
+    const response = await fetch(`${BACKEND_URL}/api/health`, {
+      method: 'GET',
+    });
     if (!response.ok) {
-      throw new Error(`Backend health check failed: ${response.status}`);
+      throw new Error(`Health check failed with status: ${response.status}`);
     }
-  } catch (error) {
-    throw new Error(`Backend server is not accessible: ${error}`);
-  }
+  });
 }
 
 /**
  * Verify that Frontend server is accessible
  */
 async function verifyFrontend(): Promise<void> {
-  try {
+  await verifyService('Frontend', async () => {
     const response = await fetch(FRONTEND_URL, { method: 'GET' });
     if (!response.ok) {
-      throw new Error(`Frontend health check failed: ${response.status}`);
+      throw new Error(`Health check failed with status: ${response.status}`);
     }
-  } catch (error) {
-    throw new Error(`Frontend server is not accessible: ${error}`);
-  }
+  });
 }
 
 /**

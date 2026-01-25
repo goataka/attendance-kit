@@ -2,9 +2,10 @@ import { Before, After, AfterAll, BeforeAll, setDefaultTimeout } from '@cucumber
 import { chromium, Browser } from '@playwright/test';
 import { CustomWorld } from './world';
 import { verifyServicesRunning } from './services.helper';
+import { TIMEOUTS } from './constants';
 
 // Set default timeout for all steps
-setDefaultTimeout(30000);
+setDefaultTimeout(TIMEOUTS.DEFAULT_STEP);
 
 // Global browser instance to be shared and properly closed
 let globalBrowser: Browser | null = null;
