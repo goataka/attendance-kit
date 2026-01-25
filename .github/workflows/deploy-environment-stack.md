@@ -7,10 +7,17 @@
 ### 自動デプロイ
 
 以下のファイルが`main`ブランチにマージされた時:
+- `apps/backend/**`
+- `apps/frontend/**`
+- `infrastructure/deploy/bin/**`
 - `infrastructure/deploy/lib/attendance-kit-stack.ts`
-- `infrastructure/deploy/test/attendance-kit-stack.test.ts`
-- `infrastructure/deploy/bin/app.ts`
+- `infrastructure/deploy/lib/constructs/**`
+- `infrastructure/deploy/lib/utils/**`
 - `infrastructure/deploy/package*.json`
+- `infrastructure/deploy/tsconfig.json`
+- `infrastructure/deploy/cdk.json`
+- `package.json`
+- `package-lock.json`
 
 ### 手動デプロイ
 

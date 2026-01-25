@@ -48,7 +48,7 @@ graph LR
 
 ### 自動デプロイ
 
-`infrastructure/`配下のファイルが`main`ブランチにマージされた時に自動実行
+`apps/`または`infrastructure/`配下の対象ファイルが`main`ブランチにマージされた時に自動実行
 
 ### 環境管理
 
