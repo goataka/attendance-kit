@@ -63,15 +63,7 @@ npm run lint
 npm run premerge:local
 ```
 
-### プレマージワークフローのローカル実行
-
-プルリクエスト作成前にCI/CDチェックを実行できます。
-
-```bash
-npm run premerge:local
-```
-
-**必要条件**:
+**プレマージワークフロー実行の必要条件**:
 - Docker が起動していること
 - [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 
@@ -94,11 +86,9 @@ DevContainerを使用した一貫性のある開発環境を提供します。
 
 ### DevContainerの使用
 
-VS Codeでコマンドパレットから "Dev Containers: Reopen in Container" を実行してください。以下が自動的にセットアップされます:
+VS Codeでコマンドパレットから "Dev Containers: Reopen in Container" を実行してください。
 
-- Node.js 24
-- VS Code extensions
-- 必要な環境変数
+詳細は [.devcontainer/README.md](.devcontainer/README.md) を参照してください。
 
 ## 📝 ドキュメント
 
