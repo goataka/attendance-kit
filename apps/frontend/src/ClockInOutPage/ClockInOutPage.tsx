@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../shared/api';
+import { TEST_ACCOUNTS } from '../shared/constants';
 import './ClockInOutPage.css';
 
 export function ClockInOutPage() {
@@ -95,8 +96,11 @@ export function ClockInOutPage() {
         <div className="help-text">
           <p>テスト用アカウント:</p>
           <ul>
-            <li>user001 / password123</li>
-            <li>user002 / password456</li>
+            {TEST_ACCOUNTS.map((account) => (
+              <li key={account.userId}>
+                {account.userId} / {account.password}
+              </li>
+            ))}
           </ul>
         </div>
 

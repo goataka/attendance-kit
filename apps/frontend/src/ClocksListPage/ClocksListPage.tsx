@@ -2,17 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
+import { DEFAULT_FILTER } from '../shared/constants';
 import './ClocksListPage.css';
 
 export function ClocksListPage() {
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<RecordsFilter>({
-    userId: '',
-    startDate: '',
-    endDate: '',
-    type: 'all',
-  });
+  const [filter, setFilter] = useState<RecordsFilter>(DEFAULT_FILTER);
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -53,14 +49,8 @@ export function ClocksListPage() {
   };
 
   const handleReset = () => {
-    const emptyFilter: RecordsFilter = {
-      userId: '',
-      startDate: '',
-      endDate: '',
-      type: 'all',
-    };
-    setFilter(emptyFilter);
-    loadRecords(emptyFilter);
+    setFilter(DEFAULT_FILTER);
+    loadRecords(DEFAULT_FILTER);
   };
 
   const formatTimestamp = (timestamp: string) => {
