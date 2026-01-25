@@ -41,15 +41,12 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: infrastructure/deploy/package-lock.json
 
       - name: Install dependencies
-        working-directory: infrastructure/deploy
         run: npm run setup
 
-      - name: Build TypeScript
-        working-directory: infrastructure/deploy
-        run: npm run build
+      - name: Build all workspaces
+        run: npm run build --workspaces --if-present
 
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4

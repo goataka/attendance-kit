@@ -12,6 +12,7 @@ import {
   ClockRecordResponseDto,
 } from './dto/clock.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AuthenticatedRequest } from '../shared/types/request.types';
 
 @ApiTags('clock')
 @Controller('clock')
@@ -29,7 +30,7 @@ export class ClockController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async clockIn(
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Body() clockInDto: ClockInDto,
   ): Promise<ClockRecordResponseDto> {
     const userId = req.user.userId;
@@ -49,7 +50,7 @@ export class ClockController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   async clockOut(
-    @Req() req: any,
+    @Req() req: AuthenticatedRequest,
     @Body() clockOutDto: ClockOutDto,
   ): Promise<ClockRecordResponseDto> {
     const userId = req.user.userId;
@@ -71,7 +72,9 @@ export class ClockController {
     type: [ClockRecordResponseDto],
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getRecords(@Req() req: any): Promise<ClockRecordResponseDto[]> {
+  async getRecords(
+    @Req() req: AuthenticatedRequest,
+  ): Promise<ClockRecordResponseDto[]> {
     const userId = req.user.userId;
     return this.clockService.getRecords(userId);
   }

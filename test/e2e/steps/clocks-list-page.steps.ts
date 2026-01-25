@@ -1,38 +1,50 @@
 import { Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';
+import { TIMEOUTS, SELECTORS } from './constants';
 
-// Navigate to clocks list page
-async function navigateToClocksListPage(page: any): Promise<void> {
-  await page.getByRole('link', { name: '打刻一覧を見る' }).click();
+/**
+ * Navigate to clocks list page
+ */
+async function navigateToClocksListPage(page: Page): Promise<void> {
+  await page.getByRole('link', { name: SELECTORS.clockListLink }).click();
   await page.waitForLoadState('networkidle');
 }
 
-// 打刻一覧ページのステップ
-Then('打刻一覧を確認する', async function (this: CustomWorld) {
-  if (!this.page) {
-    throw new Error('Page is not initialized');
-  }
-  
-  await navigateToClocksListPage(this.page);
-  
-  // Verify table is displayed
-  const table = await this.page.waitForSelector('table', { timeout: 5000 });
-  expect(table).toBeDefined();
-  
-  // Verify record exists in DynamoDB
+/**
+ * Verify clock record exists in DynamoDB
+ */
+async function verifyClockRecordInDynamoDB(
+  userId: string,
+): Promise<void> {
   const command = new ScanCommand({
     TableName: TABLE_NAME,
     Limit: 10,
   });
   const result = await dynamoClient.send(command);
-  
-  const clockRecord = result.Items?.find(
-    item => item.userId?.S === TEST_USER_ID
-  );
-  
+
+  const clockRecord = result.Items?.find((item) => item.userId?.S === userId);
+
   expect(clockRecord).toBeDefined();
+}
+
+// Step definitions
+Then('打刻一覧を確認する', async function (this: CustomWorld) {
+  if (!this.page) {
+    throw new Error('Page is not initialized');
+  }
+
+  await navigateToClocksListPage(this.page);
+
+  // Verify table is displayed
+  const table = await this.page.waitForSelector(SELECTORS.table, {
+    timeout: TIMEOUTS.NETWORK_IDLE,
+  });
+  expect(table).toBeDefined();
+
+  // Verify record exists in DynamoDB
+  await verifyClockRecordInDynamoDB(TEST_USER_ID);
 });
