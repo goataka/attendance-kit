@@ -8,6 +8,18 @@ describe('resolveBackendUrl', () => {
     expect(url).toBe('https://api.example.com');
   });
 
+  it('trims the /api suffix from the environment URL when provided', () => {
+    const url = resolveBackendUrl('https://api.example.com/api', false, undefined);
+
+    expect(url).toBe('https://api.example.com');
+  });
+
+  it('trims the /api/ suffix from the environment URL when provided', () => {
+    const url = resolveBackendUrl('https://api.example.com/api/', false, undefined);
+
+    expect(url).toBe('https://api.example.com');
+  });
+
   it('falls back to localhost in development', () => {
     const url = resolveBackendUrl(undefined, true, 'https://app.example.com');
 
