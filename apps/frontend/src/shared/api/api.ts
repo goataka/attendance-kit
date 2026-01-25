@@ -1,6 +1,24 @@
 import { ClockRecord, ClockInOutRequest, ClockInOutResponse, RecordsFilter } from '../types';
 
 const DEFAULT_DEV_BACKEND_URL = 'http://localhost:3000';
+const API_BASE_PATH = '/api';
+
+const normalizeBaseUrl = (baseUrl: string): string => {
+  const trimmedBaseUrl = baseUrl.trim();
+  if (!trimmedBaseUrl) {
+    return trimmedBaseUrl;
+  }
+
+  if (trimmedBaseUrl.endsWith(`${API_BASE_PATH}/`)) {
+    return trimmedBaseUrl.slice(0, -(API_BASE_PATH.length + 1));
+  }
+
+  if (trimmedBaseUrl.endsWith(API_BASE_PATH)) {
+    return trimmedBaseUrl.slice(0, -API_BASE_PATH.length);
+  }
+
+  return trimmedBaseUrl;
+};
 
 export const resolveBackendUrl = (
   envUrl: string | undefined = import.meta.env.VITE_BACKEND_URL,
@@ -9,14 +27,11 @@ export const resolveBackendUrl = (
     typeof window === 'undefined' ? undefined : window.location.origin,
 ): string => {
   if (envUrl?.trim()) {
-    return envUrl.trim();
+    return normalizeBaseUrl(envUrl);
   }
 
-  if (isDev || !windowOrigin) {
-    return DEFAULT_DEV_BACKEND_URL;
-  }
-
-  return windowOrigin;
+  const resolvedUrl = isDev || !windowOrigin ? DEFAULT_DEV_BACKEND_URL : windowOrigin;
+  return normalizeBaseUrl(resolvedUrl);
 };
 
 const BACKEND_URL = resolveBackendUrl();
@@ -24,7 +39,7 @@ const BACKEND_URL = resolveBackendUrl();
 // ログインしてJWTトークンを取得
 const login = async (userId: string, password: string): Promise<string | null> => {
   try {
-    const response = await fetch(`${BACKEND_URL}/api/auth/login`, {
+    const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +74,9 @@ export const api = {
       }
 
       // トークンを使ってClock APIを呼び出し
-      const response = await fetch(`${BACKEND_URL}/api/clock/${request.type === 'clock-in' ? 'in' : 'out'}`, {
+      const response = await fetch(
+        `${BACKEND_URL}${API_BASE_PATH}/clock/${request.type === 'clock-in' ? 'in' : 'out'}`,
+        {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +86,8 @@ export const api = {
           location: 'Remote',
           deviceId: 'web-client',
         }),
-      });
+      },
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -119,7 +137,7 @@ export const api = {
         params.append('endDate', filter.endDate);
       }
 
-      const url = `${BACKEND_URL}/api/clock/records${params.toString() ? `?${params.toString()}` : ''}`;
+      const url = `${BACKEND_URL}${API_BASE_PATH}/clock/records${params.toString() ? `?${params.toString()}` : ''}`;
       const response = await fetch(url);
 
       if (!response.ok) {
