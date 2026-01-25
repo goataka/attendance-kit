@@ -98,7 +98,7 @@ export function ClockInOutPage() {
           <ul>
             {TEST_ACCOUNTS.map((account) => (
               <li key={account.userId}>
-                {account.userId} / {account.password}
+                {`${account.userId} / ${account.password}`}
               </li>
             ))}
           </ul>
