@@ -25,7 +25,8 @@ export class ClockService {
   private readonly tableName: string;
   private readonly indexName = 'UserIdTimestampIndex';
   private readonly defaultTableName = 'attendance-kit-dev-clock';
-  private readonly sortDescending = false;
+  // ScanIndexForward=false sorts in descending order (most recent first)
+  private readonly scanIndexForward = false;
 
   constructor() {
     // LocalStack統合テスト用のエンドポイント設定
@@ -40,8 +41,7 @@ export class ClockService {
 
     const client = new DynamoDBClient(clientConfig);
     this.docClient = DynamoDBDocumentClient.from(client);
-    this.tableName =
-      process.env.DYNAMODB_TABLE_NAME || this.defaultTableName;
+    this.tableName = process.env.DYNAMODB_TABLE_NAME || this.defaultTableName;
   }
 
   /**
@@ -116,7 +116,7 @@ export class ClockService {
       ExpressionAttributeValues: {
         ':userId': userId,
       },
-      ScanIndexForward: this.sortDescending,
+      ScanIndexForward: this.scanIndexForward,
     });
 
     const response = await this.docClient.send(command);
