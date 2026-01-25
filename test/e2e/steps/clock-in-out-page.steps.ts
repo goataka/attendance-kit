@@ -1,5 +1,5 @@
 import { When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { FRONTEND_URL } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
@@ -9,7 +9,7 @@ import { TIMEOUTS, SELECTORS } from './constants';
  * Fill login credentials on the page
  */
 async function fillLoginCredentials(
-  page: any,
+  page: Page,
   userId: string = TEST_USER_ID,
   password: string = TEST_PASSWORD,
 ): Promise<void> {
@@ -35,7 +35,7 @@ async function fillLoginCredentials(
  * Click clock button and wait for message to appear
  */
 async function clickClockButtonAndWaitForMessage(
-  page: any,
+  page: Page,
   buttonText: string,
 ): Promise<void> {
   await page.getByRole('button', { name: buttonText }).click();
@@ -47,7 +47,7 @@ async function clickClockButtonAndWaitForMessage(
 /**
  * Verify success message appeared
  */
-async function verifySuccessMessage(page: any): Promise<void> {
+async function verifySuccessMessage(page: Page): Promise<void> {
   const messageElement = await page.locator(SELECTORS.message).first();
   const messageClass = await messageElement.getAttribute('class');
 

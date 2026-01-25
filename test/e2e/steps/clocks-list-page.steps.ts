@@ -1,5 +1,5 @@
 import { Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
@@ -9,7 +9,7 @@ import { TIMEOUTS, SELECTORS } from './constants';
 /**
  * Navigate to clocks list page
  */
-async function navigateToClocksListPage(page: any): Promise<void> {
+async function navigateToClocksListPage(page: Page): Promise<void> {
   await page.getByRole('link', { name: SELECTORS.clockListLink }).click();
   await page.waitForLoadState('networkidle');
 }

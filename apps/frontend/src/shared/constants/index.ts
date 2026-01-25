@@ -1,3 +1,5 @@
+import type { RecordsFilter } from '../types';
+
 /**
  * Test user accounts
  */
@@ -9,9 +11,9 @@ export const TEST_ACCOUNTS = [
 /**
  * Default filter for records
  */
-export const DEFAULT_FILTER = {
+export const DEFAULT_FILTER: RecordsFilter = {
   userId: '',
   startDate: '',
   endDate: '',
   type: 'all',
-} as const;
+};
