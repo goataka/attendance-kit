@@ -8,10 +8,8 @@ export const resolveBackendUrl = (
   windowOrigin: string | undefined =
     typeof window === 'undefined' ? undefined : window.location.origin,
 ): string => {
-  const trimmedUrl = envUrl?.trim();
-
-  if (trimmedUrl) {
-    return trimmedUrl;
+  if (envUrl?.trim()) {
+    return envUrl.trim();
   }
 
   if (isDev || !windowOrigin) {
