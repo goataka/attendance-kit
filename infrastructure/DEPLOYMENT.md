@@ -4,7 +4,7 @@
 
 ### 環境スタック
 
-`apps/`または`infrastructure/deploy/`配下の対象ファイルを変更し`main`ブランチにマージすると、GitHub Actionsが自動的にdev環境にデプロイします。
+`apps/`または`infrastructure/deploy/`配下の対象ファイルを変更し`main`ブランチにマージすると、GitHub Actionsが自動的にdev環境にデプロイします（`apps/website`は対象外）。
 
 ### アカウントスタック
 

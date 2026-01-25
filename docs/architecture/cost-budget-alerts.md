@@ -222,7 +222,7 @@ infrastructure/deploy/
 
 **環境スタック**:
 - ワークフロー: `deploy-environment-stack.yml`
-- トリガー: アプリケーション/環境スタック関連ファイルの変更
+- トリガー: アプリケーション/環境スタック関連ファイルの変更（apps/website除外）
 - 手動実行: GitHub Actions タブから環境を選択して実行可能
 
 #### ローカルからのデプロイ

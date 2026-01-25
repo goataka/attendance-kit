@@ -9,10 +9,13 @@
 以下のファイルが`main`ブランチにマージされた時:
 - `apps/backend/**`
 - `apps/frontend/**`
+- `!apps/website/**`（除外）
 - `infrastructure/deploy/bin/**`
 - `infrastructure/deploy/lib/attendance-kit-stack.ts`
+- `infrastructure/deploy/lib/dynamodb-stack.ts`
 - `infrastructure/deploy/lib/constructs/**`
 - `infrastructure/deploy/lib/utils/**`
+- `infrastructure/deploy/test/**`
 - `infrastructure/deploy/package*.json`
 - `infrastructure/deploy/tsconfig.json`
 - `infrastructure/deploy/cdk.json`
