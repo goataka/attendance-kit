@@ -48,8 +48,8 @@
             min-height: 120px;
         }
         .favicon-display img {
-            width: 64px;
-            height: 64px;
+            width: 96px;
+            height: 96px;
         }
         .favicon-name {
             font-weight: 600;
@@ -62,21 +62,34 @@
             font-size: 0.75rem;
             line-height: 1.4;
         }
-        .category {
-            color: #2563eb;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #2563eb;
-        }
         .info {
             background: white;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             padding: 1.5rem;
             margin-bottom: 2rem;
+        }
+        .concept {
+            background: #eff6ff;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .concept h2 {
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
+        .concept-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .concept-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #cbd5e1;
+        }
+        .concept-list li:last-child {
+            border-bottom: none;
         }
         .color-palette {
             display: flex;
@@ -104,181 +117,114 @@
 <body>
     <h1>ファビコンデザイン候補 - 勤怠管理キット</h1>
     
+    <div class="concept">
+        <h2>🎨 デザインコンセプト</h2>
+        <p style="margin-bottom: 1rem;">プラモデルのランナーフレーム（組み立て前のパーツ配置枠）をモチーフにしたデザインです。</p>
+        <ul class="concept-list">
+            <li><strong>外枠・内枠</strong>: プラモデルのランナーフレームを模した構造</li>
+            <li><strong>バリ（ゲート）</strong>: パーツをフレームから切り離す際の接続部分。各デザインで位置が異なります</li>
+            <li><strong>大きな時計</strong>: 中央に配置された勤怠管理の時間要素</li>
+            <li><strong>中サイズのチェックマーク</strong>: タスク完了や出退勤記録</li>
+            <li><strong>小さな要素</strong>: 社員証、太陽（日中勤務）、月（夜勤）</li>
+        </ul>
+    </div>
+
     <div class="info">
         <h2 style="margin-bottom: 1rem; color: #2563eb;">カラースキーム</h2>
         <div class="color-palette">
             <div class="color-item">
                 <div class="color-box" style="background-color: #2563eb;"></div>
-                <span class="color-label">#2563eb プライマリ</span>
+                <span class="color-label">#2563eb プライマリ（時計・社員証）</span>
             </div>
             <div class="color-item">
                 <div class="color-box" style="background-color: #16a34a;"></div>
-                <span class="color-label">#16a34a 成功</span>
+                <span class="color-label">#16a34a 成功（チェックマーク）</span>
             </div>
             <div class="color-item">
                 <div class="color-box" style="background-color: #64748b;"></div>
-                <span class="color-label">#64748b セカンダリ</span>
+                <span class="color-label">#64748b フレーム</span>
             </div>
             <div class="color-item">
-                <div class="color-box" style="background-color: #1d4ed8;"></div>
-                <span class="color-label">#1d4ed8 ダークブルー</span>
+                <div class="color-box" style="background-color: #fbbf24;"></div>
+                <span class="color-label">#fbbf24 太陽</span>
+            </div>
+            <div class="color-item">
+                <div class="color-box" style="background-color: #94a3b8;"></div>
+                <span class="color-label">#94a3b8 月</span>
             </div>
         </div>
     </div>
 
-    <div class="category">時計ベースのデザイン (1-5)</div>
     <div class="grid">
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-01-clock-simple.svg" alt="Clock Simple">
+                <img src="./favicon-01.svg" alt="Favicon 01">
             </div>
-            <div class="favicon-name">01. シンプル時計</div>
-            <div class="favicon-description">クラシックな丸時計デザイン</div>
+            <div class="favicon-name">01. 基本配置</div>
+            <div class="favicon-description">バリ: 上下左右中央<br>要素バランス配置</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-02-checkin-badge.svg" alt="Check-in Badge">
+                <img src="./favicon-02.svg" alt="Favicon 02">
             </div>
-            <div class="favicon-name">02. チェックインバッジ</div>
-            <div class="favicon-description">IDバッジ風のデザイン</div>
+            <div class="favicon-name">02. 対角配置</div>
+            <div class="favicon-description">バリ: 対角線重視<br>非対称レイアウト</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-03-calendar-check.svg" alt="Calendar Check">
+                <img src="./favicon-03.svg" alt="Favicon 03">
             </div>
-            <div class="favicon-name">03. カレンダーチェック</div>
-            <div class="favicon-description">カレンダー＋チェックマーク</div>
+            <div class="favicon-name">03. 変則配置</div>
+            <div class="favicon-description">バリ: 逆対角配置<br>動的な印象</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-04-timer-circle.svg" alt="Timer Circle">
+                <img src="./favicon-04.svg" alt="Favicon 04">
             </div>
-            <div class="favicon-name">04. タイマーサークル</div>
-            <div class="favicon-description">ストップウォッチ風デザイン</div>
+            <div class="favicon-name">04. 複数バリ配置</div>
+            <div class="favicon-description">バリ: 上部2箇所<br>安定感重視</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-05-punch-clock.svg" alt="Punch Clock">
+                <img src="./favicon-05.svg" alt="Favicon 05">
             </div>
-            <div class="favicon-name">05. タイムカード</div>
-            <div class="favicon-description">タイムレコーダー風</div>
-        </div>
-    </div>
-
-    <div class="category">チェックイン/アウトベースのデザイン (6-10)</div>
-    <div class="grid">
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-06-fingerprint.svg" alt="Fingerprint">
-            </div>
-            <div class="favicon-name">06. 指紋認証</div>
-            <div class="favicon-description">指紋パターンのデザイン</div>
+            <div class="favicon-name">05. 非対称配置</div>
+            <div class="favicon-description">バリ: 左側強調<br>ユニークな構成</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-07-enter-arrow.svg" alt="Enter Arrow">
+                <img src="./favicon-06.svg" alt="Favicon 06">
             </div>
-            <div class="favicon-name">07. エントリーアロー</div>
-            <div class="favicon-description">入場を示す矢印</div>
+            <div class="favicon-name">06. サイド強調配置</div>
+            <div class="favicon-description">バリ: 下部・右側2箇所<br>横長印象</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-08-building-time.svg" alt="Building Time">
+                <img src="./favicon-07.svg" alt="Favicon 07">
             </div>
-            <div class="favicon-name">08. ビルディング＆時計</div>
-            <div class="favicon-description">オフィスビル＋時計</div>
+            <div class="favicon-name">07. バランス配置</div>
+            <div class="favicon-description">バリ: 複数箇所分散<br>均等な印象</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-09-user-clock.svg" alt="User Clock">
+                <img src="./favicon-08.svg" alt="Favicon 08">
             </div>
-            <div class="favicon-name">09. ユーザー＆時計</div>
-            <div class="favicon-description">ユーザーアイコン＋時計</div>
+            <div class="favicon-name">08. 対角重視配置</div>
+            <div class="favicon-description">バリ: 上下に集中<br>縦長印象</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-10-checkbox-time.svg" alt="Checkbox Time">
+                <img src="./favicon-09.svg" alt="Favicon 09">
             </div>
-            <div class="favicon-name">10. チェックボックス＆時計</div>
-            <div class="favicon-description">チェックマーク＋時計</div>
-        </div>
-    </div>
-
-    <div class="category">カレンダー/時間ベースのデザイン (11-15)</div>
-    <div class="grid">
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-11-calendar-grid.svg" alt="Calendar Grid">
-            </div>
-            <div class="favicon-name">11. カレンダーグリッド</div>
-            <div class="favicon-description">グリッド状カレンダー</div>
+            <div class="favicon-name">09. シンプル配置</div>
+            <div class="favicon-description">バリ: 最小限構成<br>洗練された印象</div>
         </div>
         <div class="favicon-card">
             <div class="favicon-display">
-                <img src="./favicon-12-hourglass.svg" alt="Hourglass">
+                <img src="./favicon-10.svg" alt="Favicon 10">
             </div>
-            <div class="favicon-name">12. 砂時計</div>
-            <div class="favicon-description">時間の流れを表現</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-13-schedule-list.svg" alt="Schedule List">
-            </div>
-            <div class="favicon-name">13. スケジュールリスト</div>
-            <div class="favicon-description">チェックリスト風</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-14-time-slots.svg" alt="Time Slots">
-            </div>
-            <div class="favicon-name">14. タイムスロット</div>
-            <div class="favicon-description">時間帯ブロック表現</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-15-weekly-bar.svg" alt="Weekly Bar">
-            </div>
-            <div class="favicon-name">15. 週間バーグラフ</div>
-            <div class="favicon-description">週の勤怠グラフ</div>
-        </div>
-    </div>
-
-    <div class="category">抽象的/モダンなデザイン (16-20)</div>
-    <div class="grid">
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-16-modern-a.svg" alt="Modern A">
-            </div>
-            <div class="favicon-name">16. モダンA</div>
-            <div class="favicon-description">「Attendance」の「A」</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-17-geometric-time.svg" alt="Geometric Time">
-            </div>
-            <div class="favicon-name">17. ジオメトリック時計</div>
-            <div class="favicon-description">幾何学的パターン</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-18-minimal-ct.svg" alt="Minimal CT">
-            </div>
-            <div class="favicon-name">18. ミニマルCT</div>
-            <div class="favicon-description">「Clock Time」表現</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-19-split-circle.svg" alt="Split Circle">
-            </div>
-            <div class="favicon-name">19. スプリットサークル</div>
-            <div class="favicon-description">分割円＋時計</div>
-        </div>
-        <div class="favicon-card">
-            <div class="favicon-display">
-                <img src="./favicon-20-hexagon-check.svg" alt="Hexagon Check">
-            </div>
-            <div class="favicon-name">20. 六角形チェック</div>
-            <div class="favicon-description">六角形＋チェックマーク</div>
+            <div class="favicon-name">10. 四隅配置</div>
+            <div class="favicon-description">バリ: 四隅＋左右<br>枠組み強調</div>
         </div>
     </div>
 </body>
