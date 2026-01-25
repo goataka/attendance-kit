@@ -115,6 +115,18 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "Ref": "ClockTable9AA4DD3D",
       },
     },
+    "WafWebAclArn55725021": {
+      "Description": "WAF Web ACL ARN (staging)",
+      "Export": {
+        "Name": "AttendanceKit-Staging-WebAclArn",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "WafWebAclBE24253C",
+          "Arn",
+        ],
+      },
+    },
   },
   "Parameters": {
     "BootstrapVersion": {
@@ -1194,6 +1206,12 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             },
           ],
           "PriceClass": "PriceClass_200",
+          "WebACLId": {
+            "Fn::GetAtt": [
+              "WafWebAclBE24253C",
+              "Arn",
+            ],
+          },
         },
         "Tags": [
           {
@@ -1400,6 +1418,55 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
     },
+    "WafWebAclBE24253C": {
+      "Properties": {
+        "DefaultAction": {
+          "Allow": {},
+        },
+        "Name": "attendance-kit-staging-waf",
+        "Rules": [
+          {
+            "Name": "AWSManagedRulesCommonRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 1,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesCommonRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "attendance-kit-staging-common-rules",
+              "SampledRequestsEnabled": true,
+            },
+          },
+        ],
+        "Scope": "CLOUDFRONT",
+        "Tags": [
+          {
+            "Key": "Environment",
+            "Value": "staging",
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CDK",
+          },
+          {
+            "Key": "Project",
+            "Value": "attendance-kit",
+          },
+        ],
+        "VisibilityConfig": {
+          "CloudWatchMetricsEnabled": true,
+          "MetricName": "attendance-kit-staging-waf",
+          "SampledRequestsEnabled": true,
+        },
+      },
+      "Type": "AWS::WAFv2::WebACL",
+    },
   },
   "Rules": {
     "CheckBootstrapVersion": {
@@ -1544,6 +1611,18 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       },
       "Value": {
         "Ref": "ClockTable9AA4DD3D",
+      },
+    },
+    "WafWebAclArn55725021": {
+      "Description": "WAF Web ACL ARN (dev)",
+      "Export": {
+        "Name": "AttendanceKit-Dev-WebAclArn",
+      },
+      "Value": {
+        "Fn::GetAtt": [
+          "WafWebAclBE24253C",
+          "Arn",
+        ],
       },
     },
   },
@@ -2625,6 +2704,12 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             },
           ],
           "PriceClass": "PriceClass_200",
+          "WebACLId": {
+            "Fn::GetAtt": [
+              "WafWebAclBE24253C",
+              "Arn",
+            ],
+          },
         },
         "Tags": [
           {
@@ -2830,6 +2915,55 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
+    },
+    "WafWebAclBE24253C": {
+      "Properties": {
+        "DefaultAction": {
+          "Allow": {},
+        },
+        "Name": "attendance-kit-dev-waf",
+        "Rules": [
+          {
+            "Name": "AWSManagedRulesCommonRuleSet",
+            "OverrideAction": {
+              "None": {},
+            },
+            "Priority": 1,
+            "Statement": {
+              "ManagedRuleGroupStatement": {
+                "Name": "AWSManagedRulesCommonRuleSet",
+                "VendorName": "AWS",
+              },
+            },
+            "VisibilityConfig": {
+              "CloudWatchMetricsEnabled": true,
+              "MetricName": "attendance-kit-dev-common-rules",
+              "SampledRequestsEnabled": true,
+            },
+          },
+        ],
+        "Scope": "CLOUDFRONT",
+        "Tags": [
+          {
+            "Key": "Environment",
+            "Value": "dev",
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CDK",
+          },
+          {
+            "Key": "Project",
+            "Value": "attendance-kit",
+          },
+        ],
+        "VisibilityConfig": {
+          "CloudWatchMetricsEnabled": true,
+          "MetricName": "attendance-kit-dev-waf",
+          "SampledRequestsEnabled": true,
+        },
+      },
+      "Type": "AWS::WAFv2::WebACL",
     },
   },
   "Rules": {

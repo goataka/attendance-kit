@@ -14,6 +14,7 @@ import {
 export interface FrontendConstructProps {
   environment: string;
   api: apigateway.RestApi;
+  webAclArn?: string; // WAF Web ACL ARN (CloudFront用)
 }
 
 export class FrontendConstruct extends Construct {
@@ -23,12 +24,12 @@ export class FrontendConstruct extends Construct {
   constructor(scope: Construct, id: string, props: FrontendConstructProps) {
     super(scope, id);
 
-    const { environment, api } = props;
+    const { environment, api, webAclArn } = props;
 
     const bucket = this.createS3Bucket(environment);
     const oai = this.createOriginAccessIdentity(environment);
     this.grantBucketReadToOAI(bucket, oai);
-    const distribution = this.createCloudFrontDistribution(environment, bucket, oai, api);
+    const distribution = this.createCloudFrontDistribution(environment, bucket, oai, api, webAclArn);
     this.deployFrontendAssets(environment, bucket, distribution);
     this.createOutputs(environment, distribution);
     this.applyTags(environment, bucket, distribution);
@@ -67,10 +68,12 @@ export class FrontendConstruct extends Construct {
     environment: string,
     bucket: s3.Bucket,
     oai: cloudfront.OriginAccessIdentity,
-    api: apigateway.RestApi
+    api: apigateway.RestApi,
+    webAclArn?: string
   ): cloudfront.Distribution {
     return new cloudfront.Distribution(this, 'Distribution', {
       comment: `Attendance Kit Frontend Distribution (${environment})`,
+      webAclId: webAclArn, // WAF Web ACL ARN (optional)
       defaultBehavior: {
         origin: origins.S3BucketOrigin.withOriginAccessIdentity(bucket, {
           originAccessIdentity: oai,

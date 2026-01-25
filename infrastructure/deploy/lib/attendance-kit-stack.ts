@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { BackendConstruct } from './constructs/backend';
 import { FrontendConstruct } from './constructs/frontend';
+import { WafConstruct } from './constructs/waf';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging'
@@ -13,6 +14,7 @@ export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
   public readonly backendApi: BackendConstruct;
   public readonly frontend: FrontendConstruct;
+  public readonly waf: WafConstruct;
 
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
@@ -72,10 +74,16 @@ export class AttendanceKitStack extends cdk.Stack {
       jwtSecret,
     });
 
-    // Frontend (CloudFront + S3)
+    // WAF Web ACL for CloudFront
+    this.waf = new WafConstruct(this, 'Waf', {
+      environment,
+    });
+
+    // Frontend (CloudFront + S3) with WAF
     this.frontend = new FrontendConstruct(this, 'Frontend', {
       environment,
       api: this.backendApi.api,
+      webAclArn: this.waf.webAcl.attrArn,
     });
 
     // CloudFormation Outputs
