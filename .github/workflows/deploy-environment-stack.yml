@@ -61,6 +61,7 @@ jobs:
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
@@ -70,6 +71,7 @@ jobs:
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/')-Stack"
           echo "Deploying environment stack: ${STACK_NAME}"
