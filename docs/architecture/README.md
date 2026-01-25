@@ -1,26 +1,9 @@
 # アーキテクチャドキュメント
 
-- [DynamoDB Clock Table](./dynamodb-clock-table.md) - 打刻テーブルの詳細設計
-- [CI/CD デプロイメント戦略](./cicd-deployment-strategy.md) - デプロイ戦略とセキュリティアーキテクチャ
-- [AWS利用金額アラート](./cost-budget-alerts.md) - コスト監視とアラート通知の設計
+システムのアーキテクチャ設計と技術仕様を記載
 
-## 内容
+## ドキュメント一覧
 
-- システム構成図
-- インフラストラクチャ設計
-- データベーススキーマ
-- API設計
-- セキュリティアーキテクチャ
-- デプロイメント構成
-- 技術スタック選定理由
-
-## 更新タイミング
-
-実装時にコードと同時に作成・更新します。
-
-## 命名規則
-
-- `{feature-name}-architecture.md` - 機能別アーキテクチャ
-- `{system-name}-infrastructure.md` - インフラストラクチャ設計
-- `{component-name}-api.md` - API設計
-
+- [DynamoDB Clock Table](./dynamodb-clock-table.md)
+- [CI/CD デプロイメント戦略](./cicd-deployment-strategy.md)
+- [AWS利用金額アラート](./cost-budget-alerts.md)
