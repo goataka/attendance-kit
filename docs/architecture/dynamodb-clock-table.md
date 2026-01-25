@@ -46,7 +46,7 @@ graph TB
 | `userId` | String | ✓ | ユーザーID（Partition Key） |
 | `timestamp` | String | ✓ | 打刻時刻（Sort Key、ISO 8601形式） |
 | `date` | String | ✓ | 日付（YYYY-MM-DD形式、GSI用） |
-| `type` | String | ✓ | 打刻種別（"clock-in" / "clock-out"） |
+| `type` | String | ✓ | 打刻種別（clock-in または clock-out） |
 | `location` | String |  | 打刻場所（オプション） |
 | `deviceId` | String |  | デバイスID（オプション） |
 
@@ -220,7 +220,7 @@ const result = await dynamodb.query(params).promise();
 
 すべてのリソースには以下のタグが付与されます：
 
-- `Environment`: dev / staging
+- `Environment`: dev または staging
 - `Project`: attendance-kit
 - `ManagedBy`: CDK
 - `CostCenter`: Engineering

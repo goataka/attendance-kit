@@ -18,7 +18,7 @@ GitHub Actionsから環境（dev/staging）を選択して実行可能
 
 ## デプロイ対象
 
-- スタック名: `AttendanceKit-Dev-Stack` / `AttendanceKit-Staging-Stack`
+- スタック名: `AttendanceKit-Dev-Stack` または `AttendanceKit-Staging-Stack`
 - リソース: DynamoDB Clock Table
 
 ## 必要な設定
