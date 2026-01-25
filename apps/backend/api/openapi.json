@@ -1,6 +1,22 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/health": {
+      "get": {
+        "operationId": "HealthController_healthCheck",
+        "summary": "ヘルスチェック",
+        "description": "Health check endpoint",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy"
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
     "/clock/in": {
       "post": {
         "operationId": "ClockController_clockIn",
@@ -116,6 +132,42 @@
           }
         ]
       }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "summary": "ユーザーログイン",
+        "description": "Login and get JWT token",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
     }
   },
   "info": {
@@ -214,6 +266,29 @@
             "example": "device-abc123"
           }
         }
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user001"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password",
+            "example": "password123"
+          }
+        },
+        "required": [
+          "userId",
+          "password"
+        ]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

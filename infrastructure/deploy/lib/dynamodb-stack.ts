@@ -22,11 +22,7 @@ export class DynamoDBStack extends cdk.Stack {
     this.clockTable = new dynamodb.Table(this, 'ClockTable', {
       tableName: `attendance-kit-${environment}-clock`,
       partitionKey: {
-        name: 'userId',
-        type: dynamodb.AttributeType.STRING,
-      },
-      sortKey: {
-        name: 'timestamp',
+        name: 'id',
         type: dynamodb.AttributeType.STRING,
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -35,11 +31,11 @@ export class DynamoDBStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Global Secondary Index: DateIndex
+    // Global Secondary Index: UserIdTimestampIndex
     this.clockTable.addGlobalSecondaryIndex({
-      indexName: 'DateIndex',
+      indexName: 'UserIdTimestampIndex',
       partitionKey: {
-        name: 'date',
+        name: 'userId',
         type: dynamodb.AttributeType.STRING,
       },
       sortKey: {

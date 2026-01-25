@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ClocksListPage } from './ClocksListPage';
-import { mockApi } from '../shared/api/mockApi';
+import { api } from '../shared/api';
 
-// Mock the API
-vi.mock('../shared/api/mockApi', () => ({
-  mockApi: {
+// Mock the API - mock the index module which exports the api
+vi.mock('../shared/api', () => ({
+  api: {
     getRecords: vi.fn(),
   },
 }));
@@ -36,7 +36,7 @@ describe('ClocksListPage', () => {
   });
 
   it('renders the records list page', async () => {
-    vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
+    vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
     
@@ -48,7 +48,7 @@ describe('ClocksListPage', () => {
   });
 
   it('displays loading state initially', () => {
-    vi.mocked(mockApi.getRecords).mockImplementation(() => new Promise(() => {}));
+    vi.mocked(api.getRecords).mockImplementation(() => new Promise(() => {}));
     
     renderWithRouter(<ClocksListPage />);
     
@@ -56,7 +56,7 @@ describe('ClocksListPage', () => {
   });
 
   it('displays clocks after loading', async () => {
-    vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
+    vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
     
@@ -68,7 +68,7 @@ describe('ClocksListPage', () => {
   });
 
   it('displays no data message when clocks are empty', async () => {
-    vi.mocked(mockApi.getRecords).mockResolvedValue([]);
+    vi.mocked(api.getRecords).mockResolvedValue([]);
     
     renderWithRouter(<ClocksListPage />);
     
@@ -78,7 +78,7 @@ describe('ClocksListPage', () => {
   });
 
   it('filters clocks by user ID', async () => {
-    vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
+    vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
     
@@ -93,14 +93,14 @@ describe('ClocksListPage', () => {
     fireEvent.click(searchButton);
     
     await waitFor(() => {
-      expect(mockApi.getRecords).toHaveBeenCalledWith(
+      expect(api.getRecords).toHaveBeenCalledWith(
         expect.objectContaining({ userId: 'user002' })
       );
     });
   });
 
   it('filters clocks by type', async () => {
-    vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
+    vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
     
@@ -115,14 +115,14 @@ describe('ClocksListPage', () => {
     fireEvent.click(searchButton);
     
     await waitFor(() => {
-      expect(mockApi.getRecords).toHaveBeenCalledWith(
+      expect(api.getRecords).toHaveBeenCalledWith(
         expect.objectContaining({ type: 'clock-in' })
       );
     });
   });
 
   it('resets filters', async () => {
-    vi.mocked(mockApi.getRecords).mockResolvedValue(mockRecords);
+    vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
     

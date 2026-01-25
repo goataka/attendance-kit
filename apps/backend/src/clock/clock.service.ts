@@ -6,8 +6,10 @@ import {
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { ClockType, ClockRecordResponseDto } from './dto/clock.dto';
+import { randomUUID } from 'crypto';
 
 export interface ClockRecord {
+  id: string;
   userId: string;
   timestamp: string;
   date: string;
@@ -27,12 +29,12 @@ export class ClockService {
     const clientConfig: any = {
       region: process.env.AWS_REGION || 'ap-northeast-1',
     };
-    
+
     // LocalStackエンドポイントが設定されている場合はそれを使用
     if (process.env.DYNAMODB_ENDPOINT) {
       clientConfig.endpoint = process.env.DYNAMODB_ENDPOINT;
     }
-    
+
     const client = new DynamoDBClient(clientConfig);
     this.docClient = DynamoDBDocumentClient.from(client);
     this.tableName =
@@ -47,8 +49,10 @@ export class ClockService {
     const now = new Date();
     const timestamp = now.toISOString();
     const date = timestamp.split('T')[0]; // YYYY-MM-DD
+    const id = randomUUID();
 
     const record: ClockRecord = {
+      id,
       userId,
       timestamp,
       date,
@@ -76,8 +80,10 @@ export class ClockService {
     const now = new Date();
     const timestamp = now.toISOString();
     const date = timestamp.split('T')[0]; // YYYY-MM-DD
+    const id = randomUUID();
 
     const record: ClockRecord = {
+      id,
       userId,
       timestamp,
       date,
@@ -100,6 +106,7 @@ export class ClockService {
   async getRecords(userId: string): Promise<ClockRecordResponseDto[]> {
     const command = new QueryCommand({
       TableName: this.tableName,
+      IndexName: 'UserIdTimestampIndex',
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
         ':userId': userId,

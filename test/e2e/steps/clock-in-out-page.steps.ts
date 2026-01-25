@@ -1,0 +1,76 @@
+import { When, Then } from '@cucumber/cucumber';
+import { expect } from '@playwright/test';
+import { FRONTEND_URL } from './services.helper';
+import { CustomWorld } from './world';
+import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
+
+// Fill login credentials
+async function fillLoginCredentials(page: any, userId: string = TEST_USER_ID, password: string = TEST_PASSWORD): Promise<void> {
+  await page.locator('#userId').fill(userId);
+  await page.locator('#password').fill(password);
+  
+  // Wait for React to update state
+  await page.waitForFunction(
+    ({ userId, password }) => {
+      const userIdInput = document.querySelector('#userId') as HTMLInputElement;
+      const passwordInput = document.querySelector('#password') as HTMLInputElement;
+      return userIdInput?.value === userId && passwordInput?.value === password;
+    },
+    { userId, password }
+  );
+}
+
+// Click clock button and wait for message
+async function clickClockButtonAndWaitForMessage(page: any, buttonText: string): Promise<void> {
+  await page.getByRole('button', { name: buttonText }).click();
+  await page.waitForSelector('.message', { timeout: 15000 });
+}
+
+// 打刻ページのステップ
+When('ユーザーが出勤を打刻する', { timeout: 30000 }, async function (this: CustomWorld) {
+  if (!this.page) {
+    throw new Error('Page is not initialized');
+  }
+  
+  await this.page.goto(FRONTEND_URL);
+  await fillLoginCredentials(this.page);
+  await clickClockButtonAndWaitForMessage(this.page, '出勤');
+  
+  // Verify success message appeared
+  const messageElement = await this.page.locator('.message').first();
+  const messageClass = await messageElement.getAttribute('class');
+  
+  if (!messageClass?.includes('success')) {
+    const messageText = await messageElement.textContent();
+    throw new Error(`Expected success message but got: ${messageText}`);
+  }
+});
+
+When('ユーザーが退勤を打刻する', { timeout: 30000 }, async function (this: CustomWorld) {
+  if (!this.page) {
+    throw new Error('Page is not initialized');
+  }
+  
+  await this.page.goto(FRONTEND_URL);
+  await fillLoginCredentials(this.page);
+  await clickClockButtonAndWaitForMessage(this.page, '退勤');
+  
+  // Verify success message appeared
+  const messageElement = await this.page.locator('.message').first();
+  const messageClass = await messageElement.getAttribute('class');
+  
+  if (!messageClass?.includes('success')) {
+    const messageText = await messageElement.textContent();
+    throw new Error(`Expected success message but got: ${messageText}`);
+  }
+});
+
+Then('成功メッセージが表示される', { timeout: 30000 }, async function (this: CustomWorld) {
+  if (!this.page) {
+    throw new Error('Page is not initialized');
+  }
+  
+  const successMessage = await this.page.waitForSelector('.message.success', { timeout: 15000 });
+  const messageText = await successMessage.textContent();
+  expect(messageText).toBeTruthy();
+});

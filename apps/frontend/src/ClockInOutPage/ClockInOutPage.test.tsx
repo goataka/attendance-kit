@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ClockInOutPage } from './ClockInOutPage';
-import { mockApi } from '../shared/api/mockApi';
+import { api } from '../shared/api';
 
-// Mock the API
-vi.mock('../shared/api/mockApi', () => ({
-  mockApi: {
+// Mock the API - mock the index module which exports the api
+vi.mock('../shared/api', () => ({
+  api: {
     clockInOut: vi.fn(),
   },
 }));
@@ -52,7 +52,7 @@ describe('ClockInOutPage', () => {
       },
     };
     
-    vi.mocked(mockApi.clockInOut).mockResolvedValue(mockResponse);
+    vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
     
     renderWithRouter(<ClockInOutPage />);
     
@@ -75,7 +75,7 @@ describe('ClockInOutPage', () => {
       message: 'Invalid credentials',
     };
     
-    vi.mocked(mockApi.clockInOut).mockResolvedValue(mockResponse);
+    vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
     
     renderWithRouter(<ClockInOutPage />);
     
@@ -103,7 +103,7 @@ describe('ClockInOutPage', () => {
       },
     };
     
-    vi.mocked(mockApi.clockInOut).mockResolvedValue(mockResponse);
+    vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
     
     renderWithRouter(<ClockInOutPage />);
     

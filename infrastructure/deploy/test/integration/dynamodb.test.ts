@@ -41,18 +41,18 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       
       // Verify key schema
       const keySchema = response.Table?.KeySchema || [];
-      expect(keySchema).toHaveLength(2);
-      expect(keySchema.find(k => k.AttributeName === 'userId' && k.KeyType === 'HASH')).toBeDefined();
-      expect(keySchema.find(k => k.AttributeName === 'timestamp' && k.KeyType === 'RANGE')).toBeDefined();
+      expect(keySchema).toHaveLength(1);
+      expect(keySchema.find(k => k.AttributeName === 'id' && k.KeyType === 'HASH')).toBeDefined();
       
       // Verify GSI
       const gsi = response.Table?.GlobalSecondaryIndexes || [];
       expect(gsi).toHaveLength(1);
-      expect(gsi[0].IndexName).toBe('DateIndex');
+      expect(gsi[0].IndexName).toBe('UserIdTimestampIndex');
     });
   });
 
   describe('CRUD Operations', () => {
+    const testId = 'test-id-123';
     const testUserId = 'test-user';
     const testTimestamp = new Date().toISOString();
     const testDate = testTimestamp.split('T')[0];
@@ -61,6 +61,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       const command = new PutItemCommand({
         TableName: TABLE_NAME,
         Item: {
+          id: { S: testId },
           userId: { S: testUserId },
           timestamp: { S: testTimestamp },
           date: { S: testDate },
@@ -76,13 +77,13 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       const command = new GetItemCommand({
         TableName: TABLE_NAME,
         Key: {
-          userId: { S: testUserId },
-          timestamp: { S: testTimestamp },
+          id: { S: testId },
         },
       });
       
       const response = await client.send(command);
       expect(response.Item).toBeDefined();
+      expect(response.Item?.id?.S).toBe(testId);
       expect(response.Item?.userId?.S).toBe(testUserId);
       expect(response.Item?.timestamp?.S).toBe(testTimestamp);
       expect(response.Item?.date?.S).toBe(testDate);
@@ -100,7 +101,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       
       // Find our test item
       const testItem = response.Items?.find(
-        item => item.userId?.S === testUserId && item.timestamp?.S === testTimestamp
+        item => item.id?.S === testId
       );
       expect(testItem).toBeDefined();
     });

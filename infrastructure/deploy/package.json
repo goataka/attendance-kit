@@ -26,7 +26,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@aws-sdk/client-cloudfront": "^3.972.0",
     "@aws-sdk/client-dynamodb": "^3.x",
+    "@aws-sdk/client-s3": "^3.972.0",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.x",
     "aws-cdk": "^2.x",

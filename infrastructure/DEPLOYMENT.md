@@ -8,6 +8,8 @@
 
 **トリガーファイル**:
 - `infrastructure/deploy/lib/attendance-kit-stack.ts`
+- `infrastructure/deploy/lib/constructs/backend.ts`
+- `infrastructure/deploy/lib/constructs/frontend.ts`
 - `infrastructure/deploy/test/attendance-kit-stack.test.ts`
 - `infrastructure/deploy/bin/app.ts`
 - `infrastructure/deploy/package*.json`
