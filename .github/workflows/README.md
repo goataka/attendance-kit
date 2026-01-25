@@ -1,76 +1,11 @@
 # GitHub Actions ワークフロー
 
-## ワークフローサマリー
+## ワークフロー一覧
 
-このディレクトリには、プロジェクトの CI/CD ワークフローが含まれています。
+| ワークフロー | 説明 | トリガー |
+|-------------|------|---------|
+| [premerge.yml](./premerge.yml) | PR時のテストとチェック | PR作成・更新時 |
+| [deploy-environment-stack.yml](./deploy-environment-stack.yml) | 環境スタックデプロイ | mainマージ時/手動 |
+| [deploy-account-stack.yml](./deploy-account-stack.yml) | アカウントスタックデプロイ | mainマージ時/手動 |
 
-## Premerge ワークフロー
-
-### premerge.yml
-
-Pull Requestに対して実行される統合テストとコード品質チェック。
-
-- **トリガー**: PR作成時・更新時（`main`ブランチへのPR）
-- **ジョブ**: ユニットテスト、バックエンド統合テスト、デプロイ統合テスト、フロントエンド統合テスト
-- **並行実行制御**: 同じPRで新しいコミットがプッシュされた場合、前の実行を自動キャンセル
-
-**監視ファイル**:
-- `apps/**`
-- `infrastructure/**`
-- `package.json`
-
-**詳細**: [premerge.md](./premerge.md)
-
-## CDK関連ワークフロー
-
-CDK関連のワークフロー（`deploy-pr.yml`）の実装詳細とドキュメントは、インフラストラクチャディレクトリで管理されています。
-
-**詳細**: [Deploy Workflows](../../infrastructure/deploy/.github/workflows/README.md)
-
-### deploy-environment-stack.yml
-
-環境レベルリソース（DynamoDBテーブル等）をデプロイするワークフロー。
-
-- **トリガー**: 
-  - 環境スタック関連ファイルが`main`ブランチにプッシュされた時（自動）
-  - 手動実行（`workflow_dispatch`）
-- **対象**: `AttendanceKit-Dev-Stack`, `AttendanceKit-Staging-Stack`
-- **環境**: dev, staging（選択可能）
-- **認証**: OIDC
-
-**監視ファイル**:
-- `infrastructure/deploy/lib/attendance-kit-stack.ts`
-- `infrastructure/deploy/test/attendance-kit-stack.test.ts`
-- `infrastructure/deploy/bin/app.ts`
-- `infrastructure/deploy/package*.json`
-
-**詳細**: [deploy-environment-stack.md](./deploy-environment-stack.md)
-
-### deploy-account-stack.yml
-
-アカウントレベルリソース（AWS Budget, SNS）をデプロイするワークフロー。
-
-- **トリガー**: 
-  - アカウントスタック関連ファイルが`main`ブランチにプッシュされた時（自動）
-  - 手動実行（`workflow_dispatch`）
-- **対象**: `AttendanceKit-Account-Stack`
-- **環境**: production（アカウント単位）
-- **認証**: OIDC
-- **必須シークレット**: `COST_ALERT_EMAIL`
-
-**監視ファイル**:
-- `infrastructure/deploy/lib/attendance-kit-account-stack.ts`
-- `infrastructure/deploy/lib/constructs/cost-budget.ts`
-- `infrastructure/deploy/test/attendance-kit-account-stack.test.ts`
-- `infrastructure/deploy/test/cost-budget.test.ts`
-
-**詳細**: [deploy-account-stack.md](./deploy-account-stack.md)
-
-## ワークフロー課題
-
-GitHub Actionsとワークフローに関する課題については、[ISSUES.md](./ISSUES.md) を参照してください。
-
-## 関連ドキュメント
-
-- [デプロイ手順](../../infrastructure/DEPLOYMENT.md) - 各ワークフローの使い方
-- [初回セットアップ](../../infrastructure/setup/README.md) - GitHub Secretsの設定方法
+詳細は各ワークフローのドキュメントを参照してください。
