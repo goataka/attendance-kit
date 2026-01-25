@@ -42,16 +42,11 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies (all workspaces)
-        run: npm ci
+      - name: Install dependencies
+        run: npm run setup
 
-      - name: Build infrastructure
-        working-directory: infrastructure/deploy
-        run: npm run build
-
-      - name: Build frontend
-        working-directory: apps/frontend
-        run: npm run build
+      - name: Build all workspaces
+        run: npm run build --workspaces --if-present
 
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
