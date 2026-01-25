@@ -53,23 +53,28 @@ if (['all', 'environment'].includes(stackType)) {
   // Validate JWT_SECRET is provided
   const jwtSecret = process.env.JWT_SECRET;
   if (!jwtSecret) {
-    throw new Error('JWT_SECRET environment variable is required for environment stack deployment');
+    if (stackType === 'environment') {
+      // Environment stack was explicitly requested but JWT_SECRET is missing
+      throw new Error('JWT_SECRET environment variable is required for environment stack deployment');
+    }
+    // If stackType is 'all', skip environment stack when JWT_SECRET is not provided
+    console.warn('JWT_SECRET not provided. Skipping environment stack creation.');
+  } else {
+    const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
+
+    new AttendanceKitStack(app, stackName, {
+      env,
+      environment,
+      jwtSecret,
+      description: `DynamoDB clock table and Backend API for attendance-kit (${environment} environment)`,
+      tags: {
+        Environment: environment,
+        Project: 'attendance-kit',
+        ManagedBy: 'CDK',
+        CostCenter: 'Engineering',
+      },
+    });
   }
-
-  const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;
-
-  new AttendanceKitStack(app, stackName, {
-    env,
-    environment,
-    jwtSecret,
-    description: `DynamoDB clock table and Backend API for attendance-kit (${environment} environment)`,
-    tags: {
-      Environment: environment,
-      Project: 'attendance-kit',
-      ManagedBy: 'CDK',
-      CostCenter: 'Engineering',
-    },
-  });
 }
 
 // DynamoDB-only stack (for integration testing with LocalStack)
