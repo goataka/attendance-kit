@@ -182,7 +182,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           },
         },
         "FunctionName": "attendance-kit-staging-api",
-        "Handler": "lambda.handler",
+        "Handler": "index.handler",
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [
@@ -1613,7 +1613,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           },
         },
         "FunctionName": "attendance-kit-dev-api",
-        "Handler": "lambda.handler",
+        "Handler": "index.handler",
         "MemorySize": 512,
         "Role": {
           "Fn::GetAtt": [

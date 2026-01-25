@@ -44,9 +44,14 @@ export class BackendConstruct extends Construct {
       functionName: `attendance-kit-${environment}-api`,
       runtime: lambda.Runtime.NODEJS_20_X,
       entry: path.join(__dirname, '../../../../apps/backend/src/lambda.ts'),
-      handler: 'handler',
+      handler: 'index.handler',
       bundling: {
-        externalModules: [],
+        externalModules: [
+          '@nestjs/microservices',
+          '@nestjs/microservices/microservices-module',
+          '@nestjs/websockets/socket-module',
+          'class-transformer/storage',
+        ],
       },
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
