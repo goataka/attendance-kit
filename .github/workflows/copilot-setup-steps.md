@@ -35,6 +35,7 @@ AWS調査機能を含む環境のセットアップを確認します。
 3. **Configure AWS credentials for investigation**: AWS調査用認証情報を設定
    - OIDCを使用して`AWS_INVESTIGATION_ROLE_ARN`のRoleを引き受け
    - `continue-on-error: true`で失敗しても続行
+   - **注**: このワークフローはセットアップ検証のみを目的としているため、リポジトリのcheckoutは不要
 4. **Verify AWS access**: AWS接続を確認
    - アカウントID、Role ARN、リージョンを表示
    - 認証情報が設定されていない場合は警告を表示
