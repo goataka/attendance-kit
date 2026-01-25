@@ -1,6 +1,27 @@
 import { ClockRecord, ClockInOutRequest, ClockInOutResponse, RecordsFilter } from '../types';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const DEFAULT_DEV_BACKEND_URL = 'http://localhost:3000';
+
+export const resolveBackendUrl = (
+  envUrl: string | undefined = import.meta.env.VITE_BACKEND_URL,
+  isDev: boolean = import.meta.env.DEV,
+  windowOrigin: string | undefined =
+    typeof window === 'undefined' ? undefined : window.location.origin,
+): string => {
+  const trimmedUrl = envUrl?.trim();
+
+  if (trimmedUrl) {
+    return trimmedUrl;
+  }
+
+  if (isDev || !windowOrigin) {
+    return DEFAULT_DEV_BACKEND_URL;
+  }
+
+  return windowOrigin;
+};
+
+const BACKEND_URL = resolveBackendUrl();
 
 // ログインしてJWTトークンを取得
 const login = async (userId: string, password: string): Promise<string | null> => {
