@@ -62,6 +62,7 @@ CloudFormationスタックのOutputs（TableName, TableArn等）を表示しま�
 ### GitHub Secrets
 
 - `AWS_ROLE_TO_ASSUME`: デプロイに使用するIAMロールのARN
+- `JWT_SECRET`: バックエンドAPIのJWT認証に使用するシークレットキー
 
 ### 環境変数
 

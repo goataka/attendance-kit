@@ -61,6 +61,7 @@ jobs:
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
@@ -70,6 +71,7 @@ jobs:
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/')-Stack"
           echo "Deploying environment stack: ${STACK_NAME}"
@@ -95,11 +97,4 @@ jobs:
         with:
           workflow-name: 'Deploy Environment Stack'
           failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Start Copilot Agent Task on deploy failure
-        if: failure()
-        uses: ./.github/actions/start-agent-task
-        with:
-          workflow-name: 'Deploy Environment Stack'
           github-token: ${{ secrets.GITHUB_TOKEN }}
