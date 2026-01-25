@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Outer frame (plastic model runner frame) -->
+  <rect x="5" y="5" width="90" height="90" fill="none" stroke="#1e3a5f" stroke-width="4" rx="5"/>
+  
+  <!-- Connection points (burrs/gates) on frame -->
+  <circle cx="50" cy="5" r="5" fill="#1e3a5f"/>
+  <circle cx="75" cy="10" r="5" fill="#1e3a5f"/>
+  <circle cx="5" cy="35" r="5" fill="#1e3a5f"/>
+  <circle cx="95" cy="35" r="5" fill="#1e3a5f"/>
+  <circle cx="5" cy="65" r="5" fill="#1e3a5f"/>
+  <circle cx="95" cy="65" r="5" fill="#1e3a5f"/>
+  <circle cx="50" cy="95" r="5" fill="#1e3a5f"/>
+  
+  <!-- Large clock in center -->
+  <circle cx="50" cy="50" r="28" fill="#1e3a5f" stroke="#1e3a5f" stroke-width="2"/>
+  <circle cx="50" cy="50" r="24" fill="white"/>
+  
+  <!-- Clock numbers -->
+  <text x="50" y="33" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#1e3a5f" text-anchor="middle">12</text>
+  <text x="63" y="53" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#1e3a5f" text-anchor="middle">3</text>
+  <text x="50" y="70" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#1e3a5f" text-anchor="middle">6</text>
+  <text x="37" y="53" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#1e3a5f" text-anchor="middle">9</text>
+  <text x="68" y="38" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">1</text>
+  <text x="68" y="65" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">4</text>
+  <text x="32" y="38" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">11</text>
+  <text x="32" y="65" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">8</text>
+  <text x="59" y="32" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">1</text>
+  <text x="59" y="70" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">5</text>
+  <text x="41" y="32" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">11</text>
+  <text x="41" y="70" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">7</text>
+  <text x="56.5" y="45" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">2</text>
+  <text x="56.5" y="58" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">4</text>
+  <text x="43.5" y="45" font-family="Arial, sans-serif" font-size="7" font-weight="bold" fill="#1e3a5f" text-anchor="middle">10</text>
+  
+  <!-- Clock hands -->
+  <line x1="50" y1="50" x2="50" y2="32" stroke="#1e3a5f" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="50" x2="64" y2="50" stroke="#1e3a5f" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="2" fill="#1e3a5f"/>
+  
+  <!-- Large checkmark (upper right) -->
+  <path d="M 72 22 L 76 27 L 85 18" stroke="#2563eb" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Small ID badge (lower left) -->
+  <rect x="15" y="75" width="12" height="16" rx="1" fill="#1e3a5f" stroke="#1e3a5f" stroke-width="1"/>
+  <circle cx="21" cy="81" r="2.5" fill="white"/>
+  <line x1="18" y1="86" x2="24" y2="86" stroke="white" stroke-width="1"/>
+  <line x1="18" y1="88.5" x2="24" y2="88.5" stroke="white" stroke-width="1"/>
+  
+  <!-- Small sun icon (lower right) -->
+  <circle cx="83" cy="83" r="4" fill="#fbbf24"/>
+  <line x1="83" y1="76" x2="83" y2="78" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="83" y1="88" x2="83" y2="90" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="76" y1="83" x2="78" y2="83" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="88" y1="83" x2="90" y2="83" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="78" y1="78" x2="79.5" y2="79.5" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="86.5" y1="86.5" x2="88" y2="88" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="78" y1="88" x2="79.5" y2="86.5" stroke="#fbbf24" stroke-width="1.5"/>
+  <line x1="86.5" y1="79.5" x2="88" y2="78" stroke="#fbbf24" stroke-width="1.5"/>
+  
+  <!-- Small moon icon (upper left) -->
+  <path d="M 17 20 Q 15 15 20 13 Q 16 14 14 18 Q 14 22 17 23 Q 13 22 13 18 Q 13 14 17 12 Q 14 14 14 18 Q 14 21 17 22 Q 15 21 15 18 Q 15 15 17 13" fill="#94a3b8"/>
+</svg>
