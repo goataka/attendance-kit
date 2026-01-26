@@ -48,14 +48,13 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
 
 **注意**: このステップはGitHub Actions環境内でのみ実行可能です。
 
-```bash
+```yaml
 # GitHub Actionsのワークフロー内で以下のステップを実行
-# 
-# - name: Configure AWS credentials for investigation
-#   uses: aws-actions/configure-aws-credentials@v4
-#   with:
-#     role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
-#     aws-region: ap-northeast-1
+- name: Configure AWS credentials for investigation
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
+    aws-region: ap-northeast-1
 ```
 
 #### 1.2 認証確認
@@ -63,13 +62,15 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
 ```bash
 # AWS認証が成功したか確認
 aws sts get-caller-identity
+```
 
-# 出力例:
-# {
-#     "UserId": "AROA...:botocore-session-1234567890",
-#     "Account": "123456789012",
-#     "Arn": "arn:aws:sts::123456789012:assumed-role/GitHubCopilotInvestigationRole/..."
-# }
+出力例:
+```json
+{
+    "UserId": "AROA...:botocore-session-1234567890",
+    "Account": "123456789012",
+    "Arn": "arn:aws:sts::123456789012:assumed-role/GitHubCopilotInvestigationRole/..."
+}
 ```
 
 ### 2. AWSリソースの調査
