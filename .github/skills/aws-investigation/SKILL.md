@@ -48,29 +48,28 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
 
 #### 1.1 OIDC認証の実行
 
-スキル実行時に以下のコマンドを実行して、GitHub ActionsのOIDC認証を通じてAWSに接続します:
+スキル実行時、GitHub Actionsワークフロー内でAWS認証が事前に実施されている必要があります。
 
-```bash
-# GitHub Actionsワークフロー内でAWS認証を実施
-# aws-actions/configure-aws-credentials@v4を使用してOIDC認証
-# このスキルを使用する際は、ワークフロー内で以下のような認証ステップを含める
+スキルを使用する際は、以下のような認証ステップをワークフローに含めてください:
 
-cat << 'EOF' > /tmp/aws-auth-step.yml
+```yaml
 - name: Configure AWS credentials for investigation
   uses: aws-actions/configure-aws-credentials@v4
   with:
     role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
     aws-region: ap-northeast-1
-EOF
-
-# ワークフロー実行時に上記の認証ステップが実行されていることを確認
 ```
+
+**注意**: 
+- このスキルはGitHub Actions環境内でのみ実行可能です
+- スキル実行前に、上記の認証ステップがワークフロー内で実行されている必要があります
+- 認証ステップは、スキルを呼び出すワークフローで定義してください
 
 #### 1.2 認証確認
 
 ```bash
 # AWS認証が成功したか確認（詳細情報は出力しない）
-if aws sts get-caller-identity --query 'Account' --output text > /dev/null 2>&1; then
+if aws sts get-caller-identity > /dev/null 2>&1; then
   echo "✓ AWS認証成功"
 else
   echo "✗ AWS認証失敗。AWS_INVESTIGATION_ROLE_ARNが設定されているか確認してください。"
@@ -78,7 +77,7 @@ else
 fi
 ```
 
-**注意**: 認証情報の詳細（Account ID、Role ARN、UserIdなど）はセキュリティ上の理由から標準出力に出力しないでください。
+**注意**: 認証確認では、コマンドの成功/失敗のみを判定し、Account IDやRole ARNなどの認証情報の詳細はセキュリティ上の理由から標準出力に出力しないでください。
 
 ### 2. AWSリソースの調査
 
@@ -174,9 +173,11 @@ aws logs describe-log-streams \
   --output table
 
 # 最新のログイベントを取得（直近1時間分）
+# 1時間前のタイムスタンプをミリ秒で取得
+START_TIME=$(($(date +%s) - 3600))000
 aws logs filter-log-events \
   --log-group-name /aws/lambda/attendance-kit-dev-backend \
-  --start-time $(date -u -d '1 hour ago' +%s)000 \
+  --start-time ${START_TIME} \
   --query 'events[*].[timestamp,message]' \
   --output text | head -20
 ```
@@ -272,10 +273,12 @@ aws logs describe-log-streams \
   --output json
 
 # エラーログのみをフィルタリング
+# 24時間前のタイムスタンプをミリ秒で取得
+START_TIME=$(($(date +%s) - 86400))000
 aws logs filter-log-events \
   --log-group-name /aws/lambda/attendance-kit-dev-backend \
   --filter-pattern "ERROR" \
-  --start-time $(date -u -d '24 hours ago' +%s)000 \
+  --start-time ${START_TIME} \
   --query 'events[*].[timestamp,message]' \
   --output text | head -10
 ```
