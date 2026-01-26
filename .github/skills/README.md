@@ -47,6 +47,14 @@ npm run premerge:local
 
 **詳細**: [workflow-error-handler/SKILL.md](./workflow-error-handler/SKILL.md)
 
+### cloudfront-error-handler
+
+**説明**: CloudFront配下のAPI/フロントエンドのエラーに対応し、アクセス検証、原因特定、対処、検証を体系的に行います。
+
+**使用タイミング**: CloudFront経由のアクセスでエラーが発生した場合、API GatewayやLambdaとの連携不具合が疑われる場合
+
+**詳細**: [cloudfront-error-handler/SKILL.md](./cloudfront-error-handler/SKILL.md)
+
 ## Agent Skillsについて
 
 Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機能を定義したものです。

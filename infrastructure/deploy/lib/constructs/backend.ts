@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as path from 'path';
@@ -39,13 +40,19 @@ export class BackendConstruct extends Construct {
     clockTable: dynamodb.Table,
     jwtSecret: string,
   ): lambda.Function {
-    const lambdaFunction = new lambda.Function(this, 'ApiFunction', {
+    const lambdaFunction = new NodejsFunction(this, 'ApiFunction', {
       functionName: `attendance-kit-${environment}-api`,
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'lambda.handler',
-      code: lambda.Code.fromAsset(
-        path.join(__dirname, '../../../../apps/backend/dist'),
-      ),
+      entry: path.join(__dirname, '../../../../apps/backend/src/lambda.ts'),
+      handler: 'index.handler',
+      bundling: {
+        externalModules: [
+          '@nestjs/microservices',
+          '@nestjs/microservices/microservices-module',
+          '@nestjs/websockets/socket-module',
+          'class-transformer/storage',
+        ],
+      },
       timeout: cdk.Duration.seconds(30),
       memorySize: 512,
       environment: {
