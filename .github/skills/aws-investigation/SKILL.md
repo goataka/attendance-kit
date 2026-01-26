@@ -44,34 +44,41 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
 
 ### 1. AWS認証情報の設定
 
-#### 1.1 GitHub ActionsでOIDC認証を実行
+このスキル内で、`bash`ツールを使用してAWS認証を実施します。
 
-**注意**: このステップはGitHub Actions環境内でのみ実行可能です。
+#### 1.1 OIDC認証の実行
 
-```yaml
-# GitHub Actionsのワークフロー内で以下のステップを実行
+スキル実行時に以下のコマンドを実行して、GitHub ActionsのOIDC認証を通じてAWSに接続します:
+
+```bash
+# GitHub Actionsワークフロー内でAWS認証を実施
+# aws-actions/configure-aws-credentials@v4を使用してOIDC認証
+# このスキルを使用する際は、ワークフロー内で以下のような認証ステップを含める
+
+cat << 'EOF' > /tmp/aws-auth-step.yml
 - name: Configure AWS credentials for investigation
   uses: aws-actions/configure-aws-credentials@v4
   with:
     role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
     aws-region: ap-northeast-1
+EOF
+
+# ワークフロー実行時に上記の認証ステップが実行されていることを確認
 ```
 
 #### 1.2 認証確認
 
 ```bash
-# AWS認証が成功したか確認
-aws sts get-caller-identity
+# AWS認証が成功したか確認（詳細情報は出力しない）
+if aws sts get-caller-identity --query 'Account' --output text > /dev/null 2>&1; then
+  echo "✓ AWS認証成功"
+else
+  echo "✗ AWS認証失敗。AWS_INVESTIGATION_ROLE_ARNが設定されているか確認してください。"
+  exit 1
+fi
 ```
 
-出力例:
-```json
-{
-    "UserId": "AROA...:botocore-session-1234567890",
-    "Account": "123456789012",
-    "Arn": "arn:aws:sts::123456789012:assumed-role/GitHubCopilotInvestigationRole/..."
-}
-```
+**注意**: 認証情報の詳細（Account ID、Role ARN、UserIdなど）はセキュリティ上の理由から標準出力に出力しないでください。
 
 ### 2. AWSリソースの調査
 
@@ -145,6 +152,37 @@ aws s3api get-bucket-location \
   --output json
 ```
 
+#### 2.6 CloudWatchログの確認
+
+```bash
+# ロググループ一覧を取得
+aws logs describe-log-groups \
+  --query 'logGroups[*].[logGroupName,storedBytes,creationTime]' \
+  --output table
+
+# 特定のロググループの情報を取得
+aws logs describe-log-groups \
+  --log-group-name-prefix /aws/lambda/attendance-kit-dev \
+  --output json
+
+# ログストリーム一覧を取得
+aws logs describe-log-streams \
+  --log-group-name /aws/lambda/attendance-kit-dev-backend \
+  --order-by LastEventTime \
+  --descending \
+  --max-items 5 \
+  --output table
+
+# 最新のログイベントを取得（直近1時間分）
+aws logs filter-log-events \
+  --log-group-name /aws/lambda/attendance-kit-dev-backend \
+  --start-time $(date -u -d '1 hour ago' +%s)000 \
+  --query 'events[*].[timestamp,message]' \
+  --output text | head -20
+```
+
+**注意**: ログには機密情報が含まれる可能性があるため、出力する際は適切にフィルタリングしてください。
+
 ### 3. 調査結果のまとめ
 
 調査結果は以下の形式でまとめて報告します:
@@ -155,10 +193,8 @@ aws s3api get-bucket-location \
 ### 調査日時
 YYYY-MM-DD HH:MM:SS UTC
 
-### 認証情報
-- Account ID: 123456789012
-- Role: GitHubCopilotInvestigationRole
-- Region: ap-northeast-1
+### 調査リージョン
+ap-northeast-1
 
 ### 調査対象リソース
 
@@ -173,9 +209,16 @@ YYYY-MM-DD HH:MM:SS UTC
 - アイテム数: XXX
 - サイズ: XXX MB
 
+#### CloudWatchログ
+- ロググループ: /aws/lambda/attendance-kit-dev-backend
+- 最新ログ: YYYY-MM-DD HH:MM:SS
+- ストレージサイズ: XXX MB
+
 ### 推奨事項
 （必要に応じて）
 ```
+
+**注意**: 調査結果にはAccount IDやRole ARNなどの認証情報を含めないでください。
 
 ## 使用例
 
@@ -210,6 +253,33 @@ aws lambda get-function-configuration \
   --output json
 ```
 
+### 例3: Lambda関数のCloudWatchログ確認
+
+```bash
+# Lambda関数のロググループを確認
+aws logs describe-log-groups \
+  --log-group-name-prefix /aws/lambda/attendance-kit-dev-backend \
+  --query 'logGroups[*].{Name:logGroupName,Size:storedBytes}' \
+  --output table
+
+# 最新のログストリームを確認
+aws logs describe-log-streams \
+  --log-group-name /aws/lambda/attendance-kit-dev-backend \
+  --order-by LastEventTime \
+  --descending \
+  --max-items 1 \
+  --query 'logStreams[0].{Stream:logStreamName,LastEvent:lastEventTimestamp}' \
+  --output json
+
+# エラーログのみをフィルタリング
+aws logs filter-log-events \
+  --log-group-name /aws/lambda/attendance-kit-dev-backend \
+  --filter-pattern "ERROR" \
+  --start-time $(date -u -d '24 hours ago' +%s)000 \
+  --query 'events[*].[timestamp,message]' \
+  --output text | head -10
+```
+
 ## トラブルシューティング
 
 ### AWS認証エラー
@@ -240,8 +310,16 @@ aws lambda get-function-configuration \
 
 - このスキルはReadOnlyAccess権限のみを持つRoleを使用します
 - リソースの作成・変更・削除は実行できません
-- センシティブな情報（パスワード、APIキーなど）は出力しないように注意してください
-- 調査結果を共有する際は、アカウントIDなどの機密情報を適切にマスクしてください
+- **認証情報の取り扱い**:
+  - Account ID、Role ARN、UserIdなどの認証情報は標準出力に出力しないでください
+  - `aws sts get-caller-identity`の結果は、成功/失敗の判定のみに使用し、詳細は出力しないでください
+- **ログの取り扱い**:
+  - CloudWatchログには機密情報（APIキー、パスワード、個人情報など）が含まれる可能性があります
+  - ログを出力する際は、機密情報が含まれていないことを確認してください
+  - 必要に応じて、ログのフィルタリングやマスキングを行ってください
+- **調査結果の共有**:
+  - 調査結果を共有する際は、アカウントIDなどの機密情報を適切にマスクしてください
+  - センシティブな情報（パスワード、APIキーなど）は絶対に出力しないでください
 
 ## 関連ドキュメント
 
