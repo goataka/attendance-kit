@@ -9,6 +9,10 @@ on:
     paths:
       - .github/workflows/copilot-setup-steps.yml
 
+permissions:
+  id-token: write   # OIDC認証に必要
+  contents: read
+
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
@@ -24,3 +28,20 @@ jobs:
           node --version
           npm --version
           echo "Node.js 24 setup complete."
+      
+      - name: Configure AWS credentials for investigation
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
+          aws-region: ap-northeast-1
+        continue-on-error: true
+      
+      - name: Verify AWS access
+        run: |
+          if aws sts get-caller-identity > /dev/null 2>&1; then
+            echo "✓ AWS credentials configured successfully"
+            echo "AWS_REGION: $AWS_REGION"
+          else
+            echo "⚠️  AWS credentials not configured. Set AWS_INVESTIGATION_ROLE_ARN secret to enable AWS MCP."
+          fi
+        continue-on-error: true

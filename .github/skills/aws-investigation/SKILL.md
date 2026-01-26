@@ -1,17 +1,17 @@
 ---
 name: aws-investigation
-description: AWS MCPを使用してAWSリソースを調査するスキルです。GitHub ActionsのOIDC認証を使ってAWSに接続し、リソース情報を取得します。AWS環境の調査を依頼された場合に使用してください。
+description: AWS MCPを使用してAWSリソースを調査するスキルです。AWS認証はcopilot-setup-stepsワークフローで自動的に実施されます。AWS環境の調査を依頼された場合に使用してください。
 ---
 
 # AWS調査スキル
 
-このスキルは、AWS MCPを使用してAWSリソースを調査します。GitHub ActionsのOIDC認証を通じて読み取り専用でAWSに接続します。
+このスキルは、AWS MCPを使用してAWSリソースを調査します。AWS認証は`copilot-setup-steps.yml`ワークフローで自動的に実施され、読み取り専用でAWSに接続します。
 
 ## 利用可能なツール
 
 このスキルでは以下のツールを使用します:
 
-- **bash**: AWS CLIコマンドの実行、OIDC認証の設定
+- **bash**: AWS CLIコマンドの実行
 - **view**: CloudFormationテンプレートやIAM設定の確認
 - **grep**: AWS関連の設定ファイルの検索
 
@@ -30,7 +30,7 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
 
 - GitHub Secretsに`AWS_INVESTIGATION_ROLE_ARN`が設定されていること
 - CloudFormationで`GitHubCopilotInvestigationRole`が作成されていること
-- GitHub ActionsがOIDC認証を使用できる環境であること
+- `copilot-setup-steps.yml`ワークフローが実行されていること（AWS認証が自動的に実施されます）
 
 ### 権限
 
@@ -44,13 +44,11 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
 
 ### 1. AWS認証情報の設定
 
-このスキル内で、`bash`ツールを使用してAWS認証を実施します。
+AWS認証は`copilot-setup-steps.yml`ワークフロー内で自動的に実施されます。
 
 #### 1.1 OIDC認証の実行
 
-スキル実行時、GitHub Actionsワークフロー内でAWS認証が事前に実施されている必要があります。
-
-スキルを使用する際は、以下のような認証ステップをワークフローに含めてください:
+`copilot-setup-steps.yml`ワークフローで以下の認証ステップが実行されます:
 
 ```yaml
 - name: Configure AWS credentials for investigation
@@ -58,26 +56,24 @@ description: AWS MCPを使用してAWSリソースを調査するスキルです
   with:
     role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
     aws-region: ap-northeast-1
+  continue-on-error: true
+
+- name: Verify AWS access
+  run: |
+    if aws sts get-caller-identity > /dev/null 2>&1; then
+      echo "✓ AWS credentials configured successfully"
+      echo "AWS_REGION: $AWS_REGION"
+    else
+      echo "⚠️  AWS credentials not configured. Set AWS_INVESTIGATION_ROLE_ARN secret to enable AWS MCP."
+    fi
+  continue-on-error: true
 ```
 
 **注意**: 
 - このスキルはGitHub Actions環境内でのみ実行可能です
-- スキル実行前に、上記の認証ステップがワークフロー内で実行されている必要があります
-- 認証ステップは、スキルを呼び出すワークフローで定義してください
-
-#### 1.2 認証確認
-
-```bash
-# AWS認証が成功したか確認（詳細情報は出力しない）
-if aws sts get-caller-identity > /dev/null 2>&1; then
-  echo "✓ AWS認証成功"
-else
-  echo "✗ AWS認証失敗。AWS_INVESTIGATION_ROLE_ARNが設定されているか確認してください。"
-  exit 1
-fi
-```
-
-**注意**: 認証確認では、コマンドの成功/失敗のみを判定し、Account IDやRole ARNなどの認証情報の詳細はセキュリティ上の理由から標準出力に出力しないでください。
+- AWS認証は`copilot-setup-steps.yml`ワークフローで自動的に実施されます
+- `AWS_INVESTIGATION_ROLE_ARN`シークレットが設定されていない場合、警告が表示されますが処理は続行されます
+- 認証情報の詳細（Account ID、Role ARNなど）はセキュリティ上の理由から標準出力に出力されません
 
 ### 2. AWSリソースの調査
 
