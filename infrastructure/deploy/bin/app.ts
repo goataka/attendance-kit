@@ -51,9 +51,14 @@ if (['all', 'environment'].includes(stackType)) {
   }
 
   // Validate JWT_SECRET is provided
-  const jwtSecret = process.env.JWT_SECRET;
+  const jwtSecret = process.env.JWT_SECRET?.trim();
   if (!jwtSecret) {
-    throw new Error('JWT_SECRET environment variable is required for environment stack deployment');
+    throw new Error('JWT_SECRET environment variable is required for environment stack deployment and must not be empty or whitespace-only');
+  }
+  
+  // Warn if JWT_SECRET is too short
+  if (jwtSecret.length < 32) {
+    console.warn(`WARNING: JWT_SECRET is only ${jwtSecret.length} characters. Recommended: 32+ characters for security.`);
   }
 
   const stackName = `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Stack`;

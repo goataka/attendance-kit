@@ -85,6 +85,37 @@ jobs:
             --context stack=environment \
             --context environment=${ENVIRONMENT}
 
+      - name: Verify Lambda environment variables
+        env:
+          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
+        run: |
+          echo "Verifying Lambda function environment variables..."
+          FUNCTION_NAME="attendance-kit-${ENVIRONMENT}-api"
+          
+          echo "Function: ${FUNCTION_NAME}"
+          aws lambda get-function-configuration \
+            --function-name "${FUNCTION_NAME}" \
+            --query 'Environment.Variables' \
+            --output json
+          
+          # JWT_SECRETの存在確認
+          JWT_SECRET_VALUE=$(aws lambda get-function-configuration \
+            --function-name "${FUNCTION_NAME}" \
+            --query 'Environment.Variables.JWT_SECRET' \
+            --output text)
+          
+          if [ "${JWT_SECRET_VALUE}" = "None" ] || [ -z "${JWT_SECRET_VALUE}" ]; then
+            echo "❌ ERROR: JWT_SECRET is not set in Lambda function"
+            exit 1
+          else
+            JWT_SECRET_LENGTH=${#JWT_SECRET_VALUE}
+            echo "✓ JWT_SECRET is configured (length: ${JWT_SECRET_LENGTH} characters)"
+            
+            if [ "${JWT_SECRET_LENGTH}" -lt 32 ]; then
+              echo "⚠️  WARNING: JWT_SECRET is shorter than recommended 32 characters"
+            fi
+          fi
+
       - name: Output deployment results
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
