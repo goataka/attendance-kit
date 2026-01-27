@@ -53,7 +53,7 @@ if (['all', 'environment'].includes(stackType)) {
   // Validate JWT_SECRET is provided
   const jwtSecret = process.env.JWT_SECRET?.trim();
   if (!jwtSecret) {
-    throw new Error('JWT_SECRET environment variable is required for environment stack deployment and must not be empty or whitespace-only');
+    throw new Error('JWT_SECRET is required and must not be empty or whitespace-only');
   }
   
   // Warn if JWT_SECRET is too short

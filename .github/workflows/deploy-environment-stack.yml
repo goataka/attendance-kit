@@ -98,7 +98,7 @@ jobs:
             --query 'Environment.Variables' \
             --output json
           
-          # JWT_SECRETの存在確認
+          # Verify JWT_SECRET is configured
           JWT_SECRET_VALUE=$(aws lambda get-function-configuration \
             --function-name "${FUNCTION_NAME}" \
             --query 'Environment.Variables.JWT_SECRET' \

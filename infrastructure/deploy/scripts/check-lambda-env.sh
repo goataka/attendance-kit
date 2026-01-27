@@ -2,6 +2,7 @@
 set -euo pipefail
 
 # Lambda関数の環境変数を確認するスクリプト
+# デプロイされたLambda関数の設定を取得し、JWT_SECRETが正しく設定されているか検証します
 
 main() {
   local environment="${1:-dev}"
@@ -32,6 +33,7 @@ main() {
     --query 'Environment.Variables.JWT_SECRET' \
     --output text)
   
+  # AWS CLIのtext出力では、null値は "None" という文字列で表現される
   if [ "${jwt_secret_value}" = "None" ] || [ -z "${jwt_secret_value}" ]; then
     echo "❌ JWT_SECRET is not set"
   else
