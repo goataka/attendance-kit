@@ -8,13 +8,20 @@ export interface JwtPayload {
   username?: string;
 }
 
+// JWT_SECRETの検証
+const jwtSecret = process.env.JWT_SECRET?.trim();
+if (!jwtSecret) {
+  console.error('ERROR: JWT_SECRET environment variable is not set or is empty');
+  throw new Error('JWT_SECRET environment variable is required and must not be empty');
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: jwtSecret,
     });
   }
 
