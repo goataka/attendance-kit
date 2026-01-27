@@ -4,6 +4,14 @@
 
 ## スキル一覧
 
+### aws-investigation
+
+**説明**: AWS MCPを使用してAWSリソースを調査します。GitHub ActionsのOIDC認証を通じて読み取り専用でAWSに接続し、リソース情報を取得します。
+
+**使用タイミング**: AWS環境の調査を依頼された場合
+
+**詳細**: [aws-investigation/SKILL.md](./aws-investigation/SKILL.md)
+
 ### file-refactor
 
 **説明**: ファイルやフォルダの名称変更・削除を行い、リポジトリ内の参照箇所を自動的に検索して更新します。
@@ -39,6 +47,14 @@ npm run premerge:local
 
 **詳細**: [workflow-error-handler/SKILL.md](./workflow-error-handler/SKILL.md)
 
+### cloudfront-error-handler
+
+**説明**: CloudFront配下のAPI/フロントエンドのエラーに対応し、アクセス検証、原因特定、対処、検証を体系的に行います。
+
+**使用タイミング**: CloudFront経由のアクセスでエラーが発生した場合、API GatewayやLambdaとの連携不具合が疑われる場合
+
+**詳細**: [cloudfront-error-handler/SKILL.md](./cloudfront-error-handler/SKILL.md)
+
 ## Agent Skillsについて
 
 Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機能を定義したものです。
@@ -59,6 +75,8 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 ```
 .github/skills/
 ├── README.md               # このファイル
+├── aws-investigation/      # AWS調査スキル
+│   └── SKILL.md            # スキル定義ファイル
 ├── file-refactor/          # ファイル/フォルダのリネーム・削除スキル
 │   └── SKILL.md            # スキル定義ファイル
 ├── premerge-check/         # プレマージチェックスキル

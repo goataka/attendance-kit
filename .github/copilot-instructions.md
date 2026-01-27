@@ -57,6 +57,11 @@ Commit: [be9f233](https://github.com/goataka/attendance-kit/commit/be9f233)
 
 以下のスキルが利用可能です。該当する場合は**必ず使用**してください:
 
+- **aws-investigation**: AWS調査
+  - **使用すべき状況**: AWSリソースの調査を依頼された場合、デプロイされたインフラの状態確認が必要な場合
+  - **使用しない状況**: AWS環境へのデプロイや変更を行う場合（読み取り専用スキル）
+  - **判断基準**: CloudFormationスタック、DynamoDB、Lambda、API Gatewayなどのリソース情報を確認する必要がある場合は使用
+
 - **workflow-error-handler**: ワークフローのエラー対応
   - **使用すべき状況**: GitHub Actionsワークフローが失敗した場合、CI/CDパイプラインでエラーが発生した場合
   - **使用しない状況**: ワークフローファイルの軽微な設定変更（環境変数追加など）のみの場合
