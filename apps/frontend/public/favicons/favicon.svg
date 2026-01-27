@@ -1,93 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- 背景: 白 (30%) -->
-  <rect width="32" height="32" fill="#ffffff"/>
-  
-  <!-- 外枠: プラモデルフレーム、角は1/4の丸、基調色=紺 -->
-  <!-- 線の太さ: 全体の1/20 = 32/20 = 1.6 -->
-  <rect x="1.6" y="1.6" width="28.8" height="28.8" rx="7.2" ry="7.2" fill="none" stroke="#1e3a8a" stroke-width="1.6"/>
-  
-  <!-- グリッド定義: X軸=左右3分割、Y軸=上下3分割 -->
-  <!-- X: 0, 10.67, 21.33, 32 -->
-  <!-- Y: 0, 10.67, 21.33, 32 -->
-  
-  <!-- バリ（接続ゲート）: 各要素の中心と外枠の間、隣接要素間 -->
-  
-  <!-- 時計エリア（X=1-2, Y=1-2）のバリ -->
-  <!-- 時計中心: (10.67, 10.67) -->
-  <!-- 上方向のバリ -->
-  <line x1="10.67" y1="1.6" x2="10.67" y2="5.33" stroke="#1e3a8a" stroke-width="1.6"/>
-  <!-- 左方向のバリ -->
-  <line x1="1.6" y1="10.67" x2="5.33" y2="10.67" stroke="#1e3a8a" stroke-width="1.6"/>
-  
-  <!-- チェックエリア（X=3, Y=1-2）のバリ -->
-  <!-- チェック中心: (26.67, 10.67) -->
-  <!-- 上方向のバリ -->
-  <line x1="26.67" y1="1.6" x2="26.67" y2="5.33" stroke="#1e3a8a" stroke-width="1.6"/>
-  <!-- 右方向のバリ -->
-  <line x1="26.67" y1="10.67" x2="30.4" y2="10.67" stroke="#1e3a8a" stroke-width="1.6"/>
-  
-  <!-- 社員証エリア（X=1-2, Y=3）のバリ -->
-  <!-- 社員証中心: (10.67, 26.67) -->
-  <!-- 左方向のバリ -->
-  <line x1="1.6" y1="26.67" x2="5.33" y2="26.67" stroke="#1e3a8a" stroke-width="1.6"/>
-  <!-- 下方向のバリ -->
-  <line x1="10.67" y1="26.67" x2="10.67" y2="30.4" stroke="#1e3a8a" stroke-width="1.6"/>
-  
-  <!-- 太陽・月エリア（X=3, Y=3）のバリ -->
-  <!-- 中心: (26.67, 26.67) -->
-  <!-- 右方向のバリ -->
-  <line x1="26.67" y1="26.67" x2="30.4" y2="26.67" stroke="#1e3a8a" stroke-width="1.6"/>
-  <!-- 下方向のバリ -->
-  <line x1="26.67" y1="26.67" x2="26.67" y2="30.4" stroke="#1e3a8a" stroke-width="1.6"/>
-  
-  <!-- 隣接要素間のバリ -->
-  <!-- 時計とチェックの間（垂直） -->
-  <line x1="21.33" y1="5.33" x2="21.33" y2="16" stroke="#1e3a8a" stroke-width="1.6"/>
-  <!-- 時計と社員証の間（水平） -->
-  <line x1="5.33" y1="21.33" x2="16" y2="21.33" stroke="#1e3a8a" stroke-width="1.6"/>
-  <!-- 社員証と太陽・月の間（垂直） -->
-  <line x1="21.33" y1="21.33" x2="21.33" y2="26.67" stroke="#1e3a8a" stroke-width="1.6"/>
-  
-  <!-- メイン要素: 時計 (X=1-2, Y=1-2) -->
-  <g>
-    <!-- 時計の外円 -->
-    <circle cx="10.67" cy="10.67" r="8" fill="none" stroke="#1e3a8a" stroke-width="1.6"/>
-    <!-- 時計の数字マーク（簡略化） -->
-    <circle cx="10.67" cy="3.67" r="0.6" fill="#1e3a8a"/> <!-- 12 -->
-    <circle cx="17.67" cy="10.67" r="0.6" fill="#1e3a8a"/> <!-- 3 -->
-    <circle cx="10.67" cy="17.67" r="0.6" fill="#1e3a8a"/> <!-- 6 -->
-    <circle cx="3.67" cy="10.67" r="0.6" fill="#1e3a8a"/> <!-- 9 -->
-    <!-- 時計の針 (10:10) -->
-    <line x1="10.67" y1="10.67" x2="10.67" y2="6.67" stroke="#1e3a8a" stroke-width="1.2" stroke-linecap="round"/>
-    <line x1="10.67" y1="10.67" x2="14.67" y2="8.67" stroke="#1e3a8a" stroke-width="1" stroke-linecap="round"/>
-    <circle cx="10.67" cy="10.67" r="0.8" fill="#1e3a8a"/>
-  </g>
-  
-  <!-- チェックマーク (X=3, Y=1-2, 枠なし) -->
-  <path d="M 23.5 9 L 25.5 11.5 L 29.5 6" fill="none" stroke="#1e3a8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-  
-  <!-- 社員証 (X=1-2, Y=3) -->
-  <g>
-    <rect x="5.33" y="23.5" width="10.67" height="6.34" rx="1" fill="none" stroke="#1e3a8a" stroke-width="1.2"/>
-    <!-- 人物アイコン -->
-    <circle cx="8.5" cy="25.5" r="1" fill="#1e3a8a"/>
-    <path d="M 7.2 27.5 Q 7.2 26.8 8.5 26.8 Q 9.8 26.8 9.8 27.5" fill="none" stroke="#1e3a8a" stroke-width="0.8"/>
-    <!-- 情報バー -->
-    <line x1="11" y1="24.5" x2="15" y2="24.5" stroke="#1e3a8a" stroke-width="0.8"/>
-    <line x1="11" y1="26" x2="15" y2="26" stroke="#1e3a8a" stroke-width="0.8"/>
-    <line x1="11" y1="27.5" x2="15" y2="27.5" stroke="#1e3a8a" stroke-width="0.8"/>
-  </g>
-  
-  <!-- 太陽と月 (X=3, Y=3) -->
-  <g>
-    <!-- 太陽 -->
-    <circle cx="24.5" cy="24.5" r="1.5" fill="#1e3a8a"/>
-    <line x1="24.5" y1="22" x2="24.5" y2="23" stroke="#1e3a8a" stroke-width="0.8"/>
-    <line x1="24.5" y1="26" x2="24.5" y2="27" stroke="#1e3a8a" stroke-width="0.8"/>
-    <line x1="22" y1="24.5" x2="23" y2="24.5" stroke="#1e3a8a" stroke-width="0.8"/>
-    <line x1="26" y1="24.5" x2="27" y2="24.5" stroke="#1e3a8a" stroke-width="0.8"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- 背景白 -->
+  <rect width="32" height="32" fill="white"/>
+
+  <!-- プラモデルフレーム（紺、内側バリ、丸端） -->
+  <g stroke="#001f4d" stroke-width="2.5" fill="none" stroke-linecap="round">
+    <rect x="2" y="2" width="28" height="28" rx="2"/>
     
-    <!-- 月 -->
-    <path d="M 27 27.5 A 1.5 1.5 0 1 1 27 30.5 A 1.2 1.2 0 1 0 27 27.5" fill="#1e3a8a"/>
+    <!-- 上辺2つのバリ（下端1px短く） -->
+    <line x1="8" y1="3" x2="8" y2="5"/>
+    <line x1="23" y1="3" x2="23" y2="5"/>
+
+    <!-- 下辺 -->
+    <line x1="9" y1="30" x2="9" y2="27"/>
+    <line x1="22" y1="30" x2="22" y2="27"/>
+    
+    <!-- 左辺2つのバリ（右端1px短く） -->
+    <line x1="3" y1="8" x2="5" y2="8"/>
+    <line x1="3" y1="24" x2="5" y2="24"/>
+
+    <!-- 右辺 -->
+    <line x1="30" y1="6" x2="27" y2="6"/>
+    <line x1="30" y1="22" x2="27" y2="22"/>
   </g>
+
+  <!-- 時計 -->
+  <circle cx="16" cy="16" r="10" fill="white" stroke="#001f4d" stroke-width="2"/>
+  
+  <!-- 時計針（L字配置） -->
+  <!-- 長針：縦棒、上端1px下に短縮 -->
+  <line x1="16" y1="16" x2="16" y2="9" stroke="#001f4d" stroke-width="2" stroke-linecap="round"/>
+  <!-- 短針：水平のまま -->
+  <line x1="16" y1="16" x2="22" y2="16" stroke="#001f4d" stroke-width="2" stroke-linecap="round"/>
 </svg>
