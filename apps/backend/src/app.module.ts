@@ -11,7 +11,7 @@ const getConfigModuleOptions = (): ConfigModuleOptions => {
   return {
     isGlobal: true,
     ignoreEnvFile: isLambdaEnvironment,
-    ...(isLambdaEnvironment ? {} : { envFilePath: '.env' }),
+    envFilePath: isLambdaEnvironment ? undefined : '.env',
   };
 };
 
