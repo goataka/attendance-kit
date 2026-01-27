@@ -8,8 +8,12 @@ import { HealthController } from './health.controller';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // Lambda環境（dev/production）ではprocess.envから直接読み込む
+      // ローカル開発環境では.envファイルを使用
       ignoreEnvFile: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'dev',
-      envFilePath: '.env',
+      ...((process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'dev') && {
+        envFilePath: '.env',
+      }),
     }),
     ClockModule,
     AuthModule,
