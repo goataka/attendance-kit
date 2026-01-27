@@ -1,20 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigModuleOptions } from '@nestjs/config';
 import { ClockModule } from './clock/clock.module';
 import { AuthModule } from './auth/auth.module';
 import { HealthController } from './health.controller';
 
+// Lambda環境ではprocess.envから直接読み込み、ローカル開発環境では.envファイルを使用
+const getConfigModuleOptions = (): ConfigModuleOptions => {
+  const isLambdaEnvironment = process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'dev';
+  
+  return {
+    isGlobal: true,
+    ignoreEnvFile: isLambdaEnvironment,
+    ...(isLambdaEnvironment ? {} : { envFilePath: '.env' }),
+  };
+};
+
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      // Lambda環境（dev/production）ではprocess.envから直接読み込む
-      // ローカル開発環境では.envファイルを使用
-      ignoreEnvFile: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'dev',
-      ...((process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'dev') && {
-        envFilePath: '.env',
-      }),
-    }),
+    ConfigModule.forRoot(getConfigModuleOptions()),
     ClockModule,
     AuthModule,
   ],
