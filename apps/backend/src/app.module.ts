@@ -6,8 +6,10 @@ import { HealthController } from './health.controller';
 
 // Lambda環境ではprocess.envから直接読み込み、ローカル開発環境では.envファイルを使用
 const getConfigModuleOptions = (): ConfigModuleOptions => {
-  const isLambdaEnvironment = ['production', 'dev', 'staging'].includes(process.env.NODE_ENV || '');
-  
+  const isLambdaEnvironment = ['production', 'dev', 'staging'].includes(
+    process.env.NODE_ENV || '',
+  );
+
   return {
     isGlobal: true,
     ignoreEnvFile: isLambdaEnvironment,
