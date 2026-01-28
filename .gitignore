@@ -63,3 +63,6 @@ storybook-static
 
 # E2E Test Reports
 test/e2e/reports/
+
+# Turborepo
+.turbo

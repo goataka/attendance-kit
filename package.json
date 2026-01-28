@@ -2,6 +2,7 @@
   "name": "attendance-kit",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@11.6.2",
   "description": "勤怠管理キット - Monorepo",
   "workspaces": [
     "apps/*",
@@ -9,13 +10,13 @@
   ],
   "scripts": {
     "setup": "npm ci --workspaces --include-workspace-root",
-    "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "test:unit": "npm run test:unit --workspaces --if-present",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
-    "generate": "npm run generate --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "generate": "turbo run generate",
+    "lint": "turbo run lint"
   },
   "keywords": [
     "monorepo",
@@ -33,6 +34,7 @@
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.10",
     "playwright-bdd": "^8.4.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "turbo": "^2.7.6"
   }
 }
