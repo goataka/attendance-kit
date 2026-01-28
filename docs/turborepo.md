@@ -22,6 +22,23 @@ Turborepoは、モノレポのビルドシステムを高速化するツール�
 
 ## 設定ファイル
 
+### package.json
+
+プロジェクトルートの`package.json`で、Turborepoの使用に必要な設定を追加しています：
+
+```json
+{
+  "packageManager": "npm@11.6.2",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint"
+  }
+}
+```
+
+`packageManager`フィールドは、Turborepoがワークスペースを正しく認識するために必要です。このバージョンはNode.js 24.xに含まれるnpmのバージョンに対応しています。
+
 ### turbo.json
 
 プロジェクトルートの`turbo.json`でTurborepoの動作を設定しています：
@@ -32,7 +49,7 @@ Turborepoは、モノレポのビルドシステムを高速化するツール�
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**"],
+      "outputs": ["dist/**", "build/**", ".next/**", "!.next/cache/**"],
       "cache": true
     },
     "test": {
@@ -46,6 +63,8 @@ Turborepoは、モノレポのビルドシステムを高速化するツール�
   }
 }
 ```
+
+Note: `.next/**`は将来Next.jsを使用する可能性を考慮して含まれています。
 
 ### 主な設定項目
 
@@ -113,10 +132,26 @@ npm run build -- --graph
   uses: actions/cache@v4
   with:
     path: .turbo
-    key: ${{ runner.os }}-turbo-${{ github.sha }}
+    key: ${{ runner.os }}-turbo-${{ hashFiles('**/package-lock.json') }}-${{ github.sha }}
     restore-keys: |
+      ${{ runner.os }}-turbo-${{ hashFiles('**/package-lock.json') }}-
       ${{ runner.os }}-turbo-
 ```
+
+#### キャッシュキーの戦略
+
+- **プライマリキー**: `{OS}-turbo-{package-lock hash}-{commit SHA}`
+  - 完全一致するキャッシュを優先的に使用
+- **フォールバックキー1**: `{OS}-turbo-{package-lock hash}-`
+  - 同じ依存関係を持つ他のコミットのキャッシュを使用
+- **フォールバックキー2**: `{OS}-turbo-`
+  - 最後の手段として、任意のTurborepoキャッシュを使用
+
+この設定により、以下のシナリオでキャッシュが効果的に再利用されます：
+
+1. **依存関係が変わらない場合**: 同じpackage-lock.jsonのハッシュを持つキャッシュを再利用
+2. **ソースコードのみ変更**: Turborepoが変更されたパッケージのみを再ビルド
+3. **依存関係が変更された場合**: 新しいキャッシュを作成
 
 この設定により、CI/CD実行時にも以下の利点があります：
 
@@ -140,6 +175,8 @@ npm run build -- --graph
   }
 }
 ```
+
+このような設定により、ビルドの成功/失敗ステータスがキャッシュされ、変更がない場合はビルドコマンドの実行自体がスキップされます。
 
 ## トラブルシューティング
 
