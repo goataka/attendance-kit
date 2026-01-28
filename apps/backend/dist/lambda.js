@@ -7,8 +7,8 @@ exports.handler = void 0;
 const core_1 = require("@nestjs/core");
 const common_1 = require("@nestjs/common");
 const platform_express_1 = require("@nestjs/platform-express");
-const aws_serverless_express_1 = require("aws-serverless-express");
-const middleware_1 = require("aws-serverless-express/middleware");
+const serverless_express_1 = require("@vendia/serverless-express");
+const middleware_1 = require("@vendia/serverless-express/middleware");
 const express_1 = __importDefault(require("express"));
 const app_module_1 = require("./app.module");
 let cachedServer;
@@ -24,13 +24,13 @@ async function bootstrapServer() {
         }));
         nestApp.setGlobalPrefix('api');
         await nestApp.init();
-        cachedServer = (0, aws_serverless_express_1.createServer)(expressApp);
+        cachedServer = (0, serverless_express_1.createServer)(expressApp);
     }
     return cachedServer;
 }
 const handler = async (event, context) => {
     const server = await bootstrapServer();
-    return (0, aws_serverless_express_1.proxy)(server, event, context, 'PROMISE').promise;
+    return (0, serverless_express_1.proxy)(server, event, context, 'PROMISE').promise;
 };
 exports.handler = handler;
 //# sourceMappingURL=lambda.js.map
