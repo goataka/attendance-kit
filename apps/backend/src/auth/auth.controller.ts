@@ -35,7 +35,23 @@ export class LoginResponseDto {
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService?: JwtService) {}
+
+  private resolveJwtService(): JwtService {
+    if (this.jwtService) {
+      return this.jwtService;
+    }
+
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    return new JwtService({
+      secret: jwtSecret,
+      signOptions: { expiresIn: '24h' },
+    });
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -64,7 +80,7 @@ export class AuthController {
 
     // JWTトークンを生成
     const payload = { userId: loginDto.userId, sub: loginDto.userId };
-    const accessToken = this.jwtService.sign(payload);
+    const accessToken = this.resolveJwtService().sign(payload);
 
     return {
       accessToken,
