@@ -105,8 +105,8 @@ jobs:
           image-tag: 'latest'
           install-awslocal: 'true'
           configuration: |
-            LS_LOG=warn
             SERVICES=cloudformation,dynamodb,iam,s3,sts
+            EAGER_SERVICE_LOADING=1
 
       - name: Deploy to LocalStack
         run: npm run deploy:local-db --workspace=attendance-kit-infrastructure
@@ -158,8 +158,8 @@ jobs:
           image-tag: 'latest'
           install-awslocal: 'true'
           configuration: |
-            LS_LOG=warn
             SERVICES=apigateway,cloudformation,cloudfront,dynamodb,iam,lambda,logs,s3,sts
+            EAGER_SERVICE_LOADING=1
 
       - name: Deploy to LocalStack
         working-directory: infrastructure/deploy
@@ -249,8 +249,8 @@ jobs:
           image-tag: 'latest'
           install-awslocal: 'true'
           configuration: |
-            LS_LOG=warn
             SERVICES=cloudformation,dynamodb,iam,s3,sts
+            EAGER_SERVICE_LOADING=1
 
       - name: Deploy DynamoDB to LocalStack
         working-directory: infrastructure/deploy
