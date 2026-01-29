@@ -26,6 +26,10 @@
 
 GitHub ActionsからEnvironment（dev/staging）を選択して実行可能
 
+### 事前準備
+
+GitHub SettingsのEnvironmentsに`dev`と`staging`を作成しておく
+
 ## デプロイ対象
 
 - スタック名: `AttendanceKit-Dev-Stack` または `AttendanceKit-Staging-Stack`
