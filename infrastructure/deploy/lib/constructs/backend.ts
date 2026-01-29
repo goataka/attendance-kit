@@ -40,12 +40,17 @@ export class BackendConstruct extends Construct {
     clockTable: dynamodb.Table,
     jwtSecret: string,
   ): lambda.Function {
+    const backendDir = path.join(__dirname, '../../../../apps/backend');
     const lambdaFunction = new NodejsFunction(this, 'ApiFunction', {
       functionName: `attendance-kit-${environment}-api`,
       runtime: lambda.Runtime.NODEJS_24_X,
-      entry: path.join(__dirname, '../../../../apps/backend/src/lambda.ts'),
+      entry: path.join(backendDir, 'src/lambda.ts'),
       handler: 'index.handler',
       bundling: {
+        // NestJSのデコレータメタデータを保持するための設定
+        tsconfig: path.join(backendDir, 'tsconfig.json'),
+        // クラス名を保持（DIで必要）
+        keepNames: true,
         externalModules: [
           '@nestjs/microservices',
           '@nestjs/microservices/microservices-module',
