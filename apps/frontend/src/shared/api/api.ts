@@ -57,6 +57,15 @@ const storeToken = (token: string): void => {
   }
 };
 
+// Clear stored token
+const clearToken = (): void => {
+  try {
+    sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+  } catch (error) {
+    console.error('Failed to clear token:', error);
+  }
+};
+
 // ログインしてJWTトークンを取得
 const login = async (userId: string, password: string): Promise<string | null> => {
   try {
@@ -152,7 +161,7 @@ export const api = {
       
       if (!token) {
         console.error('No authentication token available');
-        return [];
+        throw new Error('Authentication required. Please log in first.');
       }
 
       const params = new URLSearchParams();
@@ -181,6 +190,11 @@ export const api = {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          // Token is invalid or expired; clear it
+          clearToken();
+          throw new Error('Authentication expired. Please log in again.');
+        }
         throw new Error('Failed to fetch records');
       }
 

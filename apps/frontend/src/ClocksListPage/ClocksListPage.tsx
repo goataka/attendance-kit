@@ -9,15 +9,22 @@ export function ClocksListPage() {
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<RecordsFilter>(DEFAULT_FILTER);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRecords = async () => {
       setLoading(true);
+      setError(null);
       try {
         const data = await api.getRecords();
         setRecords(data);
       } catch (error) {
         console.error('Failed to load records:', error);
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError('Failed to load records');
+        }
       } finally {
         setLoading(false);
       }
@@ -28,12 +35,18 @@ export function ClocksListPage() {
 
   const loadRecords = async (newFilter?: RecordsFilter) => {
     setLoading(true);
+    setError(null);
     try {
       const filterToUse = newFilter || filter;
       const data = await api.getRecords(filterToUse);
       setRecords(data);
     } catch (error) {
       console.error('Failed to load records:', error);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Failed to load records');
+      }
     } finally {
       setLoading(false);
     }
@@ -125,6 +138,13 @@ export function ClocksListPage() {
 
         {loading ? (
           <div className="loading">Loading...</div>
+        ) : error ? (
+          <div className="error-message">
+            <p>{error}</p>
+            <Link to="/" className="link">
+              打刻画面に戻ってログインする →
+            </Link>
+          </div>
         ) : (
           <div className="records-table-container">
             <table className="records-table">

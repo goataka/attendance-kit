@@ -74,6 +74,23 @@
   font-size: 1.125rem;
 }
 
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--error-color);
+  font-size: 1rem;
+}
+
+.error-message p {
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.error-message .link {
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
 .clocks-table-container {
   overflow-x: auto;
   margin-bottom: 1.5rem;
