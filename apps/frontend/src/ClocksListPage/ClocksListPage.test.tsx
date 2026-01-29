@@ -140,4 +140,25 @@ describe('ClocksListPage', () => {
       expect(userIdFilter.value).toBe('');
     });
   });
+
+  it('displays error message when API call fails', async () => {
+    const errorMessage = 'Authentication required. Please log in first.';
+    vi.mocked(api.getRecords).mockRejectedValue(new Error(errorMessage));
+    
+    renderWithRouter(<ClocksListPage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+
+  it('displays generic error message when fetch fails', async () => {
+    vi.mocked(api.getRecords).mockRejectedValue(new Error('Failed to fetch records'));
+    
+    renderWithRouter(<ClocksListPage />);
+    
+    await waitFor(() => {
+      expect(screen.getByText('Failed to fetch records')).toBeInTheDocument();
+    });
+  });
 });
