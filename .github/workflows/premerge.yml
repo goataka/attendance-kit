@@ -99,6 +99,30 @@ jobs:
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache LocalStack Docker image
+        id: localstack-cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/localstack-image.tar
+          key: ${{ runner.os }}-localstack-latest
+          restore-keys: |
+            ${{ runner.os }}-localstack-
+
+      - name: Load LocalStack image from cache
+        if: steps.localstack-cache.outputs.cache-hit == 'true'
+        run: docker load --input /tmp/localstack-image.tar
+
+      - name: Pull LocalStack image
+        if: steps.localstack-cache.outputs.cache-hit != 'true'
+        run: docker pull localstack/localstack:latest
+
+      - name: Save LocalStack image to cache
+        if: steps.localstack-cache.outputs.cache-hit != 'true'
+        run: docker save localstack/localstack:latest --output /tmp/localstack-image.tar
+
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
         with:
@@ -148,6 +172,30 @@ jobs:
 
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache LocalStack Docker image
+        id: localstack-cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/localstack-image.tar
+          key: ${{ runner.os }}-localstack-latest
+          restore-keys: |
+            ${{ runner.os }}-localstack-
+
+      - name: Load LocalStack image from cache
+        if: steps.localstack-cache.outputs.cache-hit == 'true'
+        run: docker load --input /tmp/localstack-image.tar
+
+      - name: Pull LocalStack image
+        if: steps.localstack-cache.outputs.cache-hit != 'true'
+        run: docker pull localstack/localstack:latest
+
+      - name: Save LocalStack image to cache
+        if: steps.localstack-cache.outputs.cache-hit != 'true'
+        run: docker save localstack/localstack:latest --output /tmp/localstack-image.tar
 
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
@@ -236,6 +284,30 @@ jobs:
 
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Cache LocalStack Docker image
+        id: localstack-cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/localstack-image.tar
+          key: ${{ runner.os }}-localstack-latest
+          restore-keys: |
+            ${{ runner.os }}-localstack-
+
+      - name: Load LocalStack image from cache
+        if: steps.localstack-cache.outputs.cache-hit == 'true'
+        run: docker load --input /tmp/localstack-image.tar
+
+      - name: Pull LocalStack image
+        if: steps.localstack-cache.outputs.cache-hit != 'true'
+        run: docker pull localstack/localstack:latest
+
+      - name: Save LocalStack image to cache
+        if: steps.localstack-cache.outputs.cache-hit != 'true'
+        run: docker save localstack/localstack:latest --output /tmp/localstack-image.tar
 
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
