@@ -23,7 +23,8 @@ export class ClockService {
   private readonly logger = new Logger(ClockService.name);
   private readonly docClient: DynamoDBDocumentClient;
   private readonly tableName: string;
-  private readonly indexName = 'UserIdTimestampIndex';
+  // GSIは使用しない: 実際のテーブルのプライマリキーがuserId+timestampのため
+  // private readonly indexName = 'UserIdTimestampIndex';
   private readonly defaultTableName = 'attendance-kit-dev-clock';
   // ScanIndexForward=false sorts in descending order (most recent first)
   private readonly scanIndexForward = false;
@@ -109,9 +110,10 @@ export class ClockService {
   }
 
   async getRecords(userId: string): Promise<ClockRecordResponseDto[]> {
+    // プライマリキー（userId + timestamp）で直接クエリ
+    // GSIは使用しない（実際のテーブル構造に合わせる）
     const command = new QueryCommand({
       TableName: this.tableName,
-      IndexName: this.indexName,
       KeyConditionExpression: 'userId = :userId',
       ExpressionAttributeValues: {
         ':userId': userId,
