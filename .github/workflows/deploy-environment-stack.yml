@@ -25,11 +25,7 @@ on:
       environment:
         description: 'Environment to deploy'
         required: true
-        default: 'dev'
-        type: choice
-        options:
-          - dev
-          - staging
+        type: environment
 
 permissions:
   id-token: write   # OIDC認証に必要

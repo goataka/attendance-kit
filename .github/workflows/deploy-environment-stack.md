@@ -24,7 +24,7 @@
 
 ### 手動デプロイ
 
-GitHub Actionsから環境（dev/staging）を選択して実行可能
+GitHub ActionsからEnvironment（dev/staging）を選択して実行可能
 
 ## デプロイ対象
 
