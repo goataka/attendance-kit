@@ -288,7 +288,22 @@
       },
       "LoginResponseDto": {
         "type": "object",
-        "properties": {}
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+          },
+          "userId": {
+            "type": "string",
+            "description": "User ID",
+            "example": "user001"
+          }
+        },
+        "required": [
+          "accessToken",
+          "userId"
+        ]
       }
     }
   }
