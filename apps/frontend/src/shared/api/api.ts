@@ -36,6 +36,27 @@ export const resolveBackendUrl = (
 
 const BACKEND_URL = resolveBackendUrl();
 
+// Token storage key
+const TOKEN_STORAGE_KEY = 'attendance-kit-token';
+
+// Get stored token
+const getStoredToken = (): string | null => {
+  try {
+    return sessionStorage.getItem(TOKEN_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+};
+
+// Store token
+const storeToken = (token: string): void => {
+  try {
+    sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
+  } catch (error) {
+    console.error('Failed to store token:', error);
+  }
+};
+
 // ログインしてJWTトークンを取得
 const login = async (userId: string, password: string): Promise<string | null> => {
   try {
@@ -52,7 +73,14 @@ const login = async (userId: string, password: string): Promise<string | null> =
     }
 
     const data = await response.json();
-    return data.accessToken;
+    const token = data.accessToken;
+    
+    // Store token for future use
+    if (token) {
+      storeToken(token);
+    }
+    
+    return token;
   } catch (error) {
     console.error('Login failed:', error);
     return null;
@@ -119,6 +147,14 @@ export const api = {
   // Get records with optional filtering
   getRecords: async (filter?: RecordsFilter): Promise<ClockRecord[]> => {
     try {
+      // Get stored token
+      const token = getStoredToken();
+      
+      if (!token) {
+        console.error('No authentication token available');
+        return [];
+      }
+
       const params = new URLSearchParams();
       
       if (filter?.userId) {
@@ -138,7 +174,11 @@ export const api = {
       }
 
       const url = `${BACKEND_URL}${API_BASE_PATH}/clock/records${params.toString() ? `?${params.toString()}` : ''}`;
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch records');
