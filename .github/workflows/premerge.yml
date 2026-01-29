@@ -93,6 +93,9 @@ jobs:
       - name: Install dependencies
         run: npm run setup
 
+      - name: Build frontend assets
+        run: npm run build --workspace=@attendance-kit/frontend
+
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
 
@@ -179,6 +182,14 @@ jobs:
       - name: Install dependencies
         run: npm run setup
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Playwright browsers with dependencies
         working-directory: apps/frontend
         run: npx playwright install --with-deps chromium
@@ -221,6 +232,14 @@ jobs:
 
       - name: Install dependencies
         run: npm run setup
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
