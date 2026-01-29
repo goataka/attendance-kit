@@ -51,8 +51,6 @@ export class BackendConstruct extends Construct {
         tsconfig: path.join(backendDir, 'tsconfig.json'),
         // クラス名を保持（DIで必要）
         keepNames: true,
-        // reflect-metadataをバンドルに含める
-        banner: "require('reflect-metadata');",
         externalModules: [
           '@nestjs/microservices',
           '@nestjs/microservices/microservices-module',
