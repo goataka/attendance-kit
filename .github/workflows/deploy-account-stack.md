@@ -14,7 +14,7 @@
 
 ### 手動デプロイ
 
-GitHub ActionsからEnvironmentを選択して実行可能
+GitHub Actionsから実行可能
 
 ## デプロイ対象
 

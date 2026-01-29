@@ -11,11 +11,6 @@ on:
       - 'infrastructure/deploy/test/cost-budget.test.ts'
       - '.github/workflows/deploy-account-stack.yml'
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy'
-        required: true
-        type: environment
 
 permissions:
   id-token: write   # OIDC認証に必要
@@ -25,7 +20,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'production' }}
+    environment: production  # アカウントレベルリソースは本番環境として扱う
     
     steps:
       - name: Checkout code
