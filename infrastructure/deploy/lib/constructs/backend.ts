@@ -42,7 +42,7 @@ export class BackendConstruct extends Construct {
   ): lambda.Function {
     const lambdaFunction = new NodejsFunction(this, 'ApiFunction', {
       functionName: `attendance-kit-${environment}-api`,
-      runtime: lambda.Runtime.NODEJS_20_X,
+      runtime: lambda.Runtime.NODEJS_24_X,
       entry: path.join(__dirname, '../../../../apps/backend/src/lambda.ts'),
       handler: 'index.handler',
       bundling: {
