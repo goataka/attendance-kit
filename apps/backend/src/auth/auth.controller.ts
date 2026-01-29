@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
-  Inject,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -36,7 +35,7 @@ export class LoginResponseDto {
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject(JwtService) private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
