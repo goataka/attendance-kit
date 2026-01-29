@@ -22,3 +22,7 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 | backend-integration-test | バックエンド統合テスト |
 | deploy-integration-test | CDKデプロイテスト |
 | frontend-integration-test | フロントエンドE2Eテスト |
+
+## 小さい改善案
+
+- `actions/setup-node`のキャッシュや`npm ci`の計測結果に基づいて依存インストール時間の短縮策を検討する

@@ -93,9 +93,6 @@ jobs:
       - name: Install dependencies
         run: npm run setup
 
-      - name: Build all workspaces
-        run: npm run build --workspaces --if-present
-
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
 
@@ -142,9 +139,6 @@ jobs:
 
       - name: Install dependencies
         run: npm run setup
-
-      - name: Build all workspaces
-        run: npm run build --workspaces --if-present
 
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
@@ -230,9 +224,6 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
-
-      - name: Build all workspaces
-        run: npm run build --workspaces --if-present
 
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
