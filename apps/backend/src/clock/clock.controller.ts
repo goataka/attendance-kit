@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Body, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  UseGuards,
+  Req,
+  Inject,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -19,7 +27,9 @@ import { AuthenticatedRequest } from '../shared/types/request.types';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class ClockController {
-  constructor(private readonly clockService: ClockService) {}
+  constructor(
+    @Inject(ClockService) private readonly clockService: ClockService,
+  ) {}
 
   @Post('in')
   @ApiOperation({ summary: '出勤打刻', description: 'Register clock-in time' })
