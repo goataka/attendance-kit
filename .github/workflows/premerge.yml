@@ -102,12 +102,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Set LocalStack cache key
+        id: localstack-cache-key
+        run: echo "cache-key=${RUNNER_OS}-localstack-latest-$(date +%G-%V)" >> "${GITHUB_OUTPUT}"
+
       - name: Cache LocalStack Docker image
         id: localstack-cache
         uses: actions/cache@v4
         with:
           path: /tmp/localstack-image.tar
-          key: ${{ runner.os }}-localstack-latest
+          key: ${{ steps.localstack-cache-key.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-localstack-
 
@@ -176,12 +180,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Set LocalStack cache key
+        id: localstack-cache-key
+        run: echo "cache-key=${RUNNER_OS}-localstack-latest-$(date +%G-%V)" >> "${GITHUB_OUTPUT}"
+
       - name: Cache LocalStack Docker image
         id: localstack-cache
         uses: actions/cache@v4
         with:
           path: /tmp/localstack-image.tar
-          key: ${{ runner.os }}-localstack-latest
+          key: ${{ steps.localstack-cache-key.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-localstack-
 
@@ -288,12 +296,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Set LocalStack cache key
+        id: localstack-cache-key
+        run: echo "cache-key=${RUNNER_OS}-localstack-latest-$(date +%G-%V)" >> "${GITHUB_OUTPUT}"
+
       - name: Cache LocalStack Docker image
         id: localstack-cache
         uses: actions/cache@v4
         with:
           path: /tmp/localstack-image.tar
-          key: ${{ runner.os }}-localstack-latest
+          key: ${{ steps.localstack-cache-key.outputs.cache-key }}
           restore-keys: |
             ${{ runner.os }}-localstack-
 
