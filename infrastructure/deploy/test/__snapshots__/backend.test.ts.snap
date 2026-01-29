@@ -190,7 +190,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             "Arn",
           ],
         },
-        "Runtime": "nodejs20.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "Environment",
@@ -1621,7 +1621,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             "Arn",
           ],
         },
-        "Runtime": "nodejs20.x",
+        "Runtime": "nodejs24.x",
         "Tags": [
           {
             "Key": "Environment",
