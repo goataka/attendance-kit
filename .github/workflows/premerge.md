@@ -19,6 +19,7 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 | ジョブ | 説明 |
 |-------|------|
 | unit-test | Lint、ビルド、ユニットテスト |
+| premerge-build | バックエンド・インフラ・フロントエンドの事前ビルド |
 | backend-integration-test | バックエンド統合テスト |
 | deploy-integration-test | CDKデプロイテスト |
 | frontend-integration-test | フロントエンドE2Eテスト |
@@ -27,3 +28,4 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 
 - `actions/setup-node`のキャッシュや`npm ci`の計測結果に基づいて依存インストール時間の短縮策を検討する
 - LocalStackの設定チューニングで起動時間を短縮できるか確認する
+- ワークフロー全体の依存関係整理に合わせてnpmの警告削減を検討する
