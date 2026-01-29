@@ -14,6 +14,12 @@ export class LoginDto {
 }
 
 export class LoginResponseDto {
+  @ApiProperty({
+    description: 'JWT access token',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+  })
   accessToken: string;
+
+  @ApiProperty({ description: 'User ID', example: 'user001' })
   userId: string;
 }
