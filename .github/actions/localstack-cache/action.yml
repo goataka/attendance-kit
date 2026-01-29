@@ -1,0 +1,41 @@
+name: LocalStack Image Cache
+description: LocalStackのDockerイメージをキャッシュして起動を高速化する
+inputs:
+  image-tag:
+    description: LocalStackのイメージタグ
+    required: false
+    default: latest
+runs:
+  using: composite
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Set LocalStack cache key
+      id: localstack-cache-key
+      shell: bash
+      run: echo "cache-key=${{ runner.os }}-localstack-${{ inputs.image-tag }}-$(date +%G-%V)" >> "${GITHUB_OUTPUT}"
+
+    - name: Cache LocalStack Docker image
+      id: localstack-cache
+      uses: actions/cache@v4
+      with:
+        path: /tmp/localstack-image.tar
+        key: ${{ steps.localstack-cache-key.outputs.cache-key }}
+        restore-keys: |
+          ${{ runner.os }}-localstack-${{ inputs.image-tag }}-
+
+    - name: Load LocalStack image from cache
+      if: steps.localstack-cache.outputs.cache-hit == 'true'
+      shell: bash
+      run: docker load --input /tmp/localstack-image.tar
+
+    - name: Pull LocalStack image
+      if: steps.localstack-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: docker pull localstack/localstack:${{ inputs.image-tag }}
+
+    - name: Save LocalStack image to cache
+      if: steps.localstack-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: docker save localstack/localstack:${{ inputs.image-tag }} --output /tmp/localstack-image.tar

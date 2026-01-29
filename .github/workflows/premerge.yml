@@ -99,6 +99,11 @@ jobs:
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
 
+      - name: Cache LocalStack Docker image
+        uses: ./.github/actions/localstack-cache
+        with:
+          image-tag: latest
+
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
         with:
@@ -148,6 +153,11 @@ jobs:
 
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Cache LocalStack Docker image
+        uses: ./.github/actions/localstack-cache
+        with:
+          image-tag: latest
 
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
@@ -236,6 +246,11 @@ jobs:
 
       - name: Install CDK CLI
         run: npm install --global aws-cdk-local aws-cdk
+
+      - name: Cache LocalStack Docker image
+        uses: ./.github/actions/localstack-cache
+        with:
+          image-tag: latest
 
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
