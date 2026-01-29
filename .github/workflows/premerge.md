@@ -19,7 +19,6 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 | ジョブ | 説明 |
 |-------|------|
 | unit-test | Lint、ビルド、ユニットテスト |
-| premerge-build | バックエンド・インフラ・フロントエンドの事前ビルド |
 | backend-integration-test | バックエンド統合テスト |
 | deploy-integration-test | CDKデプロイテスト |
 | frontend-integration-test | フロントエンドE2Eテスト |

@@ -69,33 +69,8 @@ jobs:
           failure-message: 'ユニットテストに失敗しました。Lint、ビルド、またはテストのエラーを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  premerge-build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm run setup
-
-      - name: Build backend and infrastructure
-        run: npm run build --workspace=@attendance-kit/backend --workspace=attendance-kit-infrastructure
-
-      - name: Build frontend assets
-        run: npm run build --workspace=@attendance-kit/frontend
-
   backend-integration-test:
     runs-on: ubuntu-latest
-    needs: premerge-build
     
     env:
       AWS_ACCESS_KEY_ID: test
@@ -140,7 +115,6 @@ jobs:
 
   deploy-integration-test:
     runs-on: ubuntu-latest
-    needs: premerge-build
     
     env:
       AWS_ACCESS_KEY_ID: test
@@ -186,7 +160,6 @@ jobs:
 
   frontend-integration-test:
     runs-on: ubuntu-latest
-    needs: premerge-build
     
     steps:
       - name: Checkout code
@@ -202,6 +175,14 @@ jobs:
 
       - name: Install dependencies
         run: npm run setup
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright browsers with dependencies
         working-directory: apps/frontend
@@ -221,7 +202,6 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
-    needs: premerge-build
     
     env:
       AWS_ACCESS_KEY_ID: test
@@ -246,6 +226,14 @@ jobs:
 
       - name: Install dependencies
         run: npm run setup
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
