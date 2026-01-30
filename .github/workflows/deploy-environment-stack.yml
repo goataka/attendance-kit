@@ -86,6 +86,7 @@ jobs:
             --context environment=${ENVIRONMENT}
 
       - name: Output deployment results
+        id: deploy-outputs
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
         run: |
@@ -96,53 +97,31 @@ jobs:
             --stack-name ${STACK_NAME} \
             --query 'Stacks[0].Outputs' \
             --output table
+          
+          # E2Eテスト用に出力を取得
+          CLOUDFRONT_URL=$(aws cloudformation describe-stacks \
+            --stack-name ${STACK_NAME} \
+            --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontUrl`].OutputValue' \
+            --output text)
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name ${STACK_NAME} \
+            --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
+            --output text)
+          
+          echo "cloudfront_url=${CLOUDFRONT_URL}" >> $GITHUB_OUTPUT
+          echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
 
       - name: Install Playwright Browsers
         if: inputs.environment == 'dev' || (github.ref == 'refs/heads/main' && !inputs.environment)
         run: npx playwright install --with-deps chromium
 
-      - name: Get CloudFormation Stack Outputs for E2E
-        if: inputs.environment == 'dev' || (github.ref == 'refs/heads/main' && !inputs.environment)
-        id: stack-outputs
-        env:
-          ENVIRONMENT: ${{ inputs.environment || 'dev' }}
-        run: |
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/')-Stack"
-
-          # CloudFrontのURLを取得
-          CLOUDFRONT_URL=$(aws cloudformation describe-stacks \
-            --stack-name ${STACK_NAME} \
-            --query \
-              'Stacks[0].Outputs[?OutputKey==`CloudFrontUrl`].OutputValue' \
-            --output text)
-
-          # APIのURLを取得
-          API_URL=$(aws cloudformation describe-stacks \
-            --stack-name ${STACK_NAME} \
-            --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
-            --output text)
-
-          # DynamoDBテーブル名を取得
-          TABLE_NAME=$(aws cloudformation describe-stacks \
-            --stack-name ${STACK_NAME} \
-            --query 'Stacks[0].Outputs[?OutputKey==`TableName`].OutputValue' \
-            --output text)
-
-          echo "cloudfront_url=${CLOUDFRONT_URL}" >> $GITHUB_OUTPUT
-          echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
-          echo "table_name=${TABLE_NAME}" >> $GITHUB_OUTPUT
-
-          echo "CloudFront URL: ${CLOUDFRONT_URL}"
-          echo "API URL: ${API_URL}"
-          echo "Table Name: ${TABLE_NAME}"
-
       - name: Run E2E Tests against Deployed Environment
         if: inputs.environment == 'dev' || (github.ref == 'refs/heads/main' && !inputs.environment)
         env:
           E2E_ENV: deployed
-          FRONTEND_URL: ${{ steps.stack-outputs.outputs.cloudfront_url }}
-          BACKEND_URL: ${{ steps.stack-outputs.outputs.api_url }}
-          DYNAMODB_TABLE_NAME: ${{ steps.stack-outputs.outputs.table_name }}
+          FRONTEND_URL: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
+          BACKEND_URL: ${{ steps.deploy-outputs.outputs.api_url }}
+          DYNAMODB_TABLE_NAME: attendance-kit-${{ inputs.environment || 'dev' }}-clock
           AWS_REGION: ap-northeast-1
         run: npm run test:e2e
         timeout-minutes: 5
@@ -158,56 +137,6 @@ jobs:
           path: test/e2e/reports/
           retention-days: 30
           if-no-files-found: warn
-
-      - name: Comment E2E Test Results
-        if: >-
-          always() &&
-          (inputs.environment == 'dev' ||
-           (github.ref == 'refs/heads/main' && !inputs.environment))
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const runId = context.runId;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            const artifactUrl =
-              `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
-            const status =
-              '${{ job.status }}' === 'success' ? '✅ 成功' : '❌ 失敗';
-
-            const comment = `## Dev環境 E2Eテスト結果
-
-            **ステータス**: ${status}
-
-            📊 **テストレポート**: [Artifactsからダウンロード](${artifactUrl})
-
-            **テスト対象**:
-            - Frontend: ${{ steps.stack-outputs.outputs.cloudfront_url }}
-            - Backend: ${{ steps.stack-outputs.outputs.api_url }}
-
-            レポートの確認方法：
-            1. 上記のリンクをクリック
-            2. Artifacts セクションから \`e2e-dev-test-reports\` をダウンロード
-            3. \`cucumber-report.html\` をブラウザで開く
-            `;
-
-            // 最近のコミットにコメント
-            const commits = await github.rest.repos.listCommits({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              sha: context.sha,
-              per_page: 1
-            });
-
-            if (commits.data.length > 0) {
-              await github.rest.repos.createCommitComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                commit_sha: commits.data[0].sha,
-                body: comment
-              });
-            }
 
       - name: Comment on failure
         if: failure()
