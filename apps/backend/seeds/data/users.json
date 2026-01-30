@@ -1,0 +1,20 @@
+[
+  {
+    "userId": "user001",
+    "name": "山田太郎",
+    "email": "yamada@example.com",
+    "department": "開発部"
+  },
+  {
+    "userId": "user002",
+    "name": "佐藤花子",
+    "email": "sato@example.com",
+    "department": "営業部"
+  },
+  {
+    "userId": "test-user",
+    "name": "テストユーザー",
+    "email": "test@example.com",
+    "department": "テスト部"
+  }
+]

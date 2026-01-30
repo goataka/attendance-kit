@@ -1,0 +1,47 @@
+[
+  {
+    "userId": "user001",
+    "type": "clock-in",
+    "location": "東京オフィス",
+    "deviceId": "device-001",
+    "daysAgo": 1,
+    "hour": 9,
+    "minute": 0
+  },
+  {
+    "userId": "user001",
+    "type": "clock-out",
+    "location": "東京オフィス",
+    "deviceId": "device-001",
+    "daysAgo": 1,
+    "hour": 18,
+    "minute": 30
+  },
+  {
+    "userId": "user002",
+    "type": "clock-in",
+    "location": "大阪オフィス",
+    "deviceId": "device-002",
+    "daysAgo": 1,
+    "hour": 8,
+    "minute": 45
+  },
+  {
+    "userId": "user002",
+    "type": "clock-out",
+    "location": "大阪オフィス",
+    "deviceId": "device-002",
+    "daysAgo": 1,
+    "hour": 17,
+    "minute": 15
+  },
+  {
+    "userId": "test-user",
+    "type": "clock-in",
+    "location": "テストオフィス",
+    "deviceId": "device-test",
+    "daysAgo": 0,
+    "hour": 9,
+    "minute": 30
+  }
+]

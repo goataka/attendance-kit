@@ -21,7 +21,9 @@
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-integration.json",
     "dev": "nest start --watch",
     "generate:openapi": "npx -y ts-node --project ./tsconfig.json tools/generate-openapi.ts",
-    "generate": "npm run generate:openapi"
+    "generate": "npm run generate:openapi",
+    "seed": "ts-node --project ./tsconfig.json seeds/seed.ts",
+    "seed:local": "DYNAMODB_ENDPOINT=http://localhost:4566 DYNAMODB_TABLE_NAME=attendance-kit-local-clock ts-node --project ./tsconfig.json seeds/seed.ts"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.400.0",
