@@ -20,16 +20,10 @@
 
 ### LocalStack環境（開発・テスト）
 
+LocalStackと統合テスト環境のセットアップについては、`infrastructure/deploy/TESTING.md`を参照してください。
+
 ```bash
-# LocalStackを起動
-docker compose up -d localstack
-
-# DynamoDBテーブルをデプロイ
-cd infrastructure/deploy
-npm run deploy:local-db
-
 # シードデータを投入
-cd ../../apps/backend
 npm run seed:local
 ```
 
@@ -97,12 +91,7 @@ npm run seed:local -- --force
 Error: ResourceNotFoundException
 ```
 
-→ DynamoDBテーブルがデプロイされていることを確認してください:
-
-```bash
-cd infrastructure/deploy
-npm run deploy:local-db
-```
+→ LocalStackが起動していない、またはDynamoDBテーブルがデプロイされていません。`infrastructure/deploy/TESTING.md`を参照してください。
 
 ### LocalStackに接続できない
 
@@ -110,9 +99,4 @@ npm run deploy:local-db
 Error: connect ECONNREFUSED
 ```
 
-→ LocalStackが起動していることを確認してください:
-
-```bash
-docker compose ps
-docker compose up -d localstack
-```
+→ LocalStackが起動していることを確認してください。統合テストのセットアップ手順については、`infrastructure/deploy/TESTING.md`を参照してください。
