@@ -85,7 +85,22 @@
 
 - このアクションは `failure()` 条件と組み合わせて使用する必要があります
 - `github-token` には Issue 作成権限が必要です
+  - ワークフローの`permissions`に`issues: write`を追加してください
 - Copilotユーザーがリポジトリにアクセス可能である必要があります
+- リポジトリに以下のラベルが存在している必要があります：
+  - `bug`
+  - `deploy-error`
+  - （存在しない場合はGitHub CLIでラベル作成が試みられますが、失敗する可能性があります）
+
+### パーミッション設定例
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  issues: write  # Issue作成に必要
+```
 
 ## 関連アクション
 

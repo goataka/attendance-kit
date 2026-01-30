@@ -35,6 +35,7 @@ permissions:
   id-token: write   # OIDC認証に必要
   contents: read
   pull-requests: write  # PRコメントに必要
+  issues: write  # Issue作成に必要
 
 jobs:
   deploy:

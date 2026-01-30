@@ -22,7 +22,7 @@ runs:
         COMMIT_SHA: ${{ github.sha }}
       run: |
         # Issue本文を作成
-        ISSUE_BODY=$(cat <<EOF
+        ISSUE_BODY=$(cat <<-EOF
         ## ワークフローエラー
         
         ワークフロー **${WORKFLOW_NAME}** が失敗しました。
@@ -45,11 +45,18 @@ runs:
         )
 
         # Issueを作成（Copilotをアサイン）
-        gh issue create \
+        # エラー時は警告を出力して継続（Issue作成失敗でワークフロー全体を失敗させない）
+        if ! gh issue create \
           --repo "${REPO}" \
           --title "⚠️ ${WORKFLOW_NAME} デプロイエラー" \
           --body "${ISSUE_BODY}" \
           --label "bug,deploy-error" \
-          --assignee "copilot"
+          --assignee "copilot"; then
+          echo "⚠️ Warning: Failed to create issue. This might be due to:"
+          echo "  - Missing 'issues: write' permission"
+          echo "  - Missing 'bug' or 'deploy-error' labels"
+          echo "  - User 'copilot' does not exist or does not have access"
+          exit 0  # Issue作成失敗でもワークフローは継続
+        fi
         
-        echo "Issue created successfully"
+        echo "✅ Issue created successfully"
