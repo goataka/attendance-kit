@@ -1,6 +1,6 @@
 # deploy-environment-stack.yml
 
-環境レベルリソース（DynamoDB等）をAWS CDKでデプロイするワークフロー
+環境レベルリソース（DynamoDB等）をAWS CDKでデプロイし、Dev環境の場合はE2Eテストを実行するワークフロー
 
 ## トリガー
 
@@ -29,7 +29,31 @@ GitHub Actionsから環境（dev/staging）を選択して実行可能
 ## デプロイ対象
 
 - スタック名: `AttendanceKit-Dev-Stack` または `AttendanceKit-Staging-Stack`
-- リソース: DynamoDB Clock Table
+- リソース: DynamoDB Clock Table、Backend API、Frontend (CloudFront + S3)
+
+## E2Eテスト（Dev環境のみ）
+
+Dev環境へのデプロイ後、自動的にE2Eテストが実行されます。
+
+### 実行条件
+
+- Dev環境へのデプロイが成功した場合のみ実行
+- `inputs.environment == 'dev'` または `main`ブランチへのpush時（デフォルトでdev環境）
+
+### テスト内容
+
+- デプロイされたCloudFront URLとAPI Gatewayに対して実際のE2Eテストを実行
+- 既存のCucumberテストシナリオを使用
+- テストレポートはArtifactsにアップロードされ、コミットにコメント
+
+### 環境変数
+
+| 変数 | 説明 |
+|------|------|
+| `E2E_ENV` | `deployed` に設定（ローカル環境との区別） |
+| `FRONTEND_URL` | CloudFormation OutputsからCloudFront URLを取得 |
+| `BACKEND_URL` | CloudFormation OutputsからAPI URLを取得 |
+| `DYNAMODB_TABLE_NAME` | CloudFormation OutputsからDynamoDBテーブル名を取得 |
 
 ## 必要な設定
 
