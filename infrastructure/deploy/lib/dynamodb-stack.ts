@@ -1,6 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
+import * as path from 'path';
 
 export interface DynamoDBStackProps extends cdk.StackProps {
   environment: string;
@@ -56,6 +58,16 @@ export class DynamoDBStack extends cdk.Stack {
     cdk.Tags.of(this.clockTable).add('Project', 'attendance-kit');
     cdk.Tags.of(this.clockTable).add('Purpose', 'IntegrationTest');
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
+
+    // 初期データ投入（テスト環境のみ）
+    if (environment === 'test' || environment === 'local') {
+      new DynamoDBSeeder(this, 'ClockTableSeeder', {
+        table: this.clockTable,
+        seeds: Seeds.fromJsonFile(
+          path.join(__dirname, '../seeds/clock-records.json'),
+        ),
+      });
+    }
 
     // Outputs
     new cdk.CfnOutput(this, 'TableName', {

@@ -27,7 +27,8 @@
   },
   "include": [
     "bin/**/*.ts",
-    "lib/**/*.ts"
+    "lib/**/*.ts",
+    "seeds/**/*.json"
   ],
   "exclude": [
     "node_modules",
