@@ -21,42 +21,25 @@ runs:
         REPO: ${{ github.repository }}
         COMMIT_SHA: ${{ github.sha }}
       run: |
-        # Issue本文を作成
         ISSUE_BODY=$(cat <<-EOF
-        ## ワークフローエラー
-        
         ワークフロー **${WORKFLOW_NAME}** が失敗しました。
         
-        ### 詳細情報
+        - URL: ${RUN_URL}
+        - コミット: ${COMMIT_SHA}
+        - 日時: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
         
-        - **ワークフローURL**: ${RUN_URL}
-        - **コミットSHA**: ${COMMIT_SHA}
-        - **発生日時**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
-        
-        ### 対応依頼
-        
-        このエラーを調査し、修正を試みてください。
-        ワークフローのログを確認して、エラーの原因を特定してください。
-        
-        ---
-        
-        @copilot workflow-error-handlerスキルを使用してエラー対応を行ってください。
+        @copilot workflow-error-handlerスキルでエラー対応してください。
         EOF
         )
 
-        # Issueを作成（Copilotをアサイン）
-        # エラー時は警告を出力して継続（Issue作成失敗でワークフロー全体を失敗させない）
         if ! gh issue create \
           --repo "${REPO}" \
           --title "⚠️ ${WORKFLOW_NAME} デプロイエラー" \
           --body "${ISSUE_BODY}" \
           --label "bug,deploy-error" \
           --assignee "copilot"; then
-          echo "⚠️ Warning: Failed to create issue. This might be due to:"
-          echo "  - Missing 'issues: write' permission"
-          echo "  - Missing 'bug' or 'deploy-error' labels"
-          echo "  - User 'copilot' does not exist or does not have access"
-          exit 0  # Issue作成失敗でもワークフローは継続
+          echo "⚠️ Issue作成に失敗しました"
+          exit 0
         fi
         
-        echo "✅ Issue created successfully"
+        echo "✅ Issue作成完了"
