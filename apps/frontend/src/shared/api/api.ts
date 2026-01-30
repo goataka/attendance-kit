@@ -67,7 +67,7 @@ const clearToken = (): void => {
 };
 
 // ログインしてJWTトークンを取得
-const login = async (userId: string, password: string): Promise<string | null> => {
+const loginInternal = async (userId: string, password: string): Promise<string | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
       method: 'POST',
@@ -82,14 +82,7 @@ const login = async (userId: string, password: string): Promise<string | null> =
     }
 
     const data = await response.json();
-    const token = data.accessToken;
-    
-    // Store token for future use
-    if (token) {
-      storeToken(token);
-    }
-    
-    return token;
+    return data.accessToken;
   } catch (error) {
     console.error('Login failed:', error);
     return null;
@@ -97,11 +90,37 @@ const login = async (userId: string, password: string): Promise<string | null> =
 };
 
 export const api = {
+  // ログイン - 公開API
+  login: async (userId: string, password: string): Promise<{ token: string; userId: string } | null> => {
+    try {
+      const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, password }),
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const data = await response.json();
+      return {
+        token: data.accessToken,
+        userId: data.userId,
+      };
+    } catch (error) {
+      console.error('Login failed:', error);
+      return null;
+    }
+  },
+
   // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
-      // まずログインしてトークンを取得
-      const token = await login(request.userId, request.password);
+      // まずログインしてトークンを取得（打刻画面ではセッションに保存しない）
+      const token = await loginInternal(request.userId, request.password);
       
       if (!token) {
         return {
