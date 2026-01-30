@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     # デプロイワークフローが成功した場合のみ実行
     if: >-
-      ${{ github.event.workflow_run.conclusion == 'success' ||
-          github.event_name == 'workflow_dispatch' }}
+      github.event.workflow_run.conclusion == 'success' ||
+      github.event_name == 'workflow_dispatch'
     environment: dev
 
     steps:

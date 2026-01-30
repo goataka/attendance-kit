@@ -34,7 +34,7 @@ CloudFormation Stackのoutputsから以下の情報を取得:
 
 - `CloudFrontUrl`: フロントエンドのURL
 - `ApiUrl`: バックエンドAPIのURL
-- `ClockTableName`: DynamoDBテーブル名
+- `TableName`: DynamoDBテーブル名
 
 ### 3. E2Eテスト実行
 
