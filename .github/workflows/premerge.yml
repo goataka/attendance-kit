@@ -34,8 +34,12 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED_FILES"
           
+          # 変更ファイルがない場合はテストを実行
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "should-run-tests=true" >> $GITHUB_OUTPUT
+            echo "No changed files detected. Tests will run as a safety measure."
           # mdファイル以外が含まれているかチェック
-          if echo "$CHANGED_FILES" | grep -v '\.md$' > /dev/null; then
+          elif echo "$CHANGED_FILES" | grep -v '\.md$' > /dev/null; then
             echo "should-run-tests=true" >> $GITHUB_OUTPUT
             echo "Non-markdown files detected. Tests will run."
           else
@@ -346,3 +350,32 @@ jobs:
           workflow-name: 'Premerge - E2E Test'
           failure-message: 'E2Eテストに失敗しました。Playwrightテストのエラーを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # すべてのテストジョブの結果を集約する要約ジョブ
+  # ブランチ保護ルールでこのジョブを必須チェックとして設定することで、
+  # mdファイルのみの変更時もPRをマージ可能にする
+  premerge-summary:
+    runs-on: ubuntu-latest
+    needs: [check-changes, unit-test, backend-integration-test, deploy-integration-test, frontend-integration-test, e2e-test]
+    if: always()
+    steps:
+      - name: Check test results
+        run: |
+          # check-changesの結果を確認
+          if [ "${{ needs.check-changes.outputs.should-run-tests }}" = "false" ]; then
+            echo "✅ Only markdown files changed. Tests were skipped."
+            exit 0
+          fi
+          
+          # いずれかのテストジョブが失敗した場合
+          if [ "${{ needs.unit-test.result }}" = "failure" ] || \
+             [ "${{ needs.backend-integration-test.result }}" = "failure" ] || \
+             [ "${{ needs.deploy-integration-test.result }}" = "failure" ] || \
+             [ "${{ needs.frontend-integration-test.result }}" = "failure" ] || \
+             [ "${{ needs.e2e-test.result }}" = "failure" ]; then
+            echo "❌ One or more tests failed."
+            exit 1
+          fi
+          
+          echo "✅ All tests passed."
+          exit 0

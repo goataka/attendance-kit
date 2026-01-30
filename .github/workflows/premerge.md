@@ -22,3 +22,6 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 | deploy-integration-test | CDKデプロイテスト |
 | frontend-integration-test | フロントエンドE2Eテスト |
 | e2e-test | エンドツーエンドテスト |
+| premerge-summary | すべてのテストジョブの結果を集約（常に実行） |
+
+**注意**: ブランチ保護ルールでは`premerge-summary`ジョブを必須チェックとして設定してください。このジョブは常に実行され、mdファイルのみの変更時も成功となるため、強制マージが不要になります。
