@@ -19,10 +19,15 @@ export class DynamoDBStack extends cdk.Stack {
     const { environment } = props;
 
     // DynamoDB Clock Table
+    // 本番環境と同じ構造を使用（userId + timestamp as primary key）
     this.clockTable = new dynamodb.Table(this, 'ClockTable', {
       tableName: `attendance-kit-${environment}-clock`,
       partitionKey: {
-        name: 'id',
+        name: 'userId',
+        type: dynamodb.AttributeType.STRING,
+      },
+      sortKey: {
+        name: 'timestamp',
         type: dynamodb.AttributeType.STRING,
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -31,11 +36,12 @@ export class DynamoDBStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Global Secondary Index: UserIdTimestampIndex
+    // Global Secondary Index: DateIndex
+    // 本番環境と同じGSIを使用
     this.clockTable.addGlobalSecondaryIndex({
-      indexName: 'UserIdTimestampIndex',
+      indexName: 'DateIndex',
       partitionKey: {
-        name: 'userId',
+        name: 'date',
         type: dynamodb.AttributeType.STRING,
       },
       sortKey: {
