@@ -1,19 +1,31 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../shared/contexts/AuthContext';
 import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import { DEFAULT_FILTER } from '../shared/constants';
 import './ClocksListPage.css';
 
 export function ClocksListPage() {
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<RecordsFilter>(DEFAULT_FILTER);
   const [error, setError] = useState<string | null>(null);
-  const [needsLogin, setNeedsLogin] = useState(false);
+
+  // 未ログインの場合は初期画面にリダイレクト
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     const fetchRecords = async () => {
       setLoading(true);
       setError(null);
@@ -23,13 +35,7 @@ export function ClocksListPage() {
       } catch (error) {
         console.error('Failed to load records:', error);
         if (error instanceof Error) {
-          // 認証エラーの場合
-          if (error.message.includes('Authentication')) {
-            setNeedsLogin(true);
-            setError('打刻一覧を表示するには、打刻画面でログインしてください。');
-          } else {
-            setError(error.message);
-          }
+          setError(error.message);
         } else {
           setError('Failed to load records');
         }
@@ -39,7 +45,7 @@ export function ClocksListPage() {
     };
     
     fetchRecords();
-  }, []);
+  }, [isAuthenticated]);
 
   const loadRecords = async (newFilter?: RecordsFilter) => {
     setLoading(true);

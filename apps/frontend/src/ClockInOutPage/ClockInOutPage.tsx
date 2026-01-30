@@ -91,6 +91,12 @@ export function ClockInOutPage() {
               退勤
             </button>
           </div>
+
+          <div className="login-button-section">
+            <Link to="/login" className="btn btn-login">
+              ログイン
+            </Link>
+          </div>
         </div>
 
         <div className="help-text">

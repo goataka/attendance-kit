@@ -58,6 +58,16 @@ exports[`App Snapshot > matches snapshot 1`] = `
             退勤
           </button>
         </div>
+        <div
+          class="login-button-section"
+        >
+          <a
+            class="btn btn-login"
+            href="/login"
+          >
+            ログイン
+          </a>
+        </div>
       </div>
       <div
         class="help-text"
