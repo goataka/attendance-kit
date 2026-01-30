@@ -1,0 +1,55 @@
+name: 'Create Issue on Workflow Failure'
+description: 'ワークフロー失敗時にIssueを作成し、Copilotをアサインする'
+
+inputs:
+  workflow-name:
+    description: 'ワークフロー名'
+    required: true
+  github-token:
+    description: 'GitHub token'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create Issue on failure
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        WORKFLOW_NAME: ${{ inputs.workflow-name }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        REPO: ${{ github.repository }}
+        COMMIT_SHA: ${{ github.sha }}
+      run: |
+        # Issue本文を作成
+        ISSUE_BODY=$(cat <<EOF
+        ## ワークフローエラー
+        
+        ワークフロー **${WORKFLOW_NAME}** が失敗しました。
+        
+        ### 詳細情報
+        
+        - **ワークフローURL**: ${RUN_URL}
+        - **コミットSHA**: ${COMMIT_SHA}
+        - **発生日時**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        
+        ### 対応依頼
+        
+        このエラーを調査し、修正を試みてください。
+        ワークフローのログを確認して、エラーの原因を特定してください。
+        
+        ---
+        
+        @copilot workflow-error-handlerスキルを使用してエラー対応を行ってください。
+        EOF
+        )
+
+        # Issueを作成（Copilotをアサイン）
+        gh issue create \
+          --repo "${REPO}" \
+          --title "⚠️ ${WORKFLOW_NAME} デプロイエラー" \
+          --body "${ISSUE_BODY}" \
+          --label "bug,deploy-error" \
+          --assignee "copilot"
+        
+        echo "Issue created successfully"
