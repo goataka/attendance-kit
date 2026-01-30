@@ -27,8 +27,15 @@ jobs:
       - name: Check changed files
         id: check
         run: |
+          set -e  # エラー時に即座に終了
+          
           # PRの変更ファイル一覧を取得
-          git fetch origin ${{ github.base_ref }}
+          if ! git fetch origin ${{ github.base_ref }}; then
+            echo "Failed to fetch base branch. Tests will run as a safety measure."
+            echo "should-run-tests=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           
           echo "Changed files:"
@@ -38,8 +45,8 @@ jobs:
           if [ -z "$CHANGED_FILES" ]; then
             echo "should-run-tests=true" >> $GITHUB_OUTPUT
             echo "No changed files detected. Tests will run as a safety measure."
-          # mdファイル以外が含まれているかチェック
-          elif echo "$CHANGED_FILES" | grep -v '\.md$' > /dev/null; then
+          # mdファイル以外が含まれているかチェック（大文字小文字を区別しない）
+          elif echo "$CHANGED_FILES" | grep -iv '\.md$' > /dev/null; then
             echo "should-run-tests=true" >> $GITHUB_OUTPUT
             echo "Non-markdown files detected. Tests will run."
           else
@@ -361,19 +368,38 @@ jobs:
     steps:
       - name: Check test results
         run: |
+          echo "Job results:"
+          echo "  check-changes: ${{ needs.check-changes.result }}"
+          echo "  unit-test: ${{ needs.unit-test.result }}"
+          echo "  backend-integration-test: ${{ needs.backend-integration-test.result }}"
+          echo "  deploy-integration-test: ${{ needs.deploy-integration-test.result }}"
+          echo "  frontend-integration-test: ${{ needs.frontend-integration-test.result }}"
+          echo "  e2e-test: ${{ needs.e2e-test.result }}"
+          
+          # check-changesジョブが失敗またはキャンセルされた場合
+          if [ "${{ needs.check-changes.result }}" != "success" ]; then
+            echo "❌ check-changes job did not succeed."
+            exit 1
+          fi
+          
           # check-changesの結果を確認
           if [ "${{ needs.check-changes.outputs.should-run-tests }}" = "false" ]; then
             echo "✅ Only markdown files changed. Tests were skipped."
             exit 0
           fi
           
-          # いずれかのテストジョブが失敗した場合
+          # いずれかのテストジョブが失敗またはキャンセルされた場合
           if [ "${{ needs.unit-test.result }}" = "failure" ] || \
+             [ "${{ needs.unit-test.result }}" = "cancelled" ] || \
              [ "${{ needs.backend-integration-test.result }}" = "failure" ] || \
+             [ "${{ needs.backend-integration-test.result }}" = "cancelled" ] || \
              [ "${{ needs.deploy-integration-test.result }}" = "failure" ] || \
+             [ "${{ needs.deploy-integration-test.result }}" = "cancelled" ] || \
              [ "${{ needs.frontend-integration-test.result }}" = "failure" ] || \
-             [ "${{ needs.e2e-test.result }}" = "failure" ]; then
-            echo "❌ One or more tests failed."
+             [ "${{ needs.frontend-integration-test.result }}" = "cancelled" ] || \
+             [ "${{ needs.e2e-test.result }}" = "failure" ] || \
+             [ "${{ needs.e2e-test.result }}" = "cancelled" ]; then
+            echo "❌ One or more tests failed or were cancelled."
             exit 1
           fi
           
