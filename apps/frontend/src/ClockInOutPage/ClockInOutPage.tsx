@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../shared/contexts/AuthContext';
 import { api } from '../shared/api';
@@ -12,10 +12,11 @@ export function ClockInOutPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // 未ログインの場合はログイン画面にリダイレクト
-  if (!isAuthenticated || !userId) {
-    navigate('/login');
-    return null;
-  }
+  useEffect(() => {
+    if (!isAuthenticated || !userId) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, userId, navigate]);
 
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
     if (!password) {
@@ -50,6 +51,11 @@ export function ClockInOutPage() {
     logout();
     navigate('/login');
   };
+
+  // 未認証の場合は何も表示しない
+  if (!isAuthenticated || !userId) {
+    return null;
+  }
 
   return (
     <div className="clock-in-out-page">

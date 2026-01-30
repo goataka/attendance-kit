@@ -148,50 +148,6 @@
   background-color: var(--secondary-hover);
 }
 
-.help-text {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background-color: var(--background-color);
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.help-text p {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.help-text ul {
-  list-style: none;
-  padding-left: 1rem;
-}
-
-.help-text li {
-  margin-bottom: 0.25rem;
-}
-
-.help-text {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background-color: var(--background-color);
-  border-radius: 4px;
-  font-size: 0.875rem;
-}
-
-.help-text p {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.help-text ul {
-  list-style: none;
-  padding-left: 1rem;
-}
-
-.help-text li {
-  margin-bottom: 0.25rem;
-}
-
 .navigation {
   margin-top: 1.5rem;
   text-align: center;
