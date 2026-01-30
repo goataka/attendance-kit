@@ -215,7 +215,7 @@ export const api = {
       }));
     } catch (error) {
       console.error('Failed to fetch records:', error);
-      return [];
+      throw error;
     }
   },
 };
