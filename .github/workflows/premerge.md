@@ -6,13 +6,7 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 
 ## トリガー
 
-`main`ブランチへのPR作成・更新時
-
-**監視対象**:
-- `apps/**`
-- `infrastructure/**`
-- `package.json`
-- `.github/workflows/premerge.yml`
+`main`ブランチへのPR作成・更新時（すべてのファイル変更が対象）
 
 ## ジョブ
 
