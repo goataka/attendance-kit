@@ -15,44 +15,12 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
 .container h1 {
   font-size: 1.875rem;
   font-weight: bold;
-  margin: 0;
+  margin-bottom: 1.5rem;
+  text-align: center;
   color: var(--primary-color);
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user-id {
-  font-size: 0.875rem;
-  color: var(--text-color);
-  font-weight: 500;
-}
-
-.btn-link {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  cursor: pointer;
-  font-size: 0.875rem;
-  text-decoration: underline;
-  padding: 0;
-}
-
-.btn-link:hover {
-  color: var(--primary-hover);
 }
 
 .form-section {
@@ -146,6 +114,28 @@
 
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--secondary-hover);
+}
+
+.help-text {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.help-text p {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.help-text ul {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.help-text li {
+  margin-bottom: 0.25rem;
 }
 
 .navigation {

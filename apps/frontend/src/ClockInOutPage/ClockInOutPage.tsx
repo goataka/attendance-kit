@@ -1,26 +1,18 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../shared/contexts/AuthContext';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../shared/api';
+import { TEST_ACCOUNTS } from '../shared/constants';
 import './ClockInOutPage.css';
 
 export function ClockInOutPage() {
-  const { isAuthenticated, userId, logout } = useAuth();
-  const navigate = useNavigate();
+  const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  // 未ログインの場合はログイン画面にリダイレクト
-  useEffect(() => {
-    if (!isAuthenticated || !userId) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, userId, navigate]);
-
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
-    if (!password) {
-      setMessage({ type: 'error', text: 'Password is required' });
+    if (!userId || !password) {
+      setMessage({ type: 'error', text: 'User ID and password are required' });
       return;
     }
 
@@ -47,30 +39,24 @@ export function ClockInOutPage() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
-  // 未認証の場合は何も表示しない
-  if (!isAuthenticated || !userId) {
-    return null;
-  }
-
   return (
     <div className="clock-in-out-page">
       <div className="container">
-        <div className="header">
-          <h1>勤怠打刻</h1>
-          <div className="user-info">
-            <span className="user-id">User: {userId}</span>
-            <button className="btn btn-link" onClick={handleLogout}>
-              ログアウト
-            </button>
-          </div>
-        </div>
+        <h1>勤怠打刻</h1>
 
         <div className="form-section">
+          <div className="form-group">
+            <label htmlFor="userId">User ID</label>
+            <input
+              id="userId"
+              type="text"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              placeholder="Enter your user ID"
+              disabled={loading}
+            />
+          </div>
+
           <div className="form-group">
             <label htmlFor="password">Password</label>
             <input
@@ -105,6 +91,17 @@ export function ClockInOutPage() {
               退勤
             </button>
           </div>
+        </div>
+
+        <div className="help-text">
+          <p>テスト用アカウント:</p>
+          <ul>
+            {TEST_ACCOUNTS.map((account) => (
+              <li key={account.userId}>
+                {`${account.userId} / ${account.password}`}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="navigation">

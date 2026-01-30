@@ -3,15 +3,15 @@
 exports[`App Snapshot > matches snapshot 1`] = `
 <div>
   <div
-    class="login-page"
+    class="clock-in-out-page"
   >
     <div
       class="container"
     >
       <h1>
-        ログイン
+        勤怠打刻
       </h1>
-      <form
+      <div
         class="form-section"
       >
         <div
@@ -23,7 +23,6 @@ exports[`App Snapshot > matches snapshot 1`] = `
             User ID
           </label>
           <input
-            autocomplete="username"
             id="userId"
             placeholder="Enter your user ID"
             type="text"
@@ -39,20 +38,27 @@ exports[`App Snapshot > matches snapshot 1`] = `
             Password
           </label>
           <input
-            autocomplete="current-password"
             id="password"
             placeholder="Enter your password"
             type="password"
             value=""
           />
         </div>
-        <button
-          class="btn btn-primary"
-          type="submit"
+        <div
+          class="button-group"
         >
-          ログイン
-        </button>
-      </form>
+          <button
+            class="btn btn-primary"
+          >
+            出勤
+          </button>
+          <button
+            class="btn btn-secondary"
+          >
+            退勤
+          </button>
+        </div>
+      </div>
       <div
         class="help-text"
       >
@@ -67,6 +73,16 @@ exports[`App Snapshot > matches snapshot 1`] = `
             user002 / password456
           </li>
         </ul>
+      </div>
+      <div
+        class="navigation"
+      >
+        <a
+          class="link"
+          href="/clocks"
+        >
+          打刻一覧を見る →
+        </a>
       </div>
     </div>
   </div>
