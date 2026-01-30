@@ -11,7 +11,7 @@
  *   npm run seed:local        # LocalStack環境
  */
 
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient, DynamoDBClientConfig } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
   PutCommand,
@@ -55,7 +55,7 @@ class SeedRunner {
 
   constructor() {
     // LocalStack統合テスト用のエンドポイント設定
-    const clientConfig: any = {
+    const clientConfig: DynamoDBClientConfig = {
       region: process.env.AWS_REGION || 'ap-northeast-1',
     };
 
@@ -75,9 +75,15 @@ class SeedRunner {
    * JSONファイルからデータを読み込む
    */
   private loadJsonFile<T>(filename: string): T[] {
-    const filePath = path.join(__dirname, 'data', filename);
-    const content = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(content);
+    try {
+      const filePath = path.join(__dirname, 'data', filename);
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return JSON.parse(content);
+    } catch (error) {
+      throw new Error(
+        `Failed to load or parse ${filename}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
   }
 
   /**
@@ -129,9 +135,13 @@ class SeedRunner {
     try {
       const response = await this.docClient.send(command);
       return response.Count || 0;
-    } catch (error) {
-      // テーブルが存在しない場合は0を返す
-      return 0;
+    } catch (error: any) {
+      // ResourceNotFoundExceptionの場合はテーブルが存在しないため0を返す
+      if (error.name === 'ResourceNotFoundException') {
+        return 0;
+      }
+      // その他のエラー（接続エラーなど）は上位に伝播
+      throw error;
     }
   }
 

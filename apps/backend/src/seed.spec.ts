@@ -64,6 +64,7 @@ describe('Seed Data Files', () => {
       expect(typeof record.daysAgo).toBe('number');
       expect(typeof record.hour).toBe('number');
       expect(typeof record.minute).toBe('number');
+      expect(record.daysAgo).toBeGreaterThanOrEqual(0);
       expect(record.hour).toBeGreaterThanOrEqual(0);
       expect(record.hour).toBeLessThan(24);
       expect(record.minute).toBeGreaterThanOrEqual(0);
