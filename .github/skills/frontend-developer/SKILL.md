@@ -32,6 +32,8 @@ cd /home/runner/work/attendance-kit/attendance-kit
 
 すべてのコマンドはプロジェクトルートから実行してください。
 
+**注**: このパスはGitHub Actions環境用です。ローカル開発では、自身のプロジェクトルートディレクトリに置き換えてください。
+
 ### 2. 依存関係のインストール
 
 ```bash
