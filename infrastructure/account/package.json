@@ -7,7 +7,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "test:unit": "jest --updateSnapshot",
+    "test:unit": "jest",
+    "test:update-snapshots": "jest --updateSnapshot",
     "cdk": "cdk"
   },
   "keywords": [

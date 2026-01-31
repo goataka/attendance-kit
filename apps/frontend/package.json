@@ -11,14 +11,14 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:unit": "vitest run",
+    "test:update-snapshots": "vitest run --update && playwright test --update-snapshots",
     "test:integration": "playwright test",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "test:e2e": "playwright test",
-    "test:visual": "playwright test --update-snapshots"
+    "test:e2e": "playwright test"
   },
   "keywords": [
     "frontend",
