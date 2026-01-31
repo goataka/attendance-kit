@@ -37,3 +37,21 @@ GitHub Actionsから環境（dev/staging）を選択して実行可能
 
 - `AWS_ROLE_TO_ASSUME`: デプロイに使用するIAMロールのARN
 - `JWT_SECRET`: バックエンドAPIのJWT認証シークレットキー
+
+## エラー時の自動対応
+
+デプロイが失敗した場合、以下の対応が自動的に実行されます：
+
+### PRへのコメント
+
+PRが存在する場合、失敗情報がコメントとして投稿されます（[comment-on-failure](../actions/comment-on-failure/README.md)アクション）
+
+### Issueの自動作成
+
+デプロイ失敗時に、以下の情報を含むIssueが自動的に作成されます：
+
+- ワークフロー名とURL
+- コミットSHA
+- Copilotへの対応依頼
+
+このIssueには`bug`と`deploy-error`ラベルが付与され、Copilotが自動的にアサインされます。
