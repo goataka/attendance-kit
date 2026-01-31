@@ -3,6 +3,9 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
 import * as path from 'path';
+import { Trigger } from 'aws-cdk-lib/triggers';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 export interface DynamoDBStackProps extends cdk.StackProps {
   environment: string;
@@ -61,12 +64,36 @@ export class DynamoDBStack extends cdk.Stack {
 
     // 初期データ投入（テスト環境のみ）
     if (environment === 'test' || environment === 'local') {
-      new DynamoDBSeeder(this, 'ClockTableSeeder', {
+      // データクリア用のLambda関数
+      const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
+        runtime: lambda.Runtime.NODEJS_18_X,
+        handler: 'handler',
+        entry: path.join(__dirname, '../lambda/clear-table-data.ts'),
+        environment: {
+          TABLE_NAME: this.clockTable.tableName,
+        },
+        timeout: cdk.Duration.minutes(5),
+      });
+
+      // Lambda関数にテーブルへの権限を付与
+      this.clockTable.grantReadWriteData(clearDataFunction);
+
+      // トリガー: デプロイ時にデータをクリア
+      const clearTrigger = new Trigger(this, 'ClearTableTrigger', {
+        handler: clearDataFunction,
+        executeAfter: [this.clockTable],
+      });
+
+      // シーダー: データクリア後にデータを投入
+      const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
         table: this.clockTable,
         seeds: Seeds.fromJsonFile(
           path.join(__dirname, '../seeds/clock-records.json'),
         ),
       });
+
+      // シーダーはクリアトリガーの後に実行されるように依存関係を設定
+      seeder.node.addDependency(clearTrigger);
     }
 
     // Outputs

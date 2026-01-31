@@ -4,14 +4,26 @@
 
 `@cloudcomponents/cdk-dynamodb-seeder`を使用して、DynamoDBテーブルへの初期データ投入をCDKスタックのデプロイ時に自動実行します。
 
+デプロイ時には、既存データをクリアしてから新しいデータを投入することで、常にクリーンな状態を保証します。
+
 ## 仕組み
 
 CDKスタックのデプロイ時に、以下のリソースが自動的に作成されます：
 
-1. **Lambda関数**: データ投入を実行する関数
-2. **IAM Role**: Lambda関数に必要な権限（DynamoDB BatchWriteItem、S3 GetObject）
-3. **S3アセット**: シードデータのJSONファイルがS3にアップロード
-4. **カスタムリソース**: スタックデプロイ時にLambda関数を実行
+1. **データクリア用Lambda関数**: テーブルの既存データを削除
+2. **Trigger**: デプロイ時にクリア関数を実行
+3. **シーダーLambda関数**: データ投入を実行する関数
+4. **IAM Role**: Lambda関数に必要な権限（DynamoDB BatchWriteItem、S3 GetObject）
+5. **S3アセット**: シードデータのJSONファイルがS3にアップロード
+6. **カスタムリソース**: スタックデプロイ時にLambda関数を実行
+
+### 実行順序
+
+1. テーブル作成
+2. **データクリア**: Triggerがクリア用Lambda関数を実行し、既存データを削除
+3. **データ投入**: Seederが新しいデータを投入
+
+この順序により、デプロイごとに常に同じクリーンなデータ状態を保証します。
 
 ## データファイル
 
@@ -39,15 +51,39 @@ CDKスタックのデプロイ時に、以下のリソースが自動的に作�
 
 ```typescript
 import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
+import { Trigger } from 'aws-cdk-lib/triggers';
 
 // テスト環境のみ初期データを投入
 if (environment === 'test' || environment === 'local') {
-  new DynamoDBSeeder(this, 'ClockTableSeeder', {
+  // 1. データクリア用のLambda関数を作成
+  const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
+    runtime: lambda.Runtime.NODEJS_18_X,
+    handler: 'handler',
+    entry: path.join(__dirname, '../lambda/clear-table-data.ts'),
+    environment: {
+      TABLE_NAME: this.clockTable.tableName,
+    },
+    timeout: cdk.Duration.minutes(5),
+  });
+
+  this.clockTable.grantReadWriteData(clearDataFunction);
+
+  // 2. トリガー: デプロイ時にデータをクリア
+  const clearTrigger = new Trigger(this, 'ClearTableTrigger', {
+    handler: clearDataFunction,
+    executeAfter: [this.clockTable],
+  });
+
+  // 3. シーダー: データクリア後にデータを投入
+  const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
     table: this.clockTable,
     seeds: Seeds.fromJsonFile(
       path.join(__dirname, '../seeds/clock-records.json'),
     ),
   });
+
+  // 4. 依存関係を設定してクリア後に投入
+  seeder.node.addDependency(clearTrigger);
 }
 ```
 
@@ -78,6 +114,44 @@ cd infrastructure/deploy
 npm run deploy:local-db
 ```
 
+再デプロイ時には自動的に既存データがクリアされ、新しいデータが投入されます。
+
+## データクリアの仕組み
+
+### clear-table-data.ts
+
+デプロイ時に実行されるLambda関数で、以下の処理を行います：
+
+1. テーブルの全アイテムをスキャン
+2. 最大25件ずつバッチ削除
+3. ページネーション対応で全データを削除
+
+```typescript
+// テーブルの全データを削除
+const scanCommand = new ScanCommand({
+  TableName: tableName,
+  ProjectionExpression: 'userId, #ts',
+  ExpressionAttributeNames: { '#ts': 'timestamp' },
+});
+
+// バッチ削除（最大25件ずつ）
+const batchWriteCommand = new BatchWriteCommand({
+  RequestItems: {
+    [tableName]: deleteRequests,
+  },
+});
+```
+
+### タイミング制御
+
+CDKの依存関係により、以下の順序が保証されます：
+
+1. テーブル作成完了
+2. クリアTrigger実行（既存データ削除）
+3. Seeder実行（新データ投入）
+
+`seeder.node.addDependency(clearTrigger)`により、クリアが完了してからシードが実行されます。
+
 ## 以前のアプローチとの比較
 
 ### 以前の実装（apps/backend/seeds/seed.ts）
@@ -86,10 +160,12 @@ npm run deploy:local-db
 - ❌ CDKとは別のツール
 - ❌ 手動実行が必要
 
-### 新しい実装（CDK Seeder）
+### 新しい実装（CDK Seeder + Trigger）
 - ✅ CDKデプロイと統合
 - ✅ Infrastructure as Code
 - ✅ 自動実行
+- ✅ データクリア機能（常にクリーンな状態）
+- ✅ 依存関係による実行順序保証
 - ❌ デプロイごとに実行（ただしテスト環境のみ）
 
 ## 制約事項
