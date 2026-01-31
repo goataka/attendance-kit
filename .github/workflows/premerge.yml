@@ -358,12 +358,6 @@ jobs:
             exit 1
           fi
           
-          # check-changesの結果を確認
-          if [ "${{ needs.check-changes.outputs.should-run-tests }}" = "false" ]; then
-            echo "✅ Only markdown files changed. Tests were skipped."
-            exit 0
-          fi
-          
           # いずれかのテストジョブが失敗またはキャンセルされた場合
           if [ "${{ needs.unit-test.result }}" = "failure" ] || \
              [ "${{ needs.unit-test.result }}" = "cancelled" ] || \
@@ -379,5 +373,5 @@ jobs:
             exit 1
           fi
           
-          echo "✅ All tests passed."
+          echo "✅ All tests passed or were skipped."
           exit 0
