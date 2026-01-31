@@ -1,6 +1,9 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
+import * as path from 'path';
+import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface DynamoDBStackProps extends cdk.StackProps {
   environment: string;
@@ -18,7 +21,6 @@ export class DynamoDBStack extends cdk.Stack {
 
     const { environment } = props;
 
-    // DynamoDB Clock Table
     // 本番環境と同じ構造を使用（userId + timestamp as primary key）
     this.clockTable = new dynamodb.Table(this, 'ClockTable', {
       tableName: `attendance-kit-${environment}-clock`,
@@ -36,7 +38,6 @@ export class DynamoDBStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Global Secondary Index: DateIndex
     // 本番環境と同じGSIを使用
     this.clockTable.addGlobalSecondaryIndex({
       indexName: 'DateIndex',
@@ -51,13 +52,15 @@ export class DynamoDBStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
-    // タグ設定
     cdk.Tags.of(this.clockTable).add('Environment', environment);
     cdk.Tags.of(this.clockTable).add('Project', 'attendance-kit');
     cdk.Tags.of(this.clockTable).add('Purpose', 'IntegrationTest');
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
 
-    // Outputs
+    if (environment === 'dev' || environment === 'local') {
+      this.setupDataClearAndSeed();
+    }
+
     new cdk.CfnOutput(this, 'TableName', {
       value: this.clockTable.tableName,
       description: `DynamoDB clock table name (${environment})`,
@@ -67,5 +70,41 @@ export class DynamoDBStack extends cdk.Stack {
       value: this.clockTable.tableArn,
       description: `DynamoDB clock table ARN (${environment})`,
     });
+  }
+
+  /**
+   * データクリア用のDynamoDBCleanerを設定
+   */
+  private setupDataClear(): DynamoDBCleaner {
+    const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
+      table: this.clockTable,
+    });
+
+    return cleaner;
+  }
+
+  /**
+   * データ投入用のSeederを設定
+   */
+  private setupDataSeeder(): DynamoDBSeeder {
+    const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
+      table: this.clockTable,
+      seeds: Seeds.fromJsonFile(
+        path.join(__dirname, '../seeds/clock-records.json'),
+      ),
+    });
+
+    return seeder;
+  }
+
+  /**
+   * データクリアとシードの設定
+   * クリアが完了してからシードが実行されるように依存関係を設定
+   */
+  private setupDataClearAndSeed(): void {
+    const cleaner = this.setupDataClear();
+    const seeder = this.setupDataSeeder();
+
+    seeder.node.addDependency(cleaner.trigger);
   }
 }
