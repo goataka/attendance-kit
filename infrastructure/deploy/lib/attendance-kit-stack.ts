@@ -9,7 +9,7 @@ import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment?: string; // 'dev' | 'staging' | 'test' (デフォルト: 'dev')
+  environment?: string; // 'dev' | 'staging' | 'test' | 'local' (デフォルト: 'dev')
   jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
   deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
