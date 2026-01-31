@@ -22,24 +22,16 @@ runs:
         COMMIT_SHA: ${{ github.sha }}
       run: |
         ISSUE_BODY=$(cat <<-EOF
-        ワークフロー **${WORKFLOW_NAME}** が失敗しました。
-        
         - URL: ${RUN_URL}
         - コミット: ${COMMIT_SHA}
-        - 日時: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
         
         @copilot workflow-error-handlerスキルでエラー対応してください。
         EOF
         )
 
-        if ! gh issue create \
+        gh issue create \
           --repo "${REPO}" \
           --title "⚠️ ${WORKFLOW_NAME} デプロイエラー" \
           --body "${ISSUE_BODY}" \
           --label "bug,deploy-error" \
-          --assignee "copilot"; then
-          echo "⚠️ Issue作成に失敗しました"
-          exit 0
-        fi
-        
-        echo "✅ Issue作成完了"
+          --assignee "copilot" || exit 0
