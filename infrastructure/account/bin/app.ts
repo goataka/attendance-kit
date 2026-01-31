@@ -5,15 +5,15 @@ import { AttendanceKitAccountStack } from '../lib/attendance-kit-account-stack';
 
 const app = new cdk.App();
 
-const LOCALSTACK_ACCOUNT_ID = '000000000000';
-
 const env = {
-  account: process.env.CDK_DEFAULT_ACCOUNT || LOCALSTACK_ACCOUNT_ID,
+  account: process.env.CDK_DEFAULT_ACCOUNT,
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
-// Use dummy email for LocalStack/development, or real email from environment
-const alertEmail = process.env.COST_ALERT_EMAIL || 'dummy@example.com';
+const alertEmail = process.env.COST_ALERT_EMAIL;
+if (!alertEmail) {
+  throw new Error('COST_ALERT_EMAIL environment variable is required');
+}
 
 new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
   env,

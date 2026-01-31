@@ -9,7 +9,6 @@ on:
       - 'apps/frontend/**'
       - '!apps/website/**'
       - 'infrastructure/deploy/**'
-      - '!infrastructure/account/**'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-environment-stack.yml'
