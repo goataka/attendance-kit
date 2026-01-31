@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -97,13 +97,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [check-changes, unit-test]
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -151,13 +151,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [check-changes, unit-test]
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -247,7 +247,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [check-changes, unit-test]
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
@@ -256,7 +256,7 @@ jobs:
       VITE_BACKEND_URL: http://localhost:3000
       FRONTEND_URL: http://localhost:5173
       BACKEND_URL: http://localhost:3000
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -341,17 +341,17 @@ jobs:
           script: |
             const runId = context.runId;
             const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
-            
+
             const comment = `## E2Eテスト結果
-            
+
             📊 **テストレポート**: [Artifactsからダウンロード](${artifactUrl})
-            
+
             レポートの確認方法：
             1. 上記のリンクをクリック
             2. Artifacts セクションから \`e2e-test-reports\` をダウンロード
             3. \`cucumber-report.html\` をブラウザで開く
             `;
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
