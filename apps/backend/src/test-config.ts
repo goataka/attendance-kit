@@ -1,7 +1,4 @@
-/**
- * テスト環境設定
- * 統合テスト用のLocalStack接続設定
- */
+// テスト環境設定（統合テスト用のLocalStack接続設定）
 export const getTestConfig = () => {
   const isLocalStack = process.env.USE_LOCALSTACK === 'true';
 

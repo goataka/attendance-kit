@@ -5,9 +5,6 @@ import { CustomWorld } from './world';
 import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
 import { TIMEOUTS, SELECTORS } from './constants';
 
-/**
- * Fill login credentials on the page
- */
 async function fillLoginCredentials(
   page: Page,
   userId: string = TEST_USER_ID,
@@ -31,9 +28,6 @@ async function fillLoginCredentials(
   );
 }
 
-/**
- * Click clock button and wait for message to appear
- */
 async function clickClockButtonAndWaitForMessage(
   page: Page,
   buttonText: string,
@@ -44,9 +38,6 @@ async function clickClockButtonAndWaitForMessage(
   });
 }
 
-/**
- * Verify success message appeared
- */
 async function verifySuccessMessage(page: Page): Promise<void> {
   const messageElement = await page.locator(SELECTORS.message).first();
   const messageClass = await messageElement.getAttribute('class');
@@ -57,9 +48,6 @@ async function verifySuccessMessage(page: Page): Promise<void> {
   }
 }
 
-/**
- * Perform clock action (clock-in or clock-out)
- */
 async function performClockAction(
   world: CustomWorld,
   buttonText: string,

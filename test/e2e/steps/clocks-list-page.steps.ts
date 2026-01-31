@@ -6,17 +6,11 @@ import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';
 import { TIMEOUTS, SELECTORS } from './constants';
 
-/**
- * Navigate to clocks list page
- */
 async function navigateToClocksListPage(page: Page): Promise<void> {
   await page.getByRole('link', { name: SELECTORS.clockListLink }).click();
   await page.waitForLoadState('networkidle');
 }
 
-/**
- * Verify clock record exists in DynamoDB
- */
 async function verifyClockRecordInDynamoDB(
   userId: string,
 ): Promise<void> {
