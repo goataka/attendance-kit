@@ -8,6 +8,7 @@ on:
       - 'apps/backend/**'
       - 'apps/frontend/**'
       - '!apps/website/**'
+<<<<<<< HEAD
       - 'infrastructure/deploy/bin/**'
       - 'infrastructure/deploy/lib/attendance-kit-stack.ts'
       - 'infrastructure/deploy/lib/constructs/**'
@@ -16,6 +17,9 @@ on:
       - 'infrastructure/deploy/package*.json'
       - 'infrastructure/deploy/tsconfig.json'
       - 'infrastructure/deploy/cdk.json'
+=======
+      - 'infrastructure/deploy/**'
+>>>>>>> main
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/deploy-environment-stack.yml'

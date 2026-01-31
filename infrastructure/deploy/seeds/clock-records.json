@@ -1,0 +1,47 @@
+[
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "userId": "user001",
+    "timestamp": "2026-01-29T00:00:00.000Z",
+    "date": "2026-01-29",
+    "type": "clock-in",
+    "location": "東京オフィス",
+    "deviceId": "device-001"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440002",
+    "userId": "user001",
+    "timestamp": "2026-01-29T09:30:00.000Z",
+    "date": "2026-01-29",
+    "type": "clock-out",
+    "location": "東京オフィス",
+    "deviceId": "device-001"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "userId": "user002",
+    "timestamp": "2026-01-28T23:45:00.000Z",
+    "date": "2026-01-28",
+    "type": "clock-in",
+    "location": "大阪オフィス",
+    "deviceId": "device-002"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440004",
+    "userId": "user002",
+    "timestamp": "2026-01-29T08:15:00.000Z",
+    "date": "2026-01-29",
+    "type": "clock-out",
+    "location": "大阪オフィス",
+    "deviceId": "device-002"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440005",
+    "userId": "test-user",
+    "timestamp": "2026-01-30T00:30:00.000Z",
+    "date": "2026-01-30",
+    "type": "clock-in",
+    "location": "テストオフィス",
+    "deviceId": "device-test"
+  }
+]

@@ -4,6 +4,9 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { BackendConstruct } from './constructs/backend';
 import { FrontendConstruct } from './constructs/frontend';
 import { formatExportName } from './utils/cdk-helpers';
+import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
+import * as path from 'path';
+import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging' | 'test'
@@ -93,6 +96,11 @@ export class AttendanceKitStack extends cdk.Stack {
         environment,
         api: this.backendApi.api,
       });
+    } else {
+      // DynamoDBのみをデプロイする場合で、dev/local環境の場合はデータクリアとシード機能を追加
+      if (environment === 'dev' || environment === 'local') {
+        this.setupDataClearAndSeed();
+      }
     }
 
     // CloudFormation Outputs
@@ -122,5 +130,41 @@ export class AttendanceKitStack extends cdk.Stack {
         exportName: formatExportName(environment, 'Environment'),
       });
     }
+  }
+
+  /**
+   * データクリア用のDynamoDBCleanerを設定
+   */
+  private setupDataClear(): DynamoDBCleaner {
+    const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
+      table: this.clockTable,
+    });
+
+    return cleaner;
+  }
+
+  /**
+   * データ投入用のSeederを設定
+   */
+  private setupDataSeeder(): DynamoDBSeeder {
+    const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
+      table: this.clockTable,
+      seeds: Seeds.fromJsonFile(
+        path.join(__dirname, '../seeds/clock-records.json'),
+      ),
+    });
+
+    return seeder;
+  }
+
+  /**
+   * データクリアとシードの設定
+   * クリアが完了してからシードが実行されるように依存関係を設定
+   */
+  private setupDataClearAndSeed(): void {
+    const cleaner = this.setupDataClear();
+    const seeder = this.setupDataSeeder();
+
+    seeder.node.addDependency(cleaner.trigger);
   }
 }

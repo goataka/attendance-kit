@@ -5,7 +5,7 @@
   "description": "勤怠管理キット - Monorepo",
   "workspaces": [
     "apps/*",
-    "infrastructure/deploy"
+    "infrastructure/*"
   ],
   "scripts": {
     "setup": "npm ci --workspaces --include-workspace-root",
