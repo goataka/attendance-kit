@@ -5,18 +5,23 @@ NestJS製のバックエンドAPI - AWS Lambda + API Gatewayにデプロイ
 ## 構成図
 
 ```mermaid
-graph TB
-    APIGW[API Gateway] -->|Proxy| Lambda[Lambda Handler<br/>lambda.ts]
-    Lambda --> NestApp[NestJS Application<br/>app.module.ts]
+graph LR
+    Client[クライアント] -->|HTTPS| APIGW[API Gateway]
     
-    NestApp --> ClockController[ClockController]
-    NestApp --> AuthGuard[JWT認証<br/>AuthGuard]
+    subgraph "Backend Server"
+        APIGW -->|Proxy| Lambda[Lambda Handler<br/>lambda.ts]
+        Lambda --> NestApp[NestJS Application<br/>app.module.ts]
+        
+        NestApp --> ClockController[ClockController]
+        NestApp --> AuthGuard[JWT認証<br/>AuthGuard]
+        
+        ClockController --> ClockService[ClockService]
+        ClockService --> ClockRepo[ClockRepository]
+        
+        AuthGuard -.検証.-> JWT[JWT Token]
+    end
     
-    ClockController --> ClockService[ClockService]
-    ClockService --> ClockRepo[ClockRepository]
-    ClockRepo --> DDB[(DynamoDB)]
-    
-    AuthGuard -.検証.-> JWT[JWT Token]
+    ClockRepo -->|Read/Write| DDB[(DynamoDB)]
 ```
 
 ## 技術スタック

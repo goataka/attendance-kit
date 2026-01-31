@@ -10,11 +10,15 @@ graph LR
     Router --> ClockInOut[打刻画面<br/>ClockInOutPage]
     Router --> ClocksList[打刻一覧画面<br/>ClocksListPage]
     
-    ClockInOut -->|API呼び出し| Backend[Backend API]
-    ClocksList -->|API呼び出し| Backend
-    
     ClockInOut -.共有コンポーネント.-> Shared[shared/]
     ClocksList -.共有コンポーネント.-> Shared
+    
+    subgraph "Backend Server"
+        Backend[Backend API]
+    end
+    
+    ClockInOut -->|API呼び出し| Backend
+    ClocksList -->|API呼び出し| Backend
 ```
 
 ## 技術スタック
