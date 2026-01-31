@@ -107,9 +107,9 @@ jobs:
           echo "Stack outputs:"
           echo "${STACK_OUTPUTS}" | jq -r '.[] | "\(.OutputKey): \(.OutputValue)"'
           
-          # jqで必要な値を抽出
-          CLOUDFRONT_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey=="CloudFrontUrl") | .OutputValue')
-          API_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey=="ApiUrl") | .OutputValue')
+          # jqで必要な値を抽出（CDKがConstructで生成するサフィックス付きのキー名に対応）
+          CLOUDFRONT_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey | contains("CloudFrontUrl")) | .OutputValue')
+          API_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey | contains("ApiUrl")) | .OutputValue')
           
           # 必須のスタック出力が存在しない場合はエラー終了
           if [ -z "${CLOUDFRONT_URL}" ] || [ -z "${API_URL}" ]; then
