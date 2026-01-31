@@ -2,6 +2,39 @@
 
 AWS CDKを使用したDynamoDB Clock Tableのインフラストラクチャコードです。
 
+## 構成図
+
+```mermaid
+graph TB
+    subgraph "CDK管理 (deploy/)"
+        Stack[AttendanceKit Stack]
+        Stack --> DDB[(DynamoDB Table<br/>Clock Table)]
+        Stack --> Backend[Backend Construct]
+        Stack --> Frontend[Frontend Construct]
+        
+        Backend --> Lambda[Lambda Function<br/>NestJS API]
+        Backend --> APIGW[API Gateway]
+        
+        Frontend --> S3[S3 Bucket]
+        Frontend --> CF[CloudFront<br/>Distribution]
+        Frontend --> OAI[Origin Access<br/>Identity]
+    end
+    
+    subgraph "CloudFormation管理 (setup/)"
+        OIDC[OIDC Provider<br/>GitHub Actions]
+        IAM[IAM Role<br/>DeploymentRole]
+    end
+    
+    Lambda -->|Read/Write| DDB
+    CF --> S3
+    CF --> APIGW
+    APIGW --> Lambda
+    S3 -.許可.-> OAI
+    
+    GHA[GitHub Actions] -.assume role.-> IAM
+    IAM -.trust.-> OIDC
+```
+
 ## 📋 前提条件
 
 - Node.js 24以上

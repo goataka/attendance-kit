@@ -2,6 +2,25 @@
 
 React + Viteで実装した勤怠管理システムのフロントエンド
 
+## 構成図
+
+```mermaid
+graph LR
+    User[ユーザー] -->|アクセス| Router[React Router]
+    Router --> ClockInOut[打刻画面<br/>ClockInOutPage]
+    Router --> ClocksList[打刻一覧画面<br/>ClocksListPage]
+    
+    ClockInOut -.共有コンポーネント.-> Shared[shared/]
+    ClocksList -.共有コンポーネント.-> Shared
+    
+    subgraph "Backend Server"
+        Backend[Backend API]
+    end
+    
+    ClockInOut -->|API呼び出し| Backend
+    ClocksList -->|API呼び出し| Backend
+```
+
 ## 技術スタック
 
 - React 18.3.1
