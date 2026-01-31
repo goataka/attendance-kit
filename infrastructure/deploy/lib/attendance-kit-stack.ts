@@ -9,7 +9,7 @@ import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment: string; // 'dev' | 'staging' | 'test'
+  environment?: string; // 'dev' | 'staging' | 'test' (デフォルト: 'dev')
   jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
   deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
@@ -22,7 +22,17 @@ export class AttendanceKitStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
     super(scope, id, props);
 
-    const { environment, jwtSecret, deployOnlyDynamoDB = false } = props;
+    // 環境変数のデフォルト値設定
+    const environment = props.environment || 'dev';
+    const { jwtSecret, deployOnlyDynamoDB = false } = props;
+
+    // 環境変数のバリデーション
+    const validEnvironments = ['dev', 'staging', 'test', 'local'];
+    if (!validEnvironments.includes(environment)) {
+      throw new Error(
+        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
+      );
+    }
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
     // (infrastructure/setup/attendance-kit-setup.yaml)
@@ -80,8 +90,20 @@ export class AttendanceKitStack extends cdk.Stack {
 
     // DynamoDBのみをデプロイする場合は、BackendとFrontendをスキップ
     if (!deployOnlyDynamoDB) {
+      // フルスタックデプロイの場合、JWT_SECRETが必須
       if (!jwtSecret) {
-        throw new Error('jwtSecret is required when deployOnlyDynamoDB is false');
+        throw new Error(
+          'JWT_SECRET environment variable is required for environment stack deployment. ' +
+          'Please set jwtSecret in stack props.'
+        );
+      }
+
+      // フルスタックデプロイは'test'環境では許可しない
+      if (environment === 'test' || environment === 'local') {
+        throw new Error(
+          `Full stack deployment is not allowed for '${environment}' environment. ` +
+          'Use deployOnlyDynamoDB: true for test/local environments.'
+        );
       }
 
       // Backend API (Lambda + API Gateway)
