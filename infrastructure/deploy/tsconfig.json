@@ -8,6 +8,7 @@
     "declaration": true,
     "incremental": true,
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "assumeChangesOnlyAffectDirectDependencies": true,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,

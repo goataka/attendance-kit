@@ -12,6 +12,7 @@
     "baseUrl": "./",
     "incremental": true,
     "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "assumeChangesOnlyAffectDirectDependencies": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
     "noImplicitAny": false,
