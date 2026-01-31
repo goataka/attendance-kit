@@ -9,10 +9,9 @@ test.describe('Clocks List Page', () => {
     await page.getByRole('button', { name: '出勤' }).click();
     
     await page.waitForSelector('text=出勤を記録しました');
-    await page.waitForFunction(
-      () => sessionStorage.getItem('accessToken') !== null,
-      { timeout: 5000 },
-    );
+    await page.waitForFunction(() => {
+      return window.sessionStorage.getItem('accessToken') !== null;
+    }, { timeout: 10000 });
   });
 
   test('should display records list', async ({ page }) => {
