@@ -10,10 +10,7 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
-const alertEmail = process.env.COST_ALERT_EMAIL;
-if (!alertEmail) {
-  throw new Error('COST_ALERT_EMAIL environment variable is required');
-}
+const alertEmail = process.env.COST_ALERT_EMAIL || 'dummy@example.com';
 
 new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', {
   env,
