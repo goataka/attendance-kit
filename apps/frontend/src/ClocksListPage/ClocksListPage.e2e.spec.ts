@@ -1,16 +1,18 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clocks List Page', () => {
-  // Login and seed data before each test
+  // Seed data and authenticate before each test by clocking in
   test.beforeEach(async ({ page }) => {
-    // First, login
-    await page.goto('/login');
+    // Go to clock in page
+    await page.goto('/');
+    
+    // Fill in credentials and clock in (this saves token to sessionStorage)
     await page.locator('#userId').fill('user001');
     await page.locator('#password').fill('password123');
-    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.getByRole('button', { name: '出勤' }).click();
     
-    // Wait for navigation to clocks list
-    await page.waitForURL('/clocks');
+    // Wait for success message
+    await page.waitForSelector('text=出勤を記録しました');
   });
 
   test('should display records list', async ({ page }) => {
