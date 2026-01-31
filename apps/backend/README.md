@@ -32,16 +32,6 @@ Swagger UI: http://localhost:3000/api/docs
 
 詳細は [api/README.md](./api/README.md) を参照してください。
 
-## 初期データ投入
-
-開発・テスト環境用のサンプルデータを投入できます。
-
-```bash
-npm run seed:local    # LocalStack環境
-```
-
-詳細は [seeds/README.md](./seeds/README.md) を参照してください。
-
 ## コマンド
 
 | コマンド | 説明 |
@@ -53,4 +43,3 @@ npm run seed:local    # LocalStack環境
 | `npm run test:cov` | カバレッジ付きテスト |
 | `npm run lint` | Lint実行 |
 | `npm run format` | コード整形 |
-| `npm run seed:local` | 初期データ投入（LocalStack） |
