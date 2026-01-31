@@ -3,7 +3,6 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 import { AttendanceKitAccountStack } from '../lib/attendance-kit-account-stack';
-import { DynamoDBStack } from '../lib/dynamodb-stack';
 
 const app = new cdk.App();
 
@@ -62,6 +61,7 @@ if (['all', 'environment'].includes(stackType)) {
     env,
     environment,
     jwtSecret,
+    deployOnlyDynamoDB: false,
     description: `DynamoDB clock table and Backend API for attendance-kit (${environment} environment)`,
     tags: {
       Environment: environment,
@@ -76,9 +76,10 @@ if (['all', 'environment'].includes(stackType)) {
 if (stackType === 'dynamodb') {
   const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'test';
   
-  new DynamoDBStack(app, `AttendanceKit-${environment}-DynamoDB`, {
+  new AttendanceKitStack(app, `AttendanceKit-${environment}-DynamoDB`, {
     env,
     environment,
+    deployOnlyDynamoDB: true,
     description: `DynamoDB Clock Table for integration testing (${environment})`,
     tags: {
       Environment: environment,

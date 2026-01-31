@@ -12,7 +12,6 @@
 - `!apps/website/**`（除外）
 - `infrastructure/deploy/bin/**`
 - `infrastructure/deploy/lib/attendance-kit-stack.ts`
-- `infrastructure/deploy/lib/dynamodb-stack.ts`
 - `infrastructure/deploy/lib/constructs/**`
 - `infrastructure/deploy/lib/utils/**`
 - `infrastructure/deploy/test/**`
