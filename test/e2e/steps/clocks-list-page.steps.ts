@@ -32,16 +32,16 @@ async function verifyClockRecordInDynamoDB(
 }
 
 /**
- * Login helper function
+ * Clock in to get authenticated (saves token to sessionStorage)
  */
-async function loginUser(page: Page): Promise<void> {
-  await page.goto(`${FRONTEND_URL}/login`);
+async function clockInToAuthenticate(page: Page): Promise<void> {
+  await page.goto(FRONTEND_URL);
   await page.locator('#userId').fill(TEST_USER_ID);
   await page.locator('#password').fill(TEST_PASSWORD);
-  await page.getByRole('button', { name: 'ログイン' }).click();
+  await page.getByRole('button', { name: '出勤' }).click();
   
-  // Wait for navigation to clocks list
-  await page.waitForURL(`${FRONTEND_URL}/clocks`, { timeout: TIMEOUTS.DEFAULT_STEP });
+  // Wait for success message
+  await page.waitForSelector('.message.success', { timeout: TIMEOUTS.DEFAULT_STEP });
 }
 
 // Given steps
@@ -52,7 +52,7 @@ Given(
     if (!this.page) {
       throw new Error('Page is not initialized');
     }
-    await loginUser(this.page);
+    await clockInToAuthenticate(this.page);
   },
 );
 

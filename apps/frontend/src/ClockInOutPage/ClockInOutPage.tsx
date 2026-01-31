@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { api } from '../shared/api';
 import { TEST_ACCOUNTS } from '../shared/constants';
 import './ClockInOutPage.css';
@@ -90,12 +89,6 @@ export function ClockInOutPage() {
             >
               退勤
             </button>
-          </div>
-
-          <div className="login-button-section">
-            <Link to="/login" className="btn btn-login">
-              ログイン
-            </Link>
           </div>
         </div>
 

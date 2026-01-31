@@ -37,7 +37,7 @@ export const resolveBackendUrl = (
 const BACKEND_URL = resolveBackendUrl();
 
 // Token storage key
-const TOKEN_STORAGE_KEY = 'attendance-kit-token';
+const TOKEN_STORAGE_KEY = 'accessToken';
 
 // Get stored token
 const getStoredToken = (): string | null => {
@@ -119,7 +119,7 @@ export const api = {
   // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
-      // まずログインしてトークンを取得（トークンは保存しない）
+      // まずログインしてトークンを取得し、セッションに保存
       const token = await loginInternal(request.userId, request.password);
       
       if (!token) {
@@ -128,6 +128,11 @@ export const api = {
           message: 'Authentication failed',
         };
       }
+
+      // トークンをセッションに保存
+      storeToken(token);
+      // ユーザーIDも保存
+      sessionStorage.setItem('userId', request.userId);
 
       // トークンを使ってClock APIを呼び出し
       const response = await fetch(

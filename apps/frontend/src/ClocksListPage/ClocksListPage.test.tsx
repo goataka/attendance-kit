@@ -2,14 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { ClocksListPage } from './ClocksListPage';
-import { AuthProvider } from '../shared/contexts/AuthContext';
 import { api } from '../shared/api';
 
 // Mock the API
 vi.mock('../shared/api', () => ({
   api: {
     getRecords: vi.fn(),
-    login: vi.fn(),
   },
 }));
 
@@ -44,10 +42,10 @@ Object.defineProperty(window, 'sessionStorage', {
   value: sessionStorageMock,
 });
 
-function renderWithAuthAndRouter(component: React.ReactElement) {
+function renderWithRouter(component: React.ReactElement) {
   return render(
     <BrowserRouter>
-      <AuthProvider>{component}</AuthProvider>
+      {component}
     </BrowserRouter>,
   );
 }
@@ -72,14 +70,14 @@ describe('ClocksListPage', () => {
     vi.clearAllMocks();
     sessionStorageMock.clear();
     // Set up authenticated state
-    sessionStorageMock.setItem('attendance-kit-token', 'test-token');
-    sessionStorageMock.setItem('attendance-kit-user-id', 'user001');
+    sessionStorageMock.setItem('accessToken', 'test-token');
+    sessionStorageMock.setItem('userId', 'user001');
   });
 
   it('renders the records list page', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     expect(screen.getByText('打刻一覧')).toBeInTheDocument();
     
@@ -91,7 +89,7 @@ describe('ClocksListPage', () => {
   it('displays loading state initially', () => {
     vi.mocked(api.getRecords).mockImplementation(() => new Promise(() => {}));
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
@@ -99,7 +97,7 @@ describe('ClocksListPage', () => {
   it('displays clocks after loading', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getByText('1')).toBeInTheDocument();
@@ -111,7 +109,7 @@ describe('ClocksListPage', () => {
   it('displays no data message when clocks are empty', async () => {
     vi.mocked(api.getRecords).mockResolvedValue([]);
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getByText('打刻データがありません')).toBeInTheDocument();
@@ -121,7 +119,7 @@ describe('ClocksListPage', () => {
   it('filters clocks by user ID', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
@@ -143,7 +141,7 @@ describe('ClocksListPage', () => {
   it('filters clocks by type', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
@@ -165,7 +163,7 @@ describe('ClocksListPage', () => {
   it('resets filters', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
@@ -186,7 +184,7 @@ describe('ClocksListPage', () => {
     const errorMessage = 'Authentication required. Please log in first.';
     vi.mocked(api.getRecords).mockRejectedValue(new Error(errorMessage));
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
@@ -196,10 +194,18 @@ describe('ClocksListPage', () => {
   it('displays generic error message when fetch fails', async () => {
     vi.mocked(api.getRecords).mockRejectedValue(new Error('Failed to fetch records'));
     
-    renderWithAuthAndRouter(<ClocksListPage />);
+    renderWithRouter(<ClocksListPage />);
     
     await waitFor(() => {
       expect(screen.getByText('Failed to fetch records')).toBeInTheDocument();
     });
+  });
+
+  it('redirects to home page when not authenticated', () => {
+    sessionStorageMock.clear();
+    
+    renderWithRouter(<ClocksListPage />);
+    
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

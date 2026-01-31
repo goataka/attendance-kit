@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../shared/contexts/AuthContext';
 import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import { DEFAULT_FILTER } from '../shared/constants';
 import './ClocksListPage.css';
 
 export function ClocksListPage() {
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<RecordsFilter>(DEFAULT_FILTER);
   const [error, setError] = useState<string | null>(null);
 
-  // 未ログインの場合は初期画面にリダイレクト
+  // トークンがない場合は打刻画面にリダイレクト
   useEffect(() => {
-    if (!isAuthenticated) {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) {
       navigate('/');
     }
-  }, [isAuthenticated, navigate]);
+  }, [navigate]);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) {
       return;
     }
 
@@ -45,7 +45,7 @@ export function ClocksListPage() {
     };
     
     fetchRecords();
-  }, [isAuthenticated]);
+  }, []);
 
   const loadRecords = async (newFilter?: RecordsFilter) => {
     setLoading(true);
