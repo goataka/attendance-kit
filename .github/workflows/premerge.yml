@@ -4,11 +4,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'apps/**'
-      - 'infrastructure/**'
-      - 'package.json'
-      - '.github/workflows/premerge.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -19,8 +14,26 @@ permissions:
   pull-requests: write
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      should-run-tests: ${{ steps.filter.outputs.non-md == 'true' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check changed files
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            non-md:
+              - '!**/*.[mM][dD]'
+
   unit-test:
     runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-run-tests == 'true'
     
     steps:
       - name: Checkout code
@@ -71,6 +84,8 @@ jobs:
 
   backend-integration-test:
     runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-run-tests == 'true'
     
     env:
       AWS_ACCESS_KEY_ID: test
@@ -121,6 +136,8 @@ jobs:
 
   deploy-integration-test:
     runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-run-tests == 'true'
     
     env:
       AWS_ACCESS_KEY_ID: test
@@ -169,6 +186,8 @@ jobs:
 
   frontend-integration-test:
     runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-run-tests == 'true'
     
     steps:
       - name: Checkout code
@@ -203,6 +222,8 @@ jobs:
 
   e2e-test:
     runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.should-run-tests == 'true'
     
     env:
       AWS_ACCESS_KEY_ID: test
