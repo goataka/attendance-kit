@@ -15,7 +15,7 @@ describe('DynamoDBCleaner', () => {
     });
   });
 
-  test('Lambda Function Created', () => {
+  test('Lambda関数が作成される', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
@@ -30,7 +30,7 @@ describe('DynamoDBCleaner', () => {
     });
   });
 
-  test('Lambda Function has TABLE_NAME environment variable', () => {
+  test('Lambda関数にTABLE_NAME環境変数が設定される', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
@@ -47,7 +47,7 @@ describe('DynamoDBCleaner', () => {
     });
   });
 
-  test('Trigger Created', () => {
+  test('Triggerが作成される', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
@@ -56,7 +56,7 @@ describe('DynamoDBCleaner', () => {
     template.resourceCountIs('Custom::Trigger', 1);
   });
 
-  test('IAM Role has DynamoDB permissions', () => {
+  test('IAMロールにDynamoDB権限が付与される', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
@@ -83,7 +83,7 @@ describe('DynamoDBCleaner', () => {
     expect(dynamoStatement.Action).toContain('dynamodb:DeleteItem');
   });
 
-  test('Trigger depends on table', () => {
+  test('Triggerがテーブルに依存する', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
@@ -99,7 +99,7 @@ describe('DynamoDBCleaner', () => {
     expect(hasDependencies).toBe(true);
   });
 
-  test('Exposes trigger property', () => {
+  test('triggerプロパティが公開される', () => {
     const cleaner = new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
