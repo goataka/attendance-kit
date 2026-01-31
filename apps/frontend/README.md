@@ -6,12 +6,20 @@ React + Viteで実装した勤怠管理システムのフロントエンド
 
 ```mermaid
 graph LR
-    User[ユーザー] -->|アクセス| Router[React Router]
-    Router --> ClockInOut[打刻画面<br/>ClockInOutPage]
-    Router --> ClocksList[打刻一覧画面<br/>ClocksListPage]
+    User[ユーザー] -->|アクセス| Router
     
-    ClockInOut -.共有コンポーネント.-> Shared[shared/]
-    ClocksList -.共有コンポーネント.-> Shared
+    subgraph "Frontend Server"
+        Router[React Router]
+        ClockInOut[打刻画面<br/>ClockInOutPage]
+        ClocksList[打刻一覧画面<br/>ClocksListPage]
+        Shared[shared/]
+        
+        Router --> ClockInOut
+        Router --> ClocksList
+        
+        ClockInOut -.共有コンポーネント.-> Shared
+        ClocksList -.共有コンポーネント.-> Shared
+    end
     
     subgraph "Backend Server"
         Backend[Backend API]
