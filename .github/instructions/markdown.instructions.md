@@ -261,22 +261,3 @@ const data = await this.repository.findById(userId);
 // Fetch data by user ID
 const data = await this.repository.findById(userId);
 ```
-
-### 2. Issue管理
-
-**`infrastructure/deploy/ISSUES.md`に集約**:
-- `docs/issues/`には作成しない
-- 簡潔な箇条書きで記載
-- 優先度と概要のみ記述
-
-**OK例**:
-```markdown
-## TODO
-
-### DynamoDB Table Construct のリファクタリング
-
-- [ ] コンストラクタ内のリソース作成を別関数に切り出す
-- [ ] ヘルパー関数を使用して重複を削減
-
-**優先度**: Medium
-```
