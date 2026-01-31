@@ -17,42 +17,19 @@ jobs:
   check-changes:
     runs-on: ubuntu-latest
     outputs:
-      should-run-tests: ${{ steps.check.outputs.should-run-tests }}
+      should-run-tests: ${{ steps.filter.outputs.non-md == 'true' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Check changed files
-        id: check
-        run: |
-          set -e  # エラー時に即座に終了
-          
-          # PRの変更ファイル一覧を取得
-          if ! git fetch origin ${{ github.base_ref }}; then
-            echo "Failed to fetch base branch. Tests will run as a safety measure."
-            echo "should-run-tests=true" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
-          
-          # 変更ファイルがない場合はテストを実行
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "should-run-tests=true" >> $GITHUB_OUTPUT
-            echo "No changed files detected. Tests will run as a safety measure."
-          # mdファイル以外が含まれているかチェック（大文字小文字を区別しない）
-          elif echo "$CHANGED_FILES" | grep -iv '\.md$' > /dev/null; then
-            echo "should-run-tests=true" >> $GITHUB_OUTPUT
-            echo "Non-markdown files detected. Tests will run."
-          else
-            echo "should-run-tests=false" >> $GITHUB_OUTPUT
-            echo "Only markdown files changed. Tests will be skipped."
-          fi
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            non-md:
+              - '!**/*.md'
+              - '!**/*.MD'
 
   unit-test:
     runs-on: ubuntu-latest

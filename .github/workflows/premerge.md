@@ -16,7 +16,7 @@ Pull Requestに対して実行される統合テストとコード品質チェ�
 
 | ジョブ | 説明 |
 |-------|------|
-| check-changes | 変更ファイルをチェックし、テスト実行の要否を判定 |
+| check-changes | `dorny/paths-filter`を使用して変更ファイルをチェックし、テスト実行の要否を判定 |
 | unit-test | Lint、ビルド、ユニットテスト |
 | backend-integration-test | バックエンド統合テスト |
 | deploy-integration-test | CDKデプロイテスト |
