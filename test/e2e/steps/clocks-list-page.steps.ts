@@ -31,16 +31,12 @@ async function verifyClockRecordInDynamoDB(
   expect(clockRecord).toBeDefined();
 }
 
-/**
- * Clock in to get authenticated (saves token to sessionStorage)
- */
 async function clockInToAuthenticate(page: Page): Promise<void> {
   await page.goto(FRONTEND_URL);
   await page.locator('#userId').fill(TEST_USER_ID);
   await page.locator('#password').fill(TEST_PASSWORD);
   await page.getByRole('button', { name: '出勤' }).click();
   
-  // Wait for success message
   await page.waitForSelector('.message.success', { timeout: TIMEOUTS.DEFAULT_STEP });
 }
 
@@ -76,8 +72,7 @@ Given(
       throw new Error('Page is not initialized');
     }
     
-    // Set some filters
-    await this.page.locator('#filterUserId').fill('user001');
+    await this.page.locator('#filterUserId').fill(TEST_USER_ID);
     await this.page.locator('#filterType').selectOption('clock-in');
   },
 );
@@ -90,7 +85,6 @@ Given(
       throw new Error('Page is not initialized');
     }
     
-    // Clear session storage to simulate logout
     await this.page.evaluate(() => sessionStorage.clear());
   },
 );
@@ -104,7 +98,7 @@ When(
       throw new Error('Page is not initialized');
     }
     
-    await this.page.locator('#filterUserId').fill('user001');
+    await this.page.locator('#filterUserId').fill(TEST_USER_ID);
   },
 );
 

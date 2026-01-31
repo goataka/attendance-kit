@@ -51,23 +51,19 @@ test.describe('Clock In/Out Page', () => {
   test('should navigate to records list after clock in', async ({ page }) => {
     await page.goto('/');
     
-    // Clock in first to get authenticated
     await page.locator('#userId').fill('user001');
     await page.locator('#password').fill('password123');
     await page.getByRole('button', { name: '出勤' }).click();
     await expect(page.locator('.message.success')).toBeVisible();
     
-    // Click link to records
     await page.getByRole('link', { name: '打刻一覧を見る' }).click();
     
-    // Should navigate to records page
     await expect(page).toHaveURL('/clocks');
   });
 
   test('should redirect to home when accessing records without authentication', async ({ page }) => {
     await page.goto('/clocks');
     
-    // Should redirect back to home (not authenticated)
     await expect(page).toHaveURL('/');
   });
 });

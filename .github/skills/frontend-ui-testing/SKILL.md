@@ -49,14 +49,14 @@ npm run test -- -u
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ComponentName - Visual Snapshot</title>
+    <title>ComponentName - ビジュアルスナップショット</title>
 </head>
 <body>
-    <!-- This file is auto-generated for visual regression testing -->
-    <!-- Generated: YYYY-MM-DD -->
-    <!-- Page: ComponentName (日本語名) -->
-    <h1>ComponentName Visual Snapshot</h1>
-    <p>This HTML snapshot is used for visual regression testing of the Component page.</p>
+    <!-- このファイルはビジュアルリグレッションテスト用に自動生成されます -->
+    <!-- 生成日: YYYY-MM-DD -->
+    <!-- ページ: ComponentName (日本語名) -->
+    <h1>ComponentName ビジュアルスナップショット</h1>
+    <p>このHTMLスナップショットはコンポーネントページのビジュアルリグレッションテストに使用されます。</p>
     <ul>
         <li>Route: /route-path</li>
         <li>Component: ComponentName</li>

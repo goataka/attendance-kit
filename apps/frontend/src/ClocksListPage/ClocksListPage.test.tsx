@@ -4,14 +4,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { ClocksListPage } from './ClocksListPage';
 import { api } from '../shared/api';
 
-// Mock the API
 vi.mock('../shared/api', () => ({
   api: {
     getRecords: vi.fn(),
   },
 }));
 
-// Mock useNavigate
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
@@ -21,7 +19,6 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-// Mock sessionStorage
 const sessionStorageMock = (() => {
   let store: Record<string, string> = {};
   return {

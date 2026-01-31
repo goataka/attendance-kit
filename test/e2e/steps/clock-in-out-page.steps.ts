@@ -57,10 +57,6 @@ async function verifySuccessMessage(page: Page): Promise<void> {
   }
 }
 
-/**
- * Perform clock action (clock-in or clock-out)
- * Now navigates to clocks page after login
- */
 async function performClockAction(
   world: CustomWorld,
   buttonText: string,
@@ -69,15 +65,12 @@ async function performClockAction(
     throw new Error('Page is not initialized');
   }
 
-  // Navigate to clocks page (user should be logged in via Background step)
   await world.page.goto(`${FRONTEND_URL}/clocks`);
   await world.page.waitForLoadState('networkidle');
   
-  // Navigate back to clock-in page
   await world.page.getByRole('link', { name: '打刻画面に戻る' }).click();
   await world.page.waitForLoadState('networkidle');
   
-  // Fill credentials and clock in/out
   await fillLoginCredentials(world.page);
   await clickClockButtonAndWaitForMessage(world.page, buttonText);
   await verifySuccessMessage(world.page);
