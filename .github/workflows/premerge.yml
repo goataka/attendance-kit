@@ -28,8 +28,7 @@ jobs:
         with:
           filters: |
             non-md:
-              - '!**/*.md'
-              - '!**/*.MD'
+              - '!**/*.[mM][dD]'
 
   unit-test:
     runs-on: ubuntu-latest
