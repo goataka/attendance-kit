@@ -3,9 +3,7 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
 import * as path from 'path';
-import { Trigger } from 'aws-cdk-lib/triggers';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
+import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface DynamoDBStackProps extends cdk.StackProps {
   environment: string;
@@ -75,27 +73,14 @@ export class DynamoDBStack extends cdk.Stack {
   }
 
   /**
-   * データクリア用のLambda関数とTriggerを設定
+   * データクリア用のDynamoDBCleanerを設定
    */
-  private setupDataClear(): Trigger {
-    const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
-      runtime: lambda.Runtime.NODEJS_24_X,
-      handler: 'handler',
-      entry: path.join(__dirname, '../lambda/clear-table-data.ts'),
-      environment: {
-        TABLE_NAME: this.clockTable.tableName,
-      },
-      timeout: cdk.Duration.minutes(5),
+  private setupDataClear(): DynamoDBCleaner {
+    const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
+      table: this.clockTable,
     });
 
-    this.clockTable.grantReadWriteData(clearDataFunction);
-
-    const clearTrigger = new Trigger(this, 'ClearTableTrigger', {
-      handler: clearDataFunction,
-      executeAfter: [this.clockTable],
-    });
-
-    return clearTrigger;
+    return cleaner;
   }
 
   /**
@@ -117,9 +102,9 @@ export class DynamoDBStack extends cdk.Stack {
    * クリアが完了してからシードが実行されるように依存関係を設定
    */
   private setupDataClearAndSeed(): void {
-    const clearTrigger = this.setupDataClear();
+    const cleaner = this.setupDataClear();
     const seeder = this.setupDataSeeder();
 
-    seeder.node.addDependency(clearTrigger);
+    seeder.node.addDependency(cleaner.trigger);
   }
 }

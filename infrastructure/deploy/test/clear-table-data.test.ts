@@ -1,13 +1,24 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, ScanCommand, BatchWriteCommand } from '@aws-sdk/lib-dynamodb';
+
+// Mock AWS SDK before importing handler
+const mockSend = jest.fn();
+jest.mock('@aws-sdk/client-dynamodb', () => ({
+  DynamoDBClient: jest.fn(),
+}));
+jest.mock('@aws-sdk/lib-dynamodb', () => ({
+  DynamoDBDocumentClient: {
+    from: jest.fn(() => ({
+      send: mockSend,
+    })),
+  },
+  ScanCommand: jest.fn(),
+  BatchWriteCommand: jest.fn(),
+}));
+
 import { handler } from '../lambda/clear-table-data';
 
-// Mock AWS SDK
-jest.mock('@aws-sdk/client-dynamodb');
-jest.mock('@aws-sdk/lib-dynamodb');
-
 describe('clear-table-data Lambda function', () => {
-  let mockSend: jest.Mock;
   let consoleLogSpy: jest.SpyInstance;
   let consoleErrorSpy: jest.SpyInstance;
 
@@ -15,11 +26,8 @@ describe('clear-table-data Lambda function', () => {
     // Reset environment variables
     process.env.TABLE_NAME = 'test-table';
 
-    // Setup mocks
-    mockSend = jest.fn();
-    (DynamoDBDocumentClient.from as jest.Mock).mockReturnValue({
-      send: mockSend,
-    });
+    // Reset mock
+    mockSend.mockReset();
 
     // Spy on console methods
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();

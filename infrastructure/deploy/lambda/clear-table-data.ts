@@ -59,7 +59,7 @@ export const handler = async (event: TriggerEvent): Promise<void> => {
             },
           }));
 
-          let unprocessedItems = deleteRequests;
+          let unprocessedItems: any[] = deleteRequests;
           let retryCount = 0;
           const maxRetries = 3;
 
@@ -75,7 +75,7 @@ export const handler = async (event: TriggerEvent): Promise<void> => {
             // UnprocessedItemsをチェックしてリトライ
             const unprocessed = result.UnprocessedItems?.[tableName];
             if (unprocessed && unprocessed.length > 0) {
-              unprocessedItems = unprocessed;
+              unprocessedItems = unprocessed as any[];
               retryCount++;
               console.log(`Retrying ${unprocessed.length} unprocessed items (attempt ${retryCount}/${maxRetries})`);
               // 指数バックオフ
