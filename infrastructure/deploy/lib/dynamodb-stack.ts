@@ -62,38 +62,9 @@ export class DynamoDBStack extends cdk.Stack {
     cdk.Tags.of(this.clockTable).add('Purpose', 'IntegrationTest');
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
 
-    // 初期データ投入（テスト環境のみ）
-    if (environment === 'test' || environment === 'local') {
-      // データクリア用のLambda関数
-      const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
-        runtime: lambda.Runtime.NODEJS_18_X,
-        handler: 'handler',
-        entry: path.join(__dirname, '../lambda/clear-table-data.ts'),
-        environment: {
-          TABLE_NAME: this.clockTable.tableName,
-        },
-        timeout: cdk.Duration.minutes(5),
-      });
-
-      // Lambda関数にテーブルへの権限を付与
-      this.clockTable.grantReadWriteData(clearDataFunction);
-
-      // トリガー: デプロイ時にデータをクリア
-      const clearTrigger = new Trigger(this, 'ClearTableTrigger', {
-        handler: clearDataFunction,
-        executeAfter: [this.clockTable],
-      });
-
-      // シーダー: データクリア後にデータを投入
-      const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
-        table: this.clockTable,
-        seeds: Seeds.fromJsonFile(
-          path.join(__dirname, '../seeds/clock-records.json'),
-        ),
-      });
-
-      // シーダーはクリアトリガーの後に実行されるように依存関係を設定
-      seeder.node.addDependency(clearTrigger);
+    // 初期データ投入（dev/local環境のみ）
+    if (environment === 'dev' || environment === 'local') {
+      this.setupDataClearAndSeed();
     }
 
     // Outputs
@@ -106,5 +77,59 @@ export class DynamoDBStack extends cdk.Stack {
       value: this.clockTable.tableArn,
       description: `DynamoDB clock table ARN (${environment})`,
     });
+  }
+
+  /**
+   * データクリア用のLambda関数とTriggerを設定
+   */
+  private setupDataClear(): Trigger {
+    // データクリア用のLambda関数
+    const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
+      runtime: lambda.Runtime.NODEJS_24_X,
+      handler: 'handler',
+      entry: path.join(__dirname, '../lambda/clear-table-data.ts'),
+      environment: {
+        TABLE_NAME: this.clockTable.tableName,
+      },
+      timeout: cdk.Duration.minutes(5),
+    });
+
+    // Lambda関数にテーブルへの権限を付与
+    this.clockTable.grantReadWriteData(clearDataFunction);
+
+    // トリガー: デプロイ時にデータをクリア
+    const clearTrigger = new Trigger(this, 'ClearTableTrigger', {
+      handler: clearDataFunction,
+      executeAfter: [this.clockTable],
+    });
+
+    return clearTrigger;
+  }
+
+  /**
+   * データ投入用のSeederを設定
+   */
+  private setupDataSeeder(): DynamoDBSeeder {
+    // シーダー: データを投入
+    const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
+      table: this.clockTable,
+      seeds: Seeds.fromJsonFile(
+        path.join(__dirname, '../seeds/clock-records.json'),
+      ),
+    });
+
+    return seeder;
+  }
+
+  /**
+   * データクリアとシードの設定
+   * クリアが完了してからシードが実行されるように依存関係を設定
+   */
+  private setupDataClearAndSeed(): void {
+    const clearTrigger = this.setupDataClear();
+    const seeder = this.setupDataSeeder();
+
+    // シーダーはクリアトリガーの後に実行されるように依存関係を設定
+    seeder.node.addDependency(clearTrigger);
   }
 }
