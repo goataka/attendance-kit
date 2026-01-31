@@ -46,7 +46,11 @@ graph TB
 
 このインフラストラクチャには以下が含まれます：
 
-### CDK管理（deploy/ディレクトリ）
+### アカウントレベルリソース（account/ディレクトリ）
+- **AWS Budget**: 月次コスト予算とアラート
+- **SNS Topic**: コストアラート通知用
+
+### 環境レベルリソース（deploy/ディレクトリ）
 - **DynamoDB Table**: `attendance-kit-{environment}-clock`
   - Partition Key: `userId` (String)
   - Sort Key: `timestamp` (String, ISO 8601形式)
@@ -56,7 +60,7 @@ graph TB
   - AWS管理キー暗号化
 
 - **Backend API**
-  - Lambda関数: Node.js 20.x
+  - Lambda関数: Node.js 24.x
   - API Gateway: REST API
   - DynamoDBテーブルへのアクセス権限
 
@@ -76,20 +80,43 @@ graph TB
 
 ## 💻 ローカル開発
 
-### 依存関係のインストール
+### アカウントスタック
+
+#### 依存関係のインストール
+
+```bash
+cd infrastructure/account
+npm install
+```
+
+#### ビルド
+
+```bash
+npm run build
+```
+
+#### テスト実行
+
+```bash
+npm test
+```
+
+### 環境スタック
+
+#### 依存関係のインストール
 
 ```bash
 cd infrastructure/deploy
 npm install
 ```
 
-### ビルド
+#### ビルド
 
 ```bash
 npm run build
 ```
 
-### テスト実行
+#### テスト実行
 
 ```bash
 npm test
@@ -98,7 +125,12 @@ npm test
 ### CDK Synth（CloudFormationテンプレート生成）
 
 ```bash
+# アカウントスタック
+cd infrastructure/account
+npx cdk synth
+
 # dev環境用
+cd infrastructure/deploy
 npx cdk synth --context environment=dev
 
 # staging環境用
@@ -109,6 +141,15 @@ npx cdk synth --context environment=staging
 
 ```bash
 export AWS_PROFILE=your-profile
+
+# アカウントスタック（初回のみ）
+cd infrastructure/account
+npx cdk bootstrap
+export COST_ALERT_EMAIL=your-email@example.com
+npx cdk deploy
+
+# 環境スタック
+cd infrastructure/deploy
 npx cdk bootstrap --context environment=dev  # 初回のみ
 npx cdk deploy --context environment=dev
 ```
