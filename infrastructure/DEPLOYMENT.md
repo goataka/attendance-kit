@@ -27,8 +27,8 @@ ENVIRONMENT=dev npx cdk deploy AttendanceKit-Dev-Stack
 ### アカウントスタック
 
 ```bash
-cd infrastructure/deploy
-COST_ALERT_EMAIL=your-email@example.com npx cdk deploy AttendanceKit-Account-Stack
+cd infrastructure/account
+COST_ALERT_EMAIL=your-email@example.com npx cdk deploy
 ```
 
 または、GitHub Actionsの "Deploy Account Stack to AWS" を手動実行
