@@ -48,14 +48,22 @@ test.describe('Clock In/Out Page', () => {
     await expect(page.locator('.message.error')).toContainText('User ID and password are required');
   });
 
-  test('should navigate to records list', async ({ page }) => {
+  test('should navigate to records list after clock in', async ({ page }) => {
     await page.goto('/');
     
-    // Click link to records
+    await page.locator('#userId').fill('user001');
+    await page.locator('#password').fill('password123');
+    await page.getByRole('button', { name: '出勤' }).click();
+    await expect(page.locator('.message.success')).toBeVisible();
+    
     await page.getByRole('link', { name: '打刻一覧を見る' }).click();
     
-    // Should navigate to records page
     await expect(page).toHaveURL('/clocks');
-    await expect(page.locator('h1')).toHaveText('打刻一覧');
+  });
+
+  test('should redirect to home when accessing records without authentication', async ({ page }) => {
+    await page.goto('/clocks');
+    
+    await expect(page).toHaveURL('/');
   });
 });

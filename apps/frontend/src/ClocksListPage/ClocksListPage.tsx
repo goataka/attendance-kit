@@ -1,17 +1,31 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import { DEFAULT_FILTER } from '../shared/constants';
 import './ClocksListPage.css';
 
 export function ClocksListPage() {
+  const navigate = useNavigate();
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<RecordsFilter>(DEFAULT_FILTER);
   const [error, setError] = useState<string | null>(null);
 
+  // トークンがない場合は打刻画面にリダイレクト
   useEffect(() => {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) {
+      navigate('/');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('accessToken');
+    if (!token) {
+      return;
+    }
+
     const fetchRecords = async () => {
       setLoading(true);
       setError(null);

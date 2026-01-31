@@ -1,15 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clocks List Page', () => {
-  // Seed data before each test
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     
-    // Add test data via clock-in
     await page.locator('#userId').fill('user001');
     await page.locator('#password').fill('password123');
     await page.getByRole('button', { name: '出勤' }).click();
-    await page.waitForSelector('.message.success');
+    
+    await page.waitForSelector('text=出勤を記録しました');
+    await page.waitForFunction(() => {
+      return window.sessionStorage.getItem('accessToken') !== null;
+    }, { timeout: 10000 });
   });
 
   test('should display records list', async ({ page }) => {
@@ -77,6 +79,16 @@ test.describe('Clocks List Page', () => {
     await page.getByRole('link', { name: '打刻画面に戻る' }).click();
     
     // Should navigate back
+    await expect(page).toHaveURL('/');
+    await expect(page.locator('h1')).toHaveText('勤怠打刻');
+  });
+
+  test('should redirect to home if not authenticated', async ({ page }) => {
+    await page.context().clearCookies();
+    await page.evaluate(() => sessionStorage.clear());
+    
+    await page.goto('/clocks');
+    
     await expect(page).toHaveURL('/');
     await expect(page.locator('h1')).toHaveText('勤怠打刻');
   });

@@ -57,9 +57,6 @@ async function verifySuccessMessage(page: Page): Promise<void> {
   }
 }
 
-/**
- * Perform clock action (clock-in or clock-out)
- */
 async function performClockAction(
   world: CustomWorld,
   buttonText: string,
@@ -68,7 +65,12 @@ async function performClockAction(
     throw new Error('Page is not initialized');
   }
 
-  await world.page.goto(FRONTEND_URL);
+  await world.page.goto(`${FRONTEND_URL}/clocks`);
+  await world.page.waitForLoadState('networkidle');
+  
+  await world.page.getByRole('link', { name: '打刻画面に戻る' }).click();
+  await world.page.waitForLoadState('networkidle');
+  
   await fillLoginCredentials(world.page);
   await clickClockButtonAndWaitForMessage(world.page, buttonText);
   await verifySuccessMessage(world.page);

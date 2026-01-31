@@ -4,15 +4,47 @@ import { BrowserRouter } from 'react-router-dom';
 import { ClocksListPage } from './ClocksListPage';
 import { api } from '../shared/api';
 
-// Mock the API - mock the index module which exports the api
 vi.mock('../shared/api', () => ({
   api: {
     getRecords: vi.fn(),
   },
 }));
 
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+const sessionStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value;
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+  };
+})();
+
+Object.defineProperty(window, 'sessionStorage', {
+  value: sessionStorageMock,
+});
+
 function renderWithRouter(component: React.ReactElement) {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
+  return render(
+    <BrowserRouter>
+      {component}
+    </BrowserRouter>,
+  );
 }
 
 describe('ClocksListPage', () => {
@@ -33,6 +65,10 @@ describe('ClocksListPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionStorageMock.clear();
+    // Set up authenticated state
+    sessionStorageMock.setItem('accessToken', 'test-token');
+    sessionStorageMock.setItem('userId', 'user001');
   });
 
   it('renders the records list page', async () => {
@@ -160,5 +196,13 @@ describe('ClocksListPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Failed to fetch records')).toBeInTheDocument();
     });
+  });
+
+  it('redirects to home page when not authenticated', () => {
+    sessionStorageMock.clear();
+    
+    renderWithRouter(<ClocksListPage />);
+    
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });
