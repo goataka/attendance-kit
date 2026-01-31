@@ -280,9 +280,3 @@ const data = await this.repository.findById(userId);
 
 **優先度**: Medium
 ```
-
-## UI画面変更時の必須作業
-
-画面を変更または追加した場合は、専用のSKILLを使用してください。
-
-詳細は [frontend-ui-testing SKILL](../.github/skills/frontend-ui-testing/SKILL.md) を参照してください。
