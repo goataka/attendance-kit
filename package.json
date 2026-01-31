@@ -10,7 +10,11 @@
   "scripts": {
     "setup": "npm ci --workspaces --include-workspace-root",
     "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present",
+    "build": "run-p build:*",
+    "build:backend": "npm run build --workspace=@attendance-kit/backend",
+    "build:frontend": "npm run build --workspace=@attendance-kit/frontend",
+    "build:website": "npm run build --workspace=@attendance-kit/website",
+    "build:infrastructure": "npm run build --workspace=attendance-kit-infrastructure",
     "test": "npm run test --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
@@ -32,6 +36,7 @@
     "@cucumber/cucumber": "^12.6.0",
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.10",
+    "npm-run-all": "^4.1.5",
     "playwright-bdd": "^8.4.2",
     "ts-node": "^10.9.2"
   }
