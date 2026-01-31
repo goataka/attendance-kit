@@ -44,7 +44,7 @@ Dev環境へのデプロイ後、自動的にE2Eテストが実行されます�
 
 - デプロイされたCloudFront URLとAPI Gatewayに対して実際のE2Eテストを実行
 - 既存のCucumberテストシナリオを使用
-- テストレポートはArtifactsにアップロードされ、コミットにコメント
+- テストレポートはArtifactsにアップロードされます
 
 ### 環境変数
 
@@ -53,7 +53,7 @@ Dev環境へのデプロイ後、自動的にE2Eテストが実行されます�
 | `E2E_ENV` | `deployed` に設定（ローカル環境との区別） |
 | `FRONTEND_URL` | CloudFormation OutputsからCloudFront URLを取得 |
 | `BACKEND_URL` | CloudFormation OutputsからAPI URLを取得 |
-| `DYNAMODB_TABLE_NAME` | CloudFormation OutputsからDynamoDBテーブル名を取得 |
+| `DYNAMODB_TABLE_NAME` | DynamoDBテーブル名を環境名から計算 (`attendance-kit-{環境名}-clock`) |
 
 ## 必要な設定
 

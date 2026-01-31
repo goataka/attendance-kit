@@ -110,6 +110,14 @@ jobs:
           CLOUDFRONT_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey=="CloudFrontUrl") | .OutputValue')
           API_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey=="ApiUrl") | .OutputValue')
           
+          # 必須のスタック出力が存在しない場合はエラー終了
+          if [ -z "${CLOUDFRONT_URL}" ] || [ -z "${API_URL}" ]; then
+            echo "Error: Required stack outputs not found"
+            echo "CLOUDFRONT_URL: ${CLOUDFRONT_URL}"
+            echo "API_URL: ${API_URL}"
+            exit 1
+          fi
+          
           echo "cloudfront_url=${CLOUDFRONT_URL}" >> $GITHUB_OUTPUT
           echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
           echo "environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
