@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ClocksListPage } from './ClocksListPage';
 import { api } from '../shared/api';
 
-// Mock the API - mock the index module which exports the api
+// APIをモック化
 vi.mock('../shared/api', () => ({
   api: {
     getRecords: vi.fn(),

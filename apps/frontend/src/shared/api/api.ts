@@ -36,10 +36,10 @@ export const resolveBackendUrl = (
 
 const BACKEND_URL = resolveBackendUrl();
 
-// Token storage key
+// トークン保存キー
 const TOKEN_STORAGE_KEY = 'attendance-kit-token';
 
-// Get stored token
+// 保存されたトークンを取得
 const getStoredToken = (): string | null => {
   try {
     return sessionStorage.getItem(TOKEN_STORAGE_KEY);
@@ -48,7 +48,7 @@ const getStoredToken = (): string | null => {
   }
 };
 
-// Store token
+// トークンを保存
 const storeToken = (token: string): void => {
   try {
     sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
@@ -57,7 +57,7 @@ const storeToken = (token: string): void => {
   }
 };
 
-// Clear stored token
+// 保存されたトークンをクリア
 const clearToken = (): void => {
   try {
     sessionStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -84,7 +84,7 @@ const login = async (userId: string, password: string): Promise<string | null> =
     const data = await response.json();
     const token = data.accessToken;
     
-    // Store token for future use
+    // 今後の使用のためにトークンを保存
     if (token) {
       storeToken(token);
     }
@@ -97,7 +97,7 @@ const login = async (userId: string, password: string): Promise<string | null> =
 };
 
 export const api = {
-  // Clock in or out
+  // 出勤・退勤打刻
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
       // まずログインしてトークンを取得
@@ -153,10 +153,10 @@ export const api = {
     }
   },
 
-  // Get records with optional filtering
+  // オプションのフィルターで打刻記録を取得
   getRecords: async (filter?: RecordsFilter): Promise<ClockRecord[]> => {
     try {
-      // Get stored token
+      // 保存されたトークンを取得
       const token = getStoredToken();
       
       if (!token) {
@@ -191,7 +191,7 @@ export const api = {
 
       if (!response.ok) {
         if (response.status === 401) {
-          // Token is invalid or expired; clear it
+          // トークンが無効または期限切れなのでクリア
           clearToken();
           throw new Error('Authentication expired. Please log in again.');
         }
