@@ -11,8 +11,9 @@ test.describe('Clocks List Page', () => {
     await page.locator('#password').fill('password123');
     await page.getByRole('button', { name: '出勤' }).click();
     
-    // Wait for success message
+    // Wait for success message and ensure token is saved
     await page.waitForSelector('text=出勤を記録しました');
+    await page.waitForTimeout(500); // Give time for token to be saved to sessionStorage
   });
 
   test('should display records list', async ({ page }) => {
