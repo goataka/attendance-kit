@@ -13,6 +13,9 @@ test.describe('Clock In/Out Page', () => {
     await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
     await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
     
+    // Check login button
+    await expect(page.getByRole('link', { name: 'ログイン' })).toBeVisible();
+    
     // Wait for any animations to complete
     await page.waitForTimeout(500);
     
@@ -54,8 +57,19 @@ test.describe('Clock In/Out Page', () => {
     // Click link to records
     await page.getByRole('link', { name: '打刻一覧を見る' }).click();
     
-    // Should navigate to records page
-    await expect(page).toHaveURL('/clocks');
-    await expect(page.locator('h1')).toHaveText('打刻一覧');
+    // Should navigate to records page (but redirect to home if not authenticated)
+    // In this test, user is not logged in, so should redirect back to home
+    await expect(page).toHaveURL('/');
+  });
+
+  test('should navigate to login page', async ({ page }) => {
+    await page.goto('/');
+    
+    // Click login button
+    await page.getByRole('link', { name: 'ログイン' }).click();
+    
+    // Should navigate to login page
+    await expect(page).toHaveURL('/login');
+    await expect(page.locator('h1')).toHaveText('ログイン');
   });
 });

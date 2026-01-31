@@ -1,15 +1,16 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clocks List Page', () => {
-  // Seed data before each test
+  // Login and seed data before each test
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    
-    // Add test data via clock-in
+    // First, login
+    await page.goto('/login');
     await page.locator('#userId').fill('user001');
     await page.locator('#password').fill('password123');
-    await page.getByRole('button', { name: '出勤' }).click();
-    await page.waitForSelector('.message.success');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    
+    // Wait for navigation to clocks list
+    await page.waitForURL('/clocks');
   });
 
   test('should display records list', async ({ page }) => {
@@ -77,6 +78,19 @@ test.describe('Clocks List Page', () => {
     await page.getByRole('link', { name: '打刻画面に戻る' }).click();
     
     // Should navigate back
+    await expect(page).toHaveURL('/');
+    await expect(page.locator('h1')).toHaveText('勤怠打刻');
+  });
+
+  test('should redirect to home if not authenticated', async ({ page }) => {
+    // Clear session storage to simulate logged out state
+    await page.context().clearCookies();
+    await page.evaluate(() => sessionStorage.clear());
+    
+    // Try to access clocks page without authentication
+    await page.goto('/clocks');
+    
+    // Should redirect to home page
     await expect(page).toHaveURL('/');
     await expect(page.locator('h1')).toHaveText('勤怠打刻');
   });
