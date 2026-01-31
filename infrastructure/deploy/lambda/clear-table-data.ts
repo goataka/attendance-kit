@@ -59,14 +59,37 @@ export const handler = async (event: TriggerEvent): Promise<void> => {
             },
           }));
 
-          const batchWriteCommand = new BatchWriteCommand({
-            RequestItems: {
-              [tableName]: deleteRequests,
-            },
-          });
+          let unprocessedItems = deleteRequests;
+          let retryCount = 0;
+          const maxRetries = 3;
 
-          await docClient.send(batchWriteCommand);
-          itemsDeleted += chunk.length;
+          while (unprocessedItems.length > 0 && retryCount < maxRetries) {
+            const batchWriteCommand = new BatchWriteCommand({
+              RequestItems: {
+                [tableName]: unprocessedItems,
+              },
+            });
+
+            const result = await docClient.send(batchWriteCommand);
+            
+            // UnprocessedItemsをチェックしてリトライ
+            const unprocessed = result.UnprocessedItems?.[tableName];
+            if (unprocessed && unprocessed.length > 0) {
+              unprocessedItems = unprocessed;
+              retryCount++;
+              console.log(`Retrying ${unprocessed.length} unprocessed items (attempt ${retryCount}/${maxRetries})`);
+              // 指数バックオフ
+              await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 100));
+            } else {
+              unprocessedItems = [];
+            }
+          }
+
+          if (unprocessedItems.length > 0) {
+            console.warn(`Failed to delete ${unprocessedItems.length} items after ${maxRetries} retries`);
+          }
+
+          itemsDeleted += chunk.length - unprocessedItems.length;
         }
       }
 

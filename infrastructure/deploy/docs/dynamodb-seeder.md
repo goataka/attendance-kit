@@ -53,11 +53,11 @@ CDKスタックのデプロイ時に、以下のリソースが自動的に作�
 import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
 import { Trigger } from 'aws-cdk-lib/triggers';
 
-// テスト環境のみ初期データを投入
-if (environment === 'test' || environment === 'local') {
+// 開発環境のみ初期データを投入
+if (environment === 'dev' || environment === 'local') {
   // 1. データクリア用のLambda関数を作成
   const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
-    runtime: lambda.Runtime.NODEJS_18_X,
+    runtime: lambda.Runtime.NODEJS_24_X,
     handler: 'handler',
     entry: path.join(__dirname, '../lambda/clear-table-data.ts'),
     environment: {
@@ -90,7 +90,7 @@ if (environment === 'test' || environment === 'local') {
 ## 実行タイミング
 
 - **自動実行**: CDKスタックのデプロイ時（`cdk deploy`）
-- **対象環境**: `test`または`local`環境のみ
+- **対象環境**: `dev`または`local`環境のみ
 - **本番環境**: 本番環境では実行されません
 
 ## LocalStackでの動作
@@ -166,7 +166,7 @@ CDKの依存関係により、以下の順序が保証されます：
 - ✅ 自動実行
 - ✅ データクリア機能（常にクリーンな状態）
 - ✅ 依存関係による実行順序保証
-- ❌ デプロイごとに実行（ただしテスト環境のみ）
+- ❌ デプロイごとに実行（ただし開発環境のみ）
 
 ## 制約事項
 
