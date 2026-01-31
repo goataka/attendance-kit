@@ -4,6 +4,8 @@
 - [Agent開発ガイドライン](./agents/AGENTS.md) - エージェントの役割とプロジェクトサマリー
 - [コーディング規約](./instructions/coding.instructions.md) - 一般的なコーディング原則と理解しやすいコードの書き方
 - [シェルスクリプト規約](./instructions/sh.instructions.md) - シェルスクリプト固有のコーディングルールとテスト規約
+- [TypeScript規約](./instructions/typescript.instructions.md) - TypeScript固有のコーディングルールとCDK Constructルール
+- [Markdown規約](./instructions/markdown.instructions.md) - ドキュメント作成ルール
 
 ## 言語ポリシー
 
