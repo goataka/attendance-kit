@@ -1,4 +1,7 @@
 import { ClockRecord, ClockInOutRequest, ClockInOutResponse, RecordsFilter } from '../types';
+import { mockApi } from './mockApi';
+
+const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API === 'true';
 
 const DEFAULT_DEV_BACKEND_URL = 'http://localhost:3000';
 const API_BASE_PATH = '/api';
@@ -92,6 +95,23 @@ const loginInternal = async (userId: string, password: string): Promise<string |
 export const api = {
   // ログイン（公開API・トークンを保存）
   login: async (userId: string, password: string): Promise<{ token: string; userId: string } | null> => {
+    if (USE_MOCK_API) {
+      const mockUsers: Record<string, string> = {
+        'user001': 'password123',
+        'user002': 'password456',
+      };
+      
+      if (!mockUsers[userId] || mockUsers[userId] !== password) {
+        return null;
+      }
+      
+      const token = 'mock-token';
+      storeToken(token);
+      sessionStorage.setItem('userId', userId);
+      
+      return { token, userId };
+    }
+
     try {
       const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
         method: 'POST',
@@ -118,6 +138,15 @@ export const api = {
 
   // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
+    if (USE_MOCK_API) {
+      const response = await mockApi.clockInOut(request);
+      if (response.success && response.record) {
+        storeToken('mock-token');
+        sessionStorage.setItem('userId', request.userId);
+      }
+      return response;
+    }
+
     try {
       // まずログインしてトークンを取得し、セッションに保存
       const token = await loginInternal(request.userId, request.password);
@@ -179,6 +208,10 @@ export const api = {
 
   // Get records with optional filtering
   getRecords: async (filter?: RecordsFilter): Promise<ClockRecord[]> => {
+    if (USE_MOCK_API) {
+      return mockApi.getRecords(filter);
+    }
+
     try {
       // Get stored token
       const token = getStoredToken();
