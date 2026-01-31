@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { BackendConstruct } from './constructs/backend';
 import { FrontendConstruct } from './constructs/frontend';
+import { formatExportName } from './utils/cdk-helpers';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment: string; // 'dev' | 'staging' | 'test'
@@ -99,26 +100,26 @@ export class AttendanceKitStack extends cdk.Stack {
       value: this.clockTable.tableName,
       description: `DynamoDB clock table name (${environment})`,
       // DynamoDBのみをデプロイする場合は、exportNameを設定しない（テスト環境用）
-      exportName: deployOnlyDynamoDB ? undefined : `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableName`,
+      exportName: deployOnlyDynamoDB ? undefined : formatExportName(environment, 'ClockTableName'),
     });
 
     new cdk.CfnOutput(this, 'TableArn', {
       value: this.clockTable.tableArn,
       description: `DynamoDB clock table ARN (${environment})`,
-      exportName: deployOnlyDynamoDB ? undefined : `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableArn`,
+      exportName: deployOnlyDynamoDB ? undefined : formatExportName(environment, 'ClockTableArn'),
     });
 
     if (!deployOnlyDynamoDB) {
       new cdk.CfnOutput(this, 'GSIName', {
         value: 'DateIndex',
         description: `Global Secondary Index name (${environment})`,
-        exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-GSIName`,
+        exportName: formatExportName(environment, 'GSIName'),
       });
 
       new cdk.CfnOutput(this, 'Environment', {
         value: environment,
         description: 'Deployment environment',
-        exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Environment`,
+        exportName: formatExportName(environment, 'Environment'),
       });
     }
   }
