@@ -23,7 +23,6 @@ export class DynamoDBStack extends cdk.Stack {
 
     const { environment } = props;
 
-    // DynamoDB Clock Table
     // 本番環境と同じ構造を使用（userId + timestamp as primary key）
     this.clockTable = new dynamodb.Table(this, 'ClockTable', {
       tableName: `attendance-kit-${environment}-clock`,
@@ -41,7 +40,6 @@ export class DynamoDBStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
-    // Global Secondary Index: DateIndex
     // 本番環境と同じGSIを使用
     this.clockTable.addGlobalSecondaryIndex({
       indexName: 'DateIndex',
@@ -56,18 +54,15 @@ export class DynamoDBStack extends cdk.Stack {
       projectionType: dynamodb.ProjectionType.ALL,
     });
 
-    // タグ設定
     cdk.Tags.of(this.clockTable).add('Environment', environment);
     cdk.Tags.of(this.clockTable).add('Project', 'attendance-kit');
     cdk.Tags.of(this.clockTable).add('Purpose', 'IntegrationTest');
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
 
-    // 初期データ投入（dev/local環境のみ）
     if (environment === 'dev' || environment === 'local') {
       this.setupDataClearAndSeed();
     }
 
-    // Outputs
     new cdk.CfnOutput(this, 'TableName', {
       value: this.clockTable.tableName,
       description: `DynamoDB clock table name (${environment})`,
@@ -83,7 +78,6 @@ export class DynamoDBStack extends cdk.Stack {
    * データクリア用のLambda関数とTriggerを設定
    */
   private setupDataClear(): Trigger {
-    // データクリア用のLambda関数
     const clearDataFunction = new NodejsFunction(this, 'ClearTableData', {
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'handler',
@@ -94,10 +88,8 @@ export class DynamoDBStack extends cdk.Stack {
       timeout: cdk.Duration.minutes(5),
     });
 
-    // Lambda関数にテーブルへの権限を付与
     this.clockTable.grantReadWriteData(clearDataFunction);
 
-    // トリガー: デプロイ時にデータをクリア
     const clearTrigger = new Trigger(this, 'ClearTableTrigger', {
       handler: clearDataFunction,
       executeAfter: [this.clockTable],
@@ -110,7 +102,6 @@ export class DynamoDBStack extends cdk.Stack {
    * データ投入用のSeederを設定
    */
   private setupDataSeeder(): DynamoDBSeeder {
-    // シーダー: データを投入
     const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
       table: this.clockTable,
       seeds: Seeds.fromJsonFile(
@@ -129,7 +120,6 @@ export class DynamoDBStack extends cdk.Stack {
     const clearTrigger = this.setupDataClear();
     const seeder = this.setupDataSeeder();
 
-    // シーダーはクリアトリガーの後に実行されるように依存関係を設定
     seeder.node.addDependency(clearTrigger);
   }
 }
