@@ -27,8 +27,9 @@
   "license": "MIT",
   "devDependencies": {
     "@aws-sdk/client-cloudfront": "^3.972.0",
-    "@aws-sdk/client-dynamodb": "^3.x",
+    "@aws-sdk/client-dynamodb": "^3.972.0",
     "@aws-sdk/client-s3": "^3.972.0",
+    "@aws-sdk/lib-dynamodb": "^3.972.0",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.x",
     "aws-cdk": "^2.x",
@@ -39,6 +40,7 @@
     "typescript": "~5.3.0"
   },
   "dependencies": {
+    "@cloudcomponents/cdk-dynamodb-seeder": "^2.4.0",
     "aws-cdk-lib": "^2.x",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21"
