@@ -20,6 +20,14 @@
 
 **詳細**: [file-refactor/SKILL.md](./file-refactor/SKILL.md)
 
+### frontend-ui-testing
+
+**説明**: フロントエンドUI画面を変更・追加した際に必須のテスト作業（snapshot/screenshot更新、E2Eテスト更新、premergeテスト実行）を実施します。
+
+**使用タイミング**: UI画面の変更や追加を行った場合
+
+**詳細**: [frontend-ui-testing/SKILL.md](./frontend-ui-testing/SKILL.md)
+
 ### premerge-check
 
 **説明**: プレマージワークフローをローカルで実行してCI/CDチェックを行います。

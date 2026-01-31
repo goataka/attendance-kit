@@ -283,49 +283,6 @@ const data = await this.repository.findById(userId);
 
 ## UI画面変更時の必須作業
 
-画面を変更または追加した場合は、以下の作業を必ず実施してください。
+画面を変更または追加した場合は、専用のSKILLを使用してください。
 
-### 1. Snapshotの更新
-
-```bash
-npm run test -- -u
-```
-
-### 2. Screenshotの更新
-
-- 各画面コンポーネントのE2Eテスト内でスクリーンショットを取得
-- `*.screenshot.png`ファイルが自動生成される
-
-### 3. E2Eテストの更新
-
-- 新規画面: `<ComponentName>.e2e.spec.ts`を作成
-- 既存画面: テストケースを更新して新しいUIに対応
-
-**E2Eテストの配置**:
-- `apps/frontend/src/<ComponentName>/<ComponentName>.e2e.spec.ts`
-
-**E2Eテストの必須項目**:
-- 画面表示の確認
-- フォーム要素の確認
-- ナビゲーションの確認
-- スクリーンショットの取得（`*.screenshot.png`）
-
-### 4. Premergeテストの実行
-
-```bash
-# Frontend部分のテスト相当
-npm run lint
-npm run build
-npm run test:unit
-```
-
-### チェックリスト
-
-画面変更時は以下を確認してください：
-
-- [ ] Snapshotを更新した（`npm run test -- -u`）
-- [ ] E2Eテストを作成/更新した
-- [ ] Screenshotが生成された（`*.screenshot.png`）
-- [ ] Lintが成功した（`npm run lint`）
-- [ ] ビルドが成功した（`npm run build`）
-- [ ] ユニットテストが成功した（`npm run test:unit`）
+詳細は [frontend-ui-testing SKILL](../.github/skills/frontend-ui-testing/SKILL.md) を参照してください。
