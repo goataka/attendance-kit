@@ -24,7 +24,6 @@ export class ClockService {
   private readonly docClient: DynamoDBDocumentClient;
   private readonly tableName: string;
   private readonly defaultTableName = 'attendance-kit-dev-clock';
-  // ScanIndexForward=false sorts in descending order (most recent first)
   private readonly scanIndexForward = false;
 
   constructor() {
