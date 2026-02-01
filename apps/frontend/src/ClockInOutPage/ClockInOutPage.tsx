@@ -23,9 +23,11 @@ export function ClockInOutPage() {
       const response = await api.clockInOut({ userId, password, type });
 
       if (response.success) {
+        const clockType = type === 'clock-in' ? 'Clock in' : 'Clock out';
+        const timestamp = new Date(response.record!.timestamp).toLocaleString('ja-JP');
         setMessage({
           type: 'success',
-          text: `${type === 'clock-in' ? 'Clock in' : 'Clock out'} successful at ${new Date(response.record!.timestamp).toLocaleString('ja-JP')}`,
+          text: `${clockType} successful at ${timestamp}`,
         });
         // Clear password for security
         setPassword('');

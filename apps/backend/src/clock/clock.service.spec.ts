@@ -24,12 +24,12 @@ describe('ClockService', () => {
     (service as any).docClient = mockDocClient;
   });
 
-  it('should be defined', () => {
+  it('サービスが定義されていること', () => {
     expect(service).toBeDefined();
   });
 
   describe('clockIn', () => {
-    it('should record clock-in successfully', async () => {
+    it('出勤打刻が正常に記録されること', async () => {
       const userId = 'test-user';
       const location = 'Tokyo Office';
       const deviceId = 'device-123';
@@ -48,7 +48,7 @@ describe('ClockService', () => {
       expect(mockDocClient.send).toHaveBeenCalledTimes(1);
     });
 
-    it('should record clock-in without optional fields', async () => {
+    it('オプションフィールドなしで出勤打刻が記録されること', async () => {
       const userId = 'test-user';
 
       mockDocClient.send.mockResolvedValue({});
@@ -64,7 +64,7 @@ describe('ClockService', () => {
   });
 
   describe('clockOut', () => {
-    it('should record clock-out successfully', async () => {
+    it('退勤打刻が正常に記録されること', async () => {
       const userId = 'test-user';
       const location = 'Tokyo Office';
       const deviceId = 'device-123';
@@ -85,7 +85,7 @@ describe('ClockService', () => {
   });
 
   describe('getRecords', () => {
-    it('should retrieve clock records successfully', async () => {
+    it('打刻記録が正常に取得されること', async () => {
       const userId = 'test-user';
       const mockRecords = [
         {
@@ -116,7 +116,7 @@ describe('ClockService', () => {
       expect(mockDocClient.send).toHaveBeenCalledTimes(1);
     });
 
-    it('should return empty array when no records exist', async () => {
+    it('記録が存在しない場合は空配列を返すこと', async () => {
       const userId = 'test-user';
 
       mockDocClient.send.mockResolvedValue({ Items: [] });

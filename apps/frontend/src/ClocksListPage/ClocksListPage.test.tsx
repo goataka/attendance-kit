@@ -35,7 +35,7 @@ describe('ClocksListPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the records list page', async () => {
+  it('打刻一覧ページが表示されること', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
@@ -47,7 +47,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('displays loading state initially', () => {
+  it('初期状態ではローディング表示されること', () => {
     vi.mocked(api.getRecords).mockImplementation(() => new Promise(() => {}));
     
     renderWithRouter(<ClocksListPage />);
@@ -55,7 +55,7 @@ describe('ClocksListPage', () => {
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
-  it('displays clocks after loading', async () => {
+  it('ロード後に打刻データが表示されること', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
@@ -67,7 +67,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('displays no data message when clocks are empty', async () => {
+  it('データが空の場合はメッセージが表示されること', async () => {
     vi.mocked(api.getRecords).mockResolvedValue([]);
     
     renderWithRouter(<ClocksListPage />);
@@ -77,7 +77,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('filters clocks by user ID', async () => {
+  it('ユーザーIDでフィルタリングできること', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
@@ -99,7 +99,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('filters clocks by type', async () => {
+  it('打刻種別でフィルタリングできること', async () => {
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
     
     renderWithRouter(<ClocksListPage />);
