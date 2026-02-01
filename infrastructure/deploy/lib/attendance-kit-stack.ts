@@ -161,10 +161,6 @@ export class AttendanceKitStack extends cdk.Stack {
    * Stack IDを生成
    */
   private static generateStackId(environment: string, deployOnlyDynamoDB: boolean): string {
-    if (deployOnlyDynamoDB) {
-      return `AttendanceKit-${environment}-DynamoDB`;
-    }
-    
     const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
