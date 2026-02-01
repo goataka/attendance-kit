@@ -90,6 +90,39 @@ VS Codeでコマンドパレットから "Dev Containers: Reopen in Container" �
 
 詳細は [.devcontainer/README.md](.devcontainer/README.md) を参照してください。
 
+## 🏗️ システム構成図
+
+```mermaid
+graph TB
+    subgraph "GitHub Actions"
+        GHA[CI/CD Workflow]
+    end
+    
+    subgraph "AWS Cloud"
+        subgraph "Frontend"
+            S3[S3 Bucket]
+            CF[CloudFront]
+        end
+        
+        subgraph "Backend"
+            APIGW[API Gateway]
+            Lambda[Lambda Function<br/>NestJS API]
+        end
+        
+        subgraph "Database"
+            DDB[(DynamoDB<br/>Clock Table)]
+        end
+    end
+    
+    User[ユーザー] -->|HTTPS| CF
+    CF -->|Static Files| S3
+    CF -->|/api/*| APIGW
+    APIGW --> Lambda
+    Lambda -->|Read/Write| DDB
+    GHA -->|Deploy| S3
+    GHA -->|Deploy| Lambda
+```
+
 ## 📝 ドキュメント
 
 - [Copilotインストラクション](.github/copilot-instructions.md)
