@@ -24,18 +24,13 @@ export class AttendanceKitStack extends cdk.Stack {
     const environment = props.environment || 'dev';
     const { jwtSecret, deployOnlyDynamoDB = false } = props;
 
+    // 環境変数のバリデーション（super呼び出し前）
+    AttendanceKitStack.validateEnvironmentStatic(environment);
+
     // Stack IDの生成
     const stackId = AttendanceKitStack.generateStackId(environment);
     
     super(scope, stackId, props);
-
-    // 環境変数のバリデーション
-    const validEnvironments = ['dev', 'staging', 'test', 'local'];
-    if (!validEnvironments.includes(environment)) {
-      throw new Error(
-        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
-      );
-    }
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
     // (infrastructure/setup/attendance-kit-setup.yaml)
@@ -93,27 +88,15 @@ export class AttendanceKitStack extends cdk.Stack {
 
     // DynamoDBのみをデプロイする場合は、BackendとFrontendをスキップ
     if (!deployOnlyDynamoDB) {
-      // フルスタックデプロイの場合、JWT_SECRETが必須
-      if (!jwtSecret) {
-        throw new Error(
-          'JWT_SECRET environment variable is required for environment stack deployment. ' +
-          'Please set jwtSecret in stack props.'
-        );
-      }
-
-      // フルスタックデプロイは'test'環境では許可しない
-      if (environment === 'test' || environment === 'local') {
-        throw new Error(
-          `Full stack deployment is not allowed for '${environment}' environment. ` +
-          'Use deployOnlyDynamoDB: true for test/local environments.'
-        );
-      }
+      // フルスタックデプロイのバリデーション
+      this.validateFullStackDeployment(environment, jwtSecret);
 
       // Backend API (Lambda + API Gateway)
+      // validateFullStackDeploymentでjwtSecretの存在を確認済み
       this.backendApi = new BackendConstruct(this, 'BackendApi', {
         environment,
         clockTable: this.clockTable,
-        jwtSecret,
+        jwtSecret: jwtSecret!,
       });
 
       // Frontend (CloudFront + S3)
@@ -157,11 +140,50 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
+  /**
+   * 環境変数のバリデーション（static）
+   */
+  private static validateEnvironmentStatic(environment: string): void {
+    const validEnvironments = ['dev', 'staging', 'test', 'local'];
+    if (!validEnvironments.includes(environment)) {
+      throw new Error(
+        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
+      );
+    }
+  }
+
+  /**
+   * フルスタックデプロイのバリデーション
+   */
+  private validateFullStackDeployment(environment: string, jwtSecret?: string): void {
+    // JWT_SECRETが必須
+    if (!jwtSecret) {
+      throw new Error(
+        'JWT_SECRET environment variable is required for environment stack deployment. ' +
+        'Please set jwtSecret in stack props.'
+      );
+    }
+
+    // test/local環境ではフルスタックデプロイは許可しない
+    if (environment === 'test' || environment === 'local') {
+      throw new Error(
+        `Full stack deployment is not allowed for '${environment}' environment. ` +
+        'Use deployOnlyDynamoDB: true for test/local environments.'
+      );
+    }
+  }
+
+  /**
+   * Stack IDを生成
+   */
   private static generateStackId(environment: string): string {
     const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 
+  /**
+   * データクリア用のDynamoDBCleanerを設定
+   */
   private setupDataClear(): DynamoDBCleaner {
     const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
       table: this.clockTable,
