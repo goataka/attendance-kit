@@ -11,5 +11,4 @@ export class CustomWorld extends World {
   page?: Page;
 }
 
-// Set custom World constructor
 setWorldConstructor(CustomWorld);

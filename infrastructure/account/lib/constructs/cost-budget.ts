@@ -17,13 +17,10 @@ export class CostBudgetConstruct extends Construct {
   constructor(scope: Construct, id: string, props: CostBudgetProps) {
     super(scope, id);
 
-    // Create SNS Topic for cost alerts
     this.snsTopic = this.createSnsTopic(props);
 
-    // Grant AWS Budgets service permission to publish to SNS
     this.grantBudgetPublishPermission();
 
-    // Create Budget with alerts
     this.budget = this.createBudget(props);
   }
 
@@ -33,7 +30,6 @@ export class CostBudgetConstruct extends Construct {
       displayName: 'AWS Cost Budget Alerts',
     });
 
-    // Add email subscription
     // Future: Can be extended to support Mobile Push (AWS SNS Mobile Push)
     if (props.emailEndpoint) {
       topic.addSubscription(
