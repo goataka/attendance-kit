@@ -54,7 +54,7 @@ describe('ClockController (Integration)', () => {
 
     jwtService = moduleFixture.get<JwtService>(JwtService);
 
-    // テスト用のJWTトークンを生成
+    // Generate test JWT token
     authToken = jwtService.sign({ userId: 'test-user', sub: 'test-user' });
   });
 

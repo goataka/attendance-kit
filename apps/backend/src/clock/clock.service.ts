@@ -24,7 +24,7 @@ export class ClockService {
   private readonly docClient: DynamoDBDocumentClient;
   private readonly tableName: string;
   private readonly defaultTableName = 'attendance-kit-dev-clock';
-  // ScanIndexForward=falseで降順（最新順）にソート
+  // ScanIndexForward=false sorts in descending order (most recent first)
   private readonly scanIndexForward = false;
 
   constructor() {
@@ -44,14 +44,14 @@ export class ClockService {
   }
 
   /**
-   * Dateオブジェクトから日付文字列（YYYY-MM-DD）を抽出
+   * Extract date string (YYYY-MM-DD) from Date object
    */
   private extractDate(date: Date): string {
     return date.toISOString().split('T')[0];
   }
 
   /**
-   * 打刻レコードを作成してDynamoDBに保存
+   * Create and save a clock record to DynamoDB
    */
   private async createAndSaveRecord(
     userId: string,

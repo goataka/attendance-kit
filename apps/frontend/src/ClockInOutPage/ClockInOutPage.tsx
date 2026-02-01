@@ -11,7 +11,6 @@ export function ClockInOutPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
-    // 早期リターン: 入力検証
     if (!userId || !password) {
       setMessage({ type: 'error', text: 'User ID and password are required' });
       return;
@@ -30,7 +29,7 @@ export function ClockInOutPage() {
           type: 'success',
           text: `${clockType} successful at ${timestamp}`,
         });
-        // セキュリティのためパスワードをクリア
+        // Clear password for security
         setPassword('');
       } else {
         setMessage({ type: 'error', text: response.message || 'Failed to process request' });

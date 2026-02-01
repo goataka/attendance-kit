@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { ClockInOutPage } from './ClockInOutPage';
 import { api } from '../shared/api';
 
-// APIをモック化
+// Mock the API - mock the index module which exports the api
 vi.mock('../shared/api', () => ({
   api: {
     clockInOut: vi.fn(),

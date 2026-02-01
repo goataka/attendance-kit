@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ClockService } from './clock.service';
 import { ClockType } from './dto/clock.dto';
 
-// DynamoDBクライアントのモック
+// Mock DynamoDB client
 jest.mock('@aws-sdk/client-dynamodb');
 jest.mock('@aws-sdk/lib-dynamodb');
 
@@ -20,7 +20,7 @@ describe('ClockService', () => {
     }).compile();
 
     service = module.get<ClockService>(ClockService);
-    // モッククライアントに置き換え
+    // Replace the docClient with our mock
     (service as any).docClient = mockDocClient;
   });
 
