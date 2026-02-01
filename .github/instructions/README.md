@@ -32,9 +32,36 @@
   - テストファイルの配置と命名規則
   - テスト関数の記述方法とテスト実行方法
 
+### typescript.instructions.md
+
+TypeScript固有のコーディングルールを定義します。
+
+- 対象: TypeScriptファイル（`**/*.{ts,tsx}`）
+- 内容:
+  - CDK Construct構造ルール
+  - コンストラクタの構造
+  - ユーティリティ関数の使用
+  - CloudFormation Outputs
+  - フィールド変数の使用
+  - Node.js バージョン要件
+
+### markdown.instructions.md
+
+Markdownドキュメント作成のルールを定義します。
+
+- 対象: Markdownファイル（`**/*.md`）
+- 内容:
+  - ドキュメント作成の基本原則
+  - READMEの推奨構造
+  - コードブロックの記法
+  - Mermaid図の活用
+
 ## 参照元
 
-これらのルールは、[goataka/shared-shell](https://github.com/goataka/shared-shell/tree/main/.github/instructions)リポジトリから取得しています。
+これらのルールは、以下から取得・参照しています:
+
+- [goataka/shared-shell](https://github.com/goataka/shared-shell/tree/main/.github/instructions): シェルスクリプトルール
+- [理解しやすいコードの書き方](https://qiita.com/goataka/items/ae1959c29036dc4929fe): コーディング原則
 
 ## GitHub Copilotでの利用
 

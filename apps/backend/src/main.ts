@@ -7,13 +7,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS for React frontend
   app.enableCors({
     origin: process.env.CORS_ORIGIN || '*',
     credentials: true,
   });
 
-  // Global validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -21,10 +19,8 @@ async function bootstrap() {
     }),
   );
 
-  // API prefix
   app.setGlobalPrefix('api');
 
-  // Swagger/OpenAPI documentation
   const config = new DocumentBuilder()
     .setTitle('Attendance Kit API')
     .setDescription('勤怠管理キット API ドキュメント')
