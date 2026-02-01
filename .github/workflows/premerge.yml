@@ -150,7 +150,7 @@ jobs:
         run: |
           mkdir -p ~/.npm-global
           npm config set prefix '~/.npm-global'
-          export PATH=~/.npm-global/bin:$PATH
+          echo "$HOME/.npm-global/bin" >> $GITHUB_PATH
           npm install --global aws-cdk-local aws-cdk
 
       - name: Start LocalStack
@@ -228,7 +228,7 @@ jobs:
         run: |
           mkdir -p ~/.npm-global
           npm config set prefix '~/.npm-global'
-          export PATH=~/.npm-global/bin:$PATH
+          echo "$HOME/.npm-global/bin" >> $GITHUB_PATH
           npm install --global aws-cdk-local aws-cdk
 
       - name: Start LocalStack
@@ -377,7 +377,7 @@ jobs:
         run: |
           mkdir -p ~/.npm-global
           npm config set prefix '~/.npm-global'
-          export PATH=~/.npm-global/bin:$PATH
+          echo "$HOME/.npm-global/bin" >> $GITHUB_PATH
           npm install --global aws-cdk-local aws-cdk
 
       - name: Start LocalStack
