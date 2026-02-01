@@ -61,6 +61,8 @@ cp .env.example .env  # 環境変数を設定
 | `DYNAMODB_ENDPOINT` | DynamoDBエンドポイント（LocalStack用） | - |
 | `NODE_ENV` | 実行環境 | `development` |
 
+**注意:** Lambda環境（`NODE_ENV`が`production`、`dev`、`staging`の場合）では、`.env`ファイルは無視され、GitHub ActionsのSecretsから環境変数が直接設定されます。
+
 #### 開発環境
 
 ```bash
