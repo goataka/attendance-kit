@@ -61,6 +61,21 @@ Dev環境へのデプロイ後、自動的にE2Eテストが実行されます�
 - `AWS_ROLE_TO_ASSUME`: デプロイに使用するIAMロールのARN
 - `JWT_SECRET`: バックエンドAPIのJWT認証シークレットキー
 
+## パフォーマンス最適化
+
+### キャッシュ戦略
+
+ビルド時間を短縮するため、以下のキャッシュを使用:
+
+1. **npm依存関係**: `actions/setup-node@v4`の`cache: 'npm'`機能を使用
+2. **TypeScriptビルド成果物**: `dist/`と`.tsbuildinfo`をキャッシュ
+3. **Playwrightブラウザ**: E2Eテストジョブで`~/.cache/ms-playwright`をキャッシュ（約500MB）
+
+### キャッシュキー
+
+- **TypeScriptビルド**: `${{ runner.os }}-ts-build-${{ hashFiles('**/tsconfig*.json', '**/package-lock.json') }}`
+- **Playwright**: `${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}`
+
 ## エラー時の自動対応
 
 デプロイが失敗した場合、以下の対応が自動的に実行されます：
