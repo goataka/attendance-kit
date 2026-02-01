@@ -18,28 +18,15 @@ const env = {
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 
-// Environment-level resources (deployed per environment: dev, staging)
-if (['environment'].includes(stackType)) {
-  const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
-  const jwtSecret = process.env.JWT_SECRET;
+const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
+const jwtSecret = process.env.JWT_SECRET;
+const deployOnlyDynamoDB = stackType === 'dynamodb';
 
-  new AttendanceKitStack(app, {
-    env,
-    environment,
-    jwtSecret,
-    deployOnlyDynamoDB: false,
-  });
-}
-
-// DynamoDB-only stack (for integration testing with LocalStack)
-if (stackType === 'dynamodb') {
-  const environment = app.node.tryGetContext('environment') || process.env.ENVIRONMENT || 'dev';
-
-  new AttendanceKitStack(app, {
-    env,
-    environment,
-    deployOnlyDynamoDB: true,
-  });
-}
+new AttendanceKitStack(app, {
+  env,
+  environment,
+  jwtSecret,
+  deployOnlyDynamoDB,
+});
 
 app.synth();
