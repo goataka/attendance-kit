@@ -24,6 +24,7 @@ export class ClockService {
   private readonly docClient: DynamoDBDocumentClient;
   private readonly tableName: string;
   private readonly defaultTableName = 'attendance-kit-dev-clock';
+  // DynamoDB Query API: ScanIndexForward=false で降順ソート（最新のレコードが先頭）
   private readonly scanIndexForward = false;
 
   constructor() {
