@@ -11,9 +11,9 @@
     "setup": "npm ci --workspaces --include-workspace-root",
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
+    "update:snapshots": "npm run update:snapshots --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
-    "test:update-snapshots": "npm run test:update-snapshots --workspaces --if-present",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
     "generate": "npm run generate --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"

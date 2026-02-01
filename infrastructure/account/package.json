@@ -6,9 +6,9 @@
     "setup": "npm run setup --prefix ../..",
     "build": "tsc",
     "watch": "tsc -w",
+    "update:snapshots": "jest --updateSnapshot",
     "test": "jest",
     "test:unit": "jest",
-    "test:update-snapshots": "jest --updateSnapshot",
     "cdk": "cdk"
   },
   "keywords": [
