@@ -8,7 +8,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, 'AttendanceKit-test-DynamoDB', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'test',
       deployOnlyDynamoDB: true,
       description: 'DynamoDB Clock Table for integration testing (test)',

@@ -19,12 +19,15 @@ export class AttendanceKitStack extends cdk.Stack {
   public readonly backendApi?: BackendConstruct;
   public readonly frontend?: FrontendConstruct;
 
-  constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
-    super(scope, id, props);
-
+  constructor(scope: Construct, props: AttendanceKitStackProps = {}) {
     // 環境変数のデフォルト値設定
     const environment = props.environment || 'dev';
     const { jwtSecret, deployOnlyDynamoDB = false } = props;
+
+    // Stack IDの生成
+    const stackId = AttendanceKitStack.generateStackId(environment, deployOnlyDynamoDB);
+    
+    super(scope, stackId, props);
 
     // 環境変数のバリデーション
     const validEnvironments = ['dev', 'staging', 'test', 'local'];
@@ -152,6 +155,18 @@ export class AttendanceKitStack extends cdk.Stack {
         exportName: formatExportName(environment, 'Environment'),
       });
     }
+  }
+
+  /**
+   * Stack IDを生成
+   */
+  private static generateStackId(environment: string, deployOnlyDynamoDB: boolean): string {
+    if (deployOnlyDynamoDB) {
+      return `AttendanceKit-${environment}-DynamoDB`;
+    }
+    
+    const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
+    return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 
   /**

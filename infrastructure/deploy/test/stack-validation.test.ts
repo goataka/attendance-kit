@@ -10,7 +10,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 
   test('environmentのデフォルト値がdevである', () => {
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, {
       deployOnlyDynamoDB: true,
     });
 
@@ -24,7 +24,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
 
   test('無効な環境名でエラーが発生する', () => {
     expect(() => {
-      new AttendanceKitStack(app, 'TestStack', {
+      new AttendanceKitStack(app, {
         environment: 'invalid',
         deployOnlyDynamoDB: true,
       });
@@ -32,7 +32,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 
   test('有効な環境名: dev', () => {
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'dev',
       deployOnlyDynamoDB: true,
     });
@@ -45,7 +45,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 
   test('有効な環境名: staging', () => {
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'staging',
       deployOnlyDynamoDB: true,
     });
@@ -58,7 +58,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 
   test('有効な環境名: test', () => {
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'test',
       deployOnlyDynamoDB: true,
     });
@@ -71,7 +71,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 
   test('有効な環境名: local', () => {
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'local',
       deployOnlyDynamoDB: true,
     });
@@ -93,7 +93,7 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
 
   test('フルスタックデプロイ時にjwtSecretが必須', () => {
     expect(() => {
-      new AttendanceKitStack(app, 'TestStack', {
+      new AttendanceKitStack(app, {
         environment: 'dev',
         deployOnlyDynamoDB: false,
         // jwtSecret が提供されていない
@@ -102,7 +102,7 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
   });
 
   test('DynamoDB-onlyモードではjwtSecretは不要', () => {
-    const stack = new AttendanceKitStack(app, 'TestStack', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'test',
       deployOnlyDynamoDB: true,
       // jwtSecret が提供されていない
@@ -115,7 +115,7 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
 
   test('test環境でフルスタックデプロイは許可されない', () => {
     expect(() => {
-      new AttendanceKitStack(app, 'TestStack', {
+      new AttendanceKitStack(app, {
         environment: 'test',
         jwtSecret: 'test-secret',
         deployOnlyDynamoDB: false,
@@ -125,7 +125,7 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
 
   test('local環境でフルスタックデプロイは許可されない', () => {
     expect(() => {
-      new AttendanceKitStack(app, 'TestStack', {
+      new AttendanceKitStack(app, {
         environment: 'local',
         jwtSecret: 'test-secret',
         deployOnlyDynamoDB: false,
