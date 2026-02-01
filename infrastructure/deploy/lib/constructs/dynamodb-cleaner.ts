@@ -10,8 +10,6 @@ export interface DynamoDBCleanerProps {
   table: dynamodb.ITable;
 }
 
-// DynamoDBテーブルのデータをクリアするコンストラクト
-// CDK Triggerを使用してデプロイ時に既存データを削除する
 export class DynamoDBCleaner extends Construct {
   public readonly trigger: Trigger;
 

@@ -9,8 +9,6 @@ interface TriggerEvent {
   ResourceProperties?: Record<string, unknown>;
 }
 
-// DynamoDBテーブルの全データを削除するLambda関数
-// CDK Triggerとして使用され、デプロイ時にテーブルをクリアする
 export const handler = async (event: TriggerEvent): Promise<void> => {
   const tableName = process.env.TABLE_NAME;
 
