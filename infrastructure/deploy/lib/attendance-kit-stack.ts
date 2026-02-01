@@ -25,7 +25,7 @@ export class AttendanceKitStack extends cdk.Stack {
     const { jwtSecret, deployOnlyDynamoDB = false } = props;
 
     // Stack IDの生成
-    const stackId = AttendanceKitStack.generateStackId(environment, deployOnlyDynamoDB);
+    const stackId = AttendanceKitStack.generateStackId(environment);
     
     super(scope, stackId, props);
 
@@ -160,7 +160,7 @@ export class AttendanceKitStack extends cdk.Stack {
   /**
    * Stack IDを生成
    */
-  private static generateStackId(environment: string, deployOnlyDynamoDB: boolean): string {
+  private static generateStackId(environment: string): string {
     const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
