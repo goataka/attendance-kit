@@ -23,7 +23,6 @@ try {
   // .envファイルが存在しない場合は環境変数のみを使用
 }
 
-// 統合テスト: LocalStackのDynamoDBを使用した実際のAPI呼び出しテスト
 // LocalStack使用時は USE_LOCALSTACK=true を設定
 describe('ClockController (Integration)', () => {
   let app: INestApplication;
