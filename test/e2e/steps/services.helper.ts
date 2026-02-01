@@ -22,9 +22,6 @@ const dynamoConfig = IS_LOCAL
 
 export const dynamoClient = new DynamoDBClient(dynamoConfig);
 
-/**
- * Generic service verification wrapper
- */
 async function verifyService(
   name: string,
   verifyFn: () => Promise<void>,
@@ -36,9 +33,6 @@ async function verifyService(
   }
 }
 
-/**
- * Verify that DynamoDB is accessible
- */
 async function verifyDynamoDB(): Promise<void> {
   await verifyService('DynamoDB', async () => {
     const command = new ScanCommand({ TableName: TABLE_NAME, Limit: 1 });
@@ -46,9 +40,6 @@ async function verifyDynamoDB(): Promise<void> {
   });
 }
 
-/**
- * Verify that Backend server is accessible
- */
 async function verifyBackend(): Promise<void> {
   await verifyService('Backend', async () => {
     const response = await fetch(`${BACKEND_URL}/api/health`, {
@@ -60,9 +51,6 @@ async function verifyBackend(): Promise<void> {
   });
 }
 
-/**
- * Verify that Frontend server is accessible
- */
 async function verifyFrontend(): Promise<void> {
   await verifyService('Frontend', async () => {
     const response = await fetch(FRONTEND_URL, { method: 'GET' });
@@ -72,9 +60,6 @@ async function verifyFrontend(): Promise<void> {
   });
 }
 
-/**
- * Verify that all required services are running
- */
 export async function verifyServicesRunning(): Promise<void> {
   // DynamoDBの検証はローカル環境のみ（デプロイ環境ではバックエンド経由でアクセス）
   if (IS_LOCAL) {

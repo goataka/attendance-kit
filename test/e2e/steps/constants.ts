@@ -1,6 +1,3 @@
-/**
- * Test timeout constants (in milliseconds)
- */
 export const TIMEOUTS = {
   WAIT_MESSAGE: 15000,
   CLOCK_ACTION: 30000,
@@ -8,9 +5,6 @@ export const TIMEOUTS = {
   DEFAULT_STEP: 30000,
 } as const;
 
-/**
- * Page selectors
- */
 export const SELECTORS = {
   userId: '#userId',
   password: '#password',

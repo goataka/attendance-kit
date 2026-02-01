@@ -7,20 +7,10 @@ import { Trigger } from 'aws-cdk-lib/triggers';
 import * as path from 'path';
 
 export interface DynamoDBCleanerProps {
-  /**
-   * クリアするDynamoDBテーブル
-   */
   table: dynamodb.ITable;
 }
 
-/**
- * DynamoDBテーブルのデータをクリアするコンストラクト
- * CDK Triggerを使用してデプロイ時に既存データを削除する
- */
 export class DynamoDBCleaner extends Construct {
-  /**
-   * データクリア用のTrigger
-   */
   public readonly trigger: Trigger;
 
   constructor(scope: Construct, id: string, props: DynamoDBCleanerProps) {

@@ -43,16 +43,10 @@ export class ClockService {
     this.tableName = process.env.DYNAMODB_TABLE_NAME || this.defaultTableName;
   }
 
-  /**
-   * Extract date string (YYYY-MM-DD) from Date object
-   */
   private extractDate(date: Date): string {
     return date.toISOString().split('T')[0];
   }
 
-  /**
-   * Create and save a clock record to DynamoDB
-   */
   private async createAndSaveRecord(
     userId: string,
     type: ClockType,

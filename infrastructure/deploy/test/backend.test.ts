@@ -2,16 +2,14 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
-/**
- * S3Key値を固定文字列に置換するスナップショットシリアライザー
- * 
- * Lambda関数コードが変更されるたびにS3Keyハッシュが変わるため、
- * スナップショットテストでコード変更の差分が大量に発生します。
- * インフラ構造の変更を検出することが目的なので、S3Keyハッシュは
- * 固定値にマスクします。
- * 
- * このシリアライザーを削除しないでください。
- */
+// S3Key値を固定文字列に置換するスナップショットシリアライザー
+//
+// Lambda関数コードが変更されるたびにS3Keyハッシュが変わるため、
+// スナップショットテストでコード変更の差分が大量に発生します。
+// インフラ構造の変更を検出することが目的なので、S3Keyハッシュは
+// 固定値にマスクします。
+//
+// このシリアライザーを削除しないでください。
 expect.addSnapshotSerializer({
   test: (val) => {
     // S3Keyハッシュパターン（64文字のhex + .zip）を持つ文字列かどうかをチェック
