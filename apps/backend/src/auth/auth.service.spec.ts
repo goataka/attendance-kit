@@ -24,7 +24,7 @@ describe('AuthService', () => {
     jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('should login with valid credentials', () => {
+  it('正しい認証情報でログインできること', () => {
     const result = service.login('user001', 'password123');
 
     expect(result).toEqual({
@@ -37,14 +37,14 @@ describe('AuthService', () => {
     });
   });
 
-  it('should throw UnauthorizedException for invalid userId', () => {
+  it('無効なユーザーIDでは認証エラーとなること', () => {
     expect(() => service.login('invalid-user', 'password123')).toThrow(
       UnauthorizedException,
     );
     expect(jwtService.sign).not.toHaveBeenCalled();
   });
 
-  it('should throw UnauthorizedException for invalid password', () => {
+  it('無効なパスワードでは認証エラーとなること', () => {
     expect(() => service.login('user001', 'invalid-password')).toThrow(
       UnauthorizedException,
     );
