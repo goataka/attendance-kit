@@ -6,6 +6,7 @@
     "setup": "npm run setup --prefix ../..",
     "build": "tsc",
     "watch": "tsc -w",
+    "update": "npm install && npm run update:snapshots",
     "update:snapshots": "jest --updateSnapshot",
     "test": "jest",
     "test:unit": "jest",
