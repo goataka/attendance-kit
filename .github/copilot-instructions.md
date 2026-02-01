@@ -4,6 +4,8 @@
 - [Agent開発ガイドライン](./agents/AGENTS.md) - エージェントの役割とプロジェクトサマリー
 - [コーディング規約](./instructions/coding.instructions.md) - 一般的なコーディング原則と理解しやすいコードの書き方
 - [シェルスクリプト規約](./instructions/sh.instructions.md) - シェルスクリプト固有のコーディングルールとテスト規約
+- [TypeScript規約](./instructions/typescript.instructions.md) - TypeScript固有のコーディングルールとCDK Constructルール
+- [Markdown規約](./instructions/markdown.instructions.md) - ドキュメント作成ルール
 
 ## 言語ポリシー
 
@@ -68,6 +70,11 @@ Commit: [be9f233](https://github.com/goataka/attendance-kit/commit/be9f233)
   - **使用すべき状況**: GitHub Actionsワークフローが失敗した場合、CI/CDパイプラインでエラーが発生した場合
   - **使用しない状況**: ワークフローファイルの軽微な設定変更（環境変数追加など）のみの場合
   - **判断基準**: エラーログの確認、再現、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
+
+- **cloudfront-error-handler**: CloudFrontエラー対応
+  - **使用すべき状況**: CloudFront経由のアクセスでエラーが発生した場合、API GatewayやLambdaとの連携不具合が疑われる場合
+  - **使用しない状況**: CloudFrontの設定変更のみを行う場合
+  - **判断基準**: アクセス検証、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
 
 - **premerge-check**: プレマージワークフローのローカル実行
   - **使用すべき状況**: PRを作成する前にローカルでCI/CDチェックを実行したい場合

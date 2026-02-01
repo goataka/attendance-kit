@@ -164,8 +164,3 @@ npx cdk deploy --context environment=dev
 npm test
 ```
 
-## 🔍 トラブルシューティング
-
-詳細は [TROUBLESHOOTING.md](TROUBLESHOOTING.md) を参照してください。
-
-
