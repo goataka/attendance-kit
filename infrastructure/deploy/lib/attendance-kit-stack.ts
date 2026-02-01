@@ -157,17 +157,11 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  /**
-   * Stack IDを生成
-   */
   private static generateStackId(environment: string): string {
     const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 
-  /**
-   * データクリア用のDynamoDBCleanerを設定
-   */
   private setupDataClear(): DynamoDBCleaner {
     const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
       table: this.clockTable,
@@ -176,9 +170,6 @@ export class AttendanceKitStack extends cdk.Stack {
     return cleaner;
   }
 
-  /**
-   * データ投入用のSeederを設定
-   */
   private setupDataSeeder(): DynamoDBSeeder {
     const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
       table: this.clockTable,
@@ -190,10 +181,7 @@ export class AttendanceKitStack extends cdk.Stack {
     return seeder;
   }
 
-  /**
-   * データクリアとシードの設定
-   * クリアが完了してからシードが実行されるように依存関係を設定
-   */
+  // クリアが完了してからシードが実行されるように依存関係を設定
   private setupDataClearAndSeed(): void {
     const cleaner = this.setupDataClear();
     const seeder = this.setupDataSeeder();
