@@ -37,7 +37,7 @@ describe('ClockInOutPage', () => {
     fireEvent.click(clockInButton);
     
     await waitFor(() => {
-      expect(screen.getByText('User ID and password are required')).toBeInTheDocument();
+      expect(screen.getByText('ユーザーIDとパスワードを入力してください')).toBeInTheDocument();
     });
   });
 
@@ -65,7 +65,7 @@ describe('ClockInOutPage', () => {
     fireEvent.click(clockInButton);
     
     await waitFor(() => {
-      expect(screen.getByText(/Clock in successful/)).toBeInTheDocument();
+      expect(screen.getByText(/出勤を記録しました/)).toBeInTheDocument();
     });
   });
 

@@ -12,7 +12,7 @@ export function ClockInOutPage() {
 
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
     if (!userId || !password) {
-      setMessage({ type: 'error', text: 'User ID and password are required' });
+      setMessage({ type: 'error', text: 'ユーザーIDとパスワードを入力してください' });
       return;
     }
 
@@ -25,15 +25,14 @@ export function ClockInOutPage() {
       if (response.success) {
         setMessage({
           type: 'success',
-          text: `${type === 'clock-in' ? 'Clock in' : 'Clock out'} successful at ${new Date(response.record!.timestamp).toLocaleString('ja-JP')}`,
+          text: `${type === 'clock-in' ? '出勤' : '退勤'}を記録しました（${new Date(response.record!.timestamp).toLocaleString('ja-JP')}）`,
         });
-        // Clear password for security
         setPassword('');
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to process request' });
+        setMessage({ type: 'error', text: response.message || '処理に失敗しました' });
       }
     } catch {
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      setMessage({ type: 'error', text: 'エラーが発生しました。もう一度お試しください。' });
     } finally {
       setLoading(false);
     }
