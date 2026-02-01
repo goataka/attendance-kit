@@ -39,6 +39,24 @@ graph LR
 - Playwright 1.48.0
 - ESLint 9.15.0
 
+## セットアップ
+
+```bash
+npm install
+cp .env.example .env  # 環境変数を設定（オプション）
+```
+
+### 環境変数
+
+フロントエンドの動作を制御する環境変数を設定できます。`.env.example`をコピーして`.env`ファイルを作成してください。
+
+| 変数名 | 説明 | デフォルト値 |
+|--------|------|-------------|
+| `VITE_BACKEND_URL` | バックエンドAPIのURL | 開発環境: `http://localhost:3000`<br>本番環境: `window.location.origin` |
+| `VITE_USE_MOCK_API` | モックAPIを使用するか | `false` |
+
+**注意:** 環境変数が未設定の場合、アプリケーションは自動的に適切なデフォルト値を使用します。
+
 ## プロジェクト構造
 
 ```

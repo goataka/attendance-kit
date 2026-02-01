@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   DynamoDBDocumentClient,
@@ -27,20 +28,25 @@ export class ClockService {
   // DynamoDB Query API: ScanIndexForward=false で降順ソート（最新のレコードが先頭）
   private readonly scanIndexForward = false;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
     // LocalStack統合テスト用のエンドポイント設定
     const clientConfig: any = {
-      region: process.env.AWS_REGION || 'ap-northeast-1',
+      region: this.configService.get<string>('AWS_REGION', 'ap-northeast-1'),
     };
 
     // LocalStackエンドポイントが設定されている場合はそれを使用
-    if (process.env.DYNAMODB_ENDPOINT) {
-      clientConfig.endpoint = process.env.DYNAMODB_ENDPOINT;
+    const dynamodbEndpoint =
+      this.configService.get<string>('DYNAMODB_ENDPOINT');
+    if (dynamodbEndpoint) {
+      clientConfig.endpoint = dynamodbEndpoint;
     }
 
     const client = new DynamoDBClient(clientConfig);
     this.docClient = DynamoDBDocumentClient.from(client);
-    this.tableName = process.env.DYNAMODB_TABLE_NAME || this.defaultTableName;
+    this.tableName = this.configService.get<string>(
+      'DYNAMODB_TABLE_NAME',
+      this.defaultTableName,
+    );
   }
 
   private extractDate(date: Date): string {
