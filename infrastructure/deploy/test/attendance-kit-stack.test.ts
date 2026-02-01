@@ -2,13 +2,142 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
+describe('AttendanceKitStack - Environment Validation', () => {
+  let app: App;
+
+  beforeEach(() => {
+    app = new App();
+  });
+
+  test('environmentのデフォルト値がdevである', () => {
+    const stack = new AttendanceKitStack(app, {
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-dev-clock',
+    });
+  });
+
+  test('無効な環境名でエラーが発生する', () => {
+    expect(() => {
+      new AttendanceKitStack(app, {
+        environment: 'invalid',
+        deployOnlyDynamoDB: true,
+      });
+    }).toThrow('Invalid environment: invalid. Must be one of: dev, staging, test, local');
+  });
+
+  test('有効な環境名: dev', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'dev',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-dev-clock',
+    });
+  });
+
+  test('有効な環境名: staging', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'staging',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-staging-clock',
+    });
+  });
+
+  test('有効な環境名: test', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'test',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-test-clock',
+    });
+  });
+
+  test('有効な環境名: local', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'local',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-local-clock',
+    });
+  });
+});
+
+describe('AttendanceKitStack - JWT Secret Validation', () => {
+  let app: App;
+
+  beforeEach(() => {
+    app = new App();
+  });
+
+  test('フルスタックデプロイ時にjwtSecretが必須', () => {
+    expect(() => {
+      new AttendanceKitStack(app, {
+        environment: 'dev',
+        deployOnlyDynamoDB: false,
+      });
+    }).toThrow('JWT_SECRET environment variable is required for environment stack deployment');
+  });
+
+  test('DynamoDB-onlyモードではjwtSecretは不要', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'test',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    expect(stack.clockTable).toBeDefined();
+    expect(stack.backendApi).toBeUndefined();
+  });
+
+  test('test環境でフルスタックデプロイは許可されない', () => {
+    expect(() => {
+      new AttendanceKitStack(app, {
+        environment: 'test',
+        jwtSecret: 'test-secret',
+        deployOnlyDynamoDB: false,
+      });
+    }).toThrow("Full stack deployment is not allowed for 'test' environment");
+  });
+
+  test('local環境でフルスタックデプロイは許可されない', () => {
+    expect(() => {
+      new AttendanceKitStack(app, {
+        environment: 'local',
+        jwtSecret: 'test-secret',
+        deployOnlyDynamoDB: false,
+      });
+    }).toThrow("Full stack deployment is not allowed for 'local' environment");
+  });
+});
+
 describe('AttendanceKitStack - DynamoDB Only Mode', () => {
   let app: App;
   let template: Template;
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, 'AttendanceKit-test-DynamoDB', {
+    const stack = new AttendanceKitStack(app, {
       environment: 'test',
       deployOnlyDynamoDB: true,
       description: 'DynamoDB Clock Table for integration testing (test)',
@@ -42,7 +171,6 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     expect(tableKeys.length).toBe(1);
     
     const table = tables[tableKeys[0]];
-    // ポイントインタイムリカバリが設定されていないことを確認
     expect(table.Properties?.PointInTimeRecoverySpecification).toBeUndefined();
   });
 
@@ -84,7 +212,6 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
     
-    // exportNameが設定されていないことを確認
     const output = outputs[Object.keys(outputs)[0]];
     expect(output.Export).toBeUndefined();
   });
@@ -94,7 +221,6 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
     
-    // exportNameが設定されていないことを確認
     const output = outputs[Object.keys(outputs)[0]];
     expect(output.Export).toBeUndefined();
   });

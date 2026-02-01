@@ -9,7 +9,7 @@ import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment: string; // 'dev' | 'staging' | 'test'
+  environment?: string; // 'dev' | 'staging' | 'test' | 'local' (デフォルト: 'dev')
   jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
   deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
@@ -19,10 +19,18 @@ export class AttendanceKitStack extends cdk.Stack {
   public readonly backendApi?: BackendConstruct;
   public readonly frontend?: FrontendConstruct;
 
-  constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
-    super(scope, id, props);
+  constructor(scope: Construct, props: AttendanceKitStackProps = {}) {
+    // 環境変数のデフォルト値設定
+    const environment = props.environment || 'dev';
+    const { jwtSecret, deployOnlyDynamoDB = false } = props;
 
-    const { environment, jwtSecret, deployOnlyDynamoDB = false } = props;
+    // 環境変数のバリデーション（super呼び出し前）
+    AttendanceKitStack.validateEnvironmentStatic(environment);
+
+    // Stack IDの生成
+    const stackId = AttendanceKitStack.generateStackId(environment);
+    
+    super(scope, stackId, props);
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
     // (infrastructure/setup/attendance-kit-setup.yaml)
@@ -80,15 +88,15 @@ export class AttendanceKitStack extends cdk.Stack {
 
     // DynamoDBのみをデプロイする場合は、BackendとFrontendをスキップ
     if (!deployOnlyDynamoDB) {
-      if (!jwtSecret) {
-        throw new Error('jwtSecret is required when deployOnlyDynamoDB is false');
-      }
+      // フルスタックデプロイのバリデーション
+      this.validateFullStackDeployment(environment, jwtSecret);
 
       // Backend API (Lambda + API Gateway)
+      // validateFullStackDeploymentでjwtSecretの存在を確認済み
       this.backendApi = new BackendConstruct(this, 'BackendApi', {
         environment,
         clockTable: this.clockTable,
-        jwtSecret,
+        jwtSecret: jwtSecret!,
       });
 
       // Frontend (CloudFront + S3)
@@ -132,6 +140,50 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
+  /**
+   * 環境変数のバリデーション（static）
+   */
+  private static validateEnvironmentStatic(environment: string): void {
+    const validEnvironments = ['dev', 'staging', 'test', 'local'];
+    if (!validEnvironments.includes(environment)) {
+      throw new Error(
+        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
+      );
+    }
+  }
+
+  /**
+   * フルスタックデプロイのバリデーション
+   */
+  private validateFullStackDeployment(environment: string, jwtSecret?: string): void {
+    // JWT_SECRETが必須
+    if (!jwtSecret) {
+      throw new Error(
+        'JWT_SECRET environment variable is required for environment stack deployment. ' +
+        'Please set jwtSecret in stack props.'
+      );
+    }
+
+    // test/local環境ではフルスタックデプロイは許可しない
+    if (environment === 'test' || environment === 'local') {
+      throw new Error(
+        `Full stack deployment is not allowed for '${environment}' environment. ` +
+        'Use deployOnlyDynamoDB: true for test/local environments.'
+      );
+    }
+  }
+
+  /**
+   * Stack IDを生成
+   */
+  private static generateStackId(environment: string): string {
+    const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
+    return `AttendanceKit-${capitalizedEnv}-Stack`;
+  }
+
+  /**
+   * データクリア用のDynamoDBCleanerを設定
+   */
   private setupDataClear(): DynamoDBCleaner {
     const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
       table: this.clockTable,
