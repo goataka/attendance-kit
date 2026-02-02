@@ -34,19 +34,23 @@
 
 **形式**:
 ```
-PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/files)
+PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/changes/始点コミット..終点コミット)
 ```
 
 **例**:
 ```
-PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/files)
+PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
 ```
 
 **理由**:
-- ユーザーがワンクリックでPRの全変更を確認可能
+- ユーザーがワンクリックで今回の作業によるコミット差分を確認可能
 - そのままApproveボタンを押してレビュー完了できる
 - コードレビューの効率化
 - 変更履歴の追跡性向上
+
+**注意**:
+- 始点コミットは作業開始前のコミット、終点コミットは作業完了時のコミットを指定
+- コミットハッシュは短縮形（7文字）でも完全形でも可
 
 ## Agentの動作ガイドライン
 
