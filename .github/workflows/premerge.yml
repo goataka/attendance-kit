@@ -111,9 +111,6 @@ jobs:
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
 
-      - name: Install CDK CLI
-        run: npm install --global aws-cdk-local aws-cdk
-
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
         with:
@@ -162,9 +159,6 @@ jobs:
 
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
-
-      - name: Install CDK CLI
-        run: npm install --global aws-cdk-local aws-cdk
 
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
@@ -254,9 +248,6 @@ jobs:
 
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
-
-      - name: Install CDK CLI
-        run: npm install --global aws-cdk-local aws-cdk
 
       - name: Start LocalStack
         uses: LocalStack/setup-localstack@v0.2.3
