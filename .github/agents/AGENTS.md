@@ -64,8 +64,7 @@ GitHub Copilot Agentのみで構築する、モダンなクラウドベースの
 │   ├── deploy/           # CDKプロジェクト
 │   │   ├── lib/          # CDKスタック定義
 │   │   └── test/         # インフラテスト
-│   ├── setup/            # 初回セットアップ用CloudFormation
-│   └── issues/           # 実装記録
+│   └── setup/            # 初回セットアップ用CloudFormation
 ├── docs/                 # ドキュメント
 └── scripts/              # 開発・CI/CD支援スクリプト
 ```

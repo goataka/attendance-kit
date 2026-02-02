@@ -20,7 +20,7 @@ describe('ClockInOutPage', () => {
     vi.clearAllMocks();
   });
 
-  it('renders the clock in/out page', () => {
+  it('打刻ページが表示されること', () => {
     renderWithRouter(<ClockInOutPage />);
     
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe('ClockInOutPage', () => {
     expect(screen.getByText('退勤')).toBeInTheDocument();
   });
 
-  it('shows error when fields are empty', async () => {
+  it('入力フィールドが空の場合はエラーを表示すること', async () => {
     renderWithRouter(<ClockInOutPage />);
     
     const clockInButton = screen.getByText('出勤');
@@ -41,7 +41,7 @@ describe('ClockInOutPage', () => {
     });
   });
 
-  it('handles successful clock in', async () => {
+  it('出勤打刻が成功すること', async () => {
     const mockResponse = {
       success: true,
       record: {
@@ -69,7 +69,7 @@ describe('ClockInOutPage', () => {
     });
   });
 
-  it('handles failed clock in', async () => {
+  it('出勤打刻が失敗すること', async () => {
     const mockResponse = {
       success: false,
       message: 'Invalid credentials',
@@ -92,7 +92,7 @@ describe('ClockInOutPage', () => {
     });
   });
 
-  it('clears password after successful clock in', async () => {
+  it('成功後にパスワードがクリアされること', async () => {
     const mockResponse = {
       success: true,
       record: {

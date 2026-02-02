@@ -3,21 +3,34 @@ import { Construct } from 'constructs';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { BackendConstruct } from './constructs/backend';
 import { FrontendConstruct } from './constructs/frontend';
+import { formatExportName } from './utils/cdk-helpers';
+import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
+import * as path from 'path';
+import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment: string; // 'dev' | 'staging'
-  jwtSecret: string; // JWT secret from GitHub Secrets (required)
+  environment?: string; // 'dev' | 'staging' | 'test' | 'local' (デフォルト: 'dev')
+  jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
+  deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
 
 export class AttendanceKitStack extends cdk.Stack {
   public readonly clockTable: dynamodb.Table;
-  public readonly backendApi: BackendConstruct;
-  public readonly frontend: FrontendConstruct;
+  public readonly backendApi?: BackendConstruct;
+  public readonly frontend?: FrontendConstruct;
 
-  constructor(scope: Construct, id: string, props: AttendanceKitStackProps) {
-    super(scope, id, props);
+  constructor(scope: Construct, props: AttendanceKitStackProps = {}) {
+    // 環境変数のデフォルト値設定
+    const environment = props.environment || 'dev';
+    const { jwtSecret, deployOnlyDynamoDB = false } = props;
 
-    const { environment, jwtSecret } = props;
+    // 環境変数のバリデーション（super呼び出し前）
+    AttendanceKitStack.validateEnvironmentStatic(environment);
+
+    // Stack IDの生成
+    const stackId = AttendanceKitStack.generateStackId(environment);
+    
+    super(scope, stackId, props);
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
     // (infrastructure/setup/attendance-kit-setup.yaml)
@@ -38,10 +51,14 @@ export class AttendanceKitStack extends cdk.Stack {
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       encryption: dynamodb.TableEncryption.AWS_MANAGED,
-      pointInTimeRecoverySpecification: {
-        pointInTimeRecoveryEnabled: true,
-      },
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      // DynamoDBのみをデプロイする場合は、ポイントインタイムリカバリを無効化（テスト環境用）
+      ...(deployOnlyDynamoDB ? {} : {
+        pointInTimeRecoverySpecification: {
+          pointInTimeRecoveryEnabled: true,
+        },
+      }),
+      // DynamoDBのみをデプロイする場合は削除可能にする（テスト環境用）
+      removalPolicy: deployOnlyDynamoDB ? cdk.RemovalPolicy.DESTROY : cdk.RemovalPolicy.RETAIN,
       // Cost optimization: No additional alarms or monitoring features
     });
 
@@ -63,44 +80,134 @@ export class AttendanceKitStack extends cdk.Stack {
     cdk.Tags.of(this.clockTable).add('Environment', environment);
     cdk.Tags.of(this.clockTable).add('Project', 'attendance-kit');
     cdk.Tags.of(this.clockTable).add('ManagedBy', 'CDK');
-    cdk.Tags.of(this.clockTable).add('CostCenter', 'Engineering');
+    if (deployOnlyDynamoDB) {
+      cdk.Tags.of(this.clockTable).add('Purpose', 'IntegrationTest');
+    } else {
+      cdk.Tags.of(this.clockTable).add('CostCenter', 'Engineering');
+    }
 
-    // Backend API (Lambda + API Gateway)
-    this.backendApi = new BackendConstruct(this, 'BackendApi', {
-      environment,
-      clockTable: this.clockTable,
-      jwtSecret,
-    });
+    // DynamoDBのみをデプロイする場合は、BackendとFrontendをスキップ
+    if (!deployOnlyDynamoDB) {
+      // フルスタックデプロイのバリデーション
+      this.validateFullStackDeployment(environment, jwtSecret);
 
-    // Frontend (CloudFront + S3)
-    this.frontend = new FrontendConstruct(this, 'Frontend', {
-      environment,
-      api: this.backendApi.api,
-    });
+      // Backend API (Lambda + API Gateway)
+      // validateFullStackDeploymentでjwtSecretの存在を確認済み
+      this.backendApi = new BackendConstruct(this, 'BackendApi', {
+        environment,
+        clockTable: this.clockTable,
+        jwtSecret: jwtSecret!,
+      });
+
+      // Frontend (CloudFront + S3)
+      this.frontend = new FrontendConstruct(this, 'Frontend', {
+        environment,
+        api: this.backendApi.api,
+      });
+    } else {
+      // DynamoDBのみをデプロイする場合で、dev/local環境の場合はデータクリアとシード機能を追加
+      if (environment === 'dev' || environment === 'local') {
+        this.setupDataClearAndSeed();
+      }
+    }
 
     // CloudFormation Outputs
     new cdk.CfnOutput(this, 'TableName', {
       value: this.clockTable.tableName,
       description: `DynamoDB clock table name (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableName`,
+      // DynamoDBのみをデプロイする場合は、exportNameを設定しない（テスト環境用）
+      exportName: deployOnlyDynamoDB ? undefined : formatExportName(environment, 'ClockTableName'),
     });
 
     new cdk.CfnOutput(this, 'TableArn', {
       value: this.clockTable.tableArn,
       description: `DynamoDB clock table ARN (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-ClockTableArn`,
+      exportName: deployOnlyDynamoDB ? undefined : formatExportName(environment, 'ClockTableArn'),
     });
 
-    new cdk.CfnOutput(this, 'GSIName', {
-      value: 'DateIndex',
-      description: `Global Secondary Index name (${environment})`,
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-GSIName`,
+    if (!deployOnlyDynamoDB) {
+      new cdk.CfnOutput(this, 'GSIName', {
+        value: 'DateIndex',
+        description: `Global Secondary Index name (${environment})`,
+        exportName: formatExportName(environment, 'GSIName'),
+      });
+
+      new cdk.CfnOutput(this, 'Environment', {
+        value: environment,
+        description: 'Deployment environment',
+        exportName: formatExportName(environment, 'Environment'),
+      });
+    }
+  }
+
+  /**
+   * 環境変数のバリデーション（static）
+   */
+  private static validateEnvironmentStatic(environment: string): void {
+    const validEnvironments = ['dev', 'staging', 'test', 'local'];
+    if (!validEnvironments.includes(environment)) {
+      throw new Error(
+        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
+      );
+    }
+  }
+
+  /**
+   * フルスタックデプロイのバリデーション
+   */
+  private validateFullStackDeployment(environment: string, jwtSecret?: string): void {
+    // JWT_SECRETが必須
+    if (!jwtSecret) {
+      throw new Error(
+        'JWT_SECRET environment variable is required for environment stack deployment. ' +
+        'Please set jwtSecret in stack props.'
+      );
+    }
+
+    // test/local環境ではフルスタックデプロイは許可しない
+    if (environment === 'test' || environment === 'local') {
+      throw new Error(
+        `Full stack deployment is not allowed for '${environment}' environment. ` +
+        'Use deployOnlyDynamoDB: true for test/local environments.'
+      );
+    }
+  }
+
+  /**
+   * Stack IDを生成
+   */
+  private static generateStackId(environment: string): string {
+    const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
+    return `AttendanceKit-${capitalizedEnv}-Stack`;
+  }
+
+  /**
+   * データクリア用のDynamoDBCleanerを設定
+   */
+  private setupDataClear(): DynamoDBCleaner {
+    const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
+      table: this.clockTable,
     });
 
-    new cdk.CfnOutput(this, 'Environment', {
-      value: environment,
-      description: 'Deployment environment',
-      exportName: `AttendanceKit-${environment.charAt(0).toUpperCase() + environment.slice(1)}-Environment`,
+    return cleaner;
+  }
+
+  private setupDataSeeder(): DynamoDBSeeder {
+    const seeder = new DynamoDBSeeder(this, 'ClockTableSeeder', {
+      table: this.clockTable,
+      seeds: Seeds.fromJsonFile(
+        path.join(__dirname, '../seeds/clock-records.json'),
+      ),
     });
+
+    return seeder;
+  }
+
+  // クリアが完了してからシードが実行されるように依存関係を設定
+  private setupDataClearAndSeed(): void {
+    const cleaner = this.setupDataClear();
+    const seeder = this.setupDataSeeder();
+
+    seeder.node.addDependency(cleaner.trigger);
   }
 }

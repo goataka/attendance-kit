@@ -5,10 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'infrastructure/deploy/lib/attendance-kit-account-stack.ts'
-      - 'infrastructure/deploy/lib/constructs/cost-budget.ts'
-      - 'infrastructure/deploy/test/attendance-kit-account-stack.test.ts'
-      - 'infrastructure/deploy/test/cost-budget.test.ts'
+      - 'infrastructure/account/**'
       - '.github/workflows/deploy-account-stack.yml'
   workflow_dispatch:
 
@@ -32,14 +29,14 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-          cache-dependency-path: infrastructure/deploy/package-lock.json
+          cache-dependency-path: infrastructure/account/package-lock.json
 
       - name: Install dependencies
-        working-directory: infrastructure/deploy
+        working-directory: infrastructure/account
         run: npm run setup
 
       - name: Build TypeScript
-        working-directory: infrastructure/deploy
+        working-directory: infrastructure/account
         run: npm run build
 
       - name: Configure AWS credentials via OIDC
@@ -49,21 +46,21 @@ jobs:
           aws-region: ap-northeast-1
 
       - name: CDK Bootstrap
-        working-directory: infrastructure/deploy
+        working-directory: infrastructure/account
         env:
           COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=account
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1
 
       - name: CDK Deploy Account Stack
-        working-directory: infrastructure/deploy
+        working-directory: infrastructure/account
         env:
           COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
         run: |
           echo "Deploying account stack: AttendanceKit-Account-Stack"
-          npx cdk deploy AttendanceKit-Account-Stack --require-approval never --context stack=account
+          npx cdk deploy AttendanceKit-Account-Stack --require-approval never
 
       - name: Output deployment results
         run: |

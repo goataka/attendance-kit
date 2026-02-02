@@ -36,10 +36,8 @@ export const resolveBackendUrl = (
 
 const BACKEND_URL = resolveBackendUrl();
 
-// Token storage key
 const TOKEN_STORAGE_KEY = 'attendance-kit-token';
 
-// Get stored token
 const getStoredToken = (): string | null => {
   try {
     return sessionStorage.getItem(TOKEN_STORAGE_KEY);
@@ -48,7 +46,6 @@ const getStoredToken = (): string | null => {
   }
 };
 
-// Store token
 const storeToken = (token: string): void => {
   try {
     sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
@@ -57,7 +54,6 @@ const storeToken = (token: string): void => {
   }
 };
 
-// Clear stored token
 const clearToken = (): void => {
   try {
     sessionStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -66,7 +62,6 @@ const clearToken = (): void => {
   }
 };
 
-// ログインしてJWTトークンを取得
 const login = async (userId: string, password: string): Promise<string | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
@@ -84,7 +79,6 @@ const login = async (userId: string, password: string): Promise<string | null> =
     const data = await response.json();
     const token = data.accessToken;
     
-    // Store token for future use
     if (token) {
       storeToken(token);
     }
@@ -97,10 +91,8 @@ const login = async (userId: string, password: string): Promise<string | null> =
 };
 
 export const api = {
-  // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
-      // まずログインしてトークンを取得
       const token = await login(request.userId, request.password);
       
       if (!token) {
@@ -110,7 +102,6 @@ export const api = {
         };
       }
 
-      // トークンを使ってClock APIを呼び出し
       const response = await fetch(
         `${BACKEND_URL}${API_BASE_PATH}/clock/${request.type === 'clock-in' ? 'in' : 'out'}`,
         {
@@ -153,10 +144,8 @@ export const api = {
     }
   },
 
-  // Get records with optional filtering
   getRecords: async (filter?: RecordsFilter): Promise<ClockRecord[]> => {
     try {
-      // Get stored token
       const token = getStoredToken();
       
       if (!token) {
@@ -191,7 +180,6 @@ export const api = {
 
       if (!response.ok) {
         if (response.status === 401) {
-          // Token is invalid or expired; clear it
           clearToken();
           throw new Error('Authentication expired. Please log in again.');
         }
