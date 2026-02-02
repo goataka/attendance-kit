@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { ClockService } from './clock.service';
 import { ClockType } from './dto/clock.dto';
 
@@ -15,8 +16,25 @@ describe('ClockService', () => {
       send: jest.fn(),
     };
 
+    // ConfigServiceのモック
+    const mockConfigService = {
+      get: jest.fn((key: string, defaultValue?: any) => {
+        const config: Record<string, any> = {
+          AWS_REGION: 'ap-northeast-1',
+          DYNAMODB_TABLE_NAME: 'attendance-kit-test-clock',
+        };
+        return config[key] ?? defaultValue;
+      }),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ClockService],
+      providers: [
+        ClockService,
+        {
+          provide: ConfigService,
+          useValue: mockConfigService,
+        },
+      ],
     }).compile();
 
     service = module.get<ClockService>(ClockService);

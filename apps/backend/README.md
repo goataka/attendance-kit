@@ -38,6 +38,34 @@ graph LR
 ```bash
 npm install
 cp .env.example .env  # 環境変数を設定
+```
+
+### 環境変数
+
+アプリケーションの動作に必要な環境変数を設定します。`.env.example`をコピーして`.env`ファイルを作成してください。
+
+#### 必須の環境変数
+
+| 変数名 | 説明 | デフォルト値 |
+|--------|------|-------------|
+| `JWT_SECRET` | JWT署名に使用する秘密鍵 | - |
+| `AWS_REGION` | AWSリージョン | `ap-northeast-1` |
+| `DYNAMODB_TABLE_NAME` | DynamoDBテーブル名 | `attendance-kit-dev-clock` |
+
+#### オプションの環境変数
+
+| 変数名 | 説明 | デフォルト値 |
+|--------|------|-------------|
+| `CORS_ORIGIN` | 許可するオリジン | `*` |
+| `PORT` | サーバーポート番号 | `3000` |
+| `DYNAMODB_ENDPOINT` | DynamoDBエンドポイント（LocalStack用） | - |
+| `NODE_ENV` | 実行環境 | `development` |
+
+**注意:** Lambda環境（`NODE_ENV`が`production`、`dev`、`staging`の場合）では、`.env`ファイルは無視され、GitHub ActionsのSecretsから環境変数が直接設定されます。
+
+#### 開発環境
+
+```bash
 npm run start:dev     # 開発サーバー起動
 ```
 
