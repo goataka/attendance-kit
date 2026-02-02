@@ -270,13 +270,22 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const artifacts = await github.rest.actions.listArtifactsForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              per_page: 100
-            });
+            // すべてのアーティファクトを取得（ページネーション対応）
+            const allArtifacts = [];
+            let page = 1;
+            while (true) {
+              const response = await github.rest.actions.listArtifactsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100,
+                page: page
+              });
+              allArtifacts.push(...response.data.artifacts);
+              if (response.data.artifacts.length < 100) break;
+              page++;
+            }
             
-            const e2eArtifacts = artifacts.data.artifacts
+            const e2eArtifacts = allArtifacts
               .filter(artifact => artifact.name === 'e2e-test-reports')
               .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             
