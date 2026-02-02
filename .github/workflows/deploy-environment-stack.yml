@@ -39,22 +39,22 @@ jobs:
       environment: ${{ steps.deploy-outputs.outputs.environment }}
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
+      - name: Node.js 24のセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Build all workspaces
+      - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: Configure AWS credentials via OIDC
+      - name: AWS認証情報の設定（OIDC経由）
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
@@ -70,7 +70,7 @@ jobs:
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=environment
 
-      - name: CDK Deploy Environment Stack
+      - name: CDK Deploy環境スタック
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
@@ -82,7 +82,7 @@ jobs:
             --context stack=environment \
             --context environment=${ENVIRONMENT}
 
-      - name: Output deployment results
+      - name: デプロイ結果の出力
         id: deploy-outputs
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}
@@ -115,7 +115,7 @@ jobs:
           echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
           echo "environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
@@ -123,7 +123,7 @@ jobs:
           failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Create issue on failure
+      - name: 失敗時のIssue作成
         if: failure()
         uses: ./.github/actions/create-issue-on-failure
         with:
@@ -137,28 +137,28 @@ jobs:
     environment: dev
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
+      - name: Node.js 24のセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Install Playwright Browsers
+      - name: Playwrightブラウザのインストール
         run: npx playwright install --with-deps chromium
 
-      - name: Configure AWS credentials via OIDC
+      - name: AWS認証情報の設定（OIDC経由）
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
-      - name: Run E2E Tests against Deployed Environment
+      - name: デプロイ済み環境に対するE2Eテストの実行
         env:
           E2E_ENV: deployed
           FRONTEND_URL: ${{ needs.deploy.outputs.cloudfront_url }}
@@ -168,7 +168,7 @@ jobs:
         run: npm run test:e2e
         timeout-minutes: 5
 
-      - name: Upload E2E Test Reports
+      - name: E2Eテストレポートのアップロード
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -177,14 +177,14 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
           workflow-name: 'E2E Test - Dev Environment'
           failure-message: 'Dev環境に対するE2Eテストに失敗しました。テストログを確認してください。'
 
-      - name: Create issue on failure
+      - name: 失敗時のIssue作成
         if: failure()
         uses: ./.github/actions/create-issue-on-failure
         with:

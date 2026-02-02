@@ -19,10 +19,10 @@ jobs:
     outputs:
       should-run-tests: ${{ steps.filter.outputs.non-md == 'true' }}
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
 
-      - name: Check changed files
+      - name: 変更ファイルの確認
         uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -36,35 +36,35 @@ jobs:
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      - name: Setup Node.js
+      - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Run lint
+      - name: Lintの実行
         run: npm run lint
 
-      - name: Run build
+      - name: ビルドの実行
         run: npm run build
 
-      - name: Run unit tests
+      - name: ユニットテストの実行
         run: npm run test:unit
 
-      - name: Generate artifacts
+      - name: 成果物の生成
         run: npm run generate
 
-      - name: Commit and comment if changes
+      - name: 変更がある場合のコミットとコメント
         uses: ./.github/actions/commit-and-comment
         with:
           files: |
@@ -74,7 +74,7 @@ jobs:
           pr-comment: "✅ 自動生成ファイルを更新しました（スナップショットテスト、OpenAPI仕様）"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
@@ -94,30 +94,30 @@ jobs:
       JWT_SECRET: test-secret-key
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Setup Node.js
+      - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Build all workspaces
+      - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: Deploy to LocalStack
+      - name: LocalStackへのデプロイ
         run: npm run deploy:local-db --workspace=attendance-kit-infrastructure
 
-      - name: Run Backend Integration Tests
+      - name: バックエンド統合テストの実行
         run: npm run test:integration --workspace=@attendance-kit/backend
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
@@ -137,28 +137,28 @@ jobs:
       JWT_SECRET: test-secret-key
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Setup Node.js
+      - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Build all workspaces
+      - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: Deploy to LocalStack
+      - name: LocalStackへのデプロイ
         working-directory: infrastructure/deploy
         run: npm run deploy:local-all
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
@@ -172,29 +172,29 @@ jobs:
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Setup Node.js
+      - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Install Playwright browsers with dependencies
+      - name: Playwrightブラウザと依存関係のインストール
         working-directory: apps/frontend
         run: npx playwright install --with-deps chromium
 
-      - name: Run frontend integration tests
+      - name: フロントエンド統合テストの実行
         working-directory: apps/frontend
         run: npm run test:integration
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
@@ -217,31 +217,31 @@ jobs:
       BACKEND_URL: http://localhost:3000
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Setup Node.js
+      - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Install Playwright Browsers
+      - name: Playwrightブラウザのインストール
         run: npx playwright install --with-deps chromium
 
-      - name: Build all workspaces
+      - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: Deploy DynamoDB to LocalStack
+      - name: DynamoDBのLocalStackへのデプロイ
         working-directory: infrastructure/deploy
         run: npm run deploy:local-db
 
-      - name: Start Backend Server
+      - name: バックエンドサーバーの起動
         working-directory: apps/backend
         env:
           DYNAMODB_ENDPOINT: http://localhost:4566
@@ -251,20 +251,20 @@ jobs:
           sleep 10
           curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/api/health || echo "Backend not ready"
 
-      - name: Start Frontend Server
+      - name: フロントエンドサーバーの起動
         working-directory: apps/frontend
         run: |
           npm run dev &
           sleep 10
 
-      - name: Run E2E Tests
+      - name: E2Eテストの実行
         env:
           DYNAMODB_ENDPOINT: http://localhost:4566
           DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: npm run test:e2e
         timeout-minutes: 2
 
-      - name: Upload E2E Test Reports
+      - name: E2Eテストレポートのアップロード
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -273,7 +273,7 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      - name: Comment E2E Test Results on PR
+      - name: PRへのE2Eテスト結果コメント
         if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
@@ -299,7 +299,7 @@ jobs:
               body: comment
             });
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:

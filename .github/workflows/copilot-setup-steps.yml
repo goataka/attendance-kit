@@ -18,25 +18,25 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Setup Node.js 24
+      - name: Node.js 24のセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           
-      - name: Verify Node.js version
+      - name: Node.jsバージョンの確認
         run: |
           node --version
           npm --version
           echo "Node.js 24 setup complete."
       
-      - name: Configure AWS credentials for investigation
+      - name: AWS認証情報の設定（調査用）
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_INVESTIGATION_ROLE_ARN }}
           aws-region: ap-northeast-1
         continue-on-error: true
       
-      - name: Verify AWS access
+      - name: AWSアクセスの確認
         run: |
           if aws sts get-caller-identity > /dev/null 2>&1; then
             echo "✓ AWS credentials configured successfully"
