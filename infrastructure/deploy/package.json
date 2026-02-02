@@ -13,7 +13,7 @@
     "cdk": "cdk",
     "deploy:local-all": "npm run cdklocal:bootstrap && npm run cdklocal:deploy-all",
     "deploy:local-db": "npm run cdklocal:bootstrap && npm run cdklocal:deploy-db",
-    "cdklocal:bootstrap": "until awslocal sts get-caller-identity 2>/dev/null; do echo 'Waiting for LocalStack...'; sleep 2; done && cdklocal bootstrap aws://000000000000/ap-northeast-1 --force && sleep 3",
+    "cdklocal:bootstrap": "retry=0; until awslocal sts get-caller-identity 2>/dev/null || [ $retry -ge 30 ]; do echo \"Waiting for LocalStack... ($retry/30)\"; retry=$((retry+1)); sleep 2; done && cdklocal bootstrap aws://000000000000/ap-northeast-1 --force && sleep 3",
     "cdklocal:deploy-all": "cdklocal deploy --context stack=environment --context environment=dev --require-approval never",
     "cdklocal:deploy-db": "cdklocal deploy AttendanceKit-Test-Stack --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters",
     "cdklocal:synth": "cdklocal synth --context stack=environment --context environment=dev",
