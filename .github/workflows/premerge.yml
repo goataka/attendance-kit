@@ -111,12 +111,6 @@ jobs:
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
 
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: 'latest'
-          install-awslocal: 'true'
-
       - name: Deploy to LocalStack
         run: npm run deploy:local-db --workspace=attendance-kit-infrastructure
 
@@ -159,12 +153,6 @@ jobs:
 
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
-
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: 'latest'
-          install-awslocal: 'true'
 
       - name: Deploy to LocalStack
         working-directory: infrastructure/deploy
@@ -248,12 +236,6 @@ jobs:
 
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
-
-      - name: Start LocalStack
-        uses: LocalStack/setup-localstack@v0.2.3
-        with:
-          image-tag: 'latest'
-          install-awslocal: 'true'
 
       - name: Deploy DynamoDB to LocalStack
         working-directory: infrastructure/deploy
