@@ -28,22 +28,23 @@
 1. **コード**: 変数名、関数名、クラス名は英語で記述してください
 2. **技術用語**: 技術的な固有名詞はそのまま英語を使用してください（例: OIDC, CDK, CloudFormation）
 
-## コミットID提示のルール
+## PR差分リンク提示のルール
 
-エージェントがコメントでコミットIDを提示する際は、必ずGitHubへのリンクを付ける:
+エージェントが作業報告でPR差分へのリンクを提示する際は、必ずGitHubのPRファイル差分ページへのリンクを付ける:
 
 **形式**:
 ```
-Commit: [短縮SHA](https://github.com/goataka/attendance-kit/commit/完全SHA)
+PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/files)
 ```
 
 **例**:
 ```
-Commit: [be9f233](https://github.com/goataka/attendance-kit/commit/be9f233)
+PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/files)
 ```
 
 **理由**:
-- ユーザーがワンクリックでコミット内容を確認可能
+- ユーザーがワンクリックでPRの全変更を確認可能
+- そのままApproveボタンを押してレビュー完了できる
 - コードレビューの効率化
 - 変更履歴の追跡性向上
 

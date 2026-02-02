@@ -408,15 +408,15 @@ npm run build
 ```
 ```
 
-#### 7.5 コミットへのリンク
+#### 7.5 PR差分へのリンク
 
 ```
-## コミット
+## PR差分
 
-Commit: [<短縮SHA>](https://github.com/<owner>/<repo>/commit/<完全SHA>)
+PR差分: [#<PR番号>](https://github.com/<owner>/<repo>/pull/<PR番号>/files)
 ```
 
-**注**: `<owner>`、`<repo>`、`<短縮SHA>`、`<完全SHA>`は実際の値に置き換えてください。
+**注**: `<owner>`、`<repo>`、`<PR番号>`は実際の値に置き換えてください。
 
 ## エラー別対応例
 
