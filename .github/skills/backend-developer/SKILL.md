@@ -75,6 +75,16 @@ npm run test:unit
 
 ### 6. Backend統合テスト実行
 
+**事前準備**: LocalStackを起動してください。
+
+```bash
+# LocalStackの起動確認
+docker ps | grep localstack
+
+# LocalStackが起動していない場合は起動
+docker-compose up -d localstack
+```
+
 ```bash
 # Backend統合テストのみ実行
 cd apps/backend
