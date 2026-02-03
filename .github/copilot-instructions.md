@@ -168,7 +168,7 @@ PRコメントには以下の内容を含めてください:
 
 ### コミット
 <コミットIDとGitHubへのリンクを記載>
-例: Commit: [abc1234](https://github.com/goataka/attendance-kit/commit/abc1234567890)
+例: Commit: [abc1234](https://github.com/<owner>/<repo>/commit/abc1234567890)
 ```
 
 #### 投稿方法
@@ -177,20 +177,18 @@ PRコメントには以下の内容を含めてください:
 
 **方法1: GitHub MCPツールを使用**（推奨）
 
-```typescript
-// GitHub MCPツールが利用可能な場合
-// issue_number はPR番号と同じです
-```
+GitHub MCPツールが利用可能な場合は、適切なMCPツール（例: `github-mcp-server`）を使用してPRコメントを投稿してください。
 
 **方法2: GitHub APIを直接使用**
 
 ```javascript
 // GitHub APIが利用可能な場合
+const commentBody = `上記フォーマットに従った完了報告の内容`;
 await github.rest.issues.createComment({
   owner: context.repo.owner,
   repo: context.repo.repo,
   issue_number: context.issue.number,
-  body: <上記フォーマットの内容>
+  body: commentBody
 });
 ```
 
