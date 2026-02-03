@@ -75,16 +75,6 @@ npm run test:unit
 
 ### 6. Backend統合テスト実行
 
-**事前準備**: LocalStackを起動してください。
-
-```bash
-# LocalStackの起動確認
-docker ps | grep localstack
-
-# LocalStackが起動していない場合は起動
-docker-compose up -d localstack
-```
-
 ```bash
 # Backend統合テストのみ実行
 cd apps/backend
@@ -94,6 +84,8 @@ npm run test:integration
 **必須**: API関連のコード変更時は実行してください。
 - DynamoDBとの統合テスト（LocalStack使用）
 - エンドポイントの動作確認
+
+**注**: `pretest:integration`フックにより、テスト実行前にLocalStackが自動的に起動・セットアップされます。手動でLocalStackを起動する必要はありません。
 
 ### 7. OpenAPI仕様の生成
 
@@ -165,15 +157,20 @@ npm test -- <test-file-name>
 
 ### 統合テストエラーが発生した場合
 
-LocalStackが起動していることを確認:
-
 ```bash
-# LocalStack起動確認
-docker ps | grep localstack
+# 失敗したテストの詳細を確認
+cd apps/backend
+npm run test:integration
 
-# LocalStackが起動していない場合
-docker-compose up -d localstack
+# 特定のテストファイルのみ実行
+npm run test:integration -- <test-file-name>
 ```
+
+- テストロジックを確認
+- DynamoDBとの接続を確認
+- LocalStackの自動起動が失敗している場合は、ログを確認してください
+
+**注**: LocalStackは`pretest:integration`フックで自動的に起動されます。手動での起動は通常不要です。
 
 ## ベストプラクティス
 
@@ -220,6 +217,7 @@ docker-compose up -d localstack
 ## 参考資料
 
 - [Backend README](../../../apps/backend/README.md)
-- [Premerge Checks ワークフロー](../../workflows/premerge.md)
+- [GitHub Actions ワークフロー](../../workflows/README.md)
+- [Premerge Checks ワークフロー](../../workflows/premerge.yml)
 - [Copilotインストラクション](../../copilot-instructions.md)
 - [コーディング規約](../../instructions/coding.instructions.md)

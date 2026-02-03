@@ -233,6 +233,7 @@ npm run storybook
 ## 参考資料
 
 - [Frontend README](../../../apps/frontend/README.md)
-- [Premerge Checks ワークフロー](../../workflows/premerge.md)
+- [GitHub Actions ワークフロー](../../workflows/README.md)
+- [Premerge Checks ワークフロー](../../workflows/premerge.yml)
 - [Copilotインストラクション](../../copilot-instructions.md)
 - [コーディング規約](../../instructions/coding.instructions.md)

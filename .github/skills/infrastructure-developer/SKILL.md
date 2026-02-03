@@ -94,6 +94,11 @@ npm run test:integration
 - CDKデプロイのシミュレーション
 - リソース作成の検証
 
+**LocalStackのセットアップ**: 
+統合テストや手動でのローカルDB起動が必要な場合、以下のコマンドが利用可能です:
+- `npm run start:local-db` (プロジェクトルートから) - LocalStackを起動してDynamoDBをデプロイ
+- `npm run deploy:local-db` (infrastructure/deployから) - LocalStackのセットアップとブートストラップを含む完全なデプロイ
+
 ## 実行順序
 
 **推奨される実行順序**:
@@ -149,19 +154,21 @@ npx cdk synth --context stack=environment --context environment=dev --verbose
 
 ### 統合テストエラーが発生した場合
 
-LocalStackが起動していることを確認:
-
 ```bash
-# LocalStack起動確認
-docker ps | grep localstack
+# 失敗したテストの詳細を確認
+cd infrastructure/deploy
+npm run test:integration
 
-# LocalStackが起動していない場合
-docker-compose up -d localstack
+# 特定のテストファイルのみ実行
+npm test -- <test-file-name>
 ```
 
-- LocalStackのエンドポイントを確認
-- CDKデプロイログを確認
-- リソース作成の順序を確認
+- スナップショットを確認
+- CDK Constructのプロパティを確認
+- テストの期待値を確認
+- LocalStackの状態を確認
+
+**注**: 統合テストでLocalStackが必要な場合は、`npm run deploy:local-db`でセットアップされます。このコマンドには`cdklocal:setup`が含まれ、LocalStackを自動的に起動します。
 
 ## ベストプラクティス
 
@@ -224,6 +231,7 @@ npx cdk synth --context stack=account
 
 - [Infrastructure README](../../../infrastructure/README.md)
 - [Deployment Guide](../../../infrastructure/DEPLOYMENT.md)
-- [Premerge Checks ワークフロー](../../workflows/premerge.md)
+- [GitHub Actions ワークフロー](../../workflows/README.md)
+- [Premerge Checks ワークフロー](../../workflows/premerge.yml)
 - [Copilotインストラクション](../../copilot-instructions.md)
 - [コーディング規約](../../instructions/coding.instructions.md)
