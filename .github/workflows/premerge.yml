@@ -15,6 +15,7 @@ permissions:
 
 env:
   CONTAINER_IMAGE: mcr.microsoft.com/devcontainers/typescript-node:24
+  PLAYWRIGHT_IMAGE: mcr.microsoft.com/playwright:v1.57.0-jammy
 
 jobs:
   check-changes:
@@ -85,6 +86,18 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ${{ env.CONTAINER_IMAGE }}
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: dynamodb
+        ports:
+          - 4566:4566
+        options: >-
+          --health-cmd "awslocal dynamodb list-tables || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -93,6 +106,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
+      DYNAMODB_ENDPOINT: http://localstack:4566
     
     steps:
       - name: コードのチェックアウト
@@ -105,6 +119,12 @@ jobs:
 
       - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
+
+      - name: LocalStackにDynamoDBテーブルを作成
+        working-directory: infrastructure/deploy
+        run: |
+          npx cdklocal bootstrap aws://000000000000/ap-northeast-1 --force
+          npx cdklocal deploy AttendanceKit-Test-Stack --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters
 
       - name: バックエンド統合テストの実行
         run: npm run test:integration --workspace=@attendance-kit/backend
@@ -121,6 +141,18 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ${{ env.CONTAINER_IMAGE }}
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: dynamodb,cloudformation,s3,apigateway,lambda,iam
+        ports:
+          - 4566:4566
+        options: >-
+          --health-cmd "awslocal dynamodb list-tables || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -129,6 +161,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
+      AWS_ENDPOINT_URL: http://localstack:4566
     
     steps:
       - name: コードのチェックアウト
@@ -144,7 +177,10 @@ jobs:
 
       - name: LocalStackへのデプロイ
         working-directory: infrastructure/deploy
-        run: npm run deploy:local-all
+        run: |
+          # Service containerのLocalStackを使用するため、起動スキップ
+          npx cdklocal bootstrap aws://000000000000/ap-northeast-1 --force && sleep 3
+          npx cdklocal deploy --context stack=environment --context environment=dev --require-approval never
 
       - name: 失敗時のコメント
         if: failure()
@@ -157,7 +193,7 @@ jobs:
   frontend-integration-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.CONTAINER_IMAGE }}
+      image: ${{ env.PLAYWRIGHT_IMAGE }}
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -169,10 +205,6 @@ jobs:
 
       - name: 依存関係のインストール
         run: npm run setup
-
-      - name: Playwrightブラウザと依存関係のインストール
-        working-directory: apps/frontend
-        run: npx playwright install --with-deps chromium
 
       - name: フロントエンド統合テストの実行
         working-directory: apps/frontend
@@ -189,7 +221,19 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.CONTAINER_IMAGE }}
+      image: ${{ env.PLAYWRIGHT_IMAGE }}
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: dynamodb
+        ports:
+          - 4566:4566
+        options: >-
+          --health-cmd "awslocal dynamodb list-tables || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -211,16 +255,19 @@ jobs:
       - name: 依存関係のインストール
         run: npm run setup
 
-      - name: Playwrightブラウザのインストール
-        run: npx playwright install --with-deps chromium
-
       - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
+
+      - name: LocalStackにDynamoDBテーブルを作成
+        working-directory: infrastructure/deploy
+        run: |
+          npx cdklocal bootstrap aws://000000000000/ap-northeast-1 --force
+          npx cdklocal deploy AttendanceKit-Test-Stack --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters
 
       - name: バックエンドサーバーの起動
         working-directory: apps/backend
         env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
+          DYNAMODB_ENDPOINT: http://localstack:4566
           DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: |
           npm run dev &
@@ -235,7 +282,7 @@ jobs:
 
       - name: E2Eテストの実行
         env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
+          DYNAMODB_ENDPOINT: http://localstack:4566
           DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: npm run test:e2e:local
         timeout-minutes: 2
