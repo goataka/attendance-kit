@@ -152,7 +152,9 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
 
 #### コメントフォーマット
 
-PRコメントには以下の内容を含めてください:
+PRコメントには以下の内容を含めてください。
+
+**注**: 以下はテンプレートです。山括弧（`< >`）で囲まれた部分を実際の内容に置き換えてください。
 
 ```markdown
 ## エージェントセッション完了報告
@@ -174,9 +176,9 @@ PRコメントには以下の内容を含めてください:
 ### 変更の影響範囲
 <変更した箇所とその影響範囲を記載>
 
-### コミット
-<コミットIDとGitHubへのリンクを記載>
-例: Commit: [abc1234](https://github.com/<owner>/<repo>/commit/abc1234567890)
+### PR差分
+<PR差分へのリンクを記載>
+例: PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
 ```
 
 #### 投稿方法
@@ -190,12 +192,13 @@ GitHub MCPツールが利用可能な場合は、適切なMCPツール（例: `g
 **方法2: GitHub APIを直接使用**
 
 ```javascript
-// GitHub APIが利用可能な場合
+// GitHub Actionsのコンテキストで実行される場合
+// または、github および context オブジェクトが利用可能な環境の場合
 const commentBody = `上記フォーマットに従った完了報告の内容`;
 await github.rest.issues.createComment({
-  owner: context.repo.owner,
-  repo: context.repo.repo,
-  issue_number: context.issue.number,
+  owner: context.repo.owner,      // リポジトリのオーナー名
+  repo: context.repo.repo,        // リポジトリ名
+  issue_number: context.issue.number,  // PR番号（GitHub APIではissue_numberとして扱われる）
   body: commentBody
 });
 ```
@@ -204,20 +207,32 @@ await github.rest.issues.createComment({
 
 ```bash
 # gh CLIが利用可能な場合
+# 注: <コメント内容> はシェルのクォートルールに従って適切にエスケープしてください
 gh pr comment <PR番号> --body "<コメント内容>"
+
+# または、複数行のMarkdownコメントを投稿する場合
+# 1. コメント内容を一時ファイルに出力する（例: /tmp/comment.md）
+cat << 'EOF' > /tmp/comment.md
+## エージェントセッション完了報告
+
+### 実施内容
+- 対応内容: ...
+- 実行したコマンド: ...
+
+### 検証結果
+- ✅ npm run build: 成功
+- ✅ npm test: 成功
+EOF
+
+# 2. --body-file オプションでコメントを投稿する
+gh pr comment <PR番号> --body-file /tmp/comment.md
 ```
 
 **注**: 利用可能なツールやAPIは実行環境によって異なります。エージェントは利用可能な方法を選択してコメントを投稿してください。
 
 #### セキュリティ注意事項
 
-PRコメントには以下を含めないでください:
-
-- GitHub Secrets（`secrets.*`）の値
-- 環境変数として設定された秘匿情報（APIキー、トークン、パスワード等）
-- 秘匿情報を含むログやデバッグ出力
-
-秘匿情報を扱う必要がある場合は、変数名や設定項目名のみを記載してください。
+PRコメント投稿時は、本ドキュメントの「[秘匿情報の取り扱い](#秘匿情報の取り扱い)」セクションに従ってください。
 
 ## 変更時・適用前の検証義務（Agent実行ルール）
 
