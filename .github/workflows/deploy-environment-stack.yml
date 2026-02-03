@@ -177,41 +177,6 @@ jobs:
           retention-days: 30
           if-no-files-found: warn
 
-      - name: Find PR number
-        if: always()
-        id: find-pr
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Searching for PR associated with commit ${{ github.sha }}..."
-          PR_NUM=$(gh pr list --repo ${{ github.repository }} --state all --search "${{ github.sha }}" --json number --jq '.[0].number' 2>/dev/null || echo "")
-          if [ -n "${PR_NUM}" ]; then
-            echo "pr_number=${PR_NUM}" >> $GITHUB_OUTPUT
-            echo "Found PR: #${PR_NUM}"
-          else
-            echo "No PR found for commit ${{ github.sha }}"
-            echo "pr_number=" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Comment E2E Test Results on PR
-        if: always() && steps.find-pr.outputs.pr_number != ''
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          number: ${{ steps.find-pr.outputs.pr_number }}
-          header: e2e-dev-test-results
-          recreate: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          message: |
-            ## E2Eテスト結果 (Dev環境)
-            
-            📊 **テストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
-            レポートの確認方法：
-            1. 上記のリンクをクリック
-            2. Artifacts セクションから `e2e-dev-test-reports` をダウンロード
-            3. `cucumber-report.html` をブラウザで開く
-
       - name: Comment on failure
         if: failure()
         uses: ./.github/actions/comment-on-failure
