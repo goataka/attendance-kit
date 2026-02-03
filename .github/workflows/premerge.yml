@@ -111,9 +111,6 @@ jobs:
       - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: LocalStackへのデプロイ
-        run: npm run deploy:local-db --workspace=attendance-kit-infrastructure
-
       - name: バックエンド統合テストの実行
         run: npm run test:integration --workspace=@attendance-kit/backend
 
@@ -237,10 +234,6 @@ jobs:
       - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: DynamoDBのLocalStackへのデプロイ
-        working-directory: infrastructure/deploy
-        run: npm run deploy:local-db
-
       - name: バックエンドサーバーの起動
         working-directory: apps/backend
         env:
@@ -261,7 +254,7 @@ jobs:
         env:
           DYNAMODB_ENDPOINT: http://localhost:4566
           DYNAMODB_TABLE_NAME: attendance-kit-test-clock
-        run: npm run test:e2e
+        run: npm run test:e2e:local
         timeout-minutes: 2
 
       - name: E2Eテストレポートのアップロード

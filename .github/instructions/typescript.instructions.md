@@ -122,3 +122,59 @@ this.setupIntegration();  // this.lambdaとthis.apiを使用
 
 - READMEでは「Node.js 24.x以上」と記載
 - 具体的なマイナーバージョンは記載しない
+
+## package.json ルール
+
+### npm scripts でのworkspace参照
+
+monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--prefix`ではなく`-w`（または`--workspace`）オプションを使用する。
+
+**適用範囲**: workspace間の呼び出し（例: あるworkspaceから別のworkspaceのスクリプトを実行）
+
+**OK例**:
+```json
+{
+  "scripts": {
+    "start:local-db": "npm run deploy:local-db -w attendance-kit-infrastructure",
+    "pretest:integration": "npm run start:local-db --prefix ../.."
+  }
+}
+```
+
+**NG例**:
+```json
+{
+  "scripts": {
+    "start:local-db": "npm run deploy:local-db --prefix infrastructure/deploy",
+    "pretest:integration": "npm run deploy:local-db -w attendance-kit-infrastructure"
+  }
+}
+```
+
+**理由**:
+- workspace名による参照は、ディレクトリ構造の変更に強い
+- npm workspacesの標準的な使い方に従う
+- package.jsonの`name`フィールドで明示的に参照される
+
+**ベストプラクティス**: workspaceから別のworkspaceを呼び出す場合、直接呼び出さずrootを経由する
+
+```json
+{
+  "scripts": {
+    "pretest:integration": "npm run start:local-db --prefix ../.."
+  }
+}
+```
+
+これにより、依存関係が一元管理され、変更時の影響範囲が明確になる。
+
+**例外**: workspaceからrootパッケージのスクリプトを呼び出す場合は`--prefix`を使用可能（rootはworkspaceとして定義されていないため）
+
+```json
+{
+  "scripts": {
+    "setup": "npm run setup --prefix ../.."
+  }
+}
+```
+
