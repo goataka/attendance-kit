@@ -135,7 +135,7 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 ```json
 {
   "scripts": {
-    "start:local-db": "npm run deploy:local-db -w attendance-kit-infrastructure",
+    "start:local-db": "npm run deploy:local-db -w @attendance-kit/infrastructure-deploy",
     "pretest:integration": "npm run start:local-db --prefix ../.."
   }
 }
@@ -146,7 +146,7 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 {
   "scripts": {
     "start:local-db": "npm run deploy:local-db --prefix infrastructure/deploy",
-    "pretest:integration": "npm run deploy:local-db -w attendance-kit-infrastructure"
+    "pretest:integration": "npm run deploy:local-db -w @attendance-kit/infrastructure-deploy"
   }
 }
 ```
