@@ -207,10 +207,6 @@ await github.rest.issues.createComment({
 
 ```bash
 # gh CLIが利用可能な場合
-# 注: <コメント内容> はシェルのクォートルールに従って適切にエスケープしてください
-gh pr comment <PR番号> --body "<コメント内容>"
-
-# または、複数行のMarkdownコメントを投稿する場合
 # 1. コメント内容を一時ファイルに出力する（例: /tmp/comment.md）
 cat << 'EOF' > /tmp/comment.md
 ## エージェントセッション完了報告
