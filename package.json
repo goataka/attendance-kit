@@ -14,9 +14,10 @@
     "start:local-db": "npm run deploy:local-db -w attendance-kit-infrastructure",
     "test": "npm run test --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
-    "pretest:e2e": "npm run start:local-db",
+    "pretest:e2e:local": "npm run start:local-db",
+    "test:e2e:local": "npm run test:e2e",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
-    "test:e2e:eva": "cucumber-js --config test/e2e/cucumber.js",
+    "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
   },
