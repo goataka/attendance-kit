@@ -40,10 +40,11 @@ export class ClockService {
 
     const client = new DynamoDBClient(clientConfig);
     this.docClient = DynamoDBDocumentClient.from(client);
-    
+
     // DYNAMODB_TABLE_NAME環境変数が設定されている場合はそれを使用（後方互換性のため）
     // 未設定の場合は環境名から動的に解決
-    this.tableName = process.env.DYNAMODB_TABLE_NAME || resolveTableName('clock');
+    this.tableName =
+      process.env.DYNAMODB_TABLE_NAME || resolveTableName('clock');
   }
 
   private extractDate(date: Date): string {

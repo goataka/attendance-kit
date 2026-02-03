@@ -4,9 +4,13 @@ describe('dynamodb-table-name', () => {
   describe('buildTableName', () => {
     test('環境名とリソースタイプからテーブル名を生成できる', () => {
       expect(buildTableName('dev', 'clock')).toBe('attendance-kit-dev-clock');
-      expect(buildTableName('staging', 'clock')).toBe('attendance-kit-staging-clock');
+      expect(buildTableName('staging', 'clock')).toBe(
+        'attendance-kit-staging-clock',
+      );
       expect(buildTableName('test', 'clock')).toBe('attendance-kit-test-clock');
-      expect(buildTableName('local', 'clock')).toBe('attendance-kit-local-clock');
+      expect(buildTableName('local', 'clock')).toBe(
+        'attendance-kit-local-clock',
+      );
     });
   });
 
@@ -29,12 +33,16 @@ describe('dynamodb-table-name', () => {
     test('NODE_ENVが未設定の場合はデフォルト環境を使用する', () => {
       delete process.env.NODE_ENV;
       expect(resolveTableName('clock')).toBe('attendance-kit-dev-clock');
-      expect(resolveTableName('clock', 'local')).toBe('attendance-kit-local-clock');
+      expect(resolveTableName('clock', 'local')).toBe(
+        'attendance-kit-local-clock',
+      );
     });
 
     test('デフォルト環境をカスタマイズできる', () => {
       delete process.env.NODE_ENV;
-      expect(resolveTableName('clock', 'test')).toBe('attendance-kit-test-clock');
+      expect(resolveTableName('clock', 'test')).toBe(
+        'attendance-kit-test-clock',
+      );
     });
   });
 });
