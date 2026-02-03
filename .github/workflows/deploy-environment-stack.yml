@@ -60,7 +60,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
-      - name: CDK Bootstrap
+      - name: CDK Bootstrapの実行
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ inputs.environment || 'dev' }}

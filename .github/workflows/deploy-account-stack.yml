@@ -45,7 +45,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
-      - name: CDK Bootstrap
+      - name: CDK Bootstrapの実行
         working-directory: infrastructure/account
         env:
           COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
