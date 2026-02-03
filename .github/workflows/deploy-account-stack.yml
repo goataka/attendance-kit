@@ -21,31 +21,31 @@ jobs:
     environment: production  # アカウントレベルリソースは本番環境として扱う
     
     steps:
-      - name: Checkout code
+      - name: コードのチェックアウト
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 24
+      - name: Node.js 24のセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: 'npm'
           cache-dependency-path: infrastructure/account/package-lock.json
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         working-directory: infrastructure/account
         run: npm run setup
 
-      - name: Build TypeScript
+      - name: TypeScriptのビルド
         working-directory: infrastructure/account
         run: npm run build
 
-      - name: Configure AWS credentials via OIDC
+      - name: AWS認証情報の設定（OIDC経由）
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
-      - name: CDK Bootstrap
+      - name: CDK Bootstrapの実行
         working-directory: infrastructure/account
         env:
           COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
@@ -54,7 +54,7 @@ jobs:
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1
 
-      - name: CDK Deploy Account Stack
+      - name: CDK Deployアカウントスタック
         working-directory: infrastructure/account
         env:
           COST_ALERT_EMAIL: ${{ secrets.COST_ALERT_EMAIL }}
@@ -62,7 +62,7 @@ jobs:
           echo "Deploying account stack: AttendanceKit-Account-Stack"
           npx cdk deploy AttendanceKit-Account-Stack --require-approval never
 
-      - name: Output deployment results
+      - name: デプロイ結果の出力
         run: |
           echo "Deployment completed successfully for account stack"
           echo "Stack outputs:"
@@ -71,13 +71,13 @@ jobs:
             --query 'Stacks[0].Outputs' \
             --output table
 
-      - name: Verify SNS subscription
+      - name: SNSサブスクリプションの確認
         run: |
           echo "⚠️  Important: Check your email for SNS subscription confirmation"
           echo "Email address: ${{ secrets.COST_ALERT_EMAIL }}"
           echo "You must click the confirmation link to receive cost alerts"
 
-      - name: Comment on failure
+      - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
@@ -85,7 +85,7 @@ jobs:
           failure-message: 'アカウントスタックのデプロイに失敗しました。ログを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create issue on failure
+      - name: 失敗時のIssue作成
         if: failure()
         uses: ./.github/actions/create-issue-on-failure
         with:
