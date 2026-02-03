@@ -187,15 +187,16 @@ Commit: [be9f233](https://github.com/goataka/attendance-kit/commit/be9f233)
    - ビジネス要件
    - デプロイメント戦略
 
-2. **運用的・手順的なドキュメント**: 該当ファイルと同じフォルダに配置
-   - ワークフロー詳細: `.github/workflows/`に`{workflow-name}.md`
-   - インフラ運用: `infrastructure/`に`DEPLOYMENT.md`等
-   - セットアップ手順: `infrastructure/setup/`に`README.md`
+2. **フォルダ単位のドキュメント**: 該当フォルダのREADME.mdにWARNING以上の情報のみ記載
+   - `.github/workflows/README.md`: 全ワークフローの一覧と必須設定
+   - `.github/actions/README.md`: 全アクションの一覧と必須設定
+   - `infrastructure/DEPLOYMENT.md`: デプロイ手順の概要
+   - `infrastructure/setup/README.md`: セットアップ手順
 
-3. **アクションドキュメントの命名規則**
-   - ワークフローファイル: `{name}.yml`
-   - ドキュメント: `{name}.md`（同じフォルダに配置）
-   - サマリー: `README.md`（ディレクトリ全体の概要）
+3. **詳細仕様は実装ファイルで確認**
+   - 個別ワークフローの詳細: `.yml`ファイルを参照
+   - コンポーネントの詳細仕様: `.tsx`、`.test.tsx`ファイルを参照
+   - 詳細仕様やテスト方針の個別ファイル（`TESTING.md`、`SPEC.md`等）は作成しない
 
 4. **冗長性の回避**
    - 「関連ドキュメント」セクションは記載しない

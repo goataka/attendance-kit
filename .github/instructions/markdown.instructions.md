@@ -18,12 +18,12 @@ applyTo: "**/*.md"
 **OK例**:
 - `.github/workflows/README.md`: 全ワークフローの一覧と必須設定のみ記載
 - `.github/actions/README.md`: 全アクションの一覧と必須設定のみ記載
-- `apps/frontend/src/ClockInOutPage/README.md`: フォルダ単位のREADME（WARNING以上の情報のみ）
+- `apps/frontend/README.md`: フロントエンドアプリケーション全体の概要（フォルダ単位のREADME）
 
 **NG例**:
 - `.github/workflows/deploy-environment-stack.md`: 個別ワークフローの詳細ドキュメント
-- `apps/frontend/src/ClockInOutPage/TESTING.md`: 詳細仕様やテスト方針の個別ファイル
-- `apps/frontend/src/ClockInOutPage/SPEC.md`: 詳細仕様の個別ファイル
+- `apps/frontend/TESTING.md`: 詳細仕様やテスト方針の個別ファイル
+- `apps/frontend/SPEC.md`: 詳細仕様の個別ファイル
 
 ### 作業情報をREADMEに含めない
 
