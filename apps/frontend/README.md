@@ -53,10 +53,6 @@ apps/frontend/
 └── playwright.config.ts
 ```
 
-各画面のドキュメント:
-- [打刻画面](src/ClockInOutPage/README.md)
-- [打刻一覧画面](src/ClocksListPage/README.md)
-
 ## コマンド
 
 | コマンド | 説明 |
