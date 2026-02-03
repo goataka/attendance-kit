@@ -133,8 +133,8 @@ npx cdk synth
 cd infrastructure/deploy
 npx cdk synth --context environment=dev
 
-# staging環境用
-npx cdk synth --context environment=staging
+# Eva環境用
+npx cdk synth --context environment=eva
 ```
 
 ### ローカルからのデプロイ

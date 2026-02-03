@@ -28,11 +28,11 @@ describe('AttendanceKitStack', () => {
   beforeEach(() => {
     app = new App();
     const stack = new AttendanceKitStack(app, {
-      environment: 'dev',
+      environment: 'eva',
       jwtSecret: 'test-jwt-secret',
-      description: 'DynamoDB clock table for attendance-kit (dev environment)',
+      description: 'DynamoDB clock table for attendance-kit (eva environment)',
       tags: {
-        Environment: 'dev',
+        Environment: 'eva',
         Project: 'attendance-kit',
         ManagedBy: 'CDK',
         CostCenter: 'Engineering',
@@ -43,7 +43,7 @@ describe('AttendanceKitStack', () => {
 
   test('DynamoDB Table Created', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-dev-clock',
+      TableName: 'attendance-kit-eva-clock',
       BillingMode: 'PAY_PER_REQUEST',
       PointInTimeRecoverySpecification: {
         PointInTimeRecoveryEnabled: true,
@@ -117,7 +117,7 @@ describe('AttendanceKitStack', () => {
 
   test('Table name includes environment', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-dev-clock',
+      TableName: 'attendance-kit-eva-clock',
     });
   });
 
@@ -179,18 +179,18 @@ describe('AttendanceKitStack', () => {
   });
 });
 
-describe('AttendanceKitStack - Staging Environment', () => {
+describe('AttendanceKitStack - Eva Environment', () => {
   let app: App;
   let template: Template;
 
   beforeEach(() => {
     app = new App();
     const stack = new AttendanceKitStack(app, {
-      environment: 'staging',
+      environment: 'eva',
       jwtSecret: 'test-jwt-secret',
-      description: 'DynamoDB clock table for attendance-kit (staging environment)',
+      description: 'DynamoDB clock table for attendance-kit (eva environment)',
       tags: {
-        Environment: 'staging',
+        Environment: 'eva',
         Project: 'attendance-kit',
         ManagedBy: 'CDK',
         CostCenter: 'Engineering',
@@ -199,13 +199,13 @@ describe('AttendanceKitStack - Staging Environment', () => {
     template = Template.fromStack(stack);
   });
 
-  test('Staging environment creates correct table name', () => {
+  test('Eva environment creates correct table name', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-staging-clock',
+      TableName: 'attendance-kit-eva-clock',
     });
   });
 
-  test('Staging Stack Matches Snapshot', () => {
+  test('Eva Stack Matches Snapshot', () => {
     expect(template.toJSON()).toMatchSnapshot();
   });
 });

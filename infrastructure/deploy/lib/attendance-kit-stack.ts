@@ -9,7 +9,7 @@ import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment?: string; // 'dev' | 'staging' | 'test' | 'local' (デフォルト: 'dev')
+  environment?: string; // 'dev' | 'test' | 'eva' | 'stg' | 'prod' (デフォルト: 'dev')
   jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
   deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
@@ -105,8 +105,8 @@ export class AttendanceKitStack extends cdk.Stack {
         api: this.backendApi.api,
       });
     } else {
-      // DynamoDBのみをデプロイする場合で、dev/local環境の場合はデータクリアとシード機能を追加
-      if (environment === 'dev' || environment === 'local') {
+      // DynamoDBのみをデプロイする場合で、ローカル環境の場合はデータクリアとシード機能を追加
+      if (AttendanceKitStack.isLocalEnvironment(environment)) {
         this.setupDataClearAndSeed();
       }
     }
@@ -144,12 +144,26 @@ export class AttendanceKitStack extends cdk.Stack {
    * 環境変数のバリデーション（static）
    */
   private static validateEnvironmentStatic(environment: string): void {
-    const validEnvironments = ['dev', 'staging', 'test', 'local'];
+    const validEnvironments = ['dev', 'test', 'eva', 'stg', 'prod'];
     if (!validEnvironments.includes(environment)) {
       throw new Error(
         `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
       );
     }
+  }
+
+  /**
+   * ローカル環境かどうかを判定
+   */
+  private static isLocalEnvironment(environment: string): boolean {
+    return environment === 'dev' || environment === 'test';
+  }
+
+  /**
+   * AWS環境かどうかを判定
+   */
+  private static isAwsEnvironment(environment: string): boolean {
+    return environment === 'eva' || environment === 'stg' || environment === 'prod';
   }
 
   /**
@@ -164,11 +178,11 @@ export class AttendanceKitStack extends cdk.Stack {
       );
     }
 
-    // test/local環境ではフルスタックデプロイは許可しない
-    if (environment === 'test' || environment === 'local') {
+    // ローカル環境ではフルスタックデプロイは許可しない
+    if (AttendanceKitStack.isLocalEnvironment(environment)) {
       throw new Error(
         `Full stack deployment is not allowed for '${environment}' environment. ` +
-        'Use deployOnlyDynamoDB: true for test/local environments.'
+        'Use deployOnlyDynamoDB: true for local environments.'
       );
     }
   }

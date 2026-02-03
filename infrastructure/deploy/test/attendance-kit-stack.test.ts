@@ -27,7 +27,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
         environment: 'invalid',
         deployOnlyDynamoDB: true,
       });
-    }).toThrow('Invalid environment: invalid. Must be one of: dev, staging, test, local');
+    }).toThrow('Invalid environment: invalid. Must be one of: dev, test, eva, stg, prod');
   });
 
   test('有効な環境名: dev', () => {
@@ -43,16 +43,42 @@ describe('AttendanceKitStack - Environment Validation', () => {
     });
   });
 
-  test('有効な環境名: staging', () => {
+  test('有効な環境名: eva', () => {
     const stack = new AttendanceKitStack(app, {
-      environment: 'staging',
+      environment: 'eva',
       deployOnlyDynamoDB: true,
     });
 
     expect(stack).toBeDefined();
     const template = Template.fromStack(stack);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-staging-clock',
+      TableName: 'attendance-kit-eva-clock',
+    });
+  });
+
+  test('有効な環境名: stg', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'stg',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-stg-clock',
+    });
+  });
+
+  test('有効な環境名: prod', () => {
+    const stack = new AttendanceKitStack(app, {
+      environment: 'prod',
+      deployOnlyDynamoDB: true,
+    });
+
+    expect(stack).toBeDefined();
+    const template = Template.fromStack(stack);
+    template.hasResourceProperties('AWS::DynamoDB::Table', {
+      TableName: 'attendance-kit-prod-clock',
     });
   });
 
@@ -66,19 +92,6 @@ describe('AttendanceKitStack - Environment Validation', () => {
     const template = Template.fromStack(stack);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-test-clock',
-    });
-  });
-
-  test('有効な環境名: local', () => {
-    const stack = new AttendanceKitStack(app, {
-      environment: 'local',
-      deployOnlyDynamoDB: true,
-    });
-
-    expect(stack).toBeDefined();
-    const template = Template.fromStack(stack);
-    template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-local-clock',
     });
   });
 });
@@ -120,14 +133,14 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
     }).toThrow("Full stack deployment is not allowed for 'test' environment");
   });
 
-  test('local環境でフルスタックデプロイは許可されない', () => {
+  test('dev環境でフルスタックデプロイは許可されない', () => {
     expect(() => {
       new AttendanceKitStack(app, {
-        environment: 'local',
+        environment: 'dev',
         jwtSecret: 'test-secret',
         deployOnlyDynamoDB: false,
       });
-    }).toThrow("Full stack deployment is not allowed for 'local' environment");
+    }).toThrow("Full stack deployment is not allowed for 'dev' environment");
   });
 });
 
@@ -197,8 +210,12 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     });
   });
 
+  test('Cleaner and Seeder Lambdas are created for local environment in DynamoDB-only mode', () => {
+    // DynamoDB Cleaner (1 Lambda) + Seeder (1 Lambda) + 1 Trigger function = 3 Lambda functions
+    template.resourceCountIs('AWS::Lambda::Function', 3);
+  });
+
   test('Backend API is NOT created in DynamoDB-only mode', () => {
-    template.resourceCountIs('AWS::Lambda::Function', 0);
     template.resourceCountIs('AWS::ApiGateway::RestApi', 0);
   });
 

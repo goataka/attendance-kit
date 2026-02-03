@@ -53,5 +53,10 @@ graph LR
 ### 環境管理
 
 各環境は独立したAWSリソースを持ちます:
-- dev
-- staging
+- eva (AWS環境)
+- stg (AWS環境、未実装)
+- prod (AWS環境、未実装)
+
+ローカル環境:
+- dev (ローカル開発環境)
+- test (ローカルテスト環境)

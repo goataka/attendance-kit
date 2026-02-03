@@ -220,7 +220,7 @@ const result = await dynamodb.query(params).promise();
 
 すべてのリソースには以下のタグが付与されます：
 
-- `Environment`: dev または staging
+- `Environment`: eva, stg, prod (AWS環境) または dev, test (ローカル環境)
 - `Project`: attendance-kit
 - `ManagedBy`: CDK
 - `CostCenter`: Engineering
