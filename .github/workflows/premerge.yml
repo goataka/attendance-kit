@@ -279,7 +279,6 @@ jobs:
         with:
           header: e2e-test-results
           recreate: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             ## E2Eテスト結果
             
@@ -289,6 +288,7 @@ jobs:
             1. 上記のリンクをクリック
             2. Artifacts セクションから `e2e-test-reports` をダウンロード
             3. `cucumber-report.html` をブラウザで開く
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment on failure
         if: failure()
