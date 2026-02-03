@@ -28,6 +28,14 @@
 
 **詳細**: [cloudfront-error-handler/SKILL.md](./cloudfront-error-handler/SKILL.md)
 
+### e2e-developer
+
+**説明**: E2E（End-to-End）テスト開発時に必要な検証を実施します。Cucumber + Playwrightによるフロントエンドとバックエンドの統合テストを含みます。
+
+**使用タイミング**: E2Eテスト（test/e2e/）のコード変更時
+
+**詳細**: [e2e-developer/SKILL.md](./e2e-developer/SKILL.md)
+
 ### file-refactor
 
 **説明**: ファイルやフォルダの名称変更・削除を行い、リポジトリ内の参照箇所を自動的に検索して更新します。
@@ -104,6 +112,8 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 ├── backend-developer/           # Backend開発スキル
 │   └── SKILL.md                 # スキル定義ファイル
 ├── cloudfront-error-handler/    # CloudFrontエラー対応スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── e2e-developer/               # E2E開発スキル
 │   └── SKILL.md                 # スキル定義ファイル
 ├── file-refactor/               # ファイル/フォルダのリネーム・削除スキル
 │   └── SKILL.md                 # スキル定義ファイル

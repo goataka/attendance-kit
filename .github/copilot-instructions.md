@@ -84,6 +84,11 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
   - **使用しない状況**: CloudFront以外のエラー（ワークフローエラーなど）の場合
   - **判断基準**: API GatewayやLambdaとの連携不具合が疑われる場合は使用
 
+- **e2e-developer**: E2E開発
+  - **使用すべき状況**: E2Eテスト（test/e2e/）のコード変更時、FeatureファイルやStep definitionsの実装や修正時
+  - **使用しない状況**: 個別のアプリケーション（Backend、Frontend）のテスト変更時
+  - **判断基準**: Cucumber + Playwrightを使用したE2Eテストを変更する場合は使用
+
 - **file-refactor**: ファイル/フォルダの名称変更・削除と参照更新
   - **使用すべき状況**: ファイルやフォルダのリネーム・削除を依頼された場合
 
