@@ -183,48 +183,7 @@ PRコメントには以下の内容を含めてください。
 
 #### 投稿方法
 
-利用可能なツールやAPIを使用してPRにコメントを投稿してください。以下のいずれかの方法を使用できます:
-
-**方法1: GitHub MCPツールを使用**（推奨）
-
-GitHub MCPツールが利用可能な場合は、適切なMCPツール（例: `github-mcp-server`）を使用してPRコメントを投稿してください。
-
-**方法2: GitHub APIを直接使用**
-
-```javascript
-// GitHub Actionsのコンテキストで実行される場合
-// または、github および context オブジェクトが利用可能な環境の場合
-const commentBody = `上記フォーマットに従った完了報告の内容`;
-await github.rest.issues.createComment({
-  owner: context.repo.owner,      // リポジトリのオーナー名
-  repo: context.repo.repo,        // リポジトリ名
-  issue_number: context.issue.number,  // PR番号（GitHub APIではissue_numberとして扱われる）
-  body: commentBody
-});
-```
-
-**方法3: bashツールでgh CLIを使用**
-
-```bash
-# gh CLIが利用可能な場合
-# 1. コメント内容を一時ファイルに出力する（例: /tmp/comment.md）
-cat << 'EOF' > /tmp/comment.md
-## エージェントセッション完了報告
-
-### 実施内容
-- 対応内容: ...
-- 実行したコマンド: ...
-
-### 検証結果
-- ✅ npm run build: 成功
-- ✅ npm test: 成功
-EOF
-
-# 2. --body-file オプションでコメントを投稿する
-gh pr comment <PR番号> --body-file /tmp/comment.md
-```
-
-**注**: 利用可能なツールやAPIは実行環境によって異なります。エージェントは利用可能な方法を選択してコメントを投稿してください。
+GitHub MCPツールを使用してPRにコメントを投稿してください。適切なMCPツール（例: `github-mcp-server`）を使用してPRコメントを投稿します。
 
 #### セキュリティ注意事項
 
