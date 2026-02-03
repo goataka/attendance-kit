@@ -136,7 +136,7 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 {
   "scripts": {
     "start:local-db": "npm run deploy:local-db -w attendance-kit-infrastructure",
-    "pretest:integration": "npm run deploy:local-db -w attendance-kit-infrastructure"
+    "pretest:integration": "npm run start:local-db --prefix ../.."
   }
 }
 ```
@@ -146,7 +146,7 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 {
   "scripts": {
     "start:local-db": "npm run deploy:local-db --prefix infrastructure/deploy",
-    "pretest:integration": "npm run deploy:local-db --prefix ../../infrastructure/deploy"
+    "pretest:integration": "npm run deploy:local-db -w attendance-kit-infrastructure"
   }
 }
 ```
@@ -155,6 +155,18 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 - workspace名による参照は、ディレクトリ構造の変更に強い
 - npm workspacesの標準的な使い方に従う
 - package.jsonの`name`フィールドで明示的に参照される
+
+**ベストプラクティス**: workspaceから別のworkspaceを呼び出す場合、直接呼び出さずrootを経由する
+
+```json
+{
+  "scripts": {
+    "pretest:integration": "npm run start:local-db --prefix ../.."
+  }
+}
+```
+
+これにより、依存関係が一元管理され、変更時の影響範囲が明確になる。
 
 **例外**: workspaceからrootパッケージのスクリプトを呼び出す場合は`--prefix`を使用可能（rootはworkspaceとして定義されていないため）
 
