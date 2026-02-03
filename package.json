@@ -16,6 +16,7 @@
     "test:unit": "npm run test:unit --workspaces --if-present",
     "pretest:e2e": "npm run start:local-db",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
+    "test:e2e:eva": "cucumber-js --config test/e2e/cucumber.js",
     "generate": "npm run generate --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
   },

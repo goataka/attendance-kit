@@ -165,7 +165,7 @@ jobs:
           BACKEND_URL: ${{ needs.deploy.outputs.api_url }}
           DYNAMODB_TABLE_NAME: attendance-kit-${{ needs.deploy.outputs.environment }}-clock
           AWS_REGION: ap-northeast-1
-        run: npm run test:e2e
+        run: npm run test:e2e:eva
         timeout-minutes: 5
 
       - name: Upload E2E Test Reports

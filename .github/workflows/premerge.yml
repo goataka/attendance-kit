@@ -111,9 +111,6 @@ jobs:
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
 
-      - name: Deploy to LocalStack
-        run: npm run deploy:local-db --workspace=attendance-kit-infrastructure
-
       - name: Run Backend Integration Tests
         run: npm run test:integration --workspace=@attendance-kit/backend
 
@@ -236,10 +233,6 @@ jobs:
 
       - name: Build all workspaces
         run: npm run build --workspaces --if-present
-
-      - name: Deploy DynamoDB to LocalStack
-        working-directory: infrastructure/deploy
-        run: npm run deploy:local-db
 
       - name: Start Backend Server
         working-directory: apps/backend

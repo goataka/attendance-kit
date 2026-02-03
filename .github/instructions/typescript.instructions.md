@@ -129,6 +129,8 @@ this.setupIntegration();  // this.lambdaとthis.apiを使用
 
 monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--prefix`ではなく`-w`（または`--workspace`）オプションを使用する。
 
+**適用範囲**: workspace間の呼び出し（例: あるworkspaceから別のworkspaceのスクリプトを実行）
+
 **OK例**:
 ```json
 {
@@ -144,7 +146,7 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 {
   "scripts": {
     "start:local-db": "npm run deploy:local-db --prefix infrastructure/deploy",
-    "pretest:integration": "npm run start:local-db --prefix ../.."
+    "pretest:integration": "npm run deploy:local-db --prefix ../../infrastructure/deploy"
   }
 }
 ```
@@ -153,4 +155,14 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 - workspace名による参照は、ディレクトリ構造の変更に強い
 - npm workspacesの標準的な使い方に従う
 - package.jsonの`name`フィールドで明示的に参照される
+
+**例外**: workspaceからrootパッケージのスクリプトを呼び出す場合は`--prefix`を使用可能（rootはworkspaceとして定義されていないため）
+
+```json
+{
+  "scripts": {
+    "setup": "npm run setup --prefix ../.."
+  }
+}
+```
 
