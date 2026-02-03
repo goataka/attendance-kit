@@ -264,41 +264,6 @@ jobs:
         run: npm run test:e2e
         timeout-minutes: 2
 
-      - name: Delete old E2E Test Reports
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            // すべてのアーティファクトを取得（ページネーション対応）
-            const allArtifacts = [];
-            let page = 1;
-            while (true) {
-              const response = await github.rest.actions.listArtifactsForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                per_page: 100,
-                page: page
-              });
-              allArtifacts.push(...response.data.artifacts);
-              if (response.data.artifacts.length < 100) break;
-              page++;
-            }
-            
-            const e2eArtifacts = allArtifacts
-              .filter(artifact => artifact.name === 'e2e-test-reports')
-              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            
-            // 最新の1つを除いて削除
-            for (const artifact of e2eArtifacts.slice(1)) {
-              console.log(`Deleting artifact: ${artifact.name} (ID: ${artifact.id}, Created: ${artifact.created_at})`);
-              await github.rest.actions.deleteArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: artifact.id
-              });
-            }
-
       - name: Upload E2E Test Reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -310,29 +275,20 @@ jobs:
 
       - name: Comment E2E Test Results on PR
         if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const runId = context.runId;
-            const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
+          header: e2e-test-results
+          recreate: true
+          message: |
+            ## E2Eテスト結果
             
-            const comment = `## E2Eテスト結果
-            
-            📊 **テストレポート**: [Artifactsからダウンロード](${artifactUrl})
+            📊 **テストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             
             レポートの確認方法：
             1. 上記のリンクをクリック
-            2. Artifacts セクションから \`e2e-test-reports\` をダウンロード
-            3. \`cucumber-report.html\` をブラウザで開く
-            `;
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: comment
-            });
+            2. Artifacts セクションから `e2e-test-reports` をダウンロード
+            3. `cucumber-report.html` をブラウザで開く
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Comment on failure
         if: failure()
