@@ -11,11 +11,11 @@
     "setup": "npm ci --workspaces --include-workspace-root",
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
+    "start:local-db": "npm run deploy:local-db -w attendance-kit-infrastructure",
     "test": "npm run test --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
     "pretest:e2e": "npm run start:local-db",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
-    "start:local-db": "npm run deploy:local-db --prefix infrastructure/deploy",
     "generate": "npm run generate --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present"
   },

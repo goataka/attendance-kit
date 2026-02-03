@@ -122,3 +122,35 @@ this.setupIntegration();  // this.lambdaとthis.apiを使用
 
 - READMEでは「Node.js 24.x以上」と記載
 - 具体的なマイナーバージョンは記載しない
+
+## package.json ルール
+
+### npm scripts でのworkspace参照
+
+monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--prefix`ではなく`-w`（または`--workspace`）オプションを使用する。
+
+**OK例**:
+```json
+{
+  "scripts": {
+    "start:local-db": "npm run deploy:local-db -w attendance-kit-infrastructure",
+    "pretest:integration": "npm run start:local-db -w attendance-kit"
+  }
+}
+```
+
+**NG例**:
+```json
+{
+  "scripts": {
+    "start:local-db": "npm run deploy:local-db --prefix infrastructure/deploy",
+    "pretest:integration": "npm run start:local-db --prefix ../.."
+  }
+}
+```
+
+**理由**:
+- workspace名による参照は、ディレクトリ構造の変更に強い
+- npm workspacesの標準的な使い方に従う
+- package.jsonの`name`フィールドで明示的に参照される
+
