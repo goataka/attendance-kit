@@ -275,29 +275,20 @@ jobs:
 
       - name: PRへのE2Eテスト結果コメント
         if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: marocchino/sticky-pull-request-comment@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const runId = context.runId;
-            const artifactUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
+          header: e2e-test-results
+          recreate: true
+          message: |
+            ## E2Eテスト結果
             
-            const comment = `## E2Eテスト結果
-            
-            📊 **テストレポート**: [Artifactsからダウンロード](${artifactUrl})
+            📊 **テストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             
             レポートの確認方法：
             1. 上記のリンクをクリック
-            2. Artifacts セクションから \`e2e-test-reports\` をダウンロード
-            3. \`cucumber-report.html\` をブラウザで開く
-            `;
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: comment
-            });
+            2. Artifacts セクションから `e2e-test-reports` をダウンロード
+            3. `cucumber-report.html` をブラウザで開く
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 失敗時のコメント
         if: failure()
