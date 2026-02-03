@@ -173,9 +173,19 @@ PRコメントには以下の内容を含めてください:
 
 #### 投稿方法
 
-GitHub APIを使用してPRにコメントを投稿してください:
+利用可能なツールやAPIを使用してPRにコメントを投稿してください。以下のいずれかの方法を使用できます:
+
+**方法1: GitHub MCPツールを使用**（推奨）
+
+```typescript
+// GitHub MCPツールが利用可能な場合
+// issue_number はPR番号と同じです
+```
+
+**方法2: GitHub APIを直接使用**
 
 ```javascript
+// GitHub APIが利用可能な場合
 await github.rest.issues.createComment({
   owner: context.repo.owner,
   repo: context.repo.repo,
@@ -184,7 +194,14 @@ await github.rest.issues.createComment({
 });
 ```
 
-**注**: `github`オブジェクトと`context`オブジェクトは、GitHub Copilot Agentの実行環境で利用可能です。
+**方法3: bashツールでgh CLIを使用**
+
+```bash
+# gh CLIが利用可能な場合
+gh pr comment <PR番号> --body "<コメント内容>"
+```
+
+**注**: 利用可能なツールやAPIは実行環境によって異なります。エージェントは利用可能な方法を選択してコメントを投稿してください。
 
 #### セキュリティ注意事項
 
