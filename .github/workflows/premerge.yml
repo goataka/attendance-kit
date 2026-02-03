@@ -13,6 +13,9 @@ permissions:
   contents: write
   pull-requests: write
 
+env:
+  CONTAINER_IMAGE: mcr.microsoft.com/devcontainers/typescript-node:24
+
 jobs:
   check-changes:
     runs-on: ubuntu-latest
@@ -33,7 +36,7 @@ jobs:
   unit-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/devcontainers/typescript-node:24
+      image: ${{ env.CONTAINER_IMAGE }}
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -81,7 +84,7 @@ jobs:
   backend-integration-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/devcontainers/typescript-node:24
+      image: ${{ env.CONTAINER_IMAGE }}
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -117,7 +120,7 @@ jobs:
   deploy-integration-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/devcontainers/typescript-node:24
+      image: ${{ env.CONTAINER_IMAGE }}
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -154,7 +157,7 @@ jobs:
   frontend-integration-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/devcontainers/typescript-node:24
+      image: ${{ env.CONTAINER_IMAGE }}
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -186,7 +189,7 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/devcontainers/typescript-node:24
+      image: ${{ env.CONTAINER_IMAGE }}
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
