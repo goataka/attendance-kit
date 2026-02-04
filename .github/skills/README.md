@@ -12,6 +12,30 @@
 
 **詳細**: [aws-investigation/SKILL.md](./aws-investigation/SKILL.md)
 
+### backend-developer
+
+**説明**: Backend（NestJS）開発時に必要な検証を実施します。Lint、ビルド、ユニットテスト、統合テスト、OpenAPI仕様生成を含みます。
+
+**使用タイミング**: Backend（apps/backend）のコード変更時
+
+**詳細**: [backend-developer/SKILL.md](./backend-developer/SKILL.md)
+
+### cloudfront-error-handler
+
+**説明**: CloudFront配下のAPI/フロントエンドのエラーに対応し、アクセス検証、原因特定、対処、検証を体系的に行います。
+
+**使用タイミング**: CloudFront経由のアクセスでエラーが発生した場合
+
+**詳細**: [cloudfront-error-handler/SKILL.md](./cloudfront-error-handler/SKILL.md)
+
+### e2e-developer
+
+**説明**: E2E（End-to-End）テスト開発時に必要な検証を実施します。Cucumber + Playwrightによるフロントエンドとバックエンドの統合テストを含みます。
+
+**使用タイミング**: E2Eテスト（test/e2e/）のコード変更時
+
+**詳細**: [e2e-developer/SKILL.md](./e2e-developer/SKILL.md)
+
 ### file-refactor
 
 **説明**: ファイルやフォルダの名称変更・削除を行い、リポジトリ内の参照箇所を自動的に検索して更新します。
@@ -19,6 +43,22 @@
 **使用タイミング**: ファイル/フォルダのリネームや削除を行う場合
 
 **詳細**: [file-refactor/SKILL.md](./file-refactor/SKILL.md)
+
+### frontend-developer
+
+**説明**: Frontend（React + Vite）開発時に必要な検証を実施します。Lint、ビルド、ユニットテスト、E2Eテストを含みます。
+
+**使用タイミング**: Frontend（apps/frontend）のコード変更時
+
+**詳細**: [frontend-developer/SKILL.md](./frontend-developer/SKILL.md)
+
+### infrastructure-developer
+
+**説明**: Infrastructure（AWS CDK）開発時に必要な検証を実施します。ビルド、ユニットテスト、統合テスト、CDK synthを含みます。
+
+**使用タイミング**: Infrastructure（infrastructure/deploy）のコード変更時
+
+**詳細**: [infrastructure-developer/SKILL.md](./infrastructure-developer/SKILL.md)
 
 ### premerge-check
 
@@ -47,14 +87,6 @@ npm run premerge:local
 
 **詳細**: [workflow-error-handler/SKILL.md](./workflow-error-handler/SKILL.md)
 
-### cloudfront-error-handler
-
-**説明**: CloudFront配下のAPI/フロントエンドのエラーに対応し、アクセス検証、原因特定、対処、検証を体系的に行います。
-
-**使用タイミング**: CloudFront経由のアクセスでエラーが発生した場合、API GatewayやLambdaとの連携不具合が疑われる場合
-
-**詳細**: [cloudfront-error-handler/SKILL.md](./cloudfront-error-handler/SKILL.md)
-
 ## Agent Skillsについて
 
 Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機能を定義したものです。
@@ -74,17 +106,27 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 
 ```
 .github/skills/
-├── README.md               # このファイル
-├── aws-investigation/      # AWS調査スキル
-│   └── SKILL.md            # スキル定義ファイル
-├── file-refactor/          # ファイル/フォルダのリネーム・削除スキル
-│   └── SKILL.md            # スキル定義ファイル
-├── premerge-check/         # プレマージチェックスキル
-│   └── SKILL.md            # スキル定義ファイル
-├── rule-making/            # ルール化スキル
-│   └── SKILL.md            # スキル定義ファイル
-└── workflow-error-handler/ # ワークフローエラー対応スキル
-    └── SKILL.md            # スキル定義ファイル
+├── README.md                    # このファイル
+├── aws-investigation/           # AWS調査スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── backend-developer/           # Backend開発スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── cloudfront-error-handler/    # CloudFrontエラー対応スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── e2e-developer/               # E2E開発スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── file-refactor/               # ファイル/フォルダのリネーム・削除スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── frontend-developer/          # Frontend開発スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── infrastructure-developer/    # Infrastructure開発スキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── premerge-check/              # プレマージチェックスキル
+│   └── SKILL.md                 # スキル定義ファイル
+├── rule-making/                 # ルール化スキル
+│   └── SKILL.md                 # スキル定義ファイル
+└── workflow-error-handler/      # ワークフローエラー対応スキル
+    └── SKILL.md                 # スキル定義ファイル
 ```
 
 ## スキルの追加方法
