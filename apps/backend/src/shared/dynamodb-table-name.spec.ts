@@ -1,7 +1,7 @@
 import { buildTableName, resolveTableName } from './dynamodb-table-name';
 
-describe('dynamodb-table-name', () => {
-  describe('buildTableName', () => {
+describe('DynamoDBテーブル名ユーティリティ', () => {
+  describe('buildTableName関数', () => {
     test('環境名とリソースタイプからテーブル名を生成できる', () => {
       expect(buildTableName('dev', 'clock')).toBe('attendance-kit-dev-clock');
       expect(buildTableName('staging', 'clock')).toBe(
@@ -14,7 +14,7 @@ describe('dynamodb-table-name', () => {
     });
   });
 
-  describe('resolveTableName', () => {
+  describe('resolveTableName関数', () => {
     const originalEnv = process.env.NODE_ENV;
 
     afterEach(() => {
