@@ -8,6 +8,7 @@ import { api } from '../shared/api';
 vi.mock('../shared/api', () => ({
   api: {
     clockInOut: vi.fn(),
+    clockInOutWithToken: vi.fn(),
     login: vi.fn(),
     isAuthenticated: vi.fn(),
     logout: vi.fn(),
@@ -113,7 +114,7 @@ describe('ClockInOutPage', () => {
       },
     };
     
-    vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
+    vi.mocked(api.clockInOutWithToken).mockResolvedValue(mockResponse);
     
     renderWithRouter(<ClockInOutPage />);
     
@@ -133,7 +134,7 @@ describe('ClockInOutPage', () => {
       message: 'Invalid credentials',
     };
     
-    vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
+    vi.mocked(api.clockInOutWithToken).mockResolvedValue(mockResponse);
     
     renderWithRouter(<ClockInOutPage />);
     

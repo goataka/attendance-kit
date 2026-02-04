@@ -62,6 +62,38 @@ export const mockApi = {
     mockToken = null;
   },
 
+  // ログイン済みのユーザーが打刻を行う（トークンベース）
+  clockInOutWithToken: async (type: 'clock-in' | 'clock-out'): Promise<ClockInOutResponse> => {
+    // セッションチェック
+    if (!mockToken) {
+      return {
+        success: false,
+        message: 'Authentication required. Please log in first.',
+      };
+    }
+
+    // APIの遅延をシミュレート
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // ユーザーIDをトークンから抽出（モック実装）
+    const userId = mockToken.split('-')[2]; // mock-token-userId-timestamp
+
+    // 新しいレコードを作成
+    const record: ClockRecord = {
+      id: String(mockRecords.length + 1),
+      userId: userId,
+      timestamp: new Date().toISOString(),
+      type: type,
+    };
+
+    mockRecords.push(record);
+
+    return {
+      success: true,
+      record,
+    };
+  },
+
   // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     // Simulate API delay

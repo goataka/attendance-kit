@@ -1,38 +1,59 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clock In/Out Page', () => {
-  test('should display clock in/out form', async ({ page }) => {
+  test('should display login form', async ({ page }) => {
     await page.goto('/');
     
-    // Check page title
+    // ページタイトルを確認
     await expect(page.locator('h1')).toHaveText('勤怠打刻');
     
-    // Check form elements
+    // フォーム要素を確認（ログイン前）
     await expect(page.locator('#userId')).toBeVisible();
     await expect(page.locator('#password')).toBeVisible();
-    await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'ログイン' })).toBeVisible();
     
-    // Wait for any animations to complete
+    // アニメーション完了を待つ
     await page.waitForTimeout(500);
     
-    // Visual regression test - saves to ClockInOutPage.screenshot.png
+    // ビジュアルリグレッションテスト - ClockInOutPage.screenshot.pngに保存
     await expect(page).toHaveScreenshot(['ClockInOutPage.screenshot.png'], {
       fullPage: true,
     });
   });
 
-  test('should handle clock in', async ({ page }) => {
+  test('should login successfully', async ({ page }) => {
     await page.goto('/');
     
-    // Fill in credentials
+    // 認証情報を入力
     await page.locator('#userId').fill('user001');
     await page.locator('#password').fill('password123');
     
-    // Click clock in button
+    // ログインボタンをクリック
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    
+    // 成功メッセージを待つ
+    await expect(page.locator('.message.success')).toBeVisible();
+    await expect(page.locator('.message.success')).toContainText('Login successful');
+    
+    // ログイン後は打刻ボタンが表示される
+    await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'ログアウト' })).toBeVisible();
+  });
+
+  test('should handle clock in', async ({ page }) => {
+    await page.goto('/');
+    
+    // まずログイン
+    await page.locator('#userId').fill('user001');
+    await page.locator('#password').fill('password123');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.waitForSelector('.message.success');
+    
+    // 出勤ボタンをクリック
     await page.getByRole('button', { name: '出勤' }).click();
     
-    // Wait for success message
+    // 成功メッセージを待つ
     await expect(page.locator('.message.success')).toBeVisible();
     await expect(page.locator('.message.success')).toContainText('Clock in successful');
   });
@@ -40,10 +61,10 @@ test.describe('Clock In/Out Page', () => {
   test('should show error for empty fields', async ({ page }) => {
     await page.goto('/');
     
-    // Click clock in without filling fields
-    await page.getByRole('button', { name: '出勤' }).click();
+    // フィールドを入力せずにログインボタンをクリック
+    await page.getByRole('button', { name: 'ログイン' }).click();
     
-    // Wait for error message
+    // エラーメッセージを待つ
     await expect(page.locator('.message.error')).toBeVisible();
     await expect(page.locator('.message.error')).toContainText('User ID and password are required');
   });
@@ -51,10 +72,16 @@ test.describe('Clock In/Out Page', () => {
   test('should navigate to records list', async ({ page }) => {
     await page.goto('/');
     
-    // Click link to records
+    // まずログイン
+    await page.locator('#userId').fill('user001');
+    await page.locator('#password').fill('password123');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.waitForSelector('.message.success');
+    
+    // 打刻一覧へのリンクをクリック
     await page.getByRole('link', { name: '打刻一覧を見る' }).click();
     
-    // Should navigate to records page
+    // 打刻一覧ページに遷移するはず
     await expect(page).toHaveURL('/clocks');
     await expect(page.locator('h1')).toHaveText('打刻一覧');
   });

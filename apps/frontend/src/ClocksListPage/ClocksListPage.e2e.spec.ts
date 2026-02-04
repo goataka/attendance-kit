@@ -1,13 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clocks List Page', () => {
-  // Seed data before each test
+  // 各テストの前にデータをシード
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     
-    // Add test data via clock-in
+    // ログイン
     await page.locator('#userId').fill('user001');
     await page.locator('#password').fill('password123');
+    await page.getByRole('button', { name: 'ログイン' }).click();
+    await page.waitForSelector('.message.success');
+    
+    // 打刻データを追加
     await page.getByRole('button', { name: '出勤' }).click();
     await page.waitForSelector('.message.success');
   });

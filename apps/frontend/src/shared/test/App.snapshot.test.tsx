@@ -9,6 +9,7 @@ vi.mock('../../shared/api', () => ({
     login: vi.fn(),
     logout: vi.fn(),
     clockInOut: vi.fn(),
+    clockInOutWithToken: vi.fn(),
     getRecords: vi.fn(),
   },
 }));

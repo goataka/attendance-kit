@@ -103,6 +103,60 @@ export const api = {
     clearToken();
   },
 
+  // ログイン済みのユーザーが打刻を行う（トークンベース）
+  clockInOutWithToken: async (type: 'clock-in' | 'clock-out'): Promise<ClockInOutResponse> => {
+    try {
+      const token = getStoredToken();
+      
+      if (!token) {
+        return {
+          success: false,
+          message: 'Authentication required. Please log in first.',
+        };
+      }
+
+      const response = await fetch(
+        `${BACKEND_URL}${API_BASE_PATH}/clock/${type === 'clock-in' ? 'in' : 'out'}`,
+        {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          location: 'Remote',
+          deviceId: 'web-client',
+        }),
+      },
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        return {
+          success: false,
+          message: error.message || 'Failed to process request',
+        };
+      }
+
+      const data = await response.json();
+      
+      return {
+        success: true,
+        record: {
+          id: data.id,
+          userId: data.userId,
+          timestamp: data.timestamp,
+          type: type,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : 'An error occurred',
+      };
+    }
+  },
+
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
       const token = await login(request.userId, request.password);

@@ -55,16 +55,11 @@ export function ClockInOutPage() {
   };
 
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
-    if (!userId || !password) {
-      setMessage({ type: 'error', text: 'User ID and password are required' });
-      return;
-    }
-
     setLoading(true);
     setMessage(null);
 
     try {
-      const response = await api.clockInOut({ userId, password, type });
+      const response = await api.clockInOutWithToken(type);
 
       if (response.success) {
         const clockType = type === 'clock-in' ? 'Clock in' : 'Clock out';
@@ -73,8 +68,6 @@ export function ClockInOutPage() {
           type: 'success',
           text: `${clockType} successful at ${timestamp}`,
         });
-        // Clear password for security
-        setPassword('');
       } else {
         setMessage({ type: 'error', text: response.message || 'Failed to process request' });
       }
@@ -165,25 +158,27 @@ export function ClockInOutPage() {
                 ログイン
               </button>
             </div>
+
+            <div className="help-text">
+              <p>テスト用アカウント:</p>
+              <ul>
+                {TEST_ACCOUNTS.map((account) => (
+                  <li key={account.userId}>
+                    {`${account.userId} / ${account.password}`}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 
-        <div className="help-text">
-          <p>テスト用アカウント:</p>
-          <ul>
-            {TEST_ACCOUNTS.map((account) => (
-              <li key={account.userId}>
-                {`${account.userId} / ${account.password}`}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="navigation">
-          <Link to="/clocks" className="link">
-            打刻一覧を見る →
-          </Link>
-        </div>
+        {isAuthenticated && (
+          <div className="navigation">
+            <Link to="/clocks" className="link">
+              打刻一覧を見る →
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
