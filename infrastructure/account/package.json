@@ -1,5 +1,5 @@
 {
-  "name": "@attendance-kit/infrastructure-account",
+  "name": "@attendance-kit/account",
   "version": "1.0.0",
   "description": "AWS CDK account-level infrastructure for attendance-kit (Budget, SNS)",
   "scripts": {
