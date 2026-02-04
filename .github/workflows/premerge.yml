@@ -212,6 +212,8 @@ jobs:
       VITE_BACKEND_URL: http://localhost:3000
       FRONTEND_URL: http://localhost:5173
       BACKEND_URL: http://localhost:3000
+      NODE_ENV: test
+      DYNAMODB_ENDPOINT: http://localhost:4566
     
     steps:
       - name: コードのチェックアウト
@@ -236,9 +238,6 @@ jobs:
 
       - name: バックエンドサーバーの起動
         working-directory: apps/backend
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          NODE_ENV: test
         run: |
           npm run dev &
           sleep 10
@@ -251,9 +250,6 @@ jobs:
           sleep 10
 
       - name: E2Eテストの実行
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          NODE_ENV: test
         run: npm run test:e2e:local
         timeout-minutes: 2
 
