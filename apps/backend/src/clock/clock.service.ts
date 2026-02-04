@@ -7,6 +7,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { ClockType, ClockRecordResponseDto } from './dto/clock.dto';
 import { randomUUID } from 'crypto';
+import { resolveTableName } from '../shared/dynamodb-table-name';
 
 export interface ClockRecord {
   id: string;
@@ -23,7 +24,6 @@ export class ClockService {
   private readonly logger = new Logger(ClockService.name);
   private readonly docClient: DynamoDBDocumentClient;
   private readonly tableName: string;
-  private readonly defaultTableName = 'attendance-kit-dev-clock';
   // DynamoDB Query API: ScanIndexForward=false で降順ソート（最新のレコードが先頭）
   private readonly scanIndexForward = false;
 
@@ -40,7 +40,9 @@ export class ClockService {
 
     const client = new DynamoDBClient(clientConfig);
     this.docClient = DynamoDBDocumentClient.from(client);
-    this.tableName = process.env.DYNAMODB_TABLE_NAME || this.defaultTableName;
+
+    // 環境名から動的にテーブル名を解決
+    this.tableName = resolveTableName('clock');
   }
 
   private extractDate(date: Date): string {
