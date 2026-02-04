@@ -74,24 +74,44 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
   - **使用しない状況**: AWS環境へのデプロイや変更を行う場合（読み取り専用スキル）
   - **判断基準**: CloudFormationスタック、DynamoDB、Lambda、API Gatewayなどのリソース情報を確認する必要がある場合は使用
 
-- **workflow-error-handler**: ワークフローのエラー対応
-  - **使用すべき状況**: GitHub Actionsワークフローが失敗した場合、CI/CDパイプラインでエラーが発生した場合
-  - **使用しない状況**: ワークフローファイルの軽微な設定変更（環境変数追加など）のみの場合
-  - **判断基準**: エラーログの確認、再現、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
+- **backend-developer**: Backend開発
+  - **使用すべき状況**: Backend（apps/backend）のコード変更時、NestJS APIの実装や修正時
+  - **使用しない状況**: Backend以外のプロジェクト（Frontend、Infrastructure）の変更時
+  - **判断基準**: Backendのコントローラー、サービス、エンティティなどを変更する場合は使用
 
 - **cloudfront-error-handler**: CloudFrontエラー対応
-  - **使用すべき状況**: CloudFront経由のアクセスでエラーが発生した場合、API GatewayやLambdaとの連携不具合が疑われる場合
-  - **使用しない状況**: CloudFrontの設定変更のみを行う場合
-  - **判断基準**: アクセス検証、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
+  - **使用すべき状況**: CloudFront経由のアクセスでエラーが発生した場合
+  - **使用しない状況**: CloudFront以外のエラー（ワークフローエラーなど）の場合
+  - **判断基準**: API GatewayやLambdaとの連携不具合が疑われる場合は使用
 
-- **premerge-check**: プレマージワークフローのローカル実行
-  - **使用すべき状況**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
+- **e2e-developer**: E2E開発
+  - **使用すべき状況**: E2Eテスト（test/e2e/）のコード変更時、FeatureファイルやStep definitionsの実装や修正時
+  - **使用しない状況**: 個別のアプリケーション（Backend、Frontend）のテスト変更時
+  - **判断基準**: Cucumber + Playwrightを使用したE2Eテストを変更する場合は使用
 
 - **file-refactor**: ファイル/フォルダの名称変更・削除と参照更新
   - **使用すべき状況**: ファイルやフォルダのリネーム・削除を依頼された場合
 
+- **frontend-developer**: Frontend開発
+  - **使用すべき状況**: Frontend（apps/frontend）のコード変更時、Reactコンポーネントやページの実装や修正時
+  - **使用しない状況**: Frontend以外のプロジェクト（Backend、Infrastructure）の変更時
+  - **判断基準**: Reactコンポーネント、画面、スタイルなどを変更する場合は使用
+
+- **infrastructure-developer**: Infrastructure開発
+  - **使用すべき状況**: Infrastructure（infrastructure/deploy）のコード変更時、CDKスタックや設定の変更時
+  - **使用しない状況**: Infrastructure以外のプロジェクト（Backend、Frontend）の変更時
+  - **判断基準**: CDKスタック、Construct、AWSリソース定義を変更する場合は使用
+
+- **premerge-check**: プレマージワークフローのローカル実行
+  - **使用すべき状況**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
+
 - **rule-making**: ルール化の依頼対応
   - **使用すべき状況**: ユーザーから「ルール化してください」というリクエストがあった場合
+
+- **workflow-error-handler**: ワークフローのエラー対応
+  - **使用すべき状況**: GitHub Actionsワークフローが失敗した場合、CI/CDパイプラインでエラーが発生した場合
+  - **使用しない状況**: ワークフローファイルの軽微な設定変更（環境変数追加など）のみの場合
+  - **判断基準**: エラーログの確認、再現、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
 
 ### 変更実行前の必須プロセス
 
