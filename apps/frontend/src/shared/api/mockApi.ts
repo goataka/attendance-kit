@@ -34,7 +34,34 @@ const mockUsers: Record<string, string> = {
   'user002': 'password456',
 };
 
+// Mock session storage
+let mockToken: string | null = null;
+
 export const mockApi = {
+  // Login
+  login: async (userId: string, password: string): Promise<string | null> => {
+    // APIの遅延をシミュレート
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // 認証情報の検証
+    if (mockUsers[userId] && mockUsers[userId] === password) {
+      mockToken = `mock-token-${userId}-${Date.now()}`;
+      return mockToken;
+    }
+
+    return null;
+  },
+
+  // Check if authenticated
+  isAuthenticated: (): boolean => {
+    return mockToken !== null;
+  },
+
+  // Logout
+  logout: (): void => {
+    mockToken = null;
+  },
+
   // Clock in or out
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     // Simulate API delay
@@ -66,6 +93,11 @@ export const mockApi = {
 
   // Get records with optional filtering
   getRecords: async (filter?: RecordsFilter): Promise<ClockRecord[]> => {
+    // セッションチェック
+    if (!mockToken) {
+      throw new Error('Authentication required. Please log in first.');
+    }
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
 

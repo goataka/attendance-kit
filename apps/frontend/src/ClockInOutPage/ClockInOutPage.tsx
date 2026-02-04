@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../shared/api';
 import { TEST_ACCOUNTS } from '../shared/constants';
@@ -9,6 +9,50 @@ export function ClockInOutPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // 認証状態を確認
+    setIsAuthenticated(api.isAuthenticated());
+  }, []);
+
+  const handleLogin = async () => {
+    if (!userId || !password) {
+      setMessage({ type: 'error', text: 'User ID and password are required' });
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const token = await api.login(userId, password);
+
+      if (token) {
+        setMessage({
+          type: 'success',
+          text: 'Login successful',
+        });
+        setIsAuthenticated(true);
+        // セキュリティのためパスワードをクリア
+        setPassword('');
+      } else {
+        setMessage({ type: 'error', text: 'Invalid credentials' });
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    api.logout();
+    setIsAuthenticated(false);
+    setUserId('');
+    setPassword('');
+    setMessage({ type: 'success', text: 'Logged out successfully' });
+  };
 
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
     if (!userId || !password) {
@@ -46,54 +90,83 @@ export function ClockInOutPage() {
       <div className="container">
         <h1>勤怠打刻</h1>
 
-        <div className="form-section">
-          <div className="form-group">
-            <label htmlFor="userId">User ID</label>
-            <input
-              id="userId"
-              type="text"
-              value={userId}
-              onChange={(e) => setUserId(e.target.value)}
-              placeholder="Enter your user ID"
-              disabled={loading}
-            />
-          </div>
+        {isAuthenticated ? (
+          // ログイン済みの場合：打刻ボタンのみ表示
+          <div className="form-section">
+            {message && (
+              <div className={`message ${message.type}`}>
+                {message.text}
+              </div>
+            )}
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              disabled={loading}
-            />
-          </div>
-
-          {message && (
-            <div className={`message ${message.type}`}>
-              {message.text}
+            <div className="button-group">
+              <button
+                className="btn btn-primary"
+                onClick={() => handleClockInOut('clock-in')}
+                disabled={loading}
+              >
+                出勤
+              </button>
+              <button
+                className="btn btn-secondary"
+                onClick={() => handleClockInOut('clock-out')}
+                disabled={loading}
+              >
+                退勤
+              </button>
+              <button
+                className="btn btn-tertiary"
+                onClick={handleLogout}
+                disabled={loading}
+              >
+                ログアウト
+              </button>
             </div>
-          )}
-
-          <div className="button-group">
-            <button
-              className="btn btn-primary"
-              onClick={() => handleClockInOut('clock-in')}
-              disabled={loading}
-            >
-              出勤
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleClockInOut('clock-out')}
-              disabled={loading}
-            >
-              退勤
-            </button>
           </div>
-        </div>
+        ) : (
+          // 未ログインの場合：ログインフォーム表示
+          <div className="form-section">
+            <div className="form-group">
+              <label htmlFor="userId">User ID</label>
+              <input
+                id="userId"
+                type="text"
+                value={userId}
+                onChange={(e) => setUserId(e.target.value)}
+                placeholder="Enter your user ID"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                disabled={loading}
+              />
+            </div>
+
+            {message && (
+              <div className={`message ${message.type}`}>
+                {message.text}
+              </div>
+            )}
+
+            <div className="button-group">
+              <button
+                className="btn btn-primary"
+                onClick={handleLogin}
+                disabled={loading}
+              >
+                ログイン
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="help-text">
           <p>テスト用アカウント:</p>

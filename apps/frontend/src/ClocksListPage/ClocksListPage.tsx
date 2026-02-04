@@ -1,17 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import { DEFAULT_FILTER } from '../shared/constants';
 import './ClocksListPage.css';
 
 export function ClocksListPage() {
+  const navigate = useNavigate();
   const [records, setRecords] = useState<ClockRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<RecordsFilter>(DEFAULT_FILTER);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // セッションチェック：トークンがない場合は打刻画面にリダイレクト
+    if (!api.isAuthenticated()) {
+      navigate('/', { replace: true });
+      return;
+    }
+
     const fetchRecords = async () => {
       setLoading(true);
       setError(null);
@@ -31,7 +38,7 @@ export function ClocksListPage() {
     };
     
     fetchRecords();
-  }, []);
+  }, [navigate]);
 
   const loadRecords = async (newFilter?: RecordsFilter) => {
     setLoading(true);

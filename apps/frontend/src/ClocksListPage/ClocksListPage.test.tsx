@@ -8,6 +8,7 @@ import { api } from '../shared/api';
 vi.mock('../shared/api', () => ({
   api: {
     getRecords: vi.fn(),
+    isAuthenticated: vi.fn(),
   },
 }));
 
@@ -33,6 +34,8 @@ describe('ClocksListPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // デフォルトではログインしている状態
+    vi.mocked(api.isAuthenticated).mockReturnValue(true);
   });
 
   it('打刻一覧ページが表示されること', async () => {

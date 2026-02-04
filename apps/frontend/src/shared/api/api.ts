@@ -91,6 +91,18 @@ const login = async (userId: string, password: string): Promise<string | null> =
 };
 
 export const api = {
+  login: async (userId: string, password: string): Promise<string | null> => {
+    return login(userId, password);
+  },
+
+  isAuthenticated: (): boolean => {
+    return getStoredToken() !== null;
+  },
+
+  logout: (): void => {
+    clearToken();
+  },
+
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
       const token = await login(request.userId, request.password);

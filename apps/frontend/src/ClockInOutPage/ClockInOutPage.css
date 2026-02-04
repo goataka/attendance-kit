@@ -83,6 +83,10 @@
   gap: 1rem;
 }
 
+.button-group:has(.btn-tertiary) {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 .btn {
   padding: 0.875rem 1.5rem;
   font-size: 1rem;
@@ -114,6 +118,15 @@
 
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--secondary-hover);
+}
+
+.btn-tertiary {
+  background-color: #64748b;
+  color: white;
+}
+
+.btn-tertiary:hover:not(:disabled) {
+  background-color: #475569;
 }
 
 .help-text {
