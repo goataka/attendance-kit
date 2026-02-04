@@ -1,10 +1,5 @@
-// DynamoDBテーブル名を環境名から動的に解決するユーティリティ
-// 命名規則: attendance-kit-{environment}-{resourceType}
-
-// DynamoDBテーブルのリソースタイプ
 export type DynamoDBResourceType = 'clock';
 
-// 環境名とリソースタイプからテーブル名を生成する
 export function buildTableName(
   environment: string,
   resourceType: DynamoDBResourceType,
@@ -12,8 +7,6 @@ export function buildTableName(
   return `attendance-kit-${environment}-${resourceType}`;
 }
 
-// 環境変数NODE_ENVからテーブル名を解決する
-// NODE_ENVが未設定の場合はデフォルト値を使用
 export function resolveTableName(
   resourceType: DynamoDBResourceType,
   defaultEnvironment: string = 'dev',
