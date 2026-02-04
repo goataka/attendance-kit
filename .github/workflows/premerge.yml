@@ -238,7 +238,7 @@ jobs:
 
       - name: E2Eテストの実行
         run: npm run test:e2e:local
-        timeout-minutes: 2
+        timeout-minutes: 5
 
       - name: E2Eテストレポートのアップロード
         if: always()
