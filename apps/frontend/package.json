@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start:local": "vite",
+    "wait:local": "curl --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors http://localhost:5173",
     "build": "vite build",
     "build:check": "tsc -b && vite build",
     "preview": "vite preview",

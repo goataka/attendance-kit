@@ -234,24 +234,6 @@ jobs:
       - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: バックエンドサーバーの起動
-        working-directory: apps/backend
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
-        run: npm run dev &
-
-      - name: フロントエンドサーバーの起動
-        working-directory: apps/frontend
-        run: npm run dev &
-
-      - name: サーバー起動の確認
-        run: |
-          echo "バックエンドサーバーの起動を待機中..."
-          curl --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors http://localhost:3000/api/health
-          echo "フロントエンドサーバーの起動を待機中..."
-          curl --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors http://localhost:5173
-
       - name: E2Eテストの実行
         env:
           DYNAMODB_ENDPOINT: http://localhost:4566
