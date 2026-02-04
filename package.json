@@ -12,7 +12,7 @@
     "dev": "npm run dev --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",
     "start:local-db": "npm run deploy:local-db -w @attendance-kit/deploy",
-    "start:local": "npm run start:local-db && npm run start:local --workspaces --if-present &",
+    "start:local": "npm run start:local-db && npm run start:local --workspaces --if-present",
     "wait:local": "npm run wait:local --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
     "test:unit": "npm run test:unit --workspaces --if-present",
