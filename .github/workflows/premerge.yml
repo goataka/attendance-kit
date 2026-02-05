@@ -212,6 +212,8 @@ jobs:
       VITE_BACKEND_URL: http://localhost:3000
       FRONTEND_URL: http://localhost:5173
       BACKEND_URL: http://localhost:3000
+      NODE_ENV: test
+      DYNAMODB_ENDPOINT: http://localhost:4566
     
     steps:
       - name: コードのチェックアウト
@@ -234,28 +236,9 @@ jobs:
       - name: 全ワークスペースのビルド
         run: npm run build --workspaces --if-present
 
-      - name: バックエンドサーバーの起動
-        working-directory: apps/backend
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
-        run: |
-          npm run dev &
-          sleep 10
-          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/api/health || echo "Backend not ready"
-
-      - name: フロントエンドサーバーの起動
-        working-directory: apps/frontend
-        run: |
-          npm run dev &
-          sleep 10
-
       - name: E2Eテストの実行
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: npm run test:e2e:local
-        timeout-minutes: 2
+        timeout-minutes: 5
 
       - name: E2Eテストレポートのアップロード
         if: always()
