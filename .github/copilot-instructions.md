@@ -51,8 +51,22 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
 - コードレビューの効率化
 - 変更履歴の追跡性向上
 
+**PR番号の取得方法**:
+```bash
+# GitHub MCPツールを使用してPR番号を取得
+# 現在のブランチ名を確認
+git branch --show-current
+
+# そのブランチのPRを検索
+# github-mcp-server-search_pull_requests を使用
+# query: "head:<ブランチ名> is:open"
+```
+
 **注意**:
 - 始点コミットは作業開始前のコミット、終点コミットは作業完了時のコミットを指定
+- **PR番号は必ず実際の番号を使用してください**
+  - 「現在のPR番号」「PR番号」などのプレースホルダーは使用禁止
+  - GitHub MCPツールで現在のブランチのPR番号を取得してください
 - **コミットハッシュは必ず完全形（40文字）を使用してください**
   - 短縮形（7文字）はGitHubのchangesページで機能しません
   - `git log --format=%H`で完全なコミットハッシュを取得できます
@@ -201,7 +215,22 @@ PRコメントには以下の内容を含めてください。
 
 ### PR差分
 <PR差分へのリンクを記載>
-例: PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
+
+**重要**: PR差分リンクを記載する際は以下の手順を必ず実行してください：
+1. `git branch --show-current` で現在のブランチ名を取得
+2. `github-mcp-server-search_pull_requests` でPR番号を取得（query: "head:<ブランチ名> is:open"）
+3. `git log --format=%H` で始点・終点の完全なコミットハッシュを取得
+4. 実際の値を使用してリンクを生成
+
+**NG例**: 
+```
+PR差分: [#現在のPR番号](https://github.com/goataka/attendance-kit/pull/現在のPR番号/changes/...)
+```
+
+**OK例**: 
+```
+PR差分: [#158](https://github.com/goataka/attendance-kit/pull/158/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
+```
 ```
 
 #### 投稿方法
