@@ -203,7 +203,23 @@ PRコメントには以下の内容を含めてください。
 
 #### 投稿方法
 
-GitHub MCPツールを使用してPRにコメントを投稿してください。適切なMCPツール（例: `github-mcp-server`）を使用してPRコメントを投稿します。
+`.github/scripts/post-agent-session-comment.sh`スクリプトを使用してPRにコメントを投稿してください。
+
+**使用方法**:
+
+```bash
+# 環境変数GITHUB_TOKENが設定されている場合
+GH_TOKEN="${GITHUB_TOKEN}" .github/scripts/post-agent-session-comment.sh "$(git branch --show-current)" "コメント本文"
+
+# または、コメント本文をファイルから読み込む場合
+GH_TOKEN="${GITHUB_TOKEN}" .github/scripts/post-agent-session-comment.sh "$(git branch --show-current)" "$(cat /tmp/comment.md)"
+```
+
+**注意**:
+- スクリプト実行には`GH_TOKEN`環境変数が必要です
+- GitHub Actions環境では`GITHUB_TOKEN`が自動的に設定されています
+- コメント本文は上記の「コメントフォーマット」に従って作成してください
+- コメント本文に改行を含める場合は、ダブルクォートで囲んでください
 
 #### セキュリティ注意事項
 
