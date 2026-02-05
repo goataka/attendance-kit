@@ -42,7 +42,7 @@ PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/ch
 
 **例**:
 ```
-PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
+PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
 ```
 
 **理由**:
@@ -53,7 +53,10 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
 
 **注意**:
 - 始点コミットは作業開始前のコミット、終点コミットは作業完了時のコミットを指定
-- コミットハッシュは短縮形（7文字）でも完全形でも可
+- **コミットハッシュは必ず完全形（40文字）を使用してください**
+  - 短縮形（7文字）はGitHubのchangesページで機能しません
+  - `git log --format=%H`で完全なコミットハッシュを取得できます
+- このルールは必須です。PR差分リンクを提示する際は必ず遵守してください
 
 ## Agentの動作ガイドライン
 
@@ -198,7 +201,7 @@ PRコメントには以下の内容を含めてください。
 
 ### PR差分
 <PR差分へのリンクを記載>
-例: PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
+例: PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
 ```
 
 #### 投稿方法
