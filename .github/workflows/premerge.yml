@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
+env:
+  CHECKOUT_REF: ${{ github.head_ref || github.ref }}
+
 permissions:
   contents: write
   pull-requests: write
@@ -18,9 +21,6 @@ jobs:
   check-changes:
     runs-on: ubuntu-latest
     outputs:
-      # workflow_dispatchの場合は常にtrue、PRの場合はMarkdown以外の変更があればtrue
-      # 安全性: workflow_dispatchの場合、if条件によりsteps.filterステップが実行されないため、
-      # steps.filter.outputs.non-mdは未定義だが、論理ORの左辺がtrueのため右辺は評価されない（短絡評価）
       should-run-tests: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.non-md == 'true' }}
     steps:
       - name: コードのチェックアウト
@@ -45,7 +45,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ env.CHECKOUT_REF }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
@@ -103,7 +103,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -143,7 +143,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -178,7 +178,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -225,7 +225,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
