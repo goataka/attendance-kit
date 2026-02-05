@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       # workflow_dispatchの場合は常にtrue、PRの場合はMarkdown以外の変更があればtrue
-      # 論理ORの短絡評価により、workflow_dispatchの場合はsteps.filterステップが実行されないため安全
+      # workflow_dispatchの場合はif条件によりsteps.filterステップが実行されず、
+      # 論理ORの短絡評価によりsteps.filter.outputs.non-mdは評価されないため安全
       should-run-tests: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.non-md == 'true' }}
     steps:
       - name: コードのチェックアウト
