@@ -163,7 +163,7 @@ jobs:
           E2E_ENV: deployed
           FRONTEND_URL: ${{ needs.deploy.outputs.cloudfront_url }}
           BACKEND_URL: ${{ needs.deploy.outputs.api_url }}
-          DYNAMODB_TABLE_NAME: attendance-kit-${{ needs.deploy.outputs.environment }}-clock
+          NODE_ENV: ${{ needs.deploy.outputs.environment }}
           AWS_REGION: ap-northeast-1
         run: npm run test:e2e:eva
         timeout-minutes: 5

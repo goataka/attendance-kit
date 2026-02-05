@@ -174,9 +174,6 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "Description": "Attendance Kit Backend API (staging)",
         "Environment": {
           "Variables": {
-            "DYNAMODB_TABLE_NAME": {
-              "Ref": "ClockTable9AA4DD3D",
-            },
             "JWT_SECRET": "test-jwt-secret",
             "NODE_ENV": "staging",
           },
@@ -1605,9 +1602,6 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "Description": "Attendance Kit Backend API (dev)",
         "Environment": {
           "Variables": {
-            "DYNAMODB_TABLE_NAME": {
-              "Ref": "ClockTable9AA4DD3D",
-            },
             "JWT_SECRET": "test-jwt-secret",
             "NODE_ENV": "dev",
           },
