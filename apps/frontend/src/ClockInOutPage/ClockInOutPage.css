@@ -129,6 +129,28 @@
   background-color: #475569;
 }
 
+.btn-login {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.btn-login:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+.btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .help-text {
   margin-top: 1.5rem;
   padding: 1rem;

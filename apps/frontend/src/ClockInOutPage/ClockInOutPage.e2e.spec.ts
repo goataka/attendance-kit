@@ -1,11 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Clock In/Out Page', () => {
-  test('should display login form', async ({ page }) => {
+  test('should display login form with clock buttons', async ({ page }) => {
     await page.goto('/');
     
     // ページタイトルを確認
     await expect(page.locator('h1')).toHaveText('勤怠打刻');
+    
+    // 出勤・退勤ボタンは常に表示される（未ログイン時は無効）
+    await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '出勤' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: '退勤' })).toBeDisabled();
     
     // フォーム要素を確認（ログイン前）
     await expect(page.locator('#userId')).toBeVisible();
@@ -21,7 +27,7 @@ test.describe('Clock In/Out Page', () => {
     });
   });
 
-  test('should login successfully', async ({ page }) => {
+  test('should login successfully and enable clock buttons', async ({ page }) => {
     await page.goto('/');
     
     // 認証情報を入力
@@ -35,10 +41,14 @@ test.describe('Clock In/Out Page', () => {
     await expect(page.locator('.message.success')).toBeVisible();
     await expect(page.locator('.message.success')).toContainText('Login successful');
     
-    // ログイン後は打刻ボタンが表示される
-    await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
+    // ログイン後は打刻ボタンが有効になる
+    await expect(page.getByRole('button', { name: '出勤' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: '退勤' })).toBeEnabled();
     await expect(page.getByRole('button', { name: 'ログアウト' })).toBeVisible();
+    
+    // ログインフォームは非表示
+    await expect(page.locator('#userId')).not.toBeVisible();
+    await expect(page.locator('#password')).not.toBeVisible();
   });
 
   test('should handle clock in', async ({ page }) => {

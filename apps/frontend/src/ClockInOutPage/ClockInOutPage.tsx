@@ -83,94 +83,90 @@ export function ClockInOutPage() {
       <div className="container">
         <h1>勤怠打刻</h1>
 
-        {isAuthenticated ? (
-          // ログイン済みの場合：打刻ボタンのみ表示
-          <div className="form-section">
-            {message && (
-              <div className={`message ${message.type}`}>
-                {message.text}
-              </div>
-            )}
-
-            <div className="button-group">
-              <button
-                className="btn btn-primary"
-                onClick={() => handleClockInOut('clock-in')}
-                disabled={loading}
-              >
-                出勤
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={() => handleClockInOut('clock-out')}
-                disabled={loading}
-              >
-                退勤
-              </button>
-              <button
-                className="btn btn-tertiary"
-                onClick={handleLogout}
-                disabled={loading}
-              >
-                ログアウト
-              </button>
+        <div className="form-section">
+          {message && (
+            <div className={`message ${message.type}`}>
+              {message.text}
             </div>
+          )}
+
+          {/* 出勤・退勤ボタンは常に表示 */}
+          <div className="button-group">
+            <button
+              className="btn btn-primary"
+              onClick={() => handleClockInOut('clock-in')}
+              disabled={loading || !isAuthenticated}
+            >
+              出勤
+            </button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => handleClockInOut('clock-out')}
+              disabled={loading || !isAuthenticated}
+            >
+              退勤
+            </button>
           </div>
-        ) : (
-          // 未ログインの場合：ログインフォーム表示
-          <div className="form-section">
-            <div className="form-group">
-              <label htmlFor="userId">User ID</label>
-              <input
-                id="userId"
-                type="text"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-                placeholder="Enter your user ID"
-                disabled={loading}
-              />
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                disabled={loading}
-              />
-            </div>
-
-            {message && (
-              <div className={`message ${message.type}`}>
-                {message.text}
+          {/* 未ログイン時：ログインフォームとログインボタンを表示 */}
+          {!isAuthenticated && (
+            <>
+              <div className="form-group">
+                <label htmlFor="userId">User ID</label>
+                <input
+                  id="userId"
+                  type="text"
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
+                  placeholder="Enter your user ID"
+                  disabled={loading}
+                />
               </div>
-            )}
 
-            <div className="button-group">
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  disabled={loading}
+                />
+              </div>
+
               <button
-                className="btn btn-primary"
+                className="btn btn-login"
                 onClick={handleLogin}
                 disabled={loading}
               >
                 ログイン
               </button>
-            </div>
 
-            <div className="help-text">
-              <p>テスト用アカウント:</p>
-              <ul>
-                {TEST_ACCOUNTS.map((account) => (
-                  <li key={account.userId}>
-                    {`${account.userId} / ${account.password}`}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
+              <div className="help-text">
+                <p>テスト用アカウント:</p>
+                <ul>
+                  {TEST_ACCOUNTS.map((account) => (
+                    <li key={account.userId}>
+                      {`${account.userId} / ${account.password}`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </>
+          )}
+
+          {/* ログイン済み時：ログアウトボタンを表示 */}
+          {isAuthenticated && (
+            <button
+              className="btn btn-tertiary"
+              onClick={handleLogout}
+              disabled={loading}
+            >
+              ログアウト
+            </button>
+          )}
+        </div>
 
         {isAuthenticated && (
           <div className="navigation">

@@ -30,6 +30,8 @@ describe('ClockInOutPage', () => {
     renderWithRouter(<ClockInOutPage />);
     
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
+    expect(screen.getByText('出勤')).toBeInTheDocument();
+    expect(screen.getByText('退勤')).toBeInTheDocument();
     expect(screen.getByLabelText('User ID')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByText('ログイン')).toBeInTheDocument();
@@ -82,7 +84,7 @@ describe('ClockInOutPage', () => {
     });
   });
 
-  it('ログイン済みの場合は打刻ボタンが表示されること', () => {
+  it('ログイン済みの場合は打刻ボタンが有効でログインフォームは非表示', () => {
     vi.mocked(api.isAuthenticated).mockReturnValue(true);
     
     renderWithRouter(<ClockInOutPage />);
@@ -90,16 +92,8 @@ describe('ClockInOutPage', () => {
     expect(screen.getByText('出勤')).toBeInTheDocument();
     expect(screen.getByText('退勤')).toBeInTheDocument();
     expect(screen.getByText('ログアウト')).toBeInTheDocument();
-  });
-
-  it('ログイン済みの場合は打刻ボタンが表示されること', () => {
-    vi.mocked(api.isAuthenticated).mockReturnValue(true);
-    
-    renderWithRouter(<ClockInOutPage />);
-    
-    expect(screen.getByText('出勤')).toBeInTheDocument();
-    expect(screen.getByText('退勤')).toBeInTheDocument();
-    expect(screen.getByText('ログアウト')).toBeInTheDocument();
+    expect(screen.queryByLabelText('User ID')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
   });
 
   it('出勤打刻が成功すること', async () => {
@@ -148,16 +142,6 @@ describe('ClockInOutPage', () => {
   });
 
   it('成功後にパスワードがクリアされること', async () => {
-    const mockResponse = {
-      success: true,
-      record: {
-        id: '1',
-        userId: 'user001',
-        timestamp: new Date().toISOString(),
-        type: 'clock-in' as const,
-      },
-    };
-    
     vi.mocked(api.login).mockResolvedValue('mock-token');
     
     renderWithRouter(<ClockInOutPage />);
