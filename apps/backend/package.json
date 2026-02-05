@@ -21,7 +21,7 @@
     "pretest:integration": "npm run start:local-db --prefix ../..",
     "test:integration": "NODE_OPTIONS='--experimental-vm-modules' jest --config ./test/jest-integration.json",
     "dev": "nest start --watch",
-    "start:local": "nest start --watch",
+    "start:local": "npm run dev  &",
     "wait:local": "curl --retry 10 --retry-delay 2 --retry-connrefused --retry-all-errors http://localhost:3000/api/health",
     "generate:openapi": "npx -y ts-node --project ./tsconfig.json tools/generate-openapi.ts",
     "generate": "npm run generate:openapi"
