@@ -141,10 +141,11 @@ describe('ClockInOutPage', () => {
     });
   });
 
-  it('成功後にパスワードがクリアされること', async () => {
+  it('ログイン成功後にフォームが非表示になりパスワードが保持されないこと', async () => {
     vi.mocked(api.login).mockResolvedValue('mock-token');
+    vi.mocked(api.isAuthenticated).mockReturnValue(false);
     
-    renderWithRouter(<ClockInOutPage />);
+    const { rerender } = renderWithRouter(<ClockInOutPage />);
     
     const userIdInput = screen.getByLabelText('User ID') as HTMLInputElement;
     const passwordInput = screen.getByLabelText('Password') as HTMLInputElement;
@@ -155,8 +156,11 @@ describe('ClockInOutPage', () => {
     fireEvent.click(loginButton);
     
     await waitFor(() => {
-      expect(passwordInput.value).toBe('');
-      expect(userIdInput.value).toBe('user001');
+      expect(screen.getByText('Login successful')).toBeInTheDocument();
     });
+    
+    // ログイン後、フォームが非表示になることを確認
+    expect(screen.queryByLabelText('User ID')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
   });
 });
