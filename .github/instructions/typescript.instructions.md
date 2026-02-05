@@ -102,6 +102,39 @@ this.api = this.createApi(environment);
 this.setupIntegration();  // this.lambdaとthis.apiを使用
 ```
 
+## コメント規約
+
+### TSDoc/JSDocの不使用
+
+**原則**: TSDoc/JSDoc形式のコメント（`/**`で始まるコメント）は使用しない
+
+**理由**:
+- 関数名や変数名、型情報で意図を明確に表現する
+- TypeScriptの型システムが十分な情報を提供する
+- 保守コストを削減する
+
+**対応方法**:
+- 必要な補足説明は通常のコメント（`//`）で十分
+- メソッド名を明確にして、コメントが不要な自己説明的なコードにする
+
+**OK例**:
+```typescript
+// 環境変数が有効な値であることを確認
+private static validateEnvironmentStatic(environment: string): void {
+  // ...
+}
+```
+
+**NG例**:
+```typescript
+/**
+ * 環境変数のバリデーション（static）
+ */
+private static validateEnvironmentStatic(environment: string): void {
+  // ...
+}
+```
+
 ## Node.js バージョン要件
 
 ### 最小バージョン
