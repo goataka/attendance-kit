@@ -14,7 +14,7 @@ module.exports = {
   '**/*.sh': (filenames) => `shellcheck ${filenames.join(' ')}`,
 
   // GitHub Actions YAML
-  '.github/{workflows,actions}/**/*.{yml,yaml}': () => 'npm run lint:actionlint',
+  '.github/workflows/**/*.{yml,yaml}': () => 'npm run lint:actionlint',
 
   // Markdown
   '**/*.md': (filenames) => `prettier --write ${filenames.join(' ')}`,
