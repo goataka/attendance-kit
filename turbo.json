@@ -6,11 +6,9 @@
       "outputs": ["dist/**", "build/**", ".next/**", "storybook-static/**"]
     },
     "test": {
-      "dependsOn": ["build"],
       "cache": false
     },
     "test:unit": {
-      "dependsOn": ["build"],
       "cache": false
     },
     "lint": {
