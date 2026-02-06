@@ -22,7 +22,8 @@
     "test:e2e:local": "npm run test:e2e",
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
-    "lint": "turbo run lint"
+    "lint": "npm run lint:actionlint && turbo run lint",
+    "lint:actionlint": "node-actionlint '.github/{workflows,actions}/**/*.{yml,yaml}'"
   },
   "keywords": [
     "monorepo",
@@ -38,6 +39,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "^12.6.0",
     "@playwright/test": "^1.57.0",
+    "@tktco/node-actionlint": "^1.6.0",
     "@types/node": "^25.0.10",
     "playwright-bdd": "^8.4.2",
     "ts-node": "^10.9.2",
