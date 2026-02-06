@@ -12,13 +12,11 @@ concurrency:
 
 env:
   CHECKOUT_REF: ${{ github.head_ref || github.ref }}
+  PLAYWRIGHT_IMAGE: mcr.microsoft.com/playwright:v1.57.0-jammy
 
 permissions:
   contents: write
   pull-requests: write
-
-env:
-  PLAYWRIGHT_IMAGE: mcr.microsoft.com/playwright:v1.57.0-jammy
 
 jobs:
   check-changes:
