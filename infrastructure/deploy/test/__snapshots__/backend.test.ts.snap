@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot 1`] = `
+exports[`AttendanceKitStack - Eva Environment Eva Stack Matches Snapshot 1`] = `
 {
-  "Description": "DynamoDB clock table for attendance-kit (staging environment)",
+  "Description": "DynamoDB clock table for attendance-kit (eva environment)",
   "Outputs": {
     "BackendApiApiUrlE43572B5": {
-      "Description": "API Gateway URL (staging)",
+      "Description": "API Gateway URL (eva)",
       "Export": {
-        "Name": "AttendanceKit-Staging-ApiUrl",
+        "Name": "AttendanceKit-Eva-ApiUrl",
       },
       "Value": {
         "Fn::Join": [
@@ -27,7 +27,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             },
             "/",
             {
-              "Ref": "BackendApiDeploymentStagestagingB725B091",
+              "Ref": "BackendApiDeploymentStageeva59908388",
             },
             "/",
           ],
@@ -53,7 +53,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             },
             "/",
             {
-              "Ref": "BackendApiDeploymentStagestagingB725B091",
+              "Ref": "BackendApiDeploymentStageeva59908388",
             },
             "/",
           ],
@@ -63,14 +63,14 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
     "Environment": {
       "Description": "Deployment environment",
       "Export": {
-        "Name": "AttendanceKit-Staging-Environment",
+        "Name": "AttendanceKit-Eva-Environment",
       },
-      "Value": "staging",
+      "Value": "eva",
     },
     "FrontendCloudFrontUrlD7235372": {
-      "Description": "CloudFront distribution URL (staging)",
+      "Description": "CloudFront distribution URL (eva)",
       "Export": {
-        "Name": "AttendanceKit-Staging-CloudFrontUrl",
+        "Name": "AttendanceKit-Eva-CloudFrontUrl",
       },
       "Value": {
         "Fn::Join": [
@@ -88,16 +88,16 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       },
     },
     "GSIName": {
-      "Description": "Global Secondary Index name (staging)",
+      "Description": "Global Secondary Index name (eva)",
       "Export": {
-        "Name": "AttendanceKit-Staging-GSIName",
+        "Name": "AttendanceKit-Eva-GSIName",
       },
       "Value": "DateIndex",
     },
     "TableArn": {
-      "Description": "DynamoDB clock table ARN (staging)",
+      "Description": "DynamoDB clock table ARN (eva)",
       "Export": {
-        "Name": "AttendanceKit-Staging-ClockTableArn",
+        "Name": "AttendanceKit-Eva-ClockTableArn",
       },
       "Value": {
         "Fn::GetAtt": [
@@ -107,9 +107,9 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       },
     },
     "TableName": {
-      "Description": "DynamoDB clock table name (staging)",
+      "Description": "DynamoDB clock table name (eva)",
       "Export": {
-        "Name": "AttendanceKit-Staging-ClockTableName",
+        "Name": "AttendanceKit-Eva-ClockTableName",
       },
       "Value": {
         "Ref": "ClockTable9AA4DD3D",
@@ -171,14 +171,14 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           },
           "S3Key": "<MASKED_S3_KEY>.zip",
         },
-        "Description": "Attendance Kit Backend API (staging)",
+        "Description": "Attendance Kit Backend API (eva)",
         "Environment": {
           "Variables": {
             "JWT_SECRET": "test-jwt-secret",
-            "NODE_ENV": "staging",
+            "NODE_ENV": "eva",
           },
         },
-        "FunctionName": "attendance-kit-staging-api",
+        "FunctionName": "attendance-kit-eva-api",
         "Handler": "index.handler",
         "MemorySize": 512,
         "Role": {
@@ -191,7 +191,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -237,7 +237,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -335,12 +335,12 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
     },
     "BackendApiC9FA6A88": {
       "Properties": {
-        "Description": "Attendance Kit REST API (staging)",
-        "Name": "attendance-kit-staging-api",
+        "Description": "Attendance Kit REST API (eva)",
+        "Name": "attendance-kit-eva-api",
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -386,7 +386,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -401,7 +401,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "BackendApiDeployment9F8ADE10f127db43a114cf899fd5d50c9521388f": {
+    "BackendApiDeployment9F8ADE108e21a6d03f484f24b8d71f6e9b7f3bb3": {
       "DependsOn": [
         "BackendApiproxyANY38DE49FF",
         "BackendApiproxyOPTIONSA866EA0D",
@@ -413,20 +413,20 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "aws:cdk:do-not-refactor": true,
       },
       "Properties": {
-        "Description": "Attendance Kit REST API (staging)",
+        "Description": "Attendance Kit REST API (eva)",
         "RestApiId": {
           "Ref": "BackendApiC9FA6A88",
         },
       },
       "Type": "AWS::ApiGateway::Deployment",
     },
-    "BackendApiDeploymentStagestagingB725B091": {
+    "BackendApiDeploymentStageeva59908388": {
       "DependsOn": [
         "BackendApiAccountEFEAA710",
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "BackendApiDeployment9F8ADE10f127db43a114cf899fd5d50c9521388f",
+          "Ref": "BackendApiDeployment9F8ADE108e21a6d03f484f24b8d71f6e9b7f3bb3",
         },
         "MethodSettings": [
           {
@@ -440,11 +440,11 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "RestApiId": {
           "Ref": "BackendApiC9FA6A88",
         },
-        "StageName": "staging",
+        "StageName": "eva",
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -541,7 +541,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "BackendApiproxyANYApiPermissionAttendanceKitStagingStackBackendApi0C9AF52AANYproxy1341691F": {
+    "BackendApiproxyANYApiPermissionAttendanceKitEvaStackBackendApi81FA8F84ANYproxy721A38C0": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -573,7 +573,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
               },
               "/",
               {
-                "Ref": "BackendApiDeploymentStagestagingB725B091",
+                "Ref": "BackendApiDeploymentStageeva59908388",
               },
               "/*/*",
             ],
@@ -582,7 +582,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "BackendApiproxyANYApiPermissionTestAttendanceKitStagingStackBackendApi0C9AF52AANYproxyEE86D160": {
+    "BackendApiproxyANYApiPermissionTestAttendanceKitEvaStackBackendApi81FA8F84ANYproxy56ADA8BE": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -726,7 +726,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "SSESpecification": {
           "SSEEnabled": true,
         },
-        "TableName": "attendance-kit-staging-clock",
+        "TableName": "attendance-kit-eva-clock",
         "Tags": [
           {
             "Key": "CostCenter",
@@ -734,7 +734,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
           },
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1042,11 +1042,11 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
               "Compress": true,
               "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
               "PathPattern": "/api/*",
-              "TargetOriginId": "AttendanceKitStagingStackFrontendDistributionOrigin248088943",
+              "TargetOriginId": "AttendanceKitEvaStackFrontendDistributionOrigin2A77D9C63",
               "ViewerProtocolPolicy": "https-only",
             },
           ],
-          "Comment": "Attendance Kit Frontend Distribution (staging)",
+          "Comment": "Attendance Kit Frontend Distribution (eva)",
           "CustomErrorResponses": [
             {
               "ErrorCachingMinTTL": 300,
@@ -1074,7 +1074,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
               "OPTIONS",
             ],
             "Compress": true,
-            "TargetOriginId": "AttendanceKitStagingStackFrontendDistributionOrigin16DABC514",
+            "TargetOriginId": "AttendanceKitEvaStackFrontendDistributionOrigin16D0B0BB1",
             "ViewerProtocolPolicy": "redirect-to-https",
           },
           "DefaultRootObject": "index.html",
@@ -1089,7 +1089,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
                   "RegionalDomainName",
                 ],
               },
-              "Id": "AttendanceKitStagingStackFrontendDistributionOrigin16DABC514",
+              "Id": "AttendanceKitEvaStackFrontendDistributionOrigin16D0B0BB1",
               "S3OriginConfig": {
                 "OriginAccessIdentity": {
                   "Fn::Join": [
@@ -1135,7 +1135,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
                             },
                             "/",
                             {
-                              "Ref": "BackendApiDeploymentStagestagingB725B091",
+                              "Ref": "BackendApiDeploymentStageeva59908388",
                             },
                             "/",
                           ],
@@ -1145,7 +1145,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
                   },
                 ],
               },
-              "Id": "AttendanceKitStagingStackFrontendDistributionOrigin248088943",
+              "Id": "AttendanceKitEvaStackFrontendDistributionOrigin2A77D9C63",
               "OriginPath": {
                 "Fn::Join": [
                   "",
@@ -1175,7 +1175,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
                                   },
                                   "/",
                                   {
-                                    "Ref": "BackendApiDeploymentStagestagingB725B091",
+                                    "Ref": "BackendApiDeploymentStageeva59908388",
                                   },
                                   "/",
                                 ],
@@ -1195,7 +1195,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1221,7 +1221,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             },
           ],
         },
-        "BucketName": "attendance-kit-staging-frontend",
+        "BucketName": "attendance-kit-eva-frontend",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
@@ -1234,12 +1234,12 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
             "Value": "true",
           },
           {
-            "Key": "aws-cdk:cr-owned:c0d8e7a7",
+            "Key": "aws-cdk:cr-owned:922e114f",
             "Value": "true",
           },
           {
             "Key": "Environment",
-            "Value": "staging",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1392,7 +1392,7 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
     "FrontendOAI25B05BF4": {
       "Properties": {
         "CloudFrontOriginAccessIdentityConfig": {
-          "Comment": "OAI for attendance-kit staging frontend",
+          "Comment": "OAI for attendance-kit eva frontend",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
@@ -1430,12 +1430,12 @@ exports[`AttendanceKitStack - Staging Environment Staging Stack Matches Snapshot
 
 exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
 {
-  "Description": "DynamoDB clock table for attendance-kit (dev environment)",
+  "Description": "DynamoDB clock table for attendance-kit (eva environment)",
   "Outputs": {
     "BackendApiApiUrlE43572B5": {
-      "Description": "API Gateway URL (dev)",
+      "Description": "API Gateway URL (eva)",
       "Export": {
-        "Name": "AttendanceKit-Dev-ApiUrl",
+        "Name": "AttendanceKit-Eva-ApiUrl",
       },
       "Value": {
         "Fn::Join": [
@@ -1455,7 +1455,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             },
             "/",
             {
-              "Ref": "BackendApiDeploymentStagedev97216E6E",
+              "Ref": "BackendApiDeploymentStageeva59908388",
             },
             "/",
           ],
@@ -1481,7 +1481,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             },
             "/",
             {
-              "Ref": "BackendApiDeploymentStagedev97216E6E",
+              "Ref": "BackendApiDeploymentStageeva59908388",
             },
             "/",
           ],
@@ -1491,14 +1491,14 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
     "Environment": {
       "Description": "Deployment environment",
       "Export": {
-        "Name": "AttendanceKit-Dev-Environment",
+        "Name": "AttendanceKit-Eva-Environment",
       },
-      "Value": "dev",
+      "Value": "eva",
     },
     "FrontendCloudFrontUrlD7235372": {
-      "Description": "CloudFront distribution URL (dev)",
+      "Description": "CloudFront distribution URL (eva)",
       "Export": {
-        "Name": "AttendanceKit-Dev-CloudFrontUrl",
+        "Name": "AttendanceKit-Eva-CloudFrontUrl",
       },
       "Value": {
         "Fn::Join": [
@@ -1516,16 +1516,16 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       },
     },
     "GSIName": {
-      "Description": "Global Secondary Index name (dev)",
+      "Description": "Global Secondary Index name (eva)",
       "Export": {
-        "Name": "AttendanceKit-Dev-GSIName",
+        "Name": "AttendanceKit-Eva-GSIName",
       },
       "Value": "DateIndex",
     },
     "TableArn": {
-      "Description": "DynamoDB clock table ARN (dev)",
+      "Description": "DynamoDB clock table ARN (eva)",
       "Export": {
-        "Name": "AttendanceKit-Dev-ClockTableArn",
+        "Name": "AttendanceKit-Eva-ClockTableArn",
       },
       "Value": {
         "Fn::GetAtt": [
@@ -1535,9 +1535,9 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       },
     },
     "TableName": {
-      "Description": "DynamoDB clock table name (dev)",
+      "Description": "DynamoDB clock table name (eva)",
       "Export": {
-        "Name": "AttendanceKit-Dev-ClockTableName",
+        "Name": "AttendanceKit-Eva-ClockTableName",
       },
       "Value": {
         "Ref": "ClockTable9AA4DD3D",
@@ -1599,14 +1599,14 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           },
           "S3Key": "<MASKED_S3_KEY>.zip",
         },
-        "Description": "Attendance Kit Backend API (dev)",
+        "Description": "Attendance Kit Backend API (eva)",
         "Environment": {
           "Variables": {
             "JWT_SECRET": "test-jwt-secret",
-            "NODE_ENV": "dev",
+            "NODE_ENV": "eva",
           },
         },
-        "FunctionName": "attendance-kit-dev-api",
+        "FunctionName": "attendance-kit-eva-api",
         "Handler": "index.handler",
         "MemorySize": 512,
         "Role": {
@@ -1619,7 +1619,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1665,7 +1665,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1763,12 +1763,12 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
     },
     "BackendApiC9FA6A88": {
       "Properties": {
-        "Description": "Attendance Kit REST API (dev)",
-        "Name": "attendance-kit-dev-api",
+        "Description": "Attendance Kit REST API (eva)",
+        "Name": "attendance-kit-eva-api",
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1814,7 +1814,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1829,7 +1829,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       "Type": "AWS::IAM::Role",
       "UpdateReplacePolicy": "Retain",
     },
-    "BackendApiDeployment9F8ADE108e22937f52558ee5aadace76118c6cbb": {
+    "BackendApiDeployment9F8ADE108e21a6d03f484f24b8d71f6e9b7f3bb3": {
       "DependsOn": [
         "BackendApiproxyANY38DE49FF",
         "BackendApiproxyOPTIONSA866EA0D",
@@ -1841,20 +1841,20 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "aws:cdk:do-not-refactor": true,
       },
       "Properties": {
-        "Description": "Attendance Kit REST API (dev)",
+        "Description": "Attendance Kit REST API (eva)",
         "RestApiId": {
           "Ref": "BackendApiC9FA6A88",
         },
       },
       "Type": "AWS::ApiGateway::Deployment",
     },
-    "BackendApiDeploymentStagedev97216E6E": {
+    "BackendApiDeploymentStageeva59908388": {
       "DependsOn": [
         "BackendApiAccountEFEAA710",
       ],
       "Properties": {
         "DeploymentId": {
-          "Ref": "BackendApiDeployment9F8ADE108e22937f52558ee5aadace76118c6cbb",
+          "Ref": "BackendApiDeployment9F8ADE108e21a6d03f484f24b8d71f6e9b7f3bb3",
         },
         "MethodSettings": [
           {
@@ -1868,11 +1868,11 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "RestApiId": {
           "Ref": "BackendApiC9FA6A88",
         },
-        "StageName": "dev",
+        "StageName": "eva",
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -1969,7 +1969,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       },
       "Type": "AWS::ApiGateway::Method",
     },
-    "BackendApiproxyANYApiPermissionAttendanceKitDevStackBackendApi06BA8792ANYproxy7EA7FA50": {
+    "BackendApiproxyANYApiPermissionAttendanceKitEvaStackBackendApi81FA8F84ANYproxy721A38C0": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -2001,7 +2001,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
               },
               "/",
               {
-                "Ref": "BackendApiDeploymentStagedev97216E6E",
+                "Ref": "BackendApiDeploymentStageeva59908388",
               },
               "/*/*",
             ],
@@ -2010,7 +2010,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
       },
       "Type": "AWS::Lambda::Permission",
     },
-    "BackendApiproxyANYApiPermissionTestAttendanceKitDevStackBackendApi06BA8792ANYproxy63EBFFA7": {
+    "BackendApiproxyANYApiPermissionTestAttendanceKitEvaStackBackendApi81FA8F84ANYproxy56ADA8BE": {
       "Properties": {
         "Action": "lambda:InvokeFunction",
         "FunctionName": {
@@ -2154,7 +2154,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "SSESpecification": {
           "SSEEnabled": true,
         },
-        "TableName": "attendance-kit-dev-clock",
+        "TableName": "attendance-kit-eva-clock",
         "Tags": [
           {
             "Key": "CostCenter",
@@ -2162,7 +2162,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
           },
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -2470,11 +2470,11 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
               "Compress": true,
               "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac",
               "PathPattern": "/api/*",
-              "TargetOriginId": "AttendanceKitDevStackFrontendDistributionOrigin2199A450F",
+              "TargetOriginId": "AttendanceKitEvaStackFrontendDistributionOrigin2A77D9C63",
               "ViewerProtocolPolicy": "https-only",
             },
           ],
-          "Comment": "Attendance Kit Frontend Distribution (dev)",
+          "Comment": "Attendance Kit Frontend Distribution (eva)",
           "CustomErrorResponses": [
             {
               "ErrorCachingMinTTL": 300,
@@ -2502,7 +2502,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
               "OPTIONS",
             ],
             "Compress": true,
-            "TargetOriginId": "AttendanceKitDevStackFrontendDistributionOrigin17D44D79F",
+            "TargetOriginId": "AttendanceKitEvaStackFrontendDistributionOrigin16D0B0BB1",
             "ViewerProtocolPolicy": "redirect-to-https",
           },
           "DefaultRootObject": "index.html",
@@ -2517,7 +2517,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
                   "RegionalDomainName",
                 ],
               },
-              "Id": "AttendanceKitDevStackFrontendDistributionOrigin17D44D79F",
+              "Id": "AttendanceKitEvaStackFrontendDistributionOrigin16D0B0BB1",
               "S3OriginConfig": {
                 "OriginAccessIdentity": {
                   "Fn::Join": [
@@ -2563,7 +2563,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
                             },
                             "/",
                             {
-                              "Ref": "BackendApiDeploymentStagedev97216E6E",
+                              "Ref": "BackendApiDeploymentStageeva59908388",
                             },
                             "/",
                           ],
@@ -2573,7 +2573,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
                   },
                 ],
               },
-              "Id": "AttendanceKitDevStackFrontendDistributionOrigin2199A450F",
+              "Id": "AttendanceKitEvaStackFrontendDistributionOrigin2A77D9C63",
               "OriginPath": {
                 "Fn::Join": [
                   "",
@@ -2603,7 +2603,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
                                   },
                                   "/",
                                   {
-                                    "Ref": "BackendApiDeploymentStagedev97216E6E",
+                                    "Ref": "BackendApiDeploymentStageeva59908388",
                                   },
                                   "/",
                                 ],
@@ -2623,7 +2623,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
         "Tags": [
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -2649,7 +2649,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             },
           ],
         },
-        "BucketName": "attendance-kit-dev-frontend",
+        "BucketName": "attendance-kit-eva-frontend",
         "PublicAccessBlockConfiguration": {
           "BlockPublicAcls": true,
           "BlockPublicPolicy": true,
@@ -2662,12 +2662,12 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
             "Value": "true",
           },
           {
-            "Key": "aws-cdk:cr-owned:6fea9dd5",
+            "Key": "aws-cdk:cr-owned:922e114f",
             "Value": "true",
           },
           {
             "Key": "Environment",
-            "Value": "dev",
+            "Value": "eva",
           },
           {
             "Key": "ManagedBy",
@@ -2820,7 +2820,7 @@ exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
     "FrontendOAI25B05BF4": {
       "Properties": {
         "CloudFrontOriginAccessIdentityConfig": {
-          "Comment": "OAI for attendance-kit dev frontend",
+          "Comment": "OAI for attendance-kit eva frontend",
         },
       },
       "Type": "AWS::CloudFront::CloudFrontOriginAccessIdentity",
