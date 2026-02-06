@@ -59,7 +59,28 @@ export function ClockInOutPage() {
     setMessage(null);
 
     try {
-      const response = await api.clockInOutWithToken(type);
+      let response;
+
+      if (isAuthenticated) {
+        // ログイン済みの場合はトークンで打刻
+        response = await api.clockInOutWithToken(type);
+      } else {
+        // 未ログイン時はuserId/passwordで打刻（セッションは保存しない）
+        if (!userId || !password) {
+          setMessage({
+            type: 'error',
+            text: 'User ID and password are required',
+          });
+          setLoading(false);
+          return;
+        }
+
+        response = await api.clockInOut({
+          userId,
+          password,
+          type,
+        });
+      }
 
       if (response.success) {
         const clockType = type === 'clock-in' ? 'Clock in' : 'Clock out';
@@ -123,19 +144,19 @@ export function ClockInOutPage() {
                 />
               </div>
 
-              {/* 出勤・退勤ボタン（未ログイン時は無効） */}
+              {/* 出勤・退勤ボタン（未ログイン時も有効） */}
               <div className="button-group">
                 <button
                   className="btn btn-primary"
                   onClick={() => handleClockInOut('clock-in')}
-                  disabled={loading || !isAuthenticated}
+                  disabled={loading}
                 >
                   出勤
                 </button>
                 <button
                   className="btn btn-secondary"
                   onClick={() => handleClockInOut('clock-out')}
-                  disabled={loading || !isAuthenticated}
+                  disabled={loading}
                 >
                   退勤
                 </button>

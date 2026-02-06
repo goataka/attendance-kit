@@ -69,7 +69,7 @@ const clearToken = (): void => {
   }
 };
 
-const login = async (
+const authenticateUser = async (
   userId: string,
   password: string,
 ): Promise<string | null> => {
@@ -87,17 +87,24 @@ const login = async (
     }
 
     const data = await response.json();
-    const token = data.accessToken;
-
-    if (token) {
-      storeToken(token);
-    }
-
-    return token;
+    return data.accessToken || null;
   } catch {
-    console.error('Login failed');
+    console.error('Authentication failed');
     return null;
   }
+};
+
+const login = async (
+  userId: string,
+  password: string,
+): Promise<string | null> => {
+  const token = await authenticateUser(userId, password);
+
+  if (token) {
+    storeToken(token);
+  }
+
+  return token;
 };
 
 export const api = {
@@ -172,7 +179,7 @@ export const api = {
 
   clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
     try {
-      const token = await login(request.userId, request.password);
+      const token = await authenticateUser(request.userId, request.password);
 
       if (!token) {
         return {
