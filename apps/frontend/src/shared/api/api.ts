@@ -84,8 +84,8 @@ const login = async (userId: string, password: string): Promise<string | null> =
     }
     
     return token;
-  } catch (error) {
-    console.error('Login failed:', error);
+  } catch {
+    console.error('Login failed');
     return null;
   }
 };
@@ -131,6 +131,9 @@ export const api = {
       );
 
       if (!response.ok) {
+        if (response.status === 401) {
+          clearToken();
+        }
         const error = await response.json();
         return {
           success: false,

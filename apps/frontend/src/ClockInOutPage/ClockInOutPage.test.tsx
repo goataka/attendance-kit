@@ -48,8 +48,21 @@ describe('ClockInOutPage', () => {
     });
   });
 
-  it('ログインが成功すること', async () => {
-    vi.mocked(api.login).mockResolvedValue('mock-token');
+  test.each([
+    {
+      ケース: 'ログインが成功すること',
+      モック戻り値: 'mock-token',
+      入力値: { userId: 'user001', password: 'password123' },
+      期待メッセージ: 'Login successful',
+    },
+    {
+      ケース: 'ログインが失敗すること',
+      モック戻り値: null,
+      入力値: { userId: 'wronguser', password: 'wrongpass' },
+      期待メッセージ: 'Invalid credentials',
+    },
+  ])('$ケース', async ({ モック戻り値, 入力値, 期待メッセージ }) => {
+    vi.mocked(api.login).mockResolvedValue(モック戻り値);
     
     renderWithRouter(<ClockInOutPage />);
     
@@ -57,30 +70,12 @@ describe('ClockInOutPage', () => {
     const passwordInput = screen.getByLabelText('Password');
     const loginButton = screen.getByText('ログイン');
     
-    fireEvent.change(userIdInput, { target: { value: 'user001' } });
-    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.change(userIdInput, { target: { value: 入力値.userId } });
+    fireEvent.change(passwordInput, { target: { value: 入力値.password } });
     fireEvent.click(loginButton);
     
     await waitFor(() => {
-      expect(screen.getByText('Login successful')).toBeInTheDocument();
-    });
-  });
-
-  it('ログインが失敗すること', async () => {
-    vi.mocked(api.login).mockResolvedValue(null);
-    
-    renderWithRouter(<ClockInOutPage />);
-    
-    const userIdInput = screen.getByLabelText('User ID');
-    const passwordInput = screen.getByLabelText('Password');
-    const loginButton = screen.getByText('ログイン');
-    
-    fireEvent.change(userIdInput, { target: { value: 'wronguser' } });
-    fireEvent.change(passwordInput, { target: { value: 'wrongpass' } });
-    fireEvent.click(loginButton);
-    
-    await waitFor(() => {
-      expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
+      expect(screen.getByText(期待メッセージ)).toBeInTheDocument();
     });
   });
 
