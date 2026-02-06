@@ -106,14 +106,16 @@ export class AttendanceKitStack extends cdk.Stack {
     } else {
       // DynamoDBのみをデプロイする場合
       // データクリア: eva と stg 環境のみ
-      // シード: prod 以外の全環境
+      // シード: dev, test, eva, stg 環境（prodは本番環境のためシードなし）
       if (environment === 'eva' || environment === 'stg') {
+        // AWS評価環境: データクリアとシード
         this.setupDataClearAndSeed();
       }
       if (AttendanceKitStack.isLocalEnvironment(environment)) {
-        // ローカル環境 (dev, test) はシードのみ
+        // ローカル環境 (dev, test): シードのみ
         this.setupDataSeeder();
       }
+      // 注: prod環境はDynamoDB-onlyモードで使用することを想定していない
     }
 
     // CloudFormation Outputs
@@ -165,8 +167,8 @@ export class AttendanceKitStack extends cdk.Stack {
       );
     }
 
-    // ローカル環境ではフルスタックデプロイは許可しない
-    if (AttendanceKitStack.isLocalEnvironment(environment)) {
+    // AWS環境のみフルスタックデプロイを許可
+    if (!AttendanceKitStack.isAwsEnvironment(environment)) {
       throw new Error(
         `Full stack deployment is not allowed for '${environment}' environment. ` +
         'Use deployOnlyDynamoDB: true for local environments.'
