@@ -9,6 +9,7 @@
     "infrastructure/*"
   ],
   "scripts": {
+    "postsetup": "bash scripts/postsetup.sh",
     "setup": "npm ci --workspaces --include-workspace-root",
     "dev": "npm run dev --workspaces --if-present",
     "build": "turbo run build",
