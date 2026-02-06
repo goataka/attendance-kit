@@ -125,7 +125,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: 全ワークスペースのビルド
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
       - name: バックエンド統合テストの実行
         run: npm run test:integration --workspace=@attendance-kit/backend
@@ -173,7 +173,7 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: 全ワークスペースのビルド
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
       - name: LocalStackへのデプロイ
         working-directory: infrastructure/deploy
@@ -274,7 +274,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: 全ワークスペースのビルド
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
       - name: E2Eテストの実行
         run: npm run test:e2e:local
