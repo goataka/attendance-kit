@@ -22,7 +22,8 @@
     "test:e2e:local": "npm run test:e2e",
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "prepare": "husky"
   },
   "keywords": [
     "monorepo",
@@ -39,6 +40,8 @@
     "@cucumber/cucumber": "^12.6.0",
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.10",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "playwright-bdd": "^8.4.2",
     "ts-node": "^10.9.2",
     "turbo": "2.8.3"
