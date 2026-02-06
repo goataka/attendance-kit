@@ -93,6 +93,19 @@ VS Codeでコマンドパレットから "Dev Containers: Reopen in Container" �
 
 詳細は [.devcontainer/README.md](.devcontainer/README.md) を参照してください。
 
+### コミット前の自動チェック
+
+このプロジェクトでは、コミット前にlint-stagedとhuskyを使用して、ステージングエリアのファイルのみに対してコード品質チェックを実行します：
+
+- **Backend TypeScript**: ESLint（Prettier連携）
+- **Frontend TypeScript**: ESLint
+- **Shell Scripts**: shellcheck
+- **GitHub Actions YAML**: actionlint
+- **Markdown**: Prettier
+- **YAML**: Prettier
+
+コミット時に自動実行されるため、手動での実行は不要です。全体のlintチェックは `npm run lint` で実行できます。
+
 ## 🏗️ システム構成図
 
 ```mermaid
