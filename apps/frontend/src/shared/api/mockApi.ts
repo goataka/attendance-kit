@@ -1,4 +1,9 @@
-import { ClockRecord, ClockInOutRequest, ClockInOutResponse, RecordsFilter } from '../types';
+import {
+  ClockRecord,
+  ClockInOutRequest,
+  ClockInOutResponse,
+  RecordsFilter,
+} from '../types';
 
 // Mock data storage
 const mockRecords: ClockRecord[] = [
@@ -30,8 +35,8 @@ const mockRecords: ClockRecord[] = [
 
 // Mock user credentials
 const mockUsers: Record<string, string> = {
-  'user001': 'password123',
-  'user002': 'password456',
+  user001: 'password123',
+  user002: 'password456',
 };
 
 // Mock session storage
@@ -95,12 +100,17 @@ export const mockApi = {
   },
 
   // Clock in or out
-  clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
+  clockInOut: async (
+    request: ClockInOutRequest,
+  ): Promise<ClockInOutResponse> => {
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Validate credentials
-    if (!mockUsers[request.userId] || mockUsers[request.userId] !== request.password) {
+    if (
+      !mockUsers[request.userId] ||
+      mockUsers[request.userId] !== request.password
+    ) {
       return {
         success: false,
         message: 'Invalid user ID or password',
@@ -131,28 +141,33 @@ export const mockApi = {
     }
 
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 300));
 
     let filtered = [...mockRecords];
 
     if (filter?.userId) {
-      filtered = filtered.filter(r => r.userId.toLowerCase().includes(filter.userId!.toLowerCase()));
+      filtered = filtered.filter((r) =>
+        r.userId.toLowerCase().includes(filter.userId!.toLowerCase()),
+      );
     }
 
     if (filter?.type && filter.type !== 'all') {
-      filtered = filtered.filter(r => r.type === filter.type);
+      filtered = filtered.filter((r) => r.type === filter.type);
     }
 
     if (filter?.startDate) {
-      filtered = filtered.filter(r => r.timestamp >= filter.startDate!);
+      filtered = filtered.filter((r) => r.timestamp >= filter.startDate!);
     }
 
     if (filter?.endDate) {
-      filtered = filtered.filter(r => r.timestamp <= filter.endDate!);
+      filtered = filtered.filter((r) => r.timestamp <= filter.endDate!);
     }
 
     // Sort by timestamp descending
-    filtered.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    filtered.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
 
     return filtered;
   },

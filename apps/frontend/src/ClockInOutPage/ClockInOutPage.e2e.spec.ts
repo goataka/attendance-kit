@@ -22,6 +22,7 @@ test.describe('Clock In/Out Page', () => {
     await page.waitForTimeout(500);
     
     // ビジュアルリグレッションテスト - ClockInOutPage.screenshot.pngに保存
+    
     await expect(page).toHaveScreenshot(['ClockInOutPage.screenshot.png'], {
       fullPage: true,
     });
@@ -65,7 +66,9 @@ test.describe('Clock In/Out Page', () => {
     
     // 成功メッセージを待つ
     await expect(page.locator('.message.success')).toBeVisible();
-    await expect(page.locator('.message.success')).toContainText('Clock in successful');
+    await expect(page.locator('.message.success')).toContainText(
+      'Clock in successful',
+    );
   });
 
   test('should show error for empty fields', async ({ page }) => {
@@ -76,7 +79,9 @@ test.describe('Clock In/Out Page', () => {
     
     // エラーメッセージを待つ
     await expect(page.locator('.message.error')).toBeVisible();
-    await expect(page.locator('.message.error')).toContainText('User ID and password are required');
+    await expect(page.locator('.message.error')).toContainText(
+      'User ID and password are required',
+    );
   });
 
   test('should navigate to records list', async ({ page }) => {

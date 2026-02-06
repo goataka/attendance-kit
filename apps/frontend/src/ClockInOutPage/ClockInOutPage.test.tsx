@@ -28,7 +28,7 @@ describe('ClockInOutPage', () => {
 
   it('打刻ページが表示されること', () => {
     renderWithRouter(<ClockInOutPage />);
-    
+
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
     expect(screen.getByText('出勤')).toBeInTheDocument();
     expect(screen.getByText('退勤')).toBeInTheDocument();
@@ -44,7 +44,9 @@ describe('ClockInOutPage', () => {
     fireEvent.click(loginButton);
     
     await waitFor(() => {
-      expect(screen.getByText('User ID and password are required')).toBeInTheDocument();
+      expect(
+        screen.getByText('User ID and password are required'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -110,7 +112,7 @@ describe('ClockInOutPage', () => {
     const clockInButton = screen.getByText('出勤');
     
     fireEvent.click(clockInButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText(/Clock in successful/)).toBeInTheDocument();
     });
@@ -130,7 +132,7 @@ describe('ClockInOutPage', () => {
     const clockInButton = screen.getByText('出勤');
     
     fireEvent.click(clockInButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
     });
@@ -141,7 +143,7 @@ describe('ClockInOutPage', () => {
     vi.mocked(api.isAuthenticated).mockReturnValue(false);
     
     renderWithRouter(<ClockInOutPage />);
-    
+
     const userIdInput = screen.getByLabelText('User ID') as HTMLInputElement;
     const passwordInput = screen.getByLabelText('Password') as HTMLInputElement;
     const loginButton = screen.getByText('ログイン');

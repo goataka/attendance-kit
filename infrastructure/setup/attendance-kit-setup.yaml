@@ -15,7 +15,7 @@ Resources:
           Value: attendance-kit
         - Key: ManagedBy
           Value: CloudFormation
-  
+
   GitHubActionsRole:
     Type: AWS::IAM::Role
     Properties:
@@ -80,7 +80,7 @@ Resources:
           Value: attendance-kit
         - Key: ManagedBy
           Value: CloudFormation
-  
+
   GitHubCopilotInvestigationRole:
     Type: AWS::IAM::Role
     Properties:
@@ -114,35 +114,35 @@ Outputs:
     Value: !GetAtt GitHubOIDCProvider.Arn
     Export:
       Name: AttendanceKit-OIDCProviderArn
-  
+
   RoleArn:
     Description: ARN of the GitHub Actions IAM Role
     Value: !GetAtt GitHubActionsRole.Arn
     Export:
       Name: AttendanceKit-GitHubActionsRoleArn
-  
+
   RoleName:
     Description: Name of the GitHub Actions IAM Role
     Value: !Ref GitHubActionsRole
-  
+
   GitHubSecretValue:
     Description: Value to set in GitHub Secrets as AWS_ROLE_TO_ASSUME
     Value: !GetAtt GitHubActionsRole.Arn
-  
+
   InvestigationRoleArn:
     Description: ARN of the GitHub Copilot Investigation IAM Role
     Value: !GetAtt GitHubCopilotInvestigationRole.Arn
     Export:
       Name: AttendanceKit-CopilotInvestigationRoleArn
-  
+
   InvestigationRoleName:
     Description: Name of the GitHub Copilot Investigation IAM Role
     Value: !Ref GitHubCopilotInvestigationRole
-  
+
   CopilotSecretValue:
     Description: Value to set in GitHub Secrets as AWS_INVESTIGATION_ROLE_ARN
     Value: !GetAtt GitHubCopilotInvestigationRole.Arn
-  
+
   SetupInstructions:
     Description: Next steps after deploying this stack
     Value: |

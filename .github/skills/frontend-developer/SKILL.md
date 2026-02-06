@@ -49,6 +49,7 @@ npm run lint
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - ESLintによるコードスタイルチェック
 - TypeScriptの型チェック
 - React Hooksの使用ルールチェック
@@ -74,6 +75,7 @@ npm run build
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - TypeScriptの型チェック
 - Viteによるプロダクションビルド
 - 静的ファイルの生成確認（`apps/frontend/dist/`）
@@ -85,11 +87,13 @@ npm run test:unit
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - Vitestによるユニットテスト
 - React Testing Libraryによるコンポーネントテスト
 - スナップショットテストの更新（必要に応じて）
 
 **スナップショット確認**:
+
 - スナップショットが更新された場合、内容を確認してください
 - 文字化けしていないか必ず確認してください
 - 日本語が正しく表示されているか確認してください
@@ -103,6 +107,7 @@ npm run test:integration
 ```
 
 **必須**: UI変更時は実行してください。
+
 - Playwrightによるブラウザテスト
 - 画面遷移の動作確認
 - ユーザー操作のシミュレーション
@@ -125,6 +130,7 @@ npm run test:integration
 ```
 
 **スクリーンショット確認**:
+
 - E2Eテスト実行後、スクリーンショットを確認してください
 - 画面が正しく表示されているか確認してください
 - 文字化けしていないか必ず確認してください
@@ -291,13 +297,13 @@ npm run test:integration -- <test-file-name>
 
 このスキルの検証項目は、GitHub ActionsのPremergeワークフローと対応しています:
 
-| Premergeステップ | ローカル検証コマンド |
-|-----------------|---------------------|
-| `npm run setup` | `npm run setup` |
-| `npm run lint` | `npm run lint` |
-| `npm run build` | `npm run build` |
-| `npm run test:unit` | `npm run test:unit` |
-| Frontend E2Eテスト | `cd apps/frontend && npm run test:integration` |
+| Premergeステップ    | ローカル検証コマンド                           |
+| ------------------- | ---------------------------------------------- |
+| `npm run setup`     | `npm run setup`                                |
+| `npm run lint`      | `npm run lint`                                 |
+| `npm run build`     | `npm run build`                                |
+| `npm run test:unit` | `npm run test:unit`                            |
+| Frontend E2Eテスト  | `cd apps/frontend && npm run test:integration` |
 
 ## 参考資料
 

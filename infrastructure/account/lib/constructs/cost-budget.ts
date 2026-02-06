@@ -33,7 +33,7 @@ export class CostBudgetConstruct extends Construct {
     // Future: Can be extended to support Mobile Push (AWS SNS Mobile Push)
     if (props.emailEndpoint) {
       topic.addSubscription(
-        new subscriptions.EmailSubscription(props.emailEndpoint)
+        new subscriptions.EmailSubscription(props.emailEndpoint),
       );
     }
 
@@ -47,7 +47,7 @@ export class CostBudgetConstruct extends Construct {
         principals: [new iam.ServicePrincipal('budgets.amazonaws.com')],
         actions: ['SNS:Publish'],
         resources: [this.snsTopic.topicArn],
-      })
+      }),
     );
   }
 

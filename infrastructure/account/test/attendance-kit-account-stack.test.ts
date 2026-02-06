@@ -1,6 +1,9 @@
 import { Template } from 'aws-cdk-lib/assertions';
 import { App } from 'aws-cdk-lib';
-import { AttendanceKitAccountStack, AttendanceKitAccountStackProps } from '../lib/attendance-kit-account-stack';
+import {
+  AttendanceKitAccountStack,
+  AttendanceKitAccountStackProps,
+} from '../lib/attendance-kit-account-stack';
 
 describe('AttendanceKitAccountStack', () => {
   let app: App;
@@ -8,7 +11,9 @@ describe('AttendanceKitAccountStack', () => {
   let template: Template;
 
   // Helper function to create common stack props
-  const createStackProps = (overrides?: Partial<AttendanceKitAccountStackProps>): AttendanceKitAccountStackProps => ({
+  const createStackProps = (
+    overrides?: Partial<AttendanceKitAccountStackProps>,
+  ): AttendanceKitAccountStackProps => ({
     budgetAmountUsd: 10,
     alertEmail: 'test@example.com',
     description: 'Account-level resources for attendance-kit (AWS Budget, SNS)',
@@ -23,17 +28,21 @@ describe('AttendanceKitAccountStack', () => {
 
   beforeEach(() => {
     app = new App();
-    stack = new AttendanceKitAccountStack(app, 'AttendanceKit-Account-Stack', createStackProps());
+    stack = new AttendanceKitAccountStack(
+      app,
+      'AttendanceKit-Account-Stack',
+      createStackProps(),
+    );
     template = Template.fromStack(stack);
   });
 
   test('Stack creates CostBudgetConstruct', () => {
     // Verify SNS Topic exists
     template.resourceCountIs('AWS::SNS::Topic', 1);
-    
+
     // Verify Budget exists
     template.resourceCountIs('AWS::Budgets::Budget', 1);
-    
+
     // Verify SNS Subscription exists
     template.resourceCountIs('AWS::SNS::Subscription', 1);
   });
@@ -46,7 +55,7 @@ describe('AttendanceKitAccountStack', () => {
         Name: 'AttendanceKit-Account-BudgetName',
       },
     });
-    
+
     // Check for SnsTopicArn output
     template.hasOutput('SnsTopicArn', {
       Description: 'SNS Topic ARN for cost alerts',
@@ -60,7 +69,7 @@ describe('AttendanceKitAccountStack', () => {
     // Verify stack was created successfully
     expect(stack).toBeDefined();
     expect(stack.node.id).toBe('AttendanceKit-Account-Stack');
-    
+
     // Verify the stack has tags applied via Tags.of()
     // Tags are applied at the stack level and inherited by resources
     expect(stack.tags).toBeDefined();
@@ -68,9 +77,13 @@ describe('AttendanceKitAccountStack', () => {
 
   test('Budget amount is configurable', () => {
     const customApp = new App();
-    const stack = new AttendanceKitAccountStack(customApp, 'AttendanceKit-Account-Stack', createStackProps({
-      budgetAmountUsd: 20,
-    }));
+    const stack = new AttendanceKitAccountStack(
+      customApp,
+      'AttendanceKit-Account-Stack',
+      createStackProps({
+        budgetAmountUsd: 20,
+      }),
+    );
 
     const customTemplate = Template.fromStack(stack);
     customTemplate.hasResourceProperties('AWS::Budgets::Budget', {
@@ -85,9 +98,13 @@ describe('AttendanceKitAccountStack', () => {
 
   test('Email endpoint is passed to CostBudgetConstruct', () => {
     const customApp = new App();
-    const stack = new AttendanceKitAccountStack(customApp, 'AttendanceKit-Account-Stack', createStackProps({
-      alertEmail: 'custom@example.com',
-    }));
+    const stack = new AttendanceKitAccountStack(
+      customApp,
+      'AttendanceKit-Account-Stack',
+      createStackProps({
+        alertEmail: 'custom@example.com',
+      }),
+    );
 
     const customTemplate = Template.fromStack(stack);
     customTemplate.hasResourceProperties('AWS::SNS::Subscription', {

@@ -10,7 +10,11 @@ export interface AttendanceKitAccountStackProps extends cdk.StackProps {
 export class AttendanceKitAccountStack extends cdk.Stack {
   public readonly costBudget: CostBudgetConstruct;
 
-  constructor(scope: Construct, id: string, props: AttendanceKitAccountStackProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: AttendanceKitAccountStackProps,
+  ) {
     super(scope, id, props);
 
     const { budgetAmountUsd, alertEmail } = props;

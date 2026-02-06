@@ -36,7 +36,7 @@ export function ClocksListPage() {
         setLoading(false);
       }
     };
-    
+
     fetchRecords();
   }, [navigate]);
 

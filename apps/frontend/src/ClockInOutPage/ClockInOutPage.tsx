@@ -63,16 +63,24 @@ export function ClockInOutPage() {
 
       if (response.success) {
         const clockType = type === 'clock-in' ? 'Clock in' : 'Clock out';
-        const timestamp = new Date(response.record!.timestamp).toLocaleString('ja-JP');
+        const timestamp = new Date(response.record!.timestamp).toLocaleString(
+          'ja-JP',
+        );
         setMessage({
           type: 'success',
           text: `${clockType} successful at ${timestamp}`,
         });
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to process request' });
+        setMessage({
+          type: 'error',
+          text: response.message || 'Failed to process request',
+        });
       }
     } catch {
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      setMessage({
+        type: 'error',
+        text: 'An error occurred. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -85,9 +93,7 @@ export function ClockInOutPage() {
 
         <div className="form-section">
           {message && (
-            <div className={`message ${message.type}`}>
-              {message.text}
-            </div>
+            <div className={`message ${message.type}`}>{message.text}</div>
           )}
 
           {/* 出勤・退勤ボタンは常に表示 */}
