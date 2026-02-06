@@ -107,16 +107,22 @@ npm run test:integration
 - 画面遷移の動作確認
 - ユーザー操作のシミュレーション
 
-**重要な注意事項**:
-- **GitHub Actions環境では実行可能**: CI/CDパイプラインでは正常に実行されます
-- **ローカル環境では制限あり**: GPU関連エラー（`V8 startup snapshot file`, `GPU process crash`）でChromiumが起動しない場合があります
-- **対策**: ローカルではスクリーンショット更新を諦め、CI環境での実行を推奨します。機能テストのみ実行し、ビジュアルテストはCI環境に任せてください。
+**GPU関連エラーの解決**:
+- `playwright.config.ts`にGPU無効化フラグを設定済み:
+  - `--disable-gpu`: GPU処理を無効化
+  - `--disable-dev-shm-usage`: /dev/shmの使用を無効化（メモリ不足対策）
+  - `--no-sandbox`: サンドボックスを無効化（コンテナ環境対策）
+- これにより、ローカル環境でもCI環境と同様にE2Eテストを実行可能
 
-**ローカル実行できない場合の対処**:
-1. 機能テストのみ実行（スクリーンショット比較をスキップ）
-2. CI環境でE2Eテストを実行し、結果を確認
-3. スクリーンショット更新が必要な場合は`--update-snapshots`をCI環境で実行
-4. `playwright.config.ts`の`maxDiffPixels`設定で許容差を調整
+**実行手順**:
+```bash
+# Playwrightブラウザと依存関係のインストール（初回のみ）
+cd apps/frontend
+npx playwright install --with-deps chromium
+
+# E2Eテストの実行
+npm run test:integration
+```
 
 **スクリーンショット確認**:
 - E2Eテスト実行後、スクリーンショットを確認してください
