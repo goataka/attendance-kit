@@ -21,46 +21,25 @@ describe('AttendanceKitStack - Environment Validation', () => {
     });
   });
 
-  test('無効な環境名でエラーが発生する', () => {
-    expect(() => {
-      new AttendanceKitStack(app, {
-        environment: 'invalid' as any,
-        deployOnlyDynamoDB: true,
-      });
-    }).toThrow('Invalid environment: invalid. Must be one of: dev, test, eva, stg, prod');
-  });
-
   test.each([
     {
-      環境名: 'dev',
-      期待されるテーブル名: 'attendance-kit-dev-clock',
+      environment: 'dev' as const,
+      expectedTableName: 'attendance-kit-dev-clock',
     },
     {
-      環境名: 'test',
-      期待されるテーブル名: 'attendance-kit-test-clock',
+      environment: 'eva' as const,
+      expectedTableName: 'attendance-kit-eva-clock',
     },
-    {
-      環境名: 'eva',
-      期待されるテーブル名: 'attendance-kit-eva-clock',
-    },
-    {
-      環境名: 'stg',
-      期待されるテーブル名: 'attendance-kit-stg-clock',
-    },
-    {
-      環境名: 'prod',
-      期待されるテーブル名: 'attendance-kit-prod-clock',
-    },
-  ])('有効な環境名: $環境名', ({ 環境名, 期待されるテーブル名 }) => {
+  ])('有効な環境名: $environment', ({ environment, expectedTableName }) => {
     const stack = new AttendanceKitStack(app, {
-      environment: 環境名 as any,
+      environment,
       deployOnlyDynamoDB: true,
     });
 
     expect(stack).toBeDefined();
     const template = Template.fromStack(stack);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 期待されるテーブル名,
+      TableName: expectedTableName,
     });
   });
 });

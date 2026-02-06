@@ -26,9 +26,6 @@ export class AttendanceKitStack extends cdk.Stack {
     const environment = props.environment || 'dev';
     const { jwtSecret, deployOnlyDynamoDB = false } = props;
 
-    // 環境変数のバリデーション（super呼び出し前）
-    AttendanceKitStack.validateEnvironmentStatic(environment);
-
     // Stack IDの生成
     const stackId = AttendanceKitStack.generateStackId(environment);
     
@@ -112,7 +109,8 @@ export class AttendanceKitStack extends cdk.Stack {
       // シード: prod 以外の全環境
       if (environment === 'eva' || environment === 'stg') {
         this.setupDataClearAndSeed();
-      } else if (AttendanceKitStack.isLocalEnvironment(environment)) {
+      }
+      if (AttendanceKitStack.isLocalEnvironment(environment)) {
         // ローカル環境 (dev, test) はシードのみ
         this.setupDataSeeder();
       }
@@ -147,26 +145,18 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  private static validateEnvironmentStatic(environment: string): void {
-    const validEnvironments: Environment[] = ['dev', 'test', 'eva', 'stg', 'prod'];
-    if (!validEnvironments.includes(environment as Environment)) {
-      throw new Error(
-        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
-      );
-    }
-  }
 
-  private static isLocalEnvironment(environment: string): boolean {
+  private static isLocalEnvironment(environment: Environment): boolean {
     const localEnvironments: Environment[] = ['dev', 'test'];
-    return localEnvironments.includes(environment as Environment);
+    return localEnvironments.includes(environment);
   }
 
-  private static isAwsEnvironment(environment: string): boolean {
+  private static isAwsEnvironment(environment: Environment): boolean {
     const awsEnvironments: Environment[] = ['eva', 'stg', 'prod'];
-    return awsEnvironments.includes(environment as Environment);
+    return awsEnvironments.includes(environment);
   }
 
-  private validateFullStackDeployment(environment: string, jwtSecret?: string): void {
+  private validateFullStackDeployment(environment: Environment, jwtSecret?: string): void {
     // JWT_SECRETが必須
     if (!jwtSecret) {
       throw new Error(
@@ -184,7 +174,7 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  private static generateStackId(environment: string): string {
+  private static generateStackId(environment: Environment): string {
     const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
