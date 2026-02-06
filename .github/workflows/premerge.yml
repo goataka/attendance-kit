@@ -4,10 +4,14 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
+
+env:
+  CHECKOUT_REF: ${{ github.head_ref || github.ref }}
 
 permissions:
   contents: write
@@ -17,12 +21,14 @@ jobs:
   check-changes:
     runs-on: ubuntu-latest
     outputs:
-      should-run-tests: ${{ steps.filter.outputs.non-md == 'true' }}
+      should-run-tests: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.non-md == 'true' }}
     steps:
       - name: コードのチェックアウト
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
 
       - name: 変更ファイルの確認
+        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -39,7 +45,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
@@ -97,7 +103,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -137,7 +143,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -172,7 +178,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -219,7 +225,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4

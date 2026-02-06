@@ -140,9 +140,6 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  /**
-   * 環境変数のバリデーション（static）
-   */
   private static validateEnvironmentStatic(environment: string): void {
     const validEnvironments = ['dev', 'staging', 'test', 'local'];
     if (!validEnvironments.includes(environment)) {
@@ -152,9 +149,6 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  /**
-   * フルスタックデプロイのバリデーション
-   */
   private validateFullStackDeployment(environment: string, jwtSecret?: string): void {
     // JWT_SECRETが必須
     if (!jwtSecret) {
@@ -173,17 +167,11 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  /**
-   * Stack IDを生成
-   */
   private static generateStackId(environment: string): string {
     const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 
-  /**
-   * データクリア用のDynamoDBCleanerを設定
-   */
   private setupDataClear(): DynamoDBCleaner {
     const cleaner = new DynamoDBCleaner(this, 'ClockTableCleaner', {
       table: this.clockTable,
