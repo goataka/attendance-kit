@@ -195,19 +195,6 @@ npm run test:integration -- <test-file-name>
 
 それ以外の場合は、必ずすべての検証を実行してください。
 
-### Storybookの活用
-
-開発時はStorybookでコンポーネントを確認:
-
-```bash
-cd apps/frontend
-npm run storybook
-```
-
-- コンポーネントの単体表示
-- 各状態の確認
-- インタラクションのテスト
-
 ## 技術スタック
 
 - **フレームワーク**: React 18.3.1
