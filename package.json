@@ -23,7 +23,7 @@
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
     "lint": "npm run lint:actionlint && turbo run lint",
-    "lint:actionlint": "node-actionlint .github/workflows/*.yml"
+    "lint:actionlint": "node-actionlint '.github/{workflows,actions}/**/*.{yml,yaml}'"
   },
   "keywords": [
     "monorepo",
