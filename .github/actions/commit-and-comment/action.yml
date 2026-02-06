@@ -16,7 +16,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Check for changes
       id: check-changes
@@ -35,7 +35,7 @@ runs:
             break
           fi
         done <<< "${{ inputs.files }}"
-        
+
         if [[ "$has_changes" == "true" ]]; then
           echo "has_changes=true" >> $GITHUB_OUTPUT
           echo "Changes detected"
@@ -51,7 +51,7 @@ runs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        
+
         # ファイルパターンを改行区切りで処理してgit addを実行
         while IFS= read -r pattern; do
           # 空行をスキップ
@@ -61,14 +61,14 @@ runs:
           # 各パターンを個別にgit add
           git add -- "$pattern" 2>/dev/null || true
         done <<< "${{ inputs.files }}"
-        
+
         # 変更がステージングされているか確認
         if git diff --cached --quiet; then
           echo "No changes staged, skipping commit"
           echo "committed=false" >> $GITHUB_OUTPUT
           exit 0
         fi
-        
+
         git commit -m "${{ inputs.commit-message }}"
         git push
         echo "committed=true" >> $GITHUB_OUTPUT
@@ -87,7 +87,7 @@ runs:
           });
           const commitUrl = commits.data[0].html_url;
           const commitSha = commits.data[0].sha.substring(0, 7);
-          
+
           const comment = `${{ inputs.pr-comment }}\n\n変更: [${commitSha}](${commitUrl})`;
 
           await github.rest.issues.createComment({

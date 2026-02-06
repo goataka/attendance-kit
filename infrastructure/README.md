@@ -11,26 +11,26 @@ graph TB
         Stack --> DDB[(DynamoDB Table<br/>Clock Table)]
         Stack --> Backend[Backend Construct]
         Stack --> Frontend[Frontend Construct]
-        
+
         Backend --> Lambda[Lambda Function<br/>NestJS API]
         Backend --> APIGW[API Gateway]
-        
+
         Frontend --> S3[S3 Bucket]
         Frontend --> CF[CloudFront<br/>Distribution]
         Frontend --> OAI[Origin Access<br/>Identity]
     end
-    
+
     subgraph "CloudFormation管理 (setup/)"
         OIDC[OIDC Provider<br/>GitHub Actions]
         IAM[IAM Role<br/>DeploymentRole]
     end
-    
+
     Lambda -->|Read/Write| DDB
     CF --> S3
     CF --> APIGW
     APIGW --> Lambda
     S3 -.許可.-> OAI
-    
+
     GHA[GitHub Actions] -.assume role.-> IAM
     IAM -.trust.-> OIDC
 ```
@@ -47,10 +47,12 @@ graph TB
 このインフラストラクチャには以下が含まれます：
 
 ### アカウントレベルリソース（account/ディレクトリ）
+
 - **AWS Budget**: 月次コスト予算とアラート
 - **SNS Topic**: コストアラート通知用
 
 ### 環境レベルリソース（deploy/ディレクトリ）
+
 - **DynamoDB Table**: `attendance-kit-{environment}-clock`
   - Partition Key: `userId` (String)
   - Sort Key: `timestamp` (String, ISO 8601形式)
@@ -71,6 +73,7 @@ graph TB
   - API Gateway統合: `/api/*` パスでバックエンドAPIにルーティング
 
 ### CloudFormation管理（setup/ディレクトリ）
+
 - **OIDC Provider**: GitHub Actions用
 - **IAM Role**: GitHub ActionsがAWSリソースにアクセスするためのロール
 
@@ -163,4 +166,3 @@ npx cdk deploy --context environment=dev
 ```bash
 npm test
 ```
-

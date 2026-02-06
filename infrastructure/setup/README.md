@@ -22,11 +22,11 @@ GitHubリポジトリのSettings > Secrets and variables > Actionsを開く
 
 ### 必須シークレット
 
-| シークレット名 | 説明 | 取得元 |
-|--------------|------|--------|
-| `AWS_ROLE_TO_ASSUME` | デプロイ用Role ARN | CloudFormationの`GitHubSecretValue` |
-| `AWS_INVESTIGATION_ROLE_ARN` | 調査用Role ARN | CloudFormationの`CopilotSecretValue` |
-| `COST_ALERT_EMAIL` | コストアラート送信先メールアドレス | 任意のメールアドレス |
+| シークレット名               | 説明                               | 取得元                               |
+| ---------------------------- | ---------------------------------- | ------------------------------------ |
+| `AWS_ROLE_TO_ASSUME`         | デプロイ用Role ARN                 | CloudFormationの`GitHubSecretValue`  |
+| `AWS_INVESTIGATION_ROLE_ARN` | 調査用Role ARN                     | CloudFormationの`CopilotSecretValue` |
+| `COST_ALERT_EMAIL`           | コストアラート送信先メールアドレス | 任意のメールアドレス                 |
 
 ### 調査用Roleについて
 

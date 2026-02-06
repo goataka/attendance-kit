@@ -28,7 +28,7 @@ export class AttendanceKitStack extends cdk.Stack {
 
     // Stack IDの生成
     const stackId = AttendanceKitStack.generateStackId(environment);
-    
+
     super(scope, stackId, props);
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
@@ -51,13 +51,17 @@ export class AttendanceKitStack extends cdk.Stack {
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
       encryption: dynamodb.TableEncryption.AWS_MANAGED,
       // DynamoDBのみをデプロイする場合は、ポイントインタイムリカバリを無効化（テスト環境用）
-      ...(deployOnlyDynamoDB ? {} : {
-        pointInTimeRecoverySpecification: {
-          pointInTimeRecoveryEnabled: true,
-        },
-      }),
+      ...(deployOnlyDynamoDB
+        ? {}
+        : {
+            pointInTimeRecoverySpecification: {
+              pointInTimeRecoveryEnabled: true,
+            },
+          }),
       // DynamoDBのみをデプロイする場合は削除可能にする（テスト環境用）
-      removalPolicy: deployOnlyDynamoDB ? cdk.RemovalPolicy.DESTROY : cdk.RemovalPolicy.RETAIN,
+      removalPolicy: deployOnlyDynamoDB
+        ? cdk.RemovalPolicy.DESTROY
+        : cdk.RemovalPolicy.RETAIN,
       // Cost optimization: No additional alarms or monitoring features
     });
 
@@ -123,13 +127,17 @@ export class AttendanceKitStack extends cdk.Stack {
       value: this.clockTable.tableName,
       description: `DynamoDB clock table name (${environment})`,
       // DynamoDBのみをデプロイする場合は、exportNameを設定しない（テスト環境用）
-      exportName: deployOnlyDynamoDB ? undefined : formatExportName(environment, 'ClockTableName'),
+      exportName: deployOnlyDynamoDB
+        ? undefined
+        : formatExportName(environment, 'ClockTableName'),
     });
 
     new cdk.CfnOutput(this, 'TableArn', {
       value: this.clockTable.tableArn,
       description: `DynamoDB clock table ARN (${environment})`,
-      exportName: deployOnlyDynamoDB ? undefined : formatExportName(environment, 'ClockTableArn'),
+      exportName: deployOnlyDynamoDB
+        ? undefined
+        : formatExportName(environment, 'ClockTableArn'),
     });
 
     if (!deployOnlyDynamoDB) {
@@ -163,7 +171,7 @@ export class AttendanceKitStack extends cdk.Stack {
     if (!jwtSecret) {
       throw new Error(
         'JWT_SECRET environment variable is required for environment stack deployment. ' +
-        'Please set jwtSecret in stack props.'
+          'Please set jwtSecret in stack props.',
       );
     }
   }

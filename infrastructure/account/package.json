@@ -8,6 +8,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "test:unit": "jest --updateSnapshot",
+    "format": "prettier --write \"lib/**/*.ts\" \"bin/**/*.ts\" \"test/**/*.ts\"",
     "cdk": "cdk"
   },
   "keywords": [
@@ -23,6 +24,7 @@
     "@types/node": "^20.x",
     "aws-cdk": "^2.x",
     "jest": "^29.5.0",
+    "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.1",
     "typescript": "~5.3.0"

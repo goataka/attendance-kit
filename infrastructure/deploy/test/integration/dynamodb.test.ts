@@ -24,7 +24,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
     it('should list tables and find attendance-kit-dev-clock', async () => {
       const command = new ListTablesCommand({});
       const response = await client.send(command);
-      
+
       expect(response.TableNames).toBeDefined();
       expect(response.TableNames).toContain(TABLE_NAME);
     });
@@ -34,16 +34,20 @@ describe('DynamoDB LocalStack Integration Tests', () => {
         TableName: TABLE_NAME,
       });
       const response = await client.send(command);
-      
+
       expect(response.Table).toBeDefined();
       expect(response.Table?.TableName).toBe(TABLE_NAME);
-      expect(response.Table?.BillingModeSummary?.BillingMode).toBe('PAY_PER_REQUEST');
-      
+      expect(response.Table?.BillingModeSummary?.BillingMode).toBe(
+        'PAY_PER_REQUEST',
+      );
+
       // Verify key schema
       const keySchema = response.Table?.KeySchema || [];
       expect(keySchema).toHaveLength(1);
-      expect(keySchema.find(k => k.AttributeName === 'id' && k.KeyType === 'HASH')).toBeDefined();
-      
+      expect(
+        keySchema.find((k) => k.AttributeName === 'id' && k.KeyType === 'HASH'),
+      ).toBeDefined();
+
       // Verify GSI
       const gsi = response.Table?.GlobalSecondaryIndexes || [];
       expect(gsi).toHaveLength(1);
@@ -68,7 +72,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
           type: { S: 'clock-in' },
         },
       });
-      
+
       const response = await client.send(command);
       expect(response.$metadata.httpStatusCode).toBe(200);
     });
@@ -80,7 +84,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
           id: { S: testId },
         },
       });
-      
+
       const response = await client.send(command);
       expect(response.Item).toBeDefined();
       expect(response.Item?.id?.S).toBe(testId);
@@ -94,15 +98,13 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       const command = new ScanCommand({
         TableName: TABLE_NAME,
       });
-      
+
       const response = await client.send(command);
       expect(response.Items).toBeDefined();
       expect(response.Count).toBeGreaterThan(0);
-      
+
       // Find our test item
-      const testItem = response.Items?.find(
-        item => item.id?.S === testId
-      );
+      const testItem = response.Items?.find((item) => item.id?.S === testId);
       expect(testItem).toBeDefined();
     });
   });

@@ -10,7 +10,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Create Issue on failure
       shell: bash
@@ -24,7 +24,7 @@ runs:
         ISSUE_BODY=$(cat <<-EOF
         - URL: ${RUN_URL}
         - コミット: ${COMMIT_SHA}
-        
+
         @copilot workflow-error-handlerスキルでエラー対応してください。
         EOF
         )

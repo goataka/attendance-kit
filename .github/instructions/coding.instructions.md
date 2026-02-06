@@ -1,6 +1,7 @@
 ---
-applyTo: "**/*.{sh,ts,js,tsx,jsx,py,yml}"
+applyTo: '**/*.{sh,ts,js,tsx,jsx,py,yml}'
 ---
+
 # Copilot Instruction for Coding
 
 cf. [理解しやすいコードの書き方～理解容易性の7つの観点～](https://qiita.com/goataka/items/ae1959c29036dc4929fe)

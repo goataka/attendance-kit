@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
@@ -84,8 +84,8 @@ jobs:
           files: |
             **/__snapshots__/**
             apps/backend/api/openapi.json
-          commit-message: "自動生成ファイル更新: スナップショットとOpenAPI"
-          pr-comment: "✅ 自動生成ファイルを更新しました（スナップショットテスト、OpenAPI仕様）"
+          commit-message: '自動生成ファイル更新: スナップショットとOpenAPI'
+          pr-comment: '✅ 自動生成ファイルを更新しました（スナップショットテスト、OpenAPI仕様）'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 失敗時のコメント
@@ -100,13 +100,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
-    
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
@@ -148,13 +148,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
       AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
-    
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
@@ -197,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
@@ -241,7 +241,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
-    
+
     env:
       AWS_ACCESS_KEY_ID: test
       AWS_SECRET_ACCESS_KEY: test
@@ -252,7 +252,7 @@ jobs:
       BACKEND_URL: http://localhost:3000
       NODE_ENV: test
       DYNAMODB_ENDPOINT: http://localhost:4566
-    
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
@@ -303,9 +303,9 @@ jobs:
           recreate: true
           message: |
             ## E2Eテスト結果
-            
+
             📊 **テストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
+
             レポートの確認方法：
             1. 上記のリンクをクリック
             2. Artifacts セクションから `e2e-test-reports` をダウンロード

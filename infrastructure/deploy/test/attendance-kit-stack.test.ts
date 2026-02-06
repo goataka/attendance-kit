@@ -57,7 +57,9 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
         environment: 'dev',
         deployOnlyDynamoDB: false,
       });
-    }).toThrow('JWT_SECRET environment variable is required for environment stack deployment');
+    }).toThrow(
+      'JWT_SECRET environment variable is required for environment stack deployment',
+    );
   });
 
   test('DynamoDB-onlyモードではjwtSecretは不要', () => {
@@ -110,7 +112,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     const tables = template.findResources('AWS::DynamoDB::Table');
     const tableKeys = Object.keys(tables);
     expect(tableKeys.length).toBe(1);
-    
+
     const table = tables[tableKeys[0]];
     expect(table.Properties?.PointInTimeRecoverySpecification).toBeUndefined();
   });
@@ -156,7 +158,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     const outputs = template.findOutputs('TableName');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
-    
+
     const output = outputs[Object.keys(outputs)[0]];
     expect(output.Export).toBeUndefined();
   });
@@ -165,7 +167,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     const outputs = template.findOutputs('TableArn');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
-    
+
     const output = outputs[Object.keys(outputs)[0]];
     expect(output.Export).toBeUndefined();
   });
@@ -184,11 +186,11 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     const tables = template.findResources('AWS::DynamoDB::Table');
     const tableKeys = Object.keys(tables);
     expect(tableKeys.length).toBe(1);
-    
+
     const table = tables[tableKeys[0]];
     const tags = table.Properties?.Tags;
     expect(tags).toBeDefined();
-    
+
     const purposeTag = tags?.find((tag: any) => tag.Key === 'Purpose');
     expect(purposeTag).toBeDefined();
     expect(purposeTag.Value).toBe('IntegrationTest');

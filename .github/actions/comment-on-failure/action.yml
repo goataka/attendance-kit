@@ -13,7 +13,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Find PR number
       id: find-pr
@@ -39,7 +39,7 @@ runs:
             echo "pr_number=" >> $GITHUB_OUTPUT
           fi
         fi
-    
+
     - name: Post or update failure comment
       if: steps.find-pr.outputs.pr_number != ''
       uses: marocchino/sticky-pull-request-comment@v2
@@ -49,8 +49,8 @@ runs:
         recreate: true
         message: |
           ## ❌ ${{ inputs.workflow-name }} 失敗
-          
+
           ${{ inputs.failure-message }}
-          
+
           [実行ログ](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
         GITHUB_TOKEN: ${{ inputs.github-token }}
