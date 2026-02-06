@@ -26,7 +26,7 @@
     "lint": "npm run lint:markdown && npm run lint:shellcheck && npm run lint:actionlint && turbo run lint",
     "lint:markdown": "markdownlint \"**/*.md\"",
     "lint:shellcheck": "find . -name '*.sh' -not -path '*/node_modules/*' -not -path '*/.git/*' -print0 | xargs -0 -r shellcheck",
-    "lint:actionlint": "node-actionlint '.github/{workflows,actions}/**/*.{yml,yaml}'"
+    "lint:actionlint": "node-actionlint '.github/workflows/**/*.{yml,yaml}'"
   },
   "keywords": [
     "monorepo",
