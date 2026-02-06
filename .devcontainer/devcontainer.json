@@ -16,8 +16,6 @@
   },
 
   "forwardPorts": [],
-
-  "postStartCommand": "echo '🚀 Attendance Kit Development Container is ready!'",
-
+  "postStartCommand": "npm run setup && echo '🚀 Attendance Kit Development Container is ready!'",
   "remoteUser": "node"
 }

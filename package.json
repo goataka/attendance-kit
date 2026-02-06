@@ -9,6 +9,7 @@
     "infrastructure/*"
   ],
   "scripts": {
+    "postsetup": "bash scripts/postsetup.sh",
     "setup": "npm ci --workspaces --include-workspace-root",
     "dev": "npm run dev --workspaces --if-present",
     "build": "turbo run build",
@@ -22,7 +23,9 @@
     "test:e2e:local": "npm run test:e2e",
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
-    "lint": "turbo run lint",
+    "lint": "npm run lint:shellcheck & npm run lint:actionlint & turbo run lint",
+    "lint:shellcheck": "find . -name '*.sh' -not -path '*/node_modules/*' -not -path '*/.git/*' -print0 | xargs -0 -r shellcheck",
+    "lint:actionlint": "node-actionlint '.github/{workflows,actions}/**/*.{yml,yaml}'",
     "format": "turbo run format",
     "format:check": "prettier --check ."
   },
@@ -40,6 +43,7 @@
   "devDependencies": {
     "@cucumber/cucumber": "^12.6.0",
     "@playwright/test": "^1.57.0",
+    "@tktco/node-actionlint": "^1.6.0",
     "@types/node": "^25.0.10",
     "playwright-bdd": "^8.4.2",
     "prettier": "^3.0.0",
