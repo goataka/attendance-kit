@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "勤怠管理キット - Monorepo",
+  "packageManager": "npm@11.6.2",
   "workspaces": [
     "apps/*",
     "infrastructure/*"
@@ -10,18 +11,18 @@
   "scripts": {
     "setup": "npm ci --workspaces --include-workspace-root",
     "dev": "npm run dev --workspaces --if-present",
-    "build": "npm run build --workspaces --if-present",
+    "build": "turbo run build",
     "start:local-db": "npm run deploy:local-db -w @attendance-kit/deploy",
     "start:local": "npm run start:local-db && npm run start:local --workspaces --if-present",
     "wait:local": "npm run wait:local --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present",
-    "test:unit": "npm run test:unit --workspaces --if-present",
+    "test": "turbo run test",
+    "test:unit": "turbo run test:unit",
     "test:e2e": "cucumber-js --config test/e2e/cucumber.js",
     "pretest:e2e:local": "npm run start:local && npm run wait:local",
     "test:e2e:local": "npm run test:e2e",
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
-    "lint": "npm run lint --workspaces --if-present"
+    "lint": "turbo run lint"
   },
   "keywords": [
     "monorepo",
@@ -39,6 +40,7 @@
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.10",
     "playwright-bdd": "^8.4.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "turbo": "2.8.3"
   }
 }
