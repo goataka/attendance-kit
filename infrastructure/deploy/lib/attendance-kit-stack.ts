@@ -166,14 +166,6 @@ export class AttendanceKitStack extends cdk.Stack {
         'Please set jwtSecret in stack props.'
       );
     }
-
-    // AWS環境のみフルスタックデプロイを許可
-    if (!AttendanceKitStack.isAwsEnvironment(environment)) {
-      throw new Error(
-        `Full stack deployment is not allowed for '${environment}' environment. ` +
-        'Use deployOnlyDynamoDB: true for local environments.'
-      );
-    }
   }
 
   private static generateStackId(environment: Environment): string {

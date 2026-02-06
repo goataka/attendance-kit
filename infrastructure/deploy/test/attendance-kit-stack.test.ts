@@ -70,26 +70,6 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
     expect(stack.clockTable).toBeDefined();
     expect(stack.backendApi).toBeUndefined();
   });
-
-  test('test環境でフルスタックデプロイは許可されない', () => {
-    expect(() => {
-      new AttendanceKitStack(app, {
-        environment: 'test',
-        jwtSecret: 'test-secret',
-        deployOnlyDynamoDB: false,
-      });
-    }).toThrow("Full stack deployment is not allowed for 'test' environment");
-  });
-
-  test('dev環境でフルスタックデプロイは許可されない', () => {
-    expect(() => {
-      new AttendanceKitStack(app, {
-        environment: 'dev',
-        jwtSecret: 'test-secret',
-        deployOnlyDynamoDB: false,
-      });
-    }).toThrow("Full stack deployment is not allowed for 'dev' environment");
-  });
 });
 
 describe('AttendanceKitStack - DynamoDB Only Mode', () => {

@@ -15,10 +15,10 @@
     "deploy:local-db": "npm run cdklocal:setup && npm run cdklocal:bootstrap && npm run cdklocal:deploy-db",
     "cdklocal:setup": "localstack start -d && localstack wait -t 30",
     "cdklocal:bootstrap": "npx cdklocal bootstrap aws://000000000000/ap-northeast-1 --force && sleep 3",
-    "cdklocal:deploy-all": "npx cdklocal deploy AttendanceKit-Dev-Stack --context stack=dynamodb --context environment=dev --require-approval never --no-previous-parameters",
+    "cdklocal:deploy-all": "npx cdklocal deploy --context stack=environment --context environment=dev --require-approval never",
     "cdklocal:deploy-db": "npx cdklocal deploy AttendanceKit-Test-Stack --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters",
-    "cdklocal:synth": "npx cdklocal synth --context stack=dynamodb --context environment=dev",
-    "cdklocal:destroy": "npx cdklocal destroy --context stack=dynamodb --context environment=dev --force"
+    "cdklocal:synth": "npx cdklocal synth --context stack=environment --context environment=dev",
+    "cdklocal:destroy": "npx cdklocal destroy --context stack=environment --context environment=dev --force"
   },
   "keywords": [
     "aws",
