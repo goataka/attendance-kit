@@ -16,7 +16,7 @@ export default defineConfig({
 
   expect: {
     toHaveScreenshot: {
-      maxDiffPixels: 20000,
+      maxDiffPixelRatio: 0.01, // 1%の差分を許容（フォントレンダリングの差異対策）
     },
   },
 
