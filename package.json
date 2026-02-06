@@ -22,7 +22,9 @@
     "test:e2e:local": "npm run test:e2e",
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "format": "turbo run format",
+    "format:check": "prettier --check ."
   },
   "keywords": [
     "monorepo",
@@ -40,6 +42,7 @@
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.10",
     "playwright-bdd": "^8.4.2",
+    "prettier": "^3.0.0",
     "ts-node": "^10.9.2",
     "turbo": "2.8.3"
   }

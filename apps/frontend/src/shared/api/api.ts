@@ -1,4 +1,9 @@
-import { ClockRecord, ClockInOutRequest, ClockInOutResponse, RecordsFilter } from '../types';
+import {
+  ClockRecord,
+  ClockInOutRequest,
+  ClockInOutResponse,
+  RecordsFilter,
+} from '../types';
 
 const DEFAULT_DEV_BACKEND_URL = 'http://localhost:3000';
 const API_BASE_PATH = '/api';
@@ -23,14 +28,16 @@ const normalizeBaseUrl = (baseUrl: string): string => {
 export const resolveBackendUrl = (
   envUrl: string | undefined = import.meta.env.VITE_BACKEND_URL,
   isDev: boolean = import.meta.env.DEV,
-  windowOrigin: string | undefined =
-    typeof window === 'undefined' ? undefined : window.location.origin,
+  windowOrigin: string | undefined = typeof window === 'undefined'
+    ? undefined
+    : window.location.origin,
 ): string => {
   if (envUrl?.trim()) {
     return normalizeBaseUrl(envUrl);
   }
 
-  const resolvedUrl = isDev || !windowOrigin ? DEFAULT_DEV_BACKEND_URL : windowOrigin;
+  const resolvedUrl =
+    isDev || !windowOrigin ? DEFAULT_DEV_BACKEND_URL : windowOrigin;
   return normalizeBaseUrl(resolvedUrl);
 };
 
@@ -62,7 +69,10 @@ const clearToken = (): void => {
   }
 };
 
-const login = async (userId: string, password: string): Promise<string | null> => {
+const login = async (
+  userId: string,
+  password: string,
+): Promise<string | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
       method: 'POST',
@@ -78,11 +88,11 @@ const login = async (userId: string, password: string): Promise<string | null> =
 
     const data = await response.json();
     const token = data.accessToken;
-    
+
     if (token) {
       storeToken(token);
     }
-    
+
     return token;
   } catch (error) {
     console.error('Login failed:', error);
@@ -91,10 +101,12 @@ const login = async (userId: string, password: string): Promise<string | null> =
 };
 
 export const api = {
-  clockInOut: async (request: ClockInOutRequest): Promise<ClockInOutResponse> => {
+  clockInOut: async (
+    request: ClockInOutRequest,
+  ): Promise<ClockInOutResponse> => {
     try {
       const token = await login(request.userId, request.password);
-      
+
       if (!token) {
         return {
           success: false,
@@ -105,16 +117,16 @@ export const api = {
       const response = await fetch(
         `${BACKEND_URL}${API_BASE_PATH}/clock/${request.type === 'clock-in' ? 'in' : 'out'}`,
         {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            location: 'Remote',
+            deviceId: 'web-client',
+          }),
         },
-        body: JSON.stringify({
-          location: 'Remote',
-          deviceId: 'web-client',
-        }),
-      },
       );
 
       if (!response.ok) {
@@ -126,7 +138,7 @@ export const api = {
       }
 
       const data = await response.json();
-      
+
       return {
         success: true,
         record: {
@@ -147,26 +159,26 @@ export const api = {
   getRecords: async (filter?: RecordsFilter): Promise<ClockRecord[]> => {
     try {
       const token = getStoredToken();
-      
+
       if (!token) {
         console.error('No authentication token available');
         throw new Error('Authentication required. Please log in first.');
       }
 
       const params = new URLSearchParams();
-      
+
       if (filter?.userId) {
         params.append('userId', filter.userId);
       }
-      
+
       if (filter?.type && filter.type !== 'all') {
         params.append('type', filter.type);
       }
-      
+
       if (filter?.startDate) {
         params.append('startDate', filter.startDate);
       }
-      
+
       if (filter?.endDate) {
         params.append('endDate', filter.endDate);
       }
@@ -174,7 +186,7 @@ export const api = {
       const url = `${BACKEND_URL}${API_BASE_PATH}/clock/records${params.toString() ? `?${params.toString()}` : ''}`;
       const response = await fetch(url, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -187,14 +199,14 @@ export const api = {
       }
 
       const data = await response.json();
-      
+
       interface ClockRecordResponse {
         id: string;
         userId: string;
         timestamp: string;
         type: string;
       }
-      
+
       return data.map((record: ClockRecordResponse) => ({
         id: record.id,
         userId: record.userId,
