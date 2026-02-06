@@ -66,6 +66,7 @@ npm run premerge:local
 ```
 
 **プレマージワークフロー実行の必要条件**:
+
 - Docker が起動していること
 - [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 
@@ -92,6 +93,17 @@ VS Codeでコマンドパレットから "Dev Containers: Reopen in Container" �
 
 詳細は [.devcontainer/README.md](.devcontainer/README.md) を参照してください。
 
+### コミット前の自動チェック
+
+このプロジェクトでは、コミット前にlint-stagedとhuskyを使用して自動的にコード品質チェックを実行します：
+
+- **Backend TypeScript**: ESLint（Prettier連携）
+- **Frontend TypeScript**: ESLint
+- **Markdown**: Prettier
+- **YAML**: Prettier
+
+コミット時に自動実行されるため、手動での実行は不要です。
+
 ## 🏗️ システム構成図
 
 ```mermaid
@@ -99,23 +111,23 @@ graph TB
     subgraph "GitHub Actions"
         GHA[CI/CD Workflow]
     end
-    
+
     subgraph "AWS Cloud"
         subgraph "Frontend"
             S3[S3 Bucket]
             CF[CloudFront]
         end
-        
+
         subgraph "Backend"
             APIGW[API Gateway]
             Lambda[Lambda Function<br/>NestJS API]
         end
-        
+
         subgraph "Database"
             DDB[(DynamoDB<br/>Clock Table)]
         end
     end
-    
+
     User[ユーザー] -->|HTTPS| CF
     CF -->|Static Files| S3
     CF -->|/api/*| APIGW
