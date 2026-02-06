@@ -21,14 +21,14 @@
 
 ## 使用ツール
 
-**Storybook + MSW**
-- Storybookでコンポーネントをカタログ化
+**Playwright + MSW**
+- Playwrightでブラウザテスト
 - MSW（Mock Service Worker）でAPIモック
 - @testing-library/reactで操作とアサーション
 
 ## 実行タイミング
 
-- 開発中（Storybookサーバー起動時）
+- 開発中
 - プルリクエスト作成時
 
 ## 接続先
@@ -42,13 +42,10 @@ cd apps/frontend
 
 # 統合テスト
 npm run test:integration
-
-# Storybook起動
-npm run storybook
 ```
 
 ## 参考資料
 
-- [Storybook公式ドキュメント](https://storybook.js.org/)
+- [Playwright公式ドキュメント](https://playwright.dev/)
 - [MSW公式ドキュメント](https://mswjs.io/)
 - [Testing Library](https://testing-library.com/)
