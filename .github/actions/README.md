@@ -2,11 +2,11 @@
 
 ## アクション一覧
 
-| アクション | 説明 |
-|----------|------|
-| [commit-and-comment](./commit-and-comment) | ファイル変更を検出し、コミットしてPRにコメント投稿 |
-| [create-issue-on-failure](./create-issue-on-failure) | ワークフロー失敗時にIssueを自動作成 |
-| [comment-on-failure](./comment-on-failure) | ワークフロー失敗時にPRにコメント投稿 |
+| アクション                                           | 説明                                               |
+| ---------------------------------------------------- | -------------------------------------------------- |
+| [commit-and-comment](./commit-and-comment)           | ファイル変更を検出し、コミットしてPRにコメント投稿 |
+| [create-issue-on-failure](./create-issue-on-failure) | ワークフロー失敗時にIssueを自動作成                |
+| [comment-on-failure](./comment-on-failure)           | ワークフロー失敗時にPRにコメント投稿               |
 
 ## 使用上の注意
 
@@ -19,9 +19,10 @@ permissions:
   id-token: write
   contents: read
   pull-requests: write
-  issues: write  # Issue作成に必要
+  issues: write # Issue作成に必要
 ```
 
 また、以下のラベルがリポジトリに存在している必要があります:
+
 - `bug`
 - `deploy-error`

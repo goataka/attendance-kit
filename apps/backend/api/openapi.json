@@ -12,9 +12,7 @@
             "description": "Service is healthy"
           }
         },
-        "tags": [
-          "health"
-        ]
+        "tags": ["health"]
       }
     },
     "/clock/in": {
@@ -48,9 +46,7 @@
             "description": "Unauthorized"
           }
         },
-        "tags": [
-          "clock"
-        ],
+        "tags": ["clock"],
         "security": [
           {
             "bearer": []
@@ -89,9 +85,7 @@
             "description": "Unauthorized"
           }
         },
-        "tags": [
-          "clock"
-        ],
+        "tags": ["clock"],
         "security": [
           {
             "bearer": []
@@ -123,9 +117,7 @@
             "description": "Unauthorized"
           }
         },
-        "tags": [
-          "clock"
-        ],
+        "tags": ["clock"],
         "security": [
           {
             "bearer": []
@@ -164,9 +156,7 @@
             "description": "Invalid credentials"
           }
         },
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     }
   },
@@ -228,10 +218,7 @@
           "type": {
             "type": "string",
             "description": "Clock type",
-            "enum": [
-              "clock-in",
-              "clock-out"
-            ],
+            "enum": ["clock-in", "clock-out"],
             "example": "clock-in"
           },
           "location": {
@@ -245,12 +232,7 @@
             "example": "device-abc123"
           }
         },
-        "required": [
-          "userId",
-          "timestamp",
-          "date",
-          "type"
-        ]
+        "required": ["userId", "timestamp", "date", "type"]
       },
       "ClockOutDto": {
         "type": "object",
@@ -281,10 +263,7 @@
             "example": "password123"
           }
         },
-        "required": [
-          "userId",
-          "password"
-        ]
+        "required": ["userId", "password"]
       },
       "LoginResponseDto": {
         "type": "object",
@@ -300,10 +279,7 @@
             "example": "user001"
           }
         },
-        "required": [
-          "accessToken",
-          "userId"
-        ]
+        "required": ["accessToken", "userId"]
       }
     }
   }

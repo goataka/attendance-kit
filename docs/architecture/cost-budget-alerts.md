@@ -14,20 +14,20 @@ graph TB
         Budget[AWS Budget<br/>月次予算: 1000円]
         SNS[SNS Topic<br/>attendance-kit-cost-alerts]
         CW[CloudWatch<br/>利用額モニタリング]
-        
+
         Budget -->|実利用額超過<br/>100% threshold| SNS
         Budget -->|予測額超過<br/>100% threshold| SNS
         CW -.->|利用額データ| Budget
     end
-    
+
     SNS -->|Email通知| Mobile[スマホ<br/>メール受信]
-    
+
     subgraph "Infrastructure as Code"
         CDK[AWS CDK<br/>TypeScript]
         CDK -->|デプロイ| Budget
         CDK -->|デプロイ| SNS
     end
-    
+
     style Budget fill:#f9f,stroke:#333,stroke-width:2px
     style SNS fill:#bbf,stroke:#333,stroke-width:2px
     style Mobile fill:#bfb,stroke:#333,stroke-width:2px
@@ -52,23 +52,25 @@ AttendanceKit-Dev-Stack (環境単位)
 
 ### AWS Budget設定
 
-| 項目 | 値 |
-|------|-----|
-| 予算名 | attendance-kit-account-monthly-budget |
-| 予算タイプ | COST |
-| 期間単位 | MONTHLY |
-| 予算額 | 1000円 |
-| 通貨 | JPY |
+| 項目       | 値                                    |
+| ---------- | ------------------------------------- |
+| 予算名     | attendance-kit-account-monthly-budget |
+| 予算タイプ | COST                                  |
+| 期間単位   | MONTHLY                               |
+| 予算額     | 1000円                                |
+| 通貨       | JPY                                   |
 
 ### アラート設定
 
 #### 実利用額アラート
+
 - **通知タイプ**: ACTUAL
 - **閾値**: 100%（1000円）
 - **比較演算子**: GREATER_THAN
 - **配信先**: SNS Topic
 
 #### 予測額アラート
+
 - **通知タイプ**: FORECASTED
 - **閾値**: 100%（1000円）
 - **比較演算子**: GREATER_THAN
@@ -76,11 +78,11 @@ AttendanceKit-Dev-Stack (環境単位)
 
 ### SNS Topic
 
-| 項目 | 値 |
-|------|-----|
-| トピック名 | attendance-kit-cost-alerts |
-| 表示名 | AWS Cost Budget Alerts |
-| プロトコル | Email |
+| 項目               | 値                                 |
+| ------------------ | ---------------------------------- |
+| トピック名         | attendance-kit-cost-alerts         |
+| 表示名             | AWS Cost Budget Alerts             |
+| プロトコル         | Email                              |
 | サブスクリプション | 環境変数 COST_ALERT_EMAIL から設定 |
 
 ### IAMポリシー
@@ -106,17 +108,17 @@ sequenceDiagram
     participant Budget as AWS Budget
     participant SNS as SNS Topic
     participant User as ユーザー
-    
+
     Note over AWS,Budget: 定期的なコスト集計
     AWS->>Budget: 利用額データ更新
-    
+
     alt 実利用額が1000円超過
         Budget->>Budget: 閾値チェック（100%）
         Budget->>SNS: アラート送信（ACTUAL）
         SNS->>User: Email通知
         User->>User: スマホで確認
     end
-    
+
     alt 予測額が1000円超過見込み
         Budget->>Budget: 予測計算・閾値チェック
         Budget->>SNS: アラート送信（FORECASTED）
@@ -133,8 +135,12 @@ sequenceDiagram
 // アカウントレベルスタック
 export class AttendanceKitAccountStack extends cdk.Stack {
   public readonly costBudget: CostBudgetConstruct;
-  
-  constructor(scope: Construct, id: string, props: AttendanceKitAccountStackProps) {
+
+  constructor(
+    scope: Construct,
+    id: string,
+    props: AttendanceKitAccountStackProps,
+  ) {
     // CostBudgetConstructをインスタンス化
     this.costBudget = new CostBudgetConstruct(this, 'CostBudget', {
       budgetName: 'attendance-kit-account-monthly-budget',
@@ -148,7 +154,7 @@ export class AttendanceKitAccountStack extends cdk.Stack {
 export class CostBudgetConstruct extends Construct {
   public readonly snsTopic: sns.Topic;
   public readonly budget: budgets.CfnBudget;
-  
+
   // SNS Topic作成
   // AWS Budget作成（実利用額・予測額アラート）
   // IAMポリシー設定
@@ -175,9 +181,11 @@ infrastructure/deploy/
 ├── deploy-environment-stack.yml            # 環境スタックデプロイ
 └── deploy-account-stack.yml                # アカウントスタックデプロイ
 ```
+
 └── bin/
-    └── app.ts                              # エントリーポイント
-```
+└── app.ts # エントリーポイント
+
+````
 
 ## コスト分析
 
@@ -231,9 +239,10 @@ infrastructure/deploy/
 ```bash
 cd infrastructure/deploy
 COST_ALERT_EMAIL=email@example.com npm run cdk deploy AttendanceKit-Account-Stack
-```
+````
 
 環境スタックをデプロイ:
+
 ```bash
 cd infrastructure/deploy
 ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
@@ -248,11 +257,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### トラブルシューティング
 
 #### 通知が届かない場合
+
 1. SNSサブスクリプションの確認状態をチェック
 2. Email確認リンクをクリック済みか確認
 3. SNS Topic Policyの確認
 
 #### 予算超過の対処
+
 1. 不要なリソースの削除
 2. 予算額の再検討
 3. コスト最適化の実施
@@ -277,11 +288,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### AWS Budget
 
 **選定理由**:
+
 - 予測アラート機能が標準搭載
 - 無料枠で利用可能
 - SNSと直接統合可能
 
 **代替案との比較**:
+
 - CloudWatchアラーム: 予測機能なし、追加コスト
 - Cost Anomaly Detection: 異常検知のみ、予算管理不可
 - サードパーティツール: 追加コスト、複雑性増加
@@ -289,11 +302,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### SNS
 
 **選定理由**:
+
 - Email通知が無料枠で利用可能
 - AWS Budgetとネイティブ統合
 - Mobile Push等への拡張が容易
 
 **代替案との比較**:
+
 - Lambda + SES: 実装複雑、管理コスト増
 - EventBridge + Lambda: オーバーエンジニアリング
 - サードパーティサービス: 追加コスト
@@ -301,6 +316,7 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### AWS CDK (TypeScript)
 
 **選定理由**:
+
 - 既存インフラストラクチャとの統合が容易
 - TypeScriptで型安全な実装
 - テストが容易

@@ -49,6 +49,7 @@ npm run lint
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - ESLintによるコードスタイルチェック
 - TypeScriptの型チェック
 - 未使用変数・インポートの検出
@@ -60,6 +61,7 @@ npm run build
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - TypeScriptのコンパイル
 - Distディレクトリへの出力確認
 
@@ -70,6 +72,7 @@ npm run test:unit
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - Jestによるユニットテスト
 - スナップショットテストの更新（必要に応じて）
 
@@ -82,6 +85,7 @@ npm run test:integration
 ```
 
 **必須**: API関連のコード変更時は実行してください。
+
 - DynamoDBとの統合テスト（LocalStack使用）
 - エンドポイントの動作確認
 
@@ -94,6 +98,7 @@ npm run generate
 ```
 
 **必須**: APIエンドポイントやDTOを変更した場合は実行してください。
+
 - OpenAPI仕様（`apps/backend/api/openapi.json`）の自動生成
 - Swagger UIで確認可能
 
@@ -205,14 +210,14 @@ npm run test:integration -- <test-file-name>
 
 このスキルの検証項目は、GitHub ActionsのPremergeワークフローと対応しています:
 
-| Premergeステップ | ローカル検証コマンド |
-|-----------------|---------------------|
-| `npm run setup` | `npm run setup` |
-| `npm run lint` | `npm run lint` |
-| `npm run build` | `npm run build` |
-| `npm run test:unit` | `npm run test:unit` |
-| `npm run generate` | `npm run generate` |
-| Backend統合テスト | `cd apps/backend && npm run test:integration` |
+| Premergeステップ    | ローカル検証コマンド                          |
+| ------------------- | --------------------------------------------- |
+| `npm run setup`     | `npm run setup`                               |
+| `npm run lint`      | `npm run lint`                                |
+| `npm run build`     | `npm run build`                               |
+| `npm run test:unit` | `npm run test:unit`                           |
+| `npm run generate`  | `npm run generate`                            |
+| Backend統合テスト   | `cd apps/backend && npm run test:integration` |
 
 ## 参考資料
 

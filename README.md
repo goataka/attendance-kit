@@ -66,6 +66,7 @@ npm run premerge:local
 ```
 
 **プレマージワークフロー実行の必要条件**:
+
 - Docker が起動していること
 - [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 
@@ -99,23 +100,23 @@ graph TB
     subgraph "GitHub Actions"
         GHA[CI/CD Workflow]
     end
-    
+
     subgraph "AWS Cloud"
         subgraph "Frontend"
             S3[S3 Bucket]
             CF[CloudFront]
         end
-        
+
         subgraph "Backend"
             APIGW[API Gateway]
             Lambda[Lambda Function<br/>NestJS API]
         end
-        
+
         subgraph "Database"
             DDB[(DynamoDB<br/>Clock Table)]
         end
     end
-    
+
     User[ユーザー] -->|HTTPS| CF
     CF -->|Static Files| S3
     CF -->|/api/*| APIGW

@@ -63,19 +63,22 @@ list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event
 list_workflow_runs --owner=<owner> --repo=<repo> --workflow_runs_filter='{"event": "pull_request", "branch": "<current-branch-name>"}' --per_page=5
 ```
 
-**注**: 
+**注**:
+
 - `<owner>`と`<repo>`は実際のリポジトリのオーナー名とリポジトリ名に置き換えてください
 - `<run_id>`はワークフローURLから抽出（例: `https://github.com/owner/repo/actions/runs/12345` → `12345`）
 - `<pr-branch-name>`は指定されたPRのブランチ名に置き換えてください
 - `<current-branch-name>`は`git branch --show-current`で取得した現在のブランチ名に置き換えてください
 
 エラーとなったワークフロー実行を特定し、以下の情報を記録:
+
 - ワークフロー名
 - 実行ID（run_id）
 - 失敗したジョブ名
 - エラー発生時刻
 
 **調査対象の絞り込み**:
+
 - 失敗ステータス（`conclusion: failure`）のみを対象
 - 既に調査したジョブ名は重複調査を避ける
 - 最大5件までに制限して調査時間を短縮
@@ -88,6 +91,7 @@ get_job_logs --owner=<owner> --repo=<repo> --run_id=<run_id> --failed_only=true 
 ```
 
 エラーログから以下を抽出:
+
 - エラーメッセージ
 - スタックトレース
 - 失敗したステップ名
@@ -96,6 +100,7 @@ get_job_logs --owner=<owner> --repo=<repo> --run_id=<run_id> --failed_only=true 
 #### 1.3 エラーの分類
 
 エラーを以下のカテゴリに分類:
+
 - **依存関係エラー**: パッケージインストールの失敗
 - **ビルドエラー**: コンパイル、トランスパイルの失敗
 - **テストエラー**: テストケースの失敗
@@ -113,6 +118,7 @@ view .github/workflows/<workflow-name>.yml
 ```
 
 以下の項目を確認:
+
 - トリガー条件（on:）
 - 実行環境（runs-on:）
 - Node.jsバージョン（node-version:）
@@ -130,6 +136,7 @@ view .github/workflows/<workflow-name>.yml
 ```
 
 ローカルで実行可能なコマンドに変換:
+
 - `npm ci` → 依存関係のインストール
 - `npm run lint` → Lintの実行
 - `npm test` → テストの実行
@@ -156,6 +163,7 @@ npm ci
 ```
 
 エラーが発生した場合:
+
 - package-lock.jsonの問題
 - Node.jsバージョンの不一致
 - ネットワークやレジストリの問題
@@ -168,6 +176,7 @@ npm run <command>
 ```
 
 エラーの再現を確認:
+
 - エラーメッセージが一致するか
 - エラーの発生箇所が同じか
 - スタックトレースが同じか
@@ -190,27 +199,32 @@ npm test -- <specific-test-file>
 エラーログとコードを分析し、根本原因を特定:
 
 **依存関係エラーの場合**:
+
 - パッケージバージョンの不一致
 - 依存関係の欠落
 - package.jsonとpackage-lock.jsonの不整合
 
 **ビルドエラーの場合**:
+
 - 型エラー（TypeScript）
 - 構文エラー
 - インポートエラー
 - 設定ファイルの問題（tsconfig.json等）
 
 **テストエラーの場合**:
+
 - テストロジックの問題
 - モックの設定ミス
 - 非同期処理のハンドリングミス
 
 **Lintエラーの場合**:
+
 - コードスタイルの問題
 - 未使用変数・インポート
 - 型定義の不足
 
 **環境エラーの場合**:
+
 - Node.jsバージョンの不一致
 - 環境変数の欠落
 - 権限やパスの問題
@@ -273,6 +287,7 @@ npm run <command>
 ```
 
 確認項目:
+
 - ✅ エラーが発生しないこと
 - ✅ 正常に完了すること
 - ✅ 期待される出力が得られること
@@ -305,6 +320,7 @@ npm run build
 ```
 
 各ステップの結果を記録:
+
 - ✅ 成功: 問題なし
 - ⚠️ 警告あり: 内容を確認
 - ❌ 失敗: 追加対応が必要
@@ -350,8 +366,11 @@ npm run build
 
 **エラーメッセージ**:
 ```
+
 <エラーメッセージを引用>
+
 ```
+
 ```
 
 #### 7.2 原因の説明
@@ -404,8 +423,11 @@ npm run build
 
 ### 実行ログ
 ```
+
 <主要な実行結果のログを抜粋>
+
 ```
+
 ```
 
 #### 7.5 PR差分へのリンク
@@ -413,24 +435,26 @@ npm run build
 PR差分リンクの生成方法については、`copilot-instructions.md`の「PR差分リンク提示のルール」セクションを参照してください。
 
 **テンプレート**:
+
 ```
 ## PR差分
 
 PR差分: [#<PR番号>](https://github.com/<owner>/<repo>/pull/<PR番号>/changes/<始点コミット>..<終点コミット>)
 ```
 
-**注**: 
+**注**:
+
 - PR番号は実際の番号を使用（プレースホルダー禁止）
 - コミットハッシュは必ず完全形（40文字）を使用
 - 始点コミット／終点コミットのハッシュは、`git log --format=%H` などのGitコマンドを実際に実行して取得すること
 - PR番号やコミットハッシュを含むURLを適当に作成・推測しないこと（プレースホルダーや架空の値は禁止）
-
 
 ## エラー別対応例
 
 ### 例1: 依存関係インストールエラー
 
 **エラーメッセージ**:
+
 ```
 npm error code ERESOLVE
 npm error ERESOLVE unable to resolve dependency tree
@@ -439,6 +463,7 @@ npm error ERESOLVE unable to resolve dependency tree
 **原因**: パッケージバージョンの競合
 
 **対処**:
+
 1. package-lock.jsonを削除
 2. `npm install`で再生成
 3. 必要に応じてpackage.jsonのバージョン指定を調整
@@ -446,6 +471,7 @@ npm error ERESOLVE unable to resolve dependency tree
 ### 例2: TypeScript型エラー
 
 **エラーメッセージ**:
+
 ```
 error TS2345: Argument of type 'string' is not assignable to parameter of type 'number'.
 ```
@@ -453,6 +479,7 @@ error TS2345: Argument of type 'string' is not assignable to parameter of type '
 **原因**: 型の不一致
 
 **対処**:
+
 1. エラー箇所のコードを確認
 2. 型定義を修正または型アサーションを追加
 3. `npm run build`で再検証
@@ -460,6 +487,7 @@ error TS2345: Argument of type 'string' is not assignable to parameter of type '
 ### 例3: テスト失敗
 
 **エラーメッセージ**:
+
 ```
 Expected: 5
 Received: 4
@@ -468,6 +496,7 @@ Received: 4
 **原因**: テストの期待値とロジックの不一致
 
 **対処**:
+
 1. テストコードとプロダクションコードを確認
 2. ロジックが正しい場合はテストを修正
 3. テストが正しい場合はロジックを修正
@@ -476,6 +505,7 @@ Received: 4
 ### 例4: ESLintエラー
 
 **エラーメッセージ**:
+
 ```
 error  'unusedVar' is defined but never used  no-unused-vars
 ```
@@ -483,6 +513,7 @@ error  'unusedVar' is defined but never used  no-unused-vars
 **原因**: 未使用変数の存在
 
 **対処**:
+
 1. 未使用変数を削除
 2. または変数名を`_unusedVar`に変更（意図的な未使用）
 3. `npm run lint`で再検証
@@ -490,6 +521,7 @@ error  'unusedVar' is defined but never used  no-unused-vars
 ### 例5: Node.jsバージョン不一致
 
 **エラーメッセージ**:
+
 ```
 The engine "node" is incompatible with this module.
 Expected version ">=24.0.0". Got "18.0.0"
@@ -498,6 +530,7 @@ Expected version ">=24.0.0". Got "18.0.0"
 **原因**: Node.jsバージョンの不一致（ワークフローがNode.js 24を要求しているが、ローカル環境が18を使用）
 
 **対処**:
+
 1. `.nvmrc`やpackage.jsonの`engines`フィールドを確認
 2. ワークフローの`node-version`を確認
 3. 必要に応じてバージョンを統一
@@ -554,27 +587,27 @@ DEBUG=* npm run <command>
 ```javascript
 // ワークフロー一覧の取得
 list_workflows({
-  method: "list_workflows",
-  owner: "<owner>",
-  repo: "<repo>"
-})
+  method: 'list_workflows',
+  owner: '<owner>',
+  repo: '<repo>',
+});
 
 // ワークフロー実行履歴の取得
 list_workflow_runs({
-  method: "list_workflow_runs",
-  owner: "<owner>",
-  repo: "<repo>",
-  resource_id: "premerge.yml", // ワークフローファイル名
-  per_page: 10
-})
+  method: 'list_workflow_runs',
+  owner: '<owner>',
+  repo: '<repo>',
+  resource_id: 'premerge.yml', // ワークフローファイル名
+  per_page: 10,
+});
 
 // 特定の実行の詳細取得
 get_workflow_run({
-  method: "get_workflow_run",
-  owner: "<owner>",
-  repo: "<repo>",
-  resource_id: "<run_id>"
-})
+  method: 'get_workflow_run',
+  owner: '<owner>',
+  repo: '<repo>',
+  resource_id: '<run_id>',
+});
 ```
 
 ### ジョブログの取得
