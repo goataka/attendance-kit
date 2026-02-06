@@ -211,3 +211,83 @@ monorepo構成で他のworkspaceのスクリプトを呼び出す場合、`--pre
 }
 ```
 
+## テストルール
+
+### Parameterized Test（パラメータ化テスト）
+
+複数のテストケースで同じロジックを検証する場合、Parameterized Testを利用する。
+
+**原則**: 類似した複数のテストケースは`test.each`、`describe.each`、`it.each`を使用して一つにまとめる
+
+**OK例**:
+```typescript
+describe('resolveBackendUrl', () => {
+  test.each([
+    {
+      ケース: '環境変数のURLが提供された場合はそれを使用すること',
+      envUrl: 'https://api.example.com',
+      isDev: false,
+      windowOrigin: undefined,
+      期待値: 'https://api.example.com',
+    },
+    {
+      ケース: '環境変数のURLから/apiサフィックスを削除すること',
+      envUrl: 'https://api.example.com/api',
+      isDev: false,
+      windowOrigin: undefined,
+      期待値: 'https://api.example.com',
+    },
+    {
+      ケース: '環境変数のURLから/api/サフィックスを削除すること',
+      envUrl: 'https://api.example.com/api/',
+      isDev: false,
+      windowOrigin: undefined,
+      期待値: 'https://api.example.com',
+    },
+    {
+      ケース: '開発環境ではlocalhostにフォールバックすること',
+      envUrl: undefined,
+      isDev: true,
+      windowOrigin: 'https://app.example.com',
+      期待値: 'http://localhost:3000',
+    },
+  ])('$ケース', ({ envUrl, isDev, windowOrigin, 期待値 }) => {
+    const url = resolveBackendUrl(envUrl, isDev, windowOrigin);
+    expect(url).toBe(期待値);
+  });
+});
+```
+
+**NG例**:
+```typescript
+describe('resolveBackendUrl', () => {
+  it('環境変数のURLが提供された場合はそれを使用すること', () => {
+    const url = resolveBackendUrl('https://api.example.com', false, undefined);
+    expect(url).toBe('https://api.example.com');
+  });
+
+  it('環境変数のURLから/apiサフィックスを削除すること', () => {
+    const url = resolveBackendUrl('https://api.example.com/api', false, undefined);
+    expect(url).toBe('https://api.example.com');
+  });
+
+  it('環境変数のURLから/api/サフィックスを削除すること', () => {
+    const url = resolveBackendUrl('https://api.example.com/api/', false, undefined);
+    expect(url).toBe('https://api.example.com');
+  });
+  
+  // ... 同様のパターンが続く
+});
+```
+
+**テストケースの記載**:
+- テストケースのラベル（フィールド名）は日本語で記載する
+- 例: `ケース`、`入力値`、`期待値`、`説明`など
+- テスト名のテンプレート（`$ケース`）で日本語フィールドを参照する
+
+**理由**:
+- テストコードの重複を削減し、保守性を向上させる
+- テストケースの追加が容易になる
+- テスト構造が明確になり、テストの意図が理解しやすくなる
+- 日本語のラベルを使用することで、チーム内でのテスト内容の理解が容易になる
+
