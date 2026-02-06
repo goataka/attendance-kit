@@ -210,9 +210,6 @@ jobs:
           node-version: '24'
           cache: 'npm'
 
-      - name: 日本語環境のセットアップ
-        run: npm run presetup
-
       - name: 依存関係のインストール
         run: npm run setup
 
@@ -267,9 +264,6 @@ jobs:
         with:
           node-version: '24'
           cache: 'npm'
-
-      - name: 日本語環境のセットアップ
-        run: npm run presetup
 
       - name: 依存関係のインストール
         run: npm run setup

@@ -96,25 +96,7 @@ export function ClockInOutPage() {
             <div className={`message ${message.type}`}>{message.text}</div>
           )}
 
-          {/* 出勤・退勤ボタンは常に表示 */}
-          <div className="button-group">
-            <button
-              className="btn btn-primary"
-              onClick={() => handleClockInOut('clock-in')}
-              disabled={loading || !isAuthenticated}
-            >
-              出勤
-            </button>
-            <button
-              className="btn btn-secondary"
-              onClick={() => handleClockInOut('clock-out')}
-              disabled={loading || !isAuthenticated}
-            >
-              退勤
-            </button>
-          </div>
-
-          {/* 未ログイン時：ログインフォームとログインボタンを表示 */}
+          {/* 未ログイン時：ログインフォーム、出勤・退勤ボタン、ログインボタンを表示 */}
           {!isAuthenticated && (
             <>
               <div className="form-group">
@@ -141,6 +123,24 @@ export function ClockInOutPage() {
                 />
               </div>
 
+              {/* 出勤・退勤ボタン（未ログイン時は無効） */}
+              <div className="button-group">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleClockInOut('clock-in')}
+                  disabled={loading || !isAuthenticated}
+                >
+                  出勤
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => handleClockInOut('clock-out')}
+                  disabled={loading || !isAuthenticated}
+                >
+                  退勤
+                </button>
+              </div>
+
               <button
                 className="btn btn-login"
                 onClick={handleLogin}
@@ -162,15 +162,34 @@ export function ClockInOutPage() {
             </>
           )}
 
-          {/* ログイン済み時：ログアウトボタンを表示 */}
+          {/* ログイン済み時：出勤・退勤ボタンとログアウトボタンを表示 */}
           {isAuthenticated && (
-            <button
-              className="btn btn-tertiary"
-              onClick={handleLogout}
-              disabled={loading}
-            >
-              ログアウト
-            </button>
+            <>
+              <div className="button-group">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleClockInOut('clock-in')}
+                  disabled={loading}
+                >
+                  出勤
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => handleClockInOut('clock-out')}
+                  disabled={loading}
+                >
+                  退勤
+                </button>
+              </div>
+
+              <button
+                className="btn btn-tertiary"
+                onClick={handleLogout}
+                disabled={loading}
+              >
+                ログアウト
+              </button>
+            </>
           )}
         </div>
 
