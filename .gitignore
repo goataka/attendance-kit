@@ -54,6 +54,9 @@ yarn-error.log*
 .npm
 .eslintcache
 
+# TurboRepo
+.turbo/
+
 # Playwright
 test-results/
 playwright-report/
