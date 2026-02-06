@@ -22,7 +22,8 @@
     "test:e2e:local": "npm run test:e2e",
     "test:e2e:eva": "npm run test:e2e",
     "generate": "npm run generate --workspaces --if-present",
-    "lint": "turbo run lint"
+    "lint": "npm run lint:shellcheck && turbo run lint",
+    "lint:shellcheck": "find . -name '*.sh' -not -path '*/node_modules/*' -not -path '*/.git/*' -print0 | xargs -0 -r shellcheck"
   },
   "keywords": [
     "monorepo",
