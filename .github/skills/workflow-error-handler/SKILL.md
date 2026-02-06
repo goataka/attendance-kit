@@ -410,35 +410,19 @@ npm run build
 
 #### 7.5 PR差分へのリンク
 
+PR差分リンクの生成方法については、`copilot-instructions.md`の「PR差分リンク提示のルール」セクションを参照してください。
+
+**テンプレート**:
 ```
 ## PR差分
 
 PR差分: [#<PR番号>](https://github.com/<owner>/<repo>/pull/<PR番号>/changes/<始点コミット>..<終点コミット>)
 ```
 
-**PR番号の取得方法**:
-```bash
-# 現在のブランチ名を確認
-git branch --show-current
-
-# GitHub MCPツールでPR番号を取得
-# github-mcp-server-search_pull_requests を使用
-# query: "head:<ブランチ名> is:open"
-```
-
 **注**: 
-- `<owner>`、`<repo>`、`<PR番号>`は実際の値に置き換えてください
-  - **プレースホルダー（`<PR番号>`、`現在のPR番号`等）の使用は禁止**
-  - GitHub MCPツールで実際のPR番号を取得して使用してください
-- `<始点コミット>`は作業開始前のコミット、`<終点コミット>`は作業完了時のコミットを指定
-- **コミットハッシュは必ず完全形（40文字）を使用してください**
-  - 短縮形（7文字）はGitHubのchangesページで機能しません
-  - `git log --format=%H`で完全なコミットハッシュを取得できます
+- PR番号は実際の番号を使用（プレースホルダー禁止）
+- コミットハッシュは必ず完全形（40文字）を使用
 
-**例**:
-```
-PR差分: [#158](https://github.com/goataka/attendance-kit/pull/158/changes/669fad12bbeb1cb2f9569caa0aa53acf14c7529f..56aea26e1e4e6306a7c4d561030474b2bbd42fa8)
-```
 
 ## エラー別対応例
 

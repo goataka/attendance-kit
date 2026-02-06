@@ -216,21 +216,7 @@ PRコメントには以下の内容を含めてください。
 ### PR差分
 <PR差分へのリンクを記載>
 
-**重要**: PR差分リンクを記載する際は以下の手順を必ず実行してください：
-1. `git branch --show-current` で現在のブランチ名を取得
-2. `github-mcp-server-search_pull_requests` でPR番号を取得（query: "head:<ブランチ名> is:open"）
-3. `git log --format=%H` で始点・終点の完全なコミットハッシュを取得
-4. 実際の値を使用してリンクを生成
-
-**NG例**: 
-```
-PR差分: [#現在のPR番号](https://github.com/goataka/attendance-kit/pull/現在のPR番号/changes/...)
-```
-
-**OK例**: 
-```
-PR差分: [#158](https://github.com/goataka/attendance-kit/pull/158/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
-```
+**重要**: 本ドキュメントの「[PR差分リンク提示のルール](#pr差分リンク提示のルール)」セクションに従ってリンクを生成してください。
 ```
 
 #### 投稿方法
