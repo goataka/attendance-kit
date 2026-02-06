@@ -40,7 +40,7 @@
 PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/changes/始点コミット..終点コミット)
 ```
 
-**例**:
+**例（コミットハッシュは例示用のダミー値）**:
 ```
 PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
 ```
@@ -60,6 +60,16 @@ git branch --show-current
 # そのブランチのPRを検索
 # github-mcp-server-search_pull_requests を使用
 # query: "head:<ブランチ名> is:open"
+```
+
+**コミットハッシュの取得方法**:
+```bash
+# 最新2件のコミットの完全ハッシュを取得
+git log --format=%H -2
+
+# または、特定の範囲のコミットハッシュを取得
+git log --format=%H -n 1  # 最新のコミット
+git log --format=%H HEAD~1  # 直前のコミット
 ```
 
 **注意**:
