@@ -4,10 +4,14 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
+
+env:
+  CHECKOUT_REF: ${{ github.head_ref || github.ref }}
 
 permissions:
   contents: write
@@ -17,12 +21,14 @@ jobs:
   check-changes:
     runs-on: ubuntu-latest
     outputs:
-      should-run-tests: ${{ steps.filter.outputs.non-md == 'true' }}
+      should-run-tests: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.non-md == 'true' }}
     steps:
       - name: コードのチェックアウト
+        if: github.event_name == 'pull_request'
         uses: actions/checkout@v4
 
       - name: 変更ファイルの確認
+        if: github.event_name == 'pull_request'
         uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -39,7 +45,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
@@ -51,6 +57,14 @@ jobs:
 
       - name: 依存関係のインストール
         run: npm run setup
+
+      - name: TurboRepoキャッシュの設定
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Lintの実行
         run: npm run lint
@@ -97,7 +111,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -108,8 +122,16 @@ jobs:
       - name: 依存関係のインストール
         run: npm run setup
 
+      - name: TurboRepoキャッシュの設定
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: 全ワークスペースのビルド
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
       - name: バックエンド統合テストの実行
         run: npm run test:integration --workspace=@attendance-kit/backend
@@ -137,7 +159,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -148,8 +170,16 @@ jobs:
       - name: 依存関係のインストール
         run: npm run setup
 
+      - name: TurboRepoキャッシュの設定
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: 全ワークスペースのビルド
-        run: npm run build --workspaces --if-present
+        run: npm run build
 
       - name: LocalStackへのデプロイ
         working-directory: infrastructure/deploy
@@ -172,7 +202,7 @@ jobs:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -182,6 +212,14 @@ jobs:
 
       - name: 依存関係のインストール
         run: npm run setup
+
+      - name: TurboRepoキャッシュの設定
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Playwrightブラウザと依存関係のインストール
         working-directory: apps/frontend
@@ -212,12 +250,14 @@ jobs:
       VITE_BACKEND_URL: http://localhost:3000
       FRONTEND_URL: http://localhost:5173
       BACKEND_URL: http://localhost:3000
+      NODE_ENV: test
+      DYNAMODB_ENDPOINT: http://localhost:4566
     
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.CHECKOUT_REF }}
 
       - name: Node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -228,34 +268,23 @@ jobs:
       - name: 依存関係のインストール
         run: npm run setup
 
+      - name: TurboRepoキャッシュの設定
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: Playwrightブラウザのインストール
         run: npx playwright install --with-deps chromium
 
       - name: 全ワークスペースのビルド
-        run: npm run build --workspaces --if-present
-
-      - name: バックエンドサーバーの起動
-        working-directory: apps/backend
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
-        run: |
-          npm run dev &
-          sleep 10
-          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:3000/api/health || echo "Backend not ready"
-
-      - name: フロントエンドサーバーの起動
-        working-directory: apps/frontend
-        run: |
-          npm run dev &
-          sleep 10
+        run: npm run build
 
       - name: E2Eテストの実行
-        env:
-          DYNAMODB_ENDPOINT: http://localhost:4566
-          DYNAMODB_TABLE_NAME: attendance-kit-test-clock
         run: npm run test:e2e:local
-        timeout-minutes: 2
+        timeout-minutes: 5
 
       - name: E2Eテストレポートのアップロード
         if: always()

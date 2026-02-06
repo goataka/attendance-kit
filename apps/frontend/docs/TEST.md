@@ -28,9 +28,6 @@ npm run test:integration
 
 # カバレッジ付き
 npm run test:unit -- --coverage
-
-# Storybook起動
-npm run storybook
 ```
 
 ## テストカバレッジ目標
@@ -45,12 +42,10 @@ npm run storybook
 - **Jest**: テストフレームワーク
 - **@testing-library/react**: Reactコンポーネントテスト
 - **@testing-library/react-hooks**: カスタムフックテスト
-- **Storybook**: コンポーネントカタログ
 - **MSW (Mock Service Worker)**: APIモック
 
 ## 参考資料
 
 - [Testing Library](https://testing-library.com/)
 - [Jest公式ドキュメント](https://jestjs.io/)
-- [Storybook公式ドキュメント](https://storybook.js.org/)
 - [MSW公式ドキュメント](https://mswjs.io/)

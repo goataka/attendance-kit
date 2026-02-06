@@ -62,7 +62,6 @@ export class BackendConstruct extends Construct {
       memorySize: 512,
       environment: {
         NODE_ENV: environment,
-        DYNAMODB_TABLE_NAME: clockTable.tableName,
         JWT_SECRET: jwtSecret,
       },
       description: `Attendance Kit Backend API (${environment})`,

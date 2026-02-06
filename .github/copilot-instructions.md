@@ -40,9 +40,9 @@
 PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/changes/始点コミット..終点コミット)
 ```
 
-**例**:
+**例（コミットハッシュは例示用のダミー値）**:
 ```
-PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
+PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
 ```
 
 **理由**:
@@ -51,9 +51,37 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
 - コードレビューの効率化
 - 変更履歴の追跡性向上
 
+**PR番号の取得方法**:
+```bash
+# GitHub MCPツールを使用してPR番号を取得
+# 現在のブランチ名を確認
+git branch --show-current
+
+# そのブランチのPRを検索
+# github-mcp-server-search_pull_requests を使用
+# query: "head:<ブランチ名> is:open"
+```
+
+**コミットハッシュの取得方法**:
+```bash
+# 最新2件のコミットの完全ハッシュを取得
+git log --format=%H -2
+
+# または、特定の範囲のコミットハッシュを取得
+git log --format=%H -n 1  # 最新のコミット
+git log --format=%H HEAD~1  # 直前のコミット
+```
+
 **注意**:
 - 始点コミットは作業開始前のコミット、終点コミットは作業完了時のコミットを指定
-- コミットハッシュは短縮形（7文字）でも完全形でも可
+- **PR番号は必ず実際の番号を使用してください**
+  - 「現在のPR番号」「PR番号」などのプレースホルダーは使用禁止
+  - GitHub MCPツールで現在のブランチのPR番号を取得してください
+- **コミットハッシュは必ず完全形（40文字）を使用してください**
+  - 短縮形（7文字）はGitHubのchangesページで機能しません
+  - **必ず`git log --format=%H`コマンドを実際に実行して取得してください**
+  - 適当な文字列を作成することは厳禁です（例: `123850d8f3e3a3e...`のような繰り返しパターン）
+- このルールは必須です。PR差分リンクを提示する際は必ず遵守してください
 
 ## Agentの動作ガイドライン
 
@@ -74,24 +102,44 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
   - **使用しない状況**: AWS環境へのデプロイや変更を行う場合（読み取り専用スキル）
   - **判断基準**: CloudFormationスタック、DynamoDB、Lambda、API Gatewayなどのリソース情報を確認する必要がある場合は使用
 
-- **workflow-error-handler**: ワークフローのエラー対応
-  - **使用すべき状況**: GitHub Actionsワークフローが失敗した場合、CI/CDパイプラインでエラーが発生した場合
-  - **使用しない状況**: ワークフローファイルの軽微な設定変更（環境変数追加など）のみの場合
-  - **判断基準**: エラーログの確認、再現、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
+- **backend-developer**: Backend開発
+  - **使用すべき状況**: Backend（apps/backend）のコード変更時、NestJS APIの実装や修正時
+  - **使用しない状況**: Backend以外のプロジェクト（Frontend、Infrastructure）の変更時
+  - **判断基準**: Backendのコントローラー、サービス、エンティティなどを変更する場合は使用
 
 - **cloudfront-error-handler**: CloudFrontエラー対応
-  - **使用すべき状況**: CloudFront経由のアクセスでエラーが発生した場合、API GatewayやLambdaとの連携不具合が疑われる場合
-  - **使用しない状況**: CloudFrontの設定変更のみを行う場合
-  - **判断基準**: アクセス検証、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
+  - **使用すべき状況**: CloudFront経由のアクセスでエラーが発生した場合
+  - **使用しない状況**: CloudFront以外のエラー（ワークフローエラーなど）の場合
+  - **判断基準**: API GatewayやLambdaとの連携不具合が疑われる場合は使用
 
-- **premerge-check**: プレマージワークフローのローカル実行
-  - **使用すべき状況**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
+- **e2e-developer**: E2E開発
+  - **使用すべき状況**: E2Eテスト（test/e2e/）のコード変更時、FeatureファイルやStep definitionsの実装や修正時
+  - **使用しない状況**: 個別のアプリケーション（Backend、Frontend）のテスト変更時
+  - **判断基準**: Cucumber + Playwrightを使用したE2Eテストを変更する場合は使用
 
 - **file-refactor**: ファイル/フォルダの名称変更・削除と参照更新
   - **使用すべき状況**: ファイルやフォルダのリネーム・削除を依頼された場合
 
+- **frontend-developer**: Frontend開発
+  - **使用すべき状況**: Frontend（apps/frontend）のコード変更時、Reactコンポーネントやページの実装や修正時
+  - **使用しない状況**: Frontend以外のプロジェクト（Backend、Infrastructure）の変更時
+  - **判断基準**: Reactコンポーネント、画面、スタイルなどを変更する場合は使用
+
+- **infrastructure-developer**: Infrastructure開発
+  - **使用すべき状況**: Infrastructure（infrastructure/deploy）のコード変更時、CDKスタックや設定の変更時
+  - **使用しない状況**: Infrastructure以外のプロジェクト（Backend、Frontend）の変更時
+  - **判断基準**: CDKスタック、Construct、AWSリソース定義を変更する場合は使用
+
+- **premerge-check**: プレマージワークフローのローカル実行
+  - **使用すべき状況**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
+
 - **rule-making**: ルール化の依頼対応
   - **使用すべき状況**: ユーザーから「ルール化してください」というリクエストがあった場合
+
+- **workflow-error-handler**: ワークフローのエラー対応
+  - **使用すべき状況**: GitHub Actionsワークフローが失敗した場合、CI/CDパイプラインでエラーが発生した場合
+  - **使用しない状況**: ワークフローファイルの軽微な設定変更（環境変数追加など）のみの場合
+  - **判断基準**: エラーログの確認、再現、原因特定、対処、検証という体系的なプロセスが必要な場合は使用
 
 ### 変更実行前の必須プロセス
 
@@ -137,57 +185,6 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
    - 成功・失敗の判断根拠
 4. **変更の影響範囲**
 5. **コミットID**（該当する場合）
-
-### エージェントセッション終了時のPRコメント投稿
-
-**義務**: エージェントがタスクを完了し、セッションを終了する際は、**必ず結果報告をPRにコメントとして投稿してください**。
-
-#### 投稿タイミング
-
-以下の場合にPRコメントを投稿してください:
-
-- タスクの完了時（成功・失敗にかかわらず）
-- セッションを終了する前
-- 最終的な`report_progress`を実行した後
-
-#### コメントフォーマット
-
-PRコメントには以下の内容を含めてください。
-
-**注**: 以下はテンプレートです。山括弧（`< >`）で囲まれた部分を実際の内容に置き換えてください。
-
-```markdown
-## エージェントセッション完了報告
-
-### 実施内容
-<実施内容のサマリーを記載>
-
-### スキル利用状況
-<使用したスキル名とその役割、または使用しなかった旨を記載>
-
-### 検証結果
-<実行した検証コマンドと結果を記載>
-
-**検証コマンド例**:
-- ✅ `npm run build`: 成功
-- ✅ `npm test`: 成功
-- ✅ `npm run lint`: 成功
-
-### 変更の影響範囲
-<変更した箇所とその影響範囲を記載>
-
-### PR差分
-<PR差分へのリンクを記載>
-例: PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
-```
-
-#### 投稿方法
-
-GitHub MCPツールを使用してPRにコメントを投稿してください。適切なMCPツール（例: `github-mcp-server`）を使用してPRコメントを投稿します。
-
-#### セキュリティ注意事項
-
-PRコメント投稿時は、本ドキュメントの「[秘匿情報の取り扱い](#秘匿情報の取り扱い)」セクションに従ってください。
 
 ## 変更時・適用前の検証義務（Agent実行ルール）
 
