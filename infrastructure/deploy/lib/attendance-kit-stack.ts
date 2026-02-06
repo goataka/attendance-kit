@@ -8,8 +8,10 @@ import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
 import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
+export type Environment = 'dev' | 'test' | 'eva' | 'stg' | 'prod';
+
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment?: string; // 'dev' | 'test' | 'eva' | 'stg' | 'prod' (デフォルト: 'dev')
+  environment?: Environment; // デフォルト: 'dev'
   jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
   deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
@@ -105,9 +107,14 @@ export class AttendanceKitStack extends cdk.Stack {
         api: this.backendApi.api,
       });
     } else {
-      // DynamoDBのみをデプロイする場合で、ローカル環境の場合はデータクリアとシード機能を追加
-      if (AttendanceKitStack.isLocalEnvironment(environment)) {
+      // DynamoDBのみをデプロイする場合
+      // データクリア: eva と stg 環境のみ
+      // シード: prod 以外の全環境
+      if (environment === 'eva' || environment === 'stg') {
         this.setupDataClearAndSeed();
+      } else if (AttendanceKitStack.isLocalEnvironment(environment)) {
+        // ローカル環境 (dev, test) はシードのみ
+        this.setupDataSeeder();
       }
     }
 
@@ -141,8 +148,8 @@ export class AttendanceKitStack extends cdk.Stack {
   }
 
   private static validateEnvironmentStatic(environment: string): void {
-    const validEnvironments = ['dev', 'test', 'eva', 'stg', 'prod'];
-    if (!validEnvironments.includes(environment)) {
+    const validEnvironments: Environment[] = ['dev', 'test', 'eva', 'stg', 'prod'];
+    if (!validEnvironments.includes(environment as Environment)) {
       throw new Error(
         `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`
       );
@@ -150,11 +157,13 @@ export class AttendanceKitStack extends cdk.Stack {
   }
 
   private static isLocalEnvironment(environment: string): boolean {
-    return environment === 'dev' || environment === 'test';
+    const localEnvironments: Environment[] = ['dev', 'test'];
+    return localEnvironments.includes(environment as Environment);
   }
 
   private static isAwsEnvironment(environment: string): boolean {
-    return environment === 'eva' || environment === 'stg' || environment === 'prod';
+    const awsEnvironments: Environment[] = ['eva', 'stg', 'prod'];
+    return awsEnvironments.includes(environment as Environment);
   }
 
   private validateFullStackDeployment(environment: string, jwtSecret?: string): void {

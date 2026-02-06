@@ -24,74 +24,43 @@ describe('AttendanceKitStack - Environment Validation', () => {
   test('無効な環境名でエラーが発生する', () => {
     expect(() => {
       new AttendanceKitStack(app, {
-        environment: 'invalid',
+        environment: 'invalid' as any,
         deployOnlyDynamoDB: true,
       });
     }).toThrow('Invalid environment: invalid. Must be one of: dev, test, eva, stg, prod');
   });
 
-  test('有効な環境名: dev', () => {
+  test.each([
+    {
+      環境名: 'dev',
+      期待されるテーブル名: 'attendance-kit-dev-clock',
+    },
+    {
+      環境名: 'test',
+      期待されるテーブル名: 'attendance-kit-test-clock',
+    },
+    {
+      環境名: 'eva',
+      期待されるテーブル名: 'attendance-kit-eva-clock',
+    },
+    {
+      環境名: 'stg',
+      期待されるテーブル名: 'attendance-kit-stg-clock',
+    },
+    {
+      環境名: 'prod',
+      期待されるテーブル名: 'attendance-kit-prod-clock',
+    },
+  ])('有効な環境名: $環境名', ({ 環境名, 期待されるテーブル名 }) => {
     const stack = new AttendanceKitStack(app, {
-      environment: 'dev',
+      environment: 環境名 as any,
       deployOnlyDynamoDB: true,
     });
 
     expect(stack).toBeDefined();
     const template = Template.fromStack(stack);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-dev-clock',
-    });
-  });
-
-  test('有効な環境名: eva', () => {
-    const stack = new AttendanceKitStack(app, {
-      environment: 'eva',
-      deployOnlyDynamoDB: true,
-    });
-
-    expect(stack).toBeDefined();
-    const template = Template.fromStack(stack);
-    template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-eva-clock',
-    });
-  });
-
-  test('有効な環境名: stg', () => {
-    const stack = new AttendanceKitStack(app, {
-      environment: 'stg',
-      deployOnlyDynamoDB: true,
-    });
-
-    expect(stack).toBeDefined();
-    const template = Template.fromStack(stack);
-    template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-stg-clock',
-    });
-  });
-
-  test('有効な環境名: prod', () => {
-    const stack = new AttendanceKitStack(app, {
-      environment: 'prod',
-      deployOnlyDynamoDB: true,
-    });
-
-    expect(stack).toBeDefined();
-    const template = Template.fromStack(stack);
-    template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-prod-clock',
-    });
-  });
-
-  test('有効な環境名: test', () => {
-    const stack = new AttendanceKitStack(app, {
-      environment: 'test',
-      deployOnlyDynamoDB: true,
-    });
-
-    expect(stack).toBeDefined();
-    const template = Template.fromStack(stack);
-    template.hasResourceProperties('AWS::DynamoDB::Table', {
-      TableName: 'attendance-kit-test-clock',
+      TableName: 期待されるテーブル名,
     });
   });
 });
@@ -210,9 +179,9 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     });
   });
 
-  test('Cleaner and Seeder Lambdas are created for local environment in DynamoDB-only mode', () => {
-    // DynamoDB Cleaner (1 Lambda) + Seeder (1 Lambda) + 1 Trigger function = 3 Lambda functions
-    template.resourceCountIs('AWS::Lambda::Function', 3);
+  test('Seeder Lambda is created for local environment in DynamoDB-only mode', () => {
+    // ローカル環境 (test) はシーダーのみ作成される: 1 Lambda function
+    template.resourceCountIs('AWS::Lambda::Function', 1);
   });
 
   test('Backend API is NOT created in DynamoDB-only mode', () => {
