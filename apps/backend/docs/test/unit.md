@@ -24,7 +24,7 @@
 
 ## 使用ツール
 
-**Jest**
+### Jest
 
 - NestJS Testing Moduleを使用
 - Serviceクラス、Utilityクラスの単体テスト

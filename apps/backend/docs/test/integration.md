@@ -23,7 +23,7 @@
 
 ## 使用ツール
 
-**Jest + Supertest**
+### Jest + Supertest
 
 - SupertestでHTTPリクエストをシミュレート
 - LocalStackのDynamoDBを使用
