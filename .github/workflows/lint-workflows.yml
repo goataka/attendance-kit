@@ -1,0 +1,23 @@
+name: Lint Workflows
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/**'
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: コードのチェックアウト
+        uses: actions/checkout@v4
+
+      - name: actionlintの実行
+        uses: reviewdog/action-actionlint@v1
+        with:
+          actionlint_flags: -color

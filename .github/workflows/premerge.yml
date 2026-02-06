@@ -12,7 +12,6 @@ concurrency:
 
 env:
   CHECKOUT_REF: ${{ github.head_ref || github.ref }}
-  PLAYWRIGHT_IMAGE: mcr.microsoft.com/playwright:v1.57.0-jammy
 
 permissions:
   contents: write
@@ -197,7 +196,7 @@ jobs:
   frontend-integration-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.PLAYWRIGHT_IMAGE }}
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
@@ -239,7 +238,7 @@ jobs:
   e2e-test:
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.PLAYWRIGHT_IMAGE }}
+      image: mcr.microsoft.com/playwright:v1.57.0-jammy
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
     
