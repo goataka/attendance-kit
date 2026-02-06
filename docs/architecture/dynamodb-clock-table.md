@@ -87,6 +87,7 @@ erDiagram
 **ユースケース**: ユーザーの勤怠履歴を表示
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
@@ -108,6 +109,7 @@ const result = await dynamodb.query(params).promise();
 **ユースケース**: 月次勤怠レポート
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
@@ -134,6 +136,7 @@ const result = await dynamodb.query(params).promise();
 **ユースケース**: 日次出勤状況の確認
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
@@ -159,6 +162,7 @@ const result = await dynamodb.query(params).promise();
 **ユースケース**: 特定時間帯の出勤状況
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
@@ -323,4 +327,3 @@ aws dynamodb restore-table-to-point-in-time \
 
 - テーブル削除時のデータ保護のため、削除ポリシーはRETAIN
 - スタック削除前にテーブルの手動削除が必要な場合は、CloudFormationコンソールで対応
-

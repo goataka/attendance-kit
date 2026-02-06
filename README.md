@@ -12,7 +12,7 @@
 
 ## 🏗️ プロジェクト構造
 
-```
+```text
 .
 ├── .devcontainer/     # DevContainer設定
 │   └── devcontainer.json
@@ -66,6 +66,7 @@ npm run premerge:local
 ```
 
 **プレマージワークフロー実行の必要条件**:
+
 - Docker が起動していること
 - [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 

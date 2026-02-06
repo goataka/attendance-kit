@@ -35,7 +35,7 @@ graph TB
 
 ### リソース階層
 
-```
+```text
 AttendanceKit-Account-Stack (アカウント単位)
 ├── CostBudgetConstruct
 │   ├── SNS Topic (attendance-kit-cost-alerts)
@@ -63,12 +63,14 @@ AttendanceKit-Dev-Stack (環境単位)
 ### アラート設定
 
 #### 実利用額アラート
+
 - **通知タイプ**: ACTUAL
 - **閾値**: 100%（1000円）
 - **比較演算子**: GREATER_THAN
 - **配信先**: SNS Topic
 
 #### 予測額アラート
+
 - **通知タイプ**: FORECASTED
 - **閾値**: 100%（1000円）
 - **比較演算子**: GREATER_THAN
@@ -157,7 +159,7 @@ export class CostBudgetConstruct extends Construct {
 
 ### ファイル構成
 
-```
+```text
 infrastructure/deploy/
 ├── lib/
 │   ├── attendance-kit-account-stack.ts    # アカウントスタック
@@ -174,7 +176,7 @@ infrastructure/deploy/
 .github/workflows/
 ├── deploy-environment-stack.yml            # 環境スタックデプロイ
 └── deploy-account-stack.yml                # アカウントスタックデプロイ
-```
+
 └── bin/
     └── app.ts                              # エントリーポイント
 ```
@@ -215,12 +217,14 @@ infrastructure/deploy/
 #### GitHub Actions による自動デプロイ
 
 **アカウントスタック**:
+
 - ワークフロー: `deploy-account-stack.yml`
 - トリガー: アカウントスタック関連ファイルの変更
 - 手動実行: GitHub Actions タブから実行可能
 - 必須環境変数: `COST_ALERT_EMAIL`（GitHub Secrets）
 
 **環境スタック**:
+
 - ワークフロー: `deploy-environment-stack.yml`
 - トリガー: アプリケーション/環境スタック関連ファイルの変更（apps/website除外）
 - 手動実行: GitHub Actions タブから環境を選択して実行可能
@@ -228,12 +232,14 @@ infrastructure/deploy/
 #### ローカルからのデプロイ
 
 アカウントスタックを1回のみデプロイ:
+
 ```bash
 cd infrastructure/deploy
 COST_ALERT_EMAIL=email@example.com npm run cdk deploy AttendanceKit-Account-Stack
 ```
 
 環境スタックをデプロイ:
+
 ```bash
 cd infrastructure/deploy
 ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
@@ -248,11 +254,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### トラブルシューティング
 
 #### 通知が届かない場合
+
 1. SNSサブスクリプションの確認状態をチェック
 2. Email確認リンクをクリック済みか確認
 3. SNS Topic Policyの確認
 
 #### 予算超過の対処
+
 1. 不要なリソースの削除
 2. 予算額の再検討
 3. コスト最適化の実施
@@ -277,11 +285,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### AWS Budget
 
 **選定理由**:
+
 - 予測アラート機能が標準搭載
 - 無料枠で利用可能
 - SNSと直接統合可能
 
 **代替案との比較**:
+
 - CloudWatchアラーム: 予測機能なし、追加コスト
 - Cost Anomaly Detection: 異常検知のみ、予算管理不可
 - サードパーティツール: 追加コスト、複雑性増加
@@ -289,11 +299,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### SNS
 
 **選定理由**:
+
 - Email通知が無料枠で利用可能
 - AWS Budgetとネイティブ統合
 - Mobile Push等への拡張が容易
 
 **代替案との比較**:
+
 - Lambda + SES: 実装複雑、管理コスト増
 - EventBridge + Lambda: オーバーエンジニアリング
 - サードパーティサービス: 追加コスト
@@ -301,12 +313,13 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 ### AWS CDK (TypeScript)
 
 **選定理由**:
+
 - 既存インフラストラクチャとの統合が容易
 - TypeScriptで型安全な実装
 - テストが容易
 
 ## 参照
 
-- AWS Budget公式ドキュメント: https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html
-- SNS公式ドキュメント: https://docs.aws.amazon.com/sns/latest/dg/welcome.html
+- AWS Budget公式ドキュメント: <https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html>
+- SNS公式ドキュメント: <https://docs.aws.amazon.com/sns/latest/dg/welcome.html>
 - 実装コード: `infrastructure/deploy/lib/`

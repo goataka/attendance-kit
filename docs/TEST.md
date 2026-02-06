@@ -82,6 +82,7 @@ npm run premerge:local
 ```
 
 このコマンドは以下を実行します：
+
 - Lint
 - ユニットテスト
 - ビルド
@@ -130,4 +131,3 @@ npm run premerge:local
 - [Playwright公式ドキュメント](https://playwright.dev/)
 - [LocalStack公式ドキュメント](https://docs.localstack.cloud/)
 - [AWS CDK Testing Best Practices](https://docs.aws.amazon.com/cdk/v2/guide/testing.html)
-

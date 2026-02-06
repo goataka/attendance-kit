@@ -47,10 +47,12 @@ graph TB
 このインフラストラクチャには以下が含まれます：
 
 ### アカウントレベルリソース（account/ディレクトリ）
+
 - **AWS Budget**: 月次コスト予算とアラート
 - **SNS Topic**: コストアラート通知用
 
 ### 環境レベルリソース（deploy/ディレクトリ）
+
 - **DynamoDB Table**: `attendance-kit-{environment}-clock`
   - Partition Key: `userId` (String)
   - Sort Key: `timestamp` (String, ISO 8601形式)
@@ -71,6 +73,7 @@ graph TB
   - API Gateway統合: `/api/*` パスでバックエンドAPIにルーティング
 
 ### CloudFormation管理（setup/ディレクトリ）
+
 - **OIDC Provider**: GitHub Actions用
 - **IAM Role**: GitHub ActionsがAWSリソースにアクセスするためのロール
 
@@ -163,4 +166,3 @@ npx cdk deploy --context environment=dev
 ```bash
 npm test
 ```
-

@@ -53,5 +53,6 @@ graph LR
 ### 環境管理
 
 各環境は独立したAWSリソースを持ちます:
+
 - dev
 - staging

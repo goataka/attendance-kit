@@ -41,13 +41,13 @@ cp .env.example .env  # 環境変数を設定
 npm run start:dev     # 開発サーバー起動
 ```
 
-API: http://localhost:3000/api
-Swagger UI: http://localhost:3000/api/docs
+API: <http://localhost:3000/api>
+Swagger UI: <http://localhost:3000/api/docs>
 
 ## API
 
 | メソッド | パス | 説明 | 認証 |
-|---------|------|------|------|
+| --------- | ------ | ------ | ------ |
 | POST | `/api/clock/in` | 出勤打刻 | JWT |
 | POST | `/api/clock/out` | 退勤打刻 | JWT |
 | GET | `/api/clock/records` | 打刻記録一覧 | JWT |
@@ -57,7 +57,7 @@ Swagger UI: http://localhost:3000/api/docs
 ## コマンド
 
 | コマンド | 説明 |
-|---------|------|
+| --------- | ------ |
 | `npm run start:dev` | 開発サーバー起動 |
 | `npm run build` | ビルド |
 | `npm test` | ユニットテスト |

@@ -41,7 +41,7 @@ graph LR
 
 ## プロジェクト構造
 
-```
+```text
 apps/frontend/
 ├── src/
 │   ├── ClockInOutPage/      # 打刻画面
@@ -56,8 +56,8 @@ apps/frontend/
 ## コマンド
 
 | コマンド | 説明 |
-|---------|------|
-| `npm run dev` | 開発サーバー起動（http://localhost:5173）|
+| --------- | ------ |
+| `npm run dev` | 開発サーバー起動（<http://localhost:5173）> |
 | `npm run build` | プロダクションビルド |
 | `npm test` | ユニットテスト |
 | `npm run test:integration` | E2Eテスト |
