@@ -20,7 +20,7 @@ CDKコードが実際のAWS環境で正しく動作することを検証
 
 ## 使用ツール
 
-**Jest + cdklocal**
+### Jest + cdklocal
 
 - LocalStackを利用したローカルAWS環境
 - CDK Bootstrap、Synth、Deployの一連の流れを検証

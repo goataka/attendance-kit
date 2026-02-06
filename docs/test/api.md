@@ -23,7 +23,7 @@ APIエンドポイントの疎通と権限設定の検証
 
 ## 使用ツール
 
-**Playwright（Request Context）**
+### Playwright（Request Context）
 
 - APIリクエストの直接実行
 - レスポンスの検証

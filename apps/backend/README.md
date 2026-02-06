@@ -41,8 +41,8 @@ cp .env.example .env  # 環境変数を設定
 npm run start:dev     # 開発サーバー起動
 ```
 
-API: http://localhost:3000/api
-Swagger UI: http://localhost:3000/api/docs
+API: <http://localhost:3000/api>
+Swagger UI: <http://localhost:3000/api/docs>
 
 ## API
 

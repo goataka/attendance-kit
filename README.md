@@ -12,7 +12,7 @@
 
 ## 🏗️ プロジェクト構造
 
-```
+```text
 .
 ├── .devcontainer/     # DevContainer設定
 │   └── devcontainer.json

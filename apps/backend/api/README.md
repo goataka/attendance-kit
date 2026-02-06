@@ -17,11 +17,11 @@ cd apps/backend
 npm run start:dev
 ```
 
-ブラウザで http://localhost:3000/api/docs にアクセス
+ブラウザで <http://localhost:3000/api/docs> にアクセス
 
 ### オンラインエディタ
 
-https://editor.swagger.io/ で`openapi.json`を開く
+<https://editor.swagger.io/> で`openapi.json`を開く
 
 ## 仕様書の更新
 

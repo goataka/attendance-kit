@@ -1,0 +1,20 @@
+{
+  "default": true,
+  // MD013: 行の長さ制限を無効化（コードブロックや長いURLを許容）
+  "MD013": false,
+  // MD024: 重複する見出しを許可（同じ見出しが複数のセクションで使用される場合）
+  "MD024": false,
+  "MD033": {
+    "allowed_elements": [
+      "a",
+      "antml:function_calls",
+      "antml:invoke",
+      "antml:parameter",
+      "br"
+    ]
+  },
+  // MD041: ファイル先頭の見出しを必須としない
+  "MD041": false,
+  // MD060: テーブルのカラムスタイルを無効化（既存テーブルとの整合性のため）
+  "MD060": false
+}

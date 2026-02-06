@@ -35,7 +35,7 @@ graph TB
 
 ### リソース階層
 
-```
+```text
 AttendanceKit-Account-Stack (アカウント単位)
 ├── CostBudgetConstruct
 │   ├── SNS Topic (attendance-kit-cost-alerts)
@@ -163,7 +163,7 @@ export class CostBudgetConstruct extends Construct {
 
 ### ファイル構成
 
-```
+```text
 infrastructure/deploy/
 ├── lib/
 │   ├── attendance-kit-account-stack.ts    # アカウントスタック
@@ -174,17 +174,11 @@ infrastructure/deploy/
 │   ├── attendance-kit-account-stack.test.ts
 │   ├── cost-budget.test.ts
 │   └── attendance-kit-stack.test.ts       # 既存
-└── bin/
-    └── app.ts                              # エントリーポイント
-
+├── bin/
+│   └── app.ts                              # エントリーポイント
 .github/workflows/
 ├── deploy-environment-stack.yml            # 環境スタックデプロイ
 └── deploy-account-stack.yml                # アカウントスタックデプロイ
-```
-
-└── bin/
-└── app.ts # エントリーポイント
-
 ````
 
 ## コスト分析
@@ -223,12 +217,14 @@ infrastructure/deploy/
 #### GitHub Actions による自動デプロイ
 
 **アカウントスタック**:
+
 - ワークフロー: `deploy-account-stack.yml`
 - トリガー: アカウントスタック関連ファイルの変更
 - 手動実行: GitHub Actions タブから実行可能
 - 必須環境変数: `COST_ALERT_EMAIL`（GitHub Secrets）
 
 **環境スタック**:
+
 - ワークフロー: `deploy-environment-stack.yml`
 - トリガー: アプリケーション/環境スタック関連ファイルの変更（apps/website除外）
 - 手動実行: GitHub Actions タブから環境を選択して実行可能
@@ -236,6 +232,7 @@ infrastructure/deploy/
 #### ローカルからのデプロイ
 
 アカウントスタックを1回のみデプロイ:
+
 ```bash
 cd infrastructure/deploy
 COST_ALERT_EMAIL=email@example.com npm run cdk deploy AttendanceKit-Account-Stack
@@ -323,6 +320,6 @@ ENVIRONMENT=dev npm run cdk deploy AttendanceKit-Dev-Stack
 
 ## 参照
 
-- AWS Budget公式ドキュメント: https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html
-- SNS公式ドキュメント: https://docs.aws.amazon.com/sns/latest/dg/welcome.html
+- AWS Budget公式ドキュメント: <https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html>
+- SNS公式ドキュメント: <https://docs.aws.amazon.com/sns/latest/dg/welcome.html>
 - 実装コード: `infrastructure/deploy/lib/`
