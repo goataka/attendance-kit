@@ -1,4 +1,10 @@
-import { Before, After, AfterAll, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber';
+import {
+  Before,
+  After,
+  AfterAll,
+  BeforeAll,
+  setDefaultTimeout,
+} from '@cucumber/cucumber';
 import { chromium, Browser } from '@playwright/test';
 import { CustomWorld } from './world';
 import { verifyServicesRunning } from './services.helper';
@@ -17,7 +23,7 @@ Before(async function (this: CustomWorld) {
     globalBrowser = await chromium.launch({ headless: true });
   }
   this.browser = globalBrowser;
-  
+
   this.context = await this.browser.newContext();
   this.page = await this.context.newPage();
 });

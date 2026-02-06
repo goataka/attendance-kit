@@ -25,8 +25,8 @@ npm test
 
 ### 環境変数
 
-| 変数名 | 説明 | 必須 |
-|--------|------|------|
+| 変数名             | 説明                         | 必須 |
+| ------------------ | ---------------------------- | ---- |
 | `COST_ALERT_EMAIL` | アラート通知先メールアドレス | はい |
 
 ### ローカル
@@ -53,9 +53,9 @@ npx cdk deploy
 
 ## CloudFormation Outputs
 
-| Output | 説明 |
-|--------|------|
-| `BudgetName` | AWS Budget名 |
+| Output        | 説明          |
+| ------------- | ------------- |
+| `BudgetName`  | AWS Budget名  |
 | `SnsTopicArn` | SNS Topic ARN |
 
 ## 注意事項

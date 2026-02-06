@@ -1,6 +1,7 @@
 ---
-applyTo: "**/*.sh"
+applyTo: '**/*.sh'
 ---
+
 # Copilot Instruction for Shell Script
 
 ## 基本

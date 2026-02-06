@@ -12,7 +12,7 @@ sequenceDiagram
     participant AWS as AWS
     participant CF as CloudFormation
     participant DB as DynamoDB
-    
+
     Dev->>GH: Push to main
     GH->>GA: Trigger workflow
     GA->>GA: Test & Build
@@ -53,5 +53,6 @@ graph LR
 ### 環境管理
 
 各環境は独立したAWSリソースを持ちます:
+
 - dev
 - staging

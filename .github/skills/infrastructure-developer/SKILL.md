@@ -51,6 +51,7 @@ npm run build
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - TypeScriptのコンパイル
 - CDKコードの構文チェック
 - libディレクトリへの出力確認
@@ -64,6 +65,7 @@ npm run test:unit
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - Jestによるユニットテスト
 - CDK Constructのスナップショットテスト
 - スタック構成の検証
@@ -77,6 +79,7 @@ npx cdk synth --context stack=environment --context environment=dev
 ```
 
 **必須**: CDKスタック変更時は実行してください。
+
 - CloudFormationテンプレートの生成確認
 - 構文エラーの検出
 - リソース定義の検証
@@ -90,12 +93,14 @@ npm run test:integration
 ```
 
 **必須**: スタック構成変更時は実行してください。
+
 - LocalStackを使用した統合テスト
 - CDKデプロイのシミュレーション
 - リソース作成の検証
 
-**LocalStackのセットアップ**: 
+**LocalStackのセットアップ**:
 統合テストや手動でのローカルDB起動が必要な場合、以下のコマンドが利用可能です:
+
 - `npm run start:local-db` (プロジェクトルートから) - LocalStackを起動してDynamoDBをデプロイ
 - `npm run deploy:local-db` (infrastructure/deployから) - LocalStackのセットアップとブートストラップを含む完全なデプロイ
 
@@ -197,6 +202,7 @@ CDK Synthやテストを実行する際のContext値:
 - **environment**: `dev` または `staging` または `prod`
 
 例:
+
 ```bash
 # Environment Stack（DynamoDB、Backend API、Frontend）
 npx cdk synth --context stack=environment --context environment=dev
@@ -220,12 +226,12 @@ npx cdk synth --context stack=account
 
 このスキルの検証項目は、GitHub ActionsのPremergeワークフローと対応しています:
 
-| Premergeステップ | ローカル検証コマンド |
-|-----------------|---------------------|
-| `npm run setup` | `npm run setup` |
-| `npm run build` | `cd infrastructure/deploy && npm run build` |
-| `npm run test:unit` | `cd infrastructure/deploy && npm run test:unit` |
-| CDK deploy test | `cd infrastructure/deploy && npm run test:integration` |
+| Premergeステップ    | ローカル検証コマンド                                   |
+| ------------------- | ------------------------------------------------------ |
+| `npm run setup`     | `npm run setup`                                        |
+| `npm run build`     | `cd infrastructure/deploy && npm run build`            |
+| `npm run test:unit` | `cd infrastructure/deploy && npm run test:unit`        |
+| CDK deploy test     | `cd infrastructure/deploy && npm run test:integration` |
 
 ## 参考資料
 

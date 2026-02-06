@@ -154,12 +154,12 @@ describe('AttendanceKitStack', () => {
     // GitHub固有のトラストポリシーを持つロールが存在しないことを確認
     const roles = template.findResources('AWS::IAM::Role');
     const roleKeys = Object.keys(roles);
-    
+
     // Lambda実行ロールは存在するはず
     expect(roleKeys.length).toBeGreaterThan(0);
-    
+
     // GitHub Actions OIDC プロバイダーロールが存在しないことを確認
-    roleKeys.forEach(key => {
+    roleKeys.forEach((key) => {
       const role = roles[key];
       const trustPolicy = role.Properties?.AssumeRolePolicyDocument;
       if (trustPolicy?.Statement) {
@@ -167,7 +167,9 @@ describe('AttendanceKitStack', () => {
           // GitHub OIDC プロバイダーはトラストポリシーに含まれていないはず
           const federated = statement.Principal?.Federated;
           if (federated && typeof federated === 'string') {
-            expect(federated).not.toMatch(/oidc-provider\/token\.actions\.githubusercontent\.com/);
+            expect(federated).not.toMatch(
+              /oidc-provider\/token\.actions\.githubusercontent\.com/,
+            );
           }
         });
       }
@@ -188,7 +190,8 @@ describe('AttendanceKitStack - Staging Environment', () => {
     const stack = new AttendanceKitStack(app, {
       environment: 'staging',
       jwtSecret: 'test-jwt-secret',
-      description: 'DynamoDB clock table for attendance-kit (staging environment)',
+      description:
+        'DynamoDB clock table for attendance-kit (staging environment)',
       tags: {
         Environment: 'staging',
         Project: 'attendance-kit',

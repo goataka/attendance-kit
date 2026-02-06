@@ -65,17 +65,19 @@ describe('DynamoDBCleaner', () => {
     // Check that the policy contains DynamoDB read/write permissions
     const policies = template.findResources('AWS::IAM::Policy');
     const policyKeys = Object.keys(policies);
-    
+
     // Find the policy for the cleaner function
-    const cleanerPolicy = policyKeys.find(key => key.includes('ClearTableData'));
+    const cleanerPolicy = policyKeys.find((key) =>
+      key.includes('ClearTableData'),
+    );
     expect(cleanerPolicy).toBeDefined();
-    
+
     const policy = policies[cleanerPolicy!];
     const statements = policy.Properties.PolicyDocument.Statement;
-    
+
     // Check that DynamoDB permissions are granted
-    const dynamoStatement = statements.find((s: any) => 
-      s.Action.some((a: string) => a.startsWith('dynamodb:'))
+    const dynamoStatement = statements.find((s: any) =>
+      s.Action.some((a: string) => a.startsWith('dynamodb:')),
     );
     expect(dynamoStatement).toBeDefined();
     expect(dynamoStatement.Action).toContain('dynamodb:Scan');
@@ -91,11 +93,12 @@ describe('DynamoDBCleaner', () => {
     const template = Template.fromStack(stack);
     const triggers = template.findResources('Custom::Trigger');
     const trigger = Object.values(triggers)[0];
-    
+
     // Check that the trigger has dependencies (ExecuteAfter or DependsOn)
     // The actual implementation may use DependsOn at the CloudFormation level
-    const hasDependencies = trigger.DependsOn !== undefined || 
-                           (trigger.Properties && trigger.Properties.ExecuteAfter !== undefined);
+    const hasDependencies =
+      trigger.DependsOn !== undefined ||
+      (trigger.Properties && trigger.Properties.ExecuteAfter !== undefined);
     expect(hasDependencies).toBe(true);
   });
 

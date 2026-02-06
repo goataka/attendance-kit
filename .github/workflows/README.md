@@ -2,12 +2,12 @@
 
 ## ワークフロー一覧
 
-| ワークフロー | 説明 | トリガー |
-|-------------|------|---------|
-| [premerge.yml](./premerge.yml) | PR時のテストとチェック | PR作成・更新時 |
-| [deploy-environment-stack.yml](./deploy-environment-stack.yml) | 環境スタックデプロイ | mainマージ時/手動 |
-| [deploy-account-stack.yml](./deploy-account-stack.yml) | アカウントスタックデプロイ | mainマージ時/手動 |
-| [copilot-setup-steps.yml](./copilot-setup-steps.yml) | Copilotセットアップ検証 | 手動/ワークフロー変更時 |
+| ワークフロー                                                   | 説明                       | トリガー                |
+| -------------------------------------------------------------- | -------------------------- | ----------------------- |
+| [premerge.yml](./premerge.yml)                                 | PR時のテストとチェック     | PR作成・更新時          |
+| [deploy-environment-stack.yml](./deploy-environment-stack.yml) | 環境スタックデプロイ       | mainマージ時/手動       |
+| [deploy-account-stack.yml](./deploy-account-stack.yml)         | アカウントスタックデプロイ | mainマージ時/手動       |
+| [copilot-setup-steps.yml](./copilot-setup-steps.yml)           | Copilotセットアップ検証    | 手動/ワークフロー変更時 |
 
 ## 必須設定
 
