@@ -54,6 +54,19 @@ npm run lint
 - React Hooksの使用ルールチェック
 - 未使用変数・インポートの検出
 
+**重要な注意事項**:
+- **Backend**のLintは`--fix`オプション付きで実行されるため、自動修正される
+- **Frontend**のLintは`--max-warnings 0`が指定されているため、**警告もエラーとして扱われる**
+- ローカルで警告が表示された場合、必ず修正すること（CI環境ではエラーになる）
+- 未使用変数や未使用インポートは必ず削除すること
+
+**確認方法**:
+```bash
+# Frontend個別でLintを実行して警告を確認
+cd apps/frontend
+npm run lint
+```
+
 ### 4. ビルド実行
 
 ```bash
@@ -118,12 +131,13 @@ npm run test:integration
 # エラー詳細を確認
 npm run lint
 
-# Frontend個別でも確認可能
+# Frontend個別でも確認可能（推奨：警告も確認できる）
 cd apps/frontend
 npm run lint
 ```
 
-- 未使用変数・インポートを削除
+**対処方法**:
+- 未使用変数・インポートを削除（最優先）
 - 型定義を追加
 - React Hooksのルールに従う（useEffectの依存配列など）
 - コードスタイルを修正
