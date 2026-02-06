@@ -1,5 +1,9 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, ScanCommand, BatchWriteCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  ScanCommand,
+  BatchWriteCommand,
+} from '@aws-sdk/lib-dynamodb';
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
@@ -67,22 +71,28 @@ export const handler = async (event: TriggerEvent): Promise<void> => {
             });
 
             const result = await docClient.send(batchWriteCommand);
-            
+
             // UnprocessedItemsをチェックしてリトライ
             const unprocessed = result.UnprocessedItems?.[tableName];
             if (unprocessed && unprocessed.length > 0) {
               unprocessedItems = unprocessed as any[];
               retryCount++;
-              console.log(`Retrying ${unprocessed.length} unprocessed items (attempt ${retryCount}/${maxRetries})`);
+              console.log(
+                `Retrying ${unprocessed.length} unprocessed items (attempt ${retryCount}/${maxRetries})`,
+              );
               // 指数バックオフ
-              await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 100));
+              await new Promise((resolve) =>
+                setTimeout(resolve, Math.pow(2, retryCount) * 100),
+              );
             } else {
               unprocessedItems = [];
             }
           }
 
           if (unprocessedItems.length > 0) {
-            console.warn(`Failed to delete ${unprocessedItems.length} items after ${maxRetries} retries`);
+            console.warn(
+              `Failed to delete ${unprocessedItems.length} items after ${maxRetries} retries`,
+            );
           }
 
           itemsDeleted += chunk.length - unprocessedItems.length;

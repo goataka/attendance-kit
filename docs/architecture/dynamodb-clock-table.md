@@ -12,16 +12,16 @@ graph TB
         subgraph CloudFormation["CloudFormation"]
             stack["AttendanceKit-{Env}-Stack"]
         end
-        
+
         subgraph DynamoDB["DynamoDB"]
             table["Clock Table<br/>attendance-kit-{env}-clock"]
             gsi["Global Secondary Index<br/>DateIndex"]
             table --> gsi
         end
-        
+
         stack --> table
     end
-    
+
     style table fill:#FF9900
     style gsi fill:#FF9900
 ```
@@ -34,28 +34,28 @@ graph TB
 
 #### Primary Key
 
-| キー | 属性名 | 型 | 説明 |
-|------|--------|-----|------|
-| Partition Key | `userId` | String | ユーザーを識別する一意のID |
-| Sort Key | `timestamp` | String | 打刻時刻（ISO 8601形式） |
+| キー          | 属性名      | 型     | 説明                       |
+| ------------- | ----------- | ------ | -------------------------- |
+| Partition Key | `userId`    | String | ユーザーを識別する一意のID |
+| Sort Key      | `timestamp` | String | 打刻時刻（ISO 8601形式）   |
 
 #### 属性
 
-| 属性名 | 型 | 必須 | 説明 |
-|--------|-----|------|------|
-| `userId` | String | ✓ | ユーザーID（Partition Key） |
-| `timestamp` | String | ✓ | 打刻時刻（Sort Key、ISO 8601形式） |
-| `date` | String | ✓ | 日付（YYYY-MM-DD形式、GSI用） |
-| `type` | String | ✓ | 打刻種別（clock-in または clock-out） |
-| `location` | String |  | 打刻場所（オプション） |
-| `deviceId` | String |  | デバイスID（オプション） |
+| 属性名      | 型     | 必須 | 説明                                  |
+| ----------- | ------ | ---- | ------------------------------------- |
+| `userId`    | String | ✓    | ユーザーID（Partition Key）           |
+| `timestamp` | String | ✓    | 打刻時刻（Sort Key、ISO 8601形式）    |
+| `date`      | String | ✓    | 日付（YYYY-MM-DD形式、GSI用）         |
+| `type`      | String | ✓    | 打刻種別（clock-in または clock-out） |
+| `location`  | String |      | 打刻場所（オプション）                |
+| `deviceId`  | String |      | デバイスID（オプション）              |
 
 #### Global Secondary Index: DateIndex
 
-| キー | 属性名 | 型 |
-|------|--------|-----|
-| Partition Key | `date` | String |
-| Sort Key | `timestamp` | String |
+| キー          | 属性名      | 型     |
+| ------------- | ----------- | ------ |
+| Partition Key | `date`      | String |
+| Sort Key      | `timestamp` | String |
 
 **プロジェクション**: ALL（すべての属性）
 
@@ -71,12 +71,12 @@ erDiagram
         string location
         string deviceId
     }
-    
+
     DateIndex {
         string date PK
         string timestamp SK
     }
-    
+
     ClockTable ||--o{ DateIndex : "GSI"
 ```
 
@@ -87,13 +87,14 @@ erDiagram
 **ユースケース**: ユーザーの勤怠履歴を表示
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
   KeyConditionExpression: 'userId = :userId',
   ExpressionAttributeValues: {
-    ':userId': 'user123'
-  }
+    ':userId': 'user123',
+  },
 };
 
 const result = await dynamodb.query(params).promise();
@@ -108,18 +109,20 @@ const result = await dynamodb.query(params).promise();
 **ユースケース**: 月次勤怠レポート
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
-  KeyConditionExpression: 'userId = :userId AND #timestamp BETWEEN :start AND :end',
+  KeyConditionExpression:
+    'userId = :userId AND #timestamp BETWEEN :start AND :end',
   ExpressionAttributeNames: {
-    '#timestamp': 'timestamp'
+    '#timestamp': 'timestamp',
   },
   ExpressionAttributeValues: {
     ':userId': 'user123',
     ':start': '2025-12-01T00:00:00Z',
-    ':end': '2025-12-31T23:59:59Z'
-  }
+    ':end': '2025-12-31T23:59:59Z',
+  },
 };
 
 const result = await dynamodb.query(params).promise();
@@ -134,17 +137,18 @@ const result = await dynamodb.query(params).promise();
 **ユースケース**: 日次出勤状況の確認
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
   IndexName: 'DateIndex',
   KeyConditionExpression: '#date = :date',
   ExpressionAttributeNames: {
-    '#date': 'date'
+    '#date': 'date',
   },
   ExpressionAttributeValues: {
-    ':date': '2025-12-25'
-  }
+    ':date': '2025-12-25',
+  },
 };
 
 const result = await dynamodb.query(params).promise();
@@ -159,20 +163,22 @@ const result = await dynamodb.query(params).promise();
 **ユースケース**: 特定時間帯の出勤状況
 
 **クエリ**:
+
 ```typescript
 const params = {
   TableName: 'attendance-kit-dev-clock',
   IndexName: 'DateIndex',
-  KeyConditionExpression: '#date = :date AND #timestamp BETWEEN :start AND :end',
+  KeyConditionExpression:
+    '#date = :date AND #timestamp BETWEEN :start AND :end',
   ExpressionAttributeNames: {
     '#date': 'date',
-    '#timestamp': 'timestamp'
+    '#timestamp': 'timestamp',
   },
   ExpressionAttributeValues: {
     ':date': '2025-12-25',
     ':start': '2025-12-25T09:00:00Z',
-    ':end': '2025-12-25T18:00:00Z'
-  }
+    ':end': '2025-12-25T18:00:00Z',
+  },
 };
 
 const result = await dynamodb.query(params).promise();
@@ -208,13 +214,13 @@ const result = await dynamodb.query(params).promise();
 
 ### DynamoDB設定
 
-| 設定項目 | 値 | 理由 |
-|---------|-----|------|
-| **課金モード** | Pay-Per-Request | 予測困難なトラフィックに対応、低トラフィック時のコスト効率 |
-| **暗号化** | AWS管理キー | セキュリティ要件を満たしつつ追加コストなし |
-| **PITR** | 有効 | データ保護、35日間のバックアップ |
-| **削除ポリシー** | RETAIN | 誤削除防止、CloudFormationスタック削除時もデータ保持 |
-| **リージョン** | ap-northeast-1 | 東京リージョン、低レイテンシ |
+| 設定項目         | 値              | 理由                                                       |
+| ---------------- | --------------- | ---------------------------------------------------------- |
+| **課金モード**   | Pay-Per-Request | 予測困難なトラフィックに対応、低トラフィック時のコスト効率 |
+| **暗号化**       | AWS管理キー     | セキュリティ要件を満たしつつ追加コストなし                 |
+| **PITR**         | 有効            | データ保護、35日間のバックアップ                           |
+| **削除ポリシー** | RETAIN          | 誤削除防止、CloudFormationスタック削除時もデータ保持       |
+| **リージョン**   | ap-northeast-1  | 東京リージョン、低レイテンシ                               |
 
 ### コストタグ
 
@@ -323,4 +329,3 @@ aws dynamodb restore-table-to-point-in-time \
 
 - テーブル削除時のデータ保護のため、削除ポリシーはRETAIN
 - スタック削除前にテーブルの手動削除が必要な場合は、CloudFormationコンソールで対応
-

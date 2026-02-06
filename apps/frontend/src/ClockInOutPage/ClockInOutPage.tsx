@@ -8,7 +8,10 @@ export function ClockInOutPage() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{
+    type: 'success' | 'error';
+    text: string;
+  } | null>(null);
 
   const handleClockInOut = async (type: 'clock-in' | 'clock-out') => {
     if (!userId || !password) {
@@ -24,7 +27,9 @@ export function ClockInOutPage() {
 
       if (response.success) {
         const clockType = type === 'clock-in' ? 'Clock in' : 'Clock out';
-        const timestamp = new Date(response.record!.timestamp).toLocaleString('ja-JP');
+        const timestamp = new Date(response.record!.timestamp).toLocaleString(
+          'ja-JP',
+        );
         setMessage({
           type: 'success',
           text: `${clockType} successful at ${timestamp}`,
@@ -32,10 +37,16 @@ export function ClockInOutPage() {
         // Clear password for security
         setPassword('');
       } else {
-        setMessage({ type: 'error', text: response.message || 'Failed to process request' });
+        setMessage({
+          type: 'error',
+          text: response.message || 'Failed to process request',
+        });
       }
     } catch {
-      setMessage({ type: 'error', text: 'An error occurred. Please try again.' });
+      setMessage({
+        type: 'error',
+        text: 'An error occurred. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
@@ -72,9 +83,7 @@ export function ClockInOutPage() {
           </div>
 
           {message && (
-            <div className={`message ${message.type}`}>
-              {message.text}
-            </div>
+            <div className={`message ${message.type}`}>{message.text}</div>
           )}
 
           <div className="button-group">

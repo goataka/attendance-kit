@@ -22,7 +22,7 @@ describe('ClockInOutPage', () => {
 
   it('打刻ページが表示されること', () => {
     renderWithRouter(<ClockInOutPage />);
-    
+
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
     expect(screen.getByLabelText('User ID')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
@@ -32,12 +32,14 @@ describe('ClockInOutPage', () => {
 
   it('入力フィールドが空の場合はエラーを表示すること', async () => {
     renderWithRouter(<ClockInOutPage />);
-    
+
     const clockInButton = screen.getByText('出勤');
     fireEvent.click(clockInButton);
-    
+
     await waitFor(() => {
-      expect(screen.getByText('User ID and password are required')).toBeInTheDocument();
+      expect(
+        screen.getByText('User ID and password are required'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -51,19 +53,19 @@ describe('ClockInOutPage', () => {
         type: 'clock-in' as const,
       },
     };
-    
+
     vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
-    
+
     renderWithRouter(<ClockInOutPage />);
-    
+
     const userIdInput = screen.getByLabelText('User ID');
     const passwordInput = screen.getByLabelText('Password');
     const clockInButton = screen.getByText('出勤');
-    
+
     fireEvent.change(userIdInput, { target: { value: 'user001' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.click(clockInButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText(/Clock in successful/)).toBeInTheDocument();
     });
@@ -74,19 +76,19 @@ describe('ClockInOutPage', () => {
       success: false,
       message: 'Invalid credentials',
     };
-    
+
     vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
-    
+
     renderWithRouter(<ClockInOutPage />);
-    
+
     const userIdInput = screen.getByLabelText('User ID');
     const passwordInput = screen.getByLabelText('Password');
     const clockInButton = screen.getByText('出勤');
-    
+
     fireEvent.change(userIdInput, { target: { value: 'wronguser' } });
     fireEvent.change(passwordInput, { target: { value: 'wrongpass' } });
     fireEvent.click(clockInButton);
-    
+
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
     });
@@ -102,19 +104,19 @@ describe('ClockInOutPage', () => {
         type: 'clock-in' as const,
       },
     };
-    
+
     vi.mocked(api.clockInOut).mockResolvedValue(mockResponse);
-    
+
     renderWithRouter(<ClockInOutPage />);
-    
+
     const userIdInput = screen.getByLabelText('User ID') as HTMLInputElement;
     const passwordInput = screen.getByLabelText('Password') as HTMLInputElement;
     const clockInButton = screen.getByText('出勤');
-    
+
     fireEvent.change(userIdInput, { target: { value: 'user001' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.click(clockInButton);
-    
+
     await waitFor(() => {
       expect(passwordInput.value).toBe('');
       expect(userIdInput.value).toBe('user001');
