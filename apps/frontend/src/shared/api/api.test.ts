@@ -39,7 +39,8 @@ describe('resolveBackendUrl', () => {
       期待値: 'https://app.example.com',
     },
     {
-      ケース: 'windowのoriginが利用できない場合はlocalhostにフォールバックすること',
+      ケース:
+        'windowのoriginが利用できない場合はlocalhostにフォールバックすること',
       envUrl: undefined,
       isDev: false,
       windowOrigin: undefined,

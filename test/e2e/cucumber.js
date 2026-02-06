@@ -6,7 +6,7 @@ module.exports = {
     format: [
       'progress',
       'html:test/e2e/reports/cucumber-report.html',
-      'json:test/e2e/reports/cucumber-report.json'
+      'json:test/e2e/reports/cucumber-report.json',
     ],
     formatOptions: { snippetInterface: 'async-await' },
     publishQuiet: true,

@@ -1,26 +1,21 @@
 {
   "name": "Attendance Kit Development Container",
   "image": "mcr.microsoft.com/devcontainers/typescript-node:24",
-  
+
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
-  
+
   "customizations": {
     "vscode": {
-      "extensions": [
-        "GitHub.copilot",
-        "GitHub.copilot-chat"
-      ],
+      "extensions": ["GitHub.copilot", "GitHub.copilot-chat"],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
-  
+
   "forwardPorts": [],
-  
-  "postStartCommand": "npm run postsetup && echo '🚀 Attendance Kit Development Container is ready!'",
-  
+  "postStartCommand": "npm run setup && echo '🚀 Attendance Kit Development Container is ready!'",
   "remoteUser": "node"
 }

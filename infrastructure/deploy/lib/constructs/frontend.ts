@@ -6,10 +6,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as path from 'path';
-import {
-  formatExportName,
-  addStandardTags,
-} from '../utils/cdk-helpers';
+import { formatExportName, addStandardTags } from '../utils/cdk-helpers';
 
 export interface FrontendConstructProps {
   environment: string;
@@ -28,7 +25,12 @@ export class FrontendConstruct extends Construct {
     const bucket = this.createS3Bucket(environment);
     const oai = this.createOriginAccessIdentity(environment);
     this.grantBucketReadToOAI(bucket, oai);
-    const distribution = this.createCloudFrontDistribution(environment, bucket, oai, api);
+    const distribution = this.createCloudFrontDistribution(
+      environment,
+      bucket,
+      oai,
+      api,
+    );
     this.deployFrontendAssets(environment, bucket, distribution);
     this.createOutputs(environment, distribution);
     this.applyTags(environment, bucket, distribution);
@@ -50,7 +52,9 @@ export class FrontendConstruct extends Construct {
     });
   }
 
-  private createOriginAccessIdentity(environment: string): cloudfront.OriginAccessIdentity {
+  private createOriginAccessIdentity(
+    environment: string,
+  ): cloudfront.OriginAccessIdentity {
     return new cloudfront.OriginAccessIdentity(this, 'OAI', {
       comment: `OAI for attendance-kit ${environment} frontend`,
     });
@@ -58,7 +62,7 @@ export class FrontendConstruct extends Construct {
 
   private grantBucketReadToOAI(
     bucket: s3.Bucket,
-    oai: cloudfront.OriginAccessIdentity
+    oai: cloudfront.OriginAccessIdentity,
   ): void {
     bucket.grantRead(oai);
   }
@@ -67,7 +71,7 @@ export class FrontendConstruct extends Construct {
     environment: string,
     bucket: s3.Bucket,
     oai: cloudfront.OriginAccessIdentity,
-    api: apigateway.RestApi
+    api: apigateway.RestApi,
   ): cloudfront.Distribution {
     return new cloudfront.Distribution(this, 'Distribution', {
       comment: `Attendance Kit Frontend Distribution (${environment})`,
@@ -87,7 +91,8 @@ export class FrontendConstruct extends Construct {
           allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
           cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
           cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
+          originRequestPolicy:
+            cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
         },
       },
       defaultRootObject: 'index.html',
@@ -112,12 +117,12 @@ export class FrontendConstruct extends Construct {
   private deployFrontendAssets(
     environment: string,
     bucket: s3.Bucket,
-    distribution: cloudfront.Distribution
+    distribution: cloudfront.Distribution,
   ): void {
     new s3deploy.BucketDeployment(this, 'DeployFrontend', {
       sources: [
         s3deploy.Source.asset(
-          path.join(__dirname, '../../../../apps/frontend/dist')
+          path.join(__dirname, '../../../../apps/frontend/dist'),
         ),
       ],
       destinationBucket: bucket,
@@ -128,7 +133,7 @@ export class FrontendConstruct extends Construct {
 
   private createOutputs(
     environment: string,
-    distribution: cloudfront.Distribution
+    distribution: cloudfront.Distribution,
   ): void {
     new cdk.CfnOutput(this, 'CloudFrontUrl', {
       value: `https://${distribution.distributionDomainName}`,
@@ -140,7 +145,7 @@ export class FrontendConstruct extends Construct {
   private applyTags(
     environment: string,
     bucket: s3.Bucket,
-    distribution: cloudfront.Distribution
+    distribution: cloudfront.Distribution,
   ): void {
     addStandardTags(bucket, environment);
     addStandardTags(distribution, environment);

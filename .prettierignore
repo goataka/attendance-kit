@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+build/
+.next/
+storybook-static/
+cdk.out/
+
+# Coverage
+coverage/
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.*
+
+# CDK
+cdk.context.json
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+
+# Cache
+.turbo/
+.cache/
+
+# Lock files
+*.lock
+
+# Generated files
+openapi.yaml

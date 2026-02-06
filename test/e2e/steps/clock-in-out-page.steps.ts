@@ -20,9 +20,7 @@ async function fillLoginCredentials(
       const passwordInput = document.querySelector(
         '#password',
       ) as HTMLInputElement;
-      return (
-        userIdInput?.value === userId && passwordInput?.value === password
-      );
+      return userIdInput?.value === userId && passwordInput?.value === password;
     },
     { userId, password },
   );

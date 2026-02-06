@@ -15,12 +15,6 @@
       "module": "commonjs"
     }
   },
-  "include": [
-    "test/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "apps",
-    "infrastructure"
-  ]
+  "include": ["test/**/*"],
+  "exclude": ["node_modules", "apps", "infrastructure"]
 }
