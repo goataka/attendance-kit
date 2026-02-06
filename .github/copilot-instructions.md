@@ -40,9 +40,9 @@
 PR差分: [#PR番号](https://github.com/goataka/attendance-kit/pull/PR番号/changes/始点コミット..終点コミット)
 ```
 
-**例**:
+**例（コミットハッシュは例示用のダミー値）**:
 ```
-PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f40..ceb2bd6)
+PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72f4012345678901234567890123456789abcd..ceb2bd6789abcdef0123456789abcdef01234567)
 ```
 
 **理由**:
@@ -51,9 +51,37 @@ PR差分: [#124](https://github.com/goataka/attendance-kit/pull/124/changes/aa72
 - コードレビューの効率化
 - 変更履歴の追跡性向上
 
+**PR番号の取得方法**:
+```bash
+# GitHub MCPツールを使用してPR番号を取得
+# 現在のブランチ名を確認
+git branch --show-current
+
+# そのブランチのPRを検索
+# github-mcp-server-search_pull_requests を使用
+# query: "head:<ブランチ名> is:open"
+```
+
+**コミットハッシュの取得方法**:
+```bash
+# 最新2件のコミットの完全ハッシュを取得
+git log --format=%H -2
+
+# または、特定の範囲のコミットハッシュを取得
+git log --format=%H -n 1  # 最新のコミット
+git log --format=%H HEAD~1  # 直前のコミット
+```
+
 **注意**:
 - 始点コミットは作業開始前のコミット、終点コミットは作業完了時のコミットを指定
-- コミットハッシュは短縮形（7文字）でも完全形でも可
+- **PR番号は必ず実際の番号を使用してください**
+  - 「現在のPR番号」「PR番号」などのプレースホルダーは使用禁止
+  - GitHub MCPツールで現在のブランチのPR番号を取得してください
+- **コミットハッシュは必ず完全形（40文字）を使用してください**
+  - 短縮形（7文字）はGitHubのchangesページで機能しません
+  - **必ず`git log --format=%H`コマンドを実際に実行して取得してください**
+  - 適当な文字列を作成することは厳禁です（例: `123850d8f3e3a3e...`のような繰り返しパターン）
+- このルールは必須です。PR差分リンクを提示する際は必ず遵守してください
 
 ## Agentの動作ガイドライン
 
