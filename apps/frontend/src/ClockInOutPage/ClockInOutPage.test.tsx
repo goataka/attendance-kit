@@ -145,7 +145,7 @@ describe('ClockInOutPage', () => {
     vi.mocked(api.login).mockResolvedValue('mock-token');
     vi.mocked(api.isAuthenticated).mockReturnValue(false);
     
-    const { rerender } = renderWithRouter(<ClockInOutPage />);
+    renderWithRouter(<ClockInOutPage />);
     
     const userIdInput = screen.getByLabelText('User ID') as HTMLInputElement;
     const passwordInput = screen.getByLabelText('Password') as HTMLInputElement;
