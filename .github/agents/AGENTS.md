@@ -72,12 +72,14 @@ GitHub Copilot Agentのみで構築する、モダンなクラウドベースの
 ### 現在の実装状況
 
 **完了**:
+
 - DynamoDB Clock Tableのデプロイ（CDK）
 - AWS Cost/Usage Alerts（AWS Budget）
 - OIDC認証によるGitHub Actions → AWS接続
 - DevContainer環境構築
 
 **未実装**:
+
 - フロントエンドアプリケーション
 - バックエンドAPI
 - 認証・認可機能
@@ -96,6 +98,7 @@ GitHub Copilot Agentのみで構築する、モダンなクラウドベースの
 ### 言語ポリシー
 
 **日本語を使用**:
+
 - PRのタイトル・説明
 - コミットメッセージ
 - Issue、レビューコメント
@@ -103,6 +106,7 @@ GitHub Copilot Agentのみで構築する、モダンなクラウドベースの
 - コードのコメント
 
 **英語を使用**:
+
 - コード（変数名、関数名、クラス名）
 - 技術用語（固有名詞）
 

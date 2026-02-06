@@ -27,6 +27,8 @@
     "lint:markdown": "markdownlint \"**/*.md\"",
     "lint:shellcheck": "find . -name '*.sh' -not -path '*/node_modules/*' -not -path '*/.git/*' -not -path '*/.husky/_/*' -print0 | xargs -0 -r shellcheck",
     "lint:actionlint": "node-actionlint '.github/workflows/**/*.{yml,yaml}'",
+    "format": "turbo run format",
+    "format:check": "prettier --check .",
     "prepare": "husky"
   },
   "keywords": [
@@ -48,6 +50,7 @@
     "markdownlint-cli": "^0.47.0",
     "husky": "^9.1.7",
     "playwright-bdd": "^8.4.2",
+    "prettier": "^3.0.0",
     "ts-node": "^10.9.2",
     "turbo": "2.8.3"
   }

@@ -10,16 +10,16 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write   # OIDC認証に必要
+  id-token: write # OIDC認証に必要
   contents: read
-  pull-requests: write  # PRコメントに必要
-  issues: write  # Issue作成に必要
+  pull-requests: write # PRコメントに必要
+  issues: write # Issue作成に必要
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: production  # アカウントレベルリソースは本番環境として扱う
-    
+    environment: production # アカウントレベルリソースは本番環境として扱う
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4

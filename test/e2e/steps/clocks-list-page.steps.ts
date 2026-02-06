@@ -11,9 +11,7 @@ async function navigateToClocksListPage(page: Page): Promise<void> {
   await page.waitForLoadState('networkidle');
 }
 
-async function verifyClockRecordInDynamoDB(
-  userId: string,
-): Promise<void> {
+async function verifyClockRecordInDynamoDB(userId: string): Promise<void> {
   const command = new ScanCommand({
     TableName: TABLE_NAME,
     Limit: 10,

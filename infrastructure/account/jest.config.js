@@ -3,14 +3,9 @@ module.exports = {
   roots: ['<rootDir>/test'],
   testMatch: ['**/*.test.ts'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
-  collectCoverageFrom: [
-    'lib/**/*.ts',
-    'bin/**/*.ts'
-  ],
-  coveragePathIgnorePatterns: [
-    '/node_modules/'
-  ],
-  testTimeout: 30000
+  collectCoverageFrom: ['lib/**/*.ts', 'bin/**/*.ts'],
+  coveragePathIgnorePatterns: ['/node_modules/'],
+  testTimeout: 30000,
 };

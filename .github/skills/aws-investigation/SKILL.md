@@ -69,7 +69,8 @@ AWS認証は`copilot-setup-steps.yml`ワークフロー内で自動的に実施�
   continue-on-error: true
 ```
 
-**注意**: 
+**注意**:
+
 - このスキルはGitHub Actions環境内でのみ実行可能です
 - AWS認証は`copilot-setup-steps.yml`ワークフローで自動的に実施されます
 - `AWS_INVESTIGATION_ROLE_ARN`シークレットが設定されていない場合、警告が表示されますが処理は続行されます
@@ -188,30 +189,36 @@ aws logs filter-log-events \
 ## AWS調査結果
 
 ### 調査日時
+
 YYYY-MM-DD HH:MM:SS UTC
 
 ### 調査リージョン
+
 ap-northeast-1
 
 ### 調査対象リソース
 
 #### CloudFormationスタック
+
 - スタック名: AttendanceKit-Dev-Stack
 - ステータス: CREATE_COMPLETE
 - 作成日時: YYYY-MM-DD HH:MM:SS
 
 #### DynamoDBテーブル
+
 - テーブル名: attendance-kit-dev-clock
 - ステータス: ACTIVE
 - アイテム数: XXX
 - サイズ: XXX MB
 
 #### CloudWatchログ
+
 - ロググループ: /aws/lambda/attendance-kit-dev-backend
 - 最新ログ: YYYY-MM-DD HH:MM:SS
 - ストレージサイズ: XXX MB
 
 ### 推奨事項
+
 （必要に応じて）
 ```
 
@@ -286,11 +293,13 @@ aws logs filter-log-events \
 **症状**: `aws sts get-caller-identity`が失敗する
 
 **原因**:
+
 1. `AWS_INVESTIGATION_ROLE_ARN`がGitHub Secretsに設定されていない
 2. CloudFormationで`GitHubCopilotInvestigationRole`が作成されていない
 3. OIDC認証の設定が正しくない
 
 **対処**:
+
 1. GitHub SecretsでシークレットID `AWS_INVESTIGATION_ROLE_ARN`を確認
 2. CloudFormationスタック `AttendanceKit-Setup-Stack`が正しくデプロイされているか確認
 3. OIDC認証のステップが正しく実行されているか確認
@@ -300,9 +309,11 @@ aws logs filter-log-events \
 **症状**: `AccessDenied`エラーが発生する
 
 **原因**:
+
 - 調査用RoleにReadOnlyAccess権限しかないため、書き込み操作を実行しようとしている
 
 **対処**:
+
 - このスキルは読み取り専用です。書き込み操作が必要な場合は別のワークフローを使用してください
 
 ## セキュリティ考慮事項

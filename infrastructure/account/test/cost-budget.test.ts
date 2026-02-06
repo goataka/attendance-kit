@@ -66,21 +66,28 @@ describe('CostBudgetConstruct', () => {
     });
 
     const template = Template.fromStack(stack);
-    
+
     // Check that budget has notifications with SNS subscribers
     const budgets = template.findResources('AWS::Budgets::Budget');
     const budgetResource = Object.values(budgets)[0];
-    
-    expect(budgetResource.Properties.NotificationsWithSubscribers).toBeDefined();
-    expect(budgetResource.Properties.NotificationsWithSubscribers.length).toBe(2);
-    
-    // Check actual cost notification
-    const actualNotification = budgetResource.Properties.NotificationsWithSubscribers.find(
-      (n: any) => n.Notification.NotificationType === 'ACTUAL'
+
+    expect(
+      budgetResource.Properties.NotificationsWithSubscribers,
+    ).toBeDefined();
+    expect(budgetResource.Properties.NotificationsWithSubscribers.length).toBe(
+      2,
     );
+
+    // Check actual cost notification
+    const actualNotification =
+      budgetResource.Properties.NotificationsWithSubscribers.find(
+        (n: any) => n.Notification.NotificationType === 'ACTUAL',
+      );
     expect(actualNotification).toBeDefined();
     expect(actualNotification.Notification.Threshold).toBe(100);
-    expect(actualNotification.Notification.ComparisonOperator).toBe('GREATER_THAN');
+    expect(actualNotification.Notification.ComparisonOperator).toBe(
+      'GREATER_THAN',
+    );
   });
 
   test('Budget has SNS notification for forecasted cost', () => {
@@ -92,17 +99,20 @@ describe('CostBudgetConstruct', () => {
     });
 
     const template = Template.fromStack(stack);
-    
+
     const budgets = template.findResources('AWS::Budgets::Budget');
     const budgetResource = Object.values(budgets)[0];
-    
+
     // Check forecasted cost notification
-    const forecastedNotification = budgetResource.Properties.NotificationsWithSubscribers.find(
-      (n: any) => n.Notification.NotificationType === 'FORECASTED'
-    );
+    const forecastedNotification =
+      budgetResource.Properties.NotificationsWithSubscribers.find(
+        (n: any) => n.Notification.NotificationType === 'FORECASTED',
+      );
     expect(forecastedNotification).toBeDefined();
     expect(forecastedNotification.Notification.Threshold).toBe(100);
-    expect(forecastedNotification.Notification.ComparisonOperator).toBe('GREATER_THAN');
+    expect(forecastedNotification.Notification.ComparisonOperator).toBe(
+      'GREATER_THAN',
+    );
   });
 
   test('SNS Topic has policy allowing AWS Budgets to publish', () => {

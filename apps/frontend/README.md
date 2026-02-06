@@ -7,24 +7,24 @@ React + Viteで実装した勤怠管理システムのフロントエンド
 ```mermaid
 graph LR
     User[ユーザー] -->|アクセス| Router
-    
+
     subgraph "Frontend Server"
         Router[React Router]
         ClockInOut[打刻画面<br/>ClockInOutPage]
         ClocksList[打刻一覧画面<br/>ClocksListPage]
         Shared[shared/]
-        
+
         Router --> ClockInOut
         Router --> ClocksList
-        
+
         ClockInOut -.共有コンポーネント.-> Shared
         ClocksList -.共有コンポーネント.-> Shared
     end
-    
+
     subgraph "Backend Server"
         Backend[Backend API]
     end
-    
+
     ClockInOut -->|API呼び出し| Backend
     ClocksList -->|API呼び出し| Backend
 ```
@@ -55,10 +55,10 @@ apps/frontend/
 
 ## コマンド
 
-| コマンド | 説明 |
-| --------- | ------ |
-| `npm run dev` | 開発サーバー起動（<http://localhost:5173>） |
-| `npm run build` | プロダクションビルド |
-| `npm test` | ユニットテスト |
-| `npm run test:integration` | E2Eテスト |
-| `npm run lint` | Lintチェック |
+| コマンド                   | 説明                                      |
+| -------------------------- | ----------------------------------------- |
+| `npm run dev`              | 開発サーバー起動（http://localhost:5173） |
+| `npm run build`            | プロダクションビルド                      |
+| `npm test`                 | ユニットテスト                            |
+| `npm run test:integration` | E2Eテスト                                 |
+| `npm run lint`             | Lintチェック                              |

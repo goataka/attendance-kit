@@ -118,13 +118,14 @@ const endDate = '2025-12-31T23:59:59Z';
 
 const params = {
   TableName: 'attendance-kit-dev-clock',
-  KeyConditionExpression: 'userId = :userId AND #timestamp BETWEEN :start AND :end',
+  KeyConditionExpression:
+    'userId = :userId AND #timestamp BETWEEN :start AND :end',
   ExpressionAttributeNames: { '#timestamp': 'timestamp' },
   ExpressionAttributeValues: {
     ':userId': 'emp123',
     ':start': startDate,
-    ':end': endDate
-  }
+    ':end': endDate,
+  },
 };
 ```
 
@@ -169,7 +170,7 @@ const params = {
   IndexName: 'DateIndex',
   KeyConditionExpression: '#date = :date',
   ExpressionAttributeNames: { '#date': 'date' },
-  ExpressionAttributeValues: { ':date': '2025-12-25' }
+  ExpressionAttributeValues: { ':date': '2025-12-25' },
 };
 ```
 
@@ -217,11 +218,11 @@ const params = {
 
 ### 保持期間
 
-| データ種別 | 保持期間 | 理由 |
-|-----------|---------|------|
-| 通常の打刻記録 | 7年間 | 労働基準法に基づく保存義務 |
-| バックアップデータ | 35日間 | PITR機能による自動バックアップ |
-| アーカイブデータ | 無期限 | 法令遵守、監査対応 |
+| データ種別         | 保持期間 | 理由                           |
+| ------------------ | -------- | ------------------------------ |
+| 通常の打刻記録     | 7年間    | 労働基準法に基づく保存義務     |
+| バックアップデータ | 35日間   | PITR機能による自動バックアップ |
+| アーカイブデータ   | 無期限   | 法令遵守、監査対応             |
 
 ### データライフサイクル
 
@@ -231,9 +232,9 @@ graph LR
     B --> C[7年間保持]
     C --> D[S3アーカイブ]
     D --> E[無期限保持]
-    
+
     B -.-> F[PITR 35日間]
-    
+
     style A fill:#2088FF
     style B fill:#FF9900
     style D fill:#569A31

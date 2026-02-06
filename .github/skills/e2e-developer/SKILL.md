@@ -58,6 +58,7 @@ npm run build
 ```
 
 **必須**: コード変更後、必ず実行してください。
+
 - Backend、Frontend、Infrastructureのビルド
 - TypeScriptのコンパイル確認
 
@@ -68,10 +69,12 @@ npm run test:e2e:local
 ```
 
 **必須**: E2Eテスト変更時は実行してください。
+
 - `pretest:e2e:local`フックにより、テスト実行前にLocalStackが自動的に起動・セットアップされます
 - BackendとFrontendのサーバーは手動で起動する必要があります（後述の手順を参照）
 
 **注**: `test:e2e:local`は以下を含みます:
+
 - LocalStackの自動起動（pretest:e2e:localフック）
 - Cucumber + Playwrightによる統合テスト
 
@@ -172,6 +175,7 @@ npx cucumber-js test/e2e/features/<feature-name>.feature
 ### スクリーンショット確認
 
 E2Eテスト実行後、以下を確認してください:
+
 - スクリーンショットが正しく取得されているか
 - 画面が正しく表示されているか
 - 文字化けしていないか必ず確認
@@ -219,7 +223,7 @@ E2Eテスト実行後、以下を確認してください:
 - **言語**: TypeScript
 - **ランタイム**: Node.js 24.x以上
 - **ブラウザ**: Chromium (Playwright)
-- **テストツール**: 
+- **テストツール**:
   - `@cucumber/cucumber`: BDD形式のテスト記述
   - `@playwright/test`: ブラウザ自動化
   - `playwright-bdd`: CucumberとPlaywrightの統合
@@ -228,13 +232,13 @@ E2Eテスト実行後、以下を確認してください:
 
 このスキルの検証項目は、GitHub ActionsのPremergeワークフローと対応しています:
 
-| Premergeステップ | ローカル検証コマンド |
-|-----------------|---------------------|
-| `npm run setup` | `npm run setup` |
+| Premergeステップ                              | ローカル検証コマンド                          |
+| --------------------------------------------- | --------------------------------------------- |
+| `npm run setup`                               | `npm run setup`                               |
 | `npx playwright install --with-deps chromium` | `npx playwright install --with-deps chromium` |
-| `npm run build --workspaces --if-present` | `npm run build` |
-| Backend/Frontend起動 | 手動でサーバー起動 |
-| `npm run test:e2e:local` | `npm run test:e2e:local` |
+| `npm run build --workspaces --if-present`     | `npm run build`                               |
+| Backend/Frontend起動                          | 手動でサーバー起動                            |
+| `npm run test:e2e:local`                      | `npm run test:e2e:local`                      |
 
 ## 参考資料
 

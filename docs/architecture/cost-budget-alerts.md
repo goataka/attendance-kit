@@ -14,20 +14,20 @@ graph TB
         Budget[AWS Budget<br/>月次予算: 1000円]
         SNS[SNS Topic<br/>attendance-kit-cost-alerts]
         CW[CloudWatch<br/>利用額モニタリング]
-        
+
         Budget -->|実利用額超過<br/>100% threshold| SNS
         Budget -->|予測額超過<br/>100% threshold| SNS
         CW -.->|利用額データ| Budget
     end
-    
+
     SNS -->|Email通知| Mobile[スマホ<br/>メール受信]
-    
+
     subgraph "Infrastructure as Code"
         CDK[AWS CDK<br/>TypeScript]
         CDK -->|デプロイ| Budget
         CDK -->|デプロイ| SNS
     end
-    
+
     style Budget fill:#f9f,stroke:#333,stroke-width:2px
     style SNS fill:#bbf,stroke:#333,stroke-width:2px
     style Mobile fill:#bfb,stroke:#333,stroke-width:2px
@@ -52,13 +52,13 @@ AttendanceKit-Dev-Stack (環境単位)
 
 ### AWS Budget設定
 
-| 項目 | 値 |
-|------|-----|
-| 予算名 | attendance-kit-account-monthly-budget |
-| 予算タイプ | COST |
-| 期間単位 | MONTHLY |
-| 予算額 | 1000円 |
-| 通貨 | JPY |
+| 項目       | 値                                    |
+| ---------- | ------------------------------------- |
+| 予算名     | attendance-kit-account-monthly-budget |
+| 予算タイプ | COST                                  |
+| 期間単位   | MONTHLY                               |
+| 予算額     | 1000円                                |
+| 通貨       | JPY                                   |
 
 ### アラート設定
 
@@ -78,11 +78,11 @@ AttendanceKit-Dev-Stack (環境単位)
 
 ### SNS Topic
 
-| 項目 | 値 |
-|------|-----|
-| トピック名 | attendance-kit-cost-alerts |
-| 表示名 | AWS Cost Budget Alerts |
-| プロトコル | Email |
+| 項目               | 値                                 |
+| ------------------ | ---------------------------------- |
+| トピック名         | attendance-kit-cost-alerts         |
+| 表示名             | AWS Cost Budget Alerts             |
+| プロトコル         | Email                              |
 | サブスクリプション | 環境変数 COST_ALERT_EMAIL から設定 |
 
 ### IAMポリシー
@@ -108,17 +108,17 @@ sequenceDiagram
     participant Budget as AWS Budget
     participant SNS as SNS Topic
     participant User as ユーザー
-    
+
     Note over AWS,Budget: 定期的なコスト集計
     AWS->>Budget: 利用額データ更新
-    
+
     alt 実利用額が1000円超過
         Budget->>Budget: 閾値チェック（100%）
         Budget->>SNS: アラート送信（ACTUAL）
         SNS->>User: Email通知
         User->>User: スマホで確認
     end
-    
+
     alt 予測額が1000円超過見込み
         Budget->>Budget: 予測計算・閾値チェック
         Budget->>SNS: アラート送信（FORECASTED）
@@ -135,8 +135,12 @@ sequenceDiagram
 // アカウントレベルスタック
 export class AttendanceKitAccountStack extends cdk.Stack {
   public readonly costBudget: CostBudgetConstruct;
-  
-  constructor(scope: Construct, id: string, props: AttendanceKitAccountStackProps) {
+
+  constructor(
+    scope: Construct,
+    id: string,
+    props: AttendanceKitAccountStackProps,
+  ) {
     // CostBudgetConstructをインスタンス化
     this.costBudget = new CostBudgetConstruct(this, 'CostBudget', {
       budgetName: 'attendance-kit-account-monthly-budget',
@@ -150,7 +154,7 @@ export class AttendanceKitAccountStack extends cdk.Stack {
 export class CostBudgetConstruct extends Construct {
   public readonly snsTopic: sns.Topic;
   public readonly budget: budgets.CfnBudget;
-  
+
   // SNS Topic作成
   // AWS Budget作成（実利用額・予測額アラート）
   // IAMポリシー設定
@@ -170,16 +174,12 @@ infrastructure/deploy/
 │   ├── attendance-kit-account-stack.test.ts
 │   ├── cost-budget.test.ts
 │   └── attendance-kit-stack.test.ts       # 既存
-└── bin/
-    └── app.ts                              # エントリーポイント
-
+├── bin/
+│   └── app.ts                              # エントリーポイント
 .github/workflows/
 ├── deploy-environment-stack.yml            # 環境スタックデプロイ
 └── deploy-account-stack.yml                # アカウントスタックデプロイ
-
-└── bin/
-    └── app.ts                              # エントリーポイント
-```
+````
 
 ## コスト分析
 
@@ -236,7 +236,7 @@ infrastructure/deploy/
 ```bash
 cd infrastructure/deploy
 COST_ALERT_EMAIL=email@example.com npm run cdk deploy AttendanceKit-Account-Stack
-```
+````
 
 環境スタックをデプロイ:
 

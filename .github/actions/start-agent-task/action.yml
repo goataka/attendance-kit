@@ -10,7 +10,7 @@ inputs:
     required: true
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Start Copilot Agent Task on failure
       shell: bash
@@ -23,5 +23,5 @@ runs:
         TASK_DESCRIPTION="ワークフロー ${WORKFLOW_NAME} が失敗しました。workflow-error-handler スキルを使用してエラー対応してください。
 
         URL: ${RUN_URL}"
-        
+
         echo "${TASK_DESCRIPTION}" | gh agent-task create -F - --repo ${REPO}

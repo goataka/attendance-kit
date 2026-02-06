@@ -5,10 +5,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as path from 'path';
-import {
-  formatExportName,
-  addStandardTags,
-} from '../utils/cdk-helpers';
+import { formatExportName, addStandardTags } from '../utils/cdk-helpers';
 
 export interface BackendConstructProps {
   environment: string;
@@ -25,7 +22,11 @@ export class BackendConstruct extends Construct {
 
     const { environment, clockTable, jwtSecret } = props;
 
-    const lambdaFunction = this.createLambdaFunction(environment, clockTable, jwtSecret);
+    const lambdaFunction = this.createLambdaFunction(
+      environment,
+      clockTable,
+      jwtSecret,
+    );
     const api = this.createApiGateway(environment);
     this.setupIntegration(lambdaFunction, api);
     this.createOutputs(environment, api);
@@ -108,10 +109,7 @@ export class BackendConstruct extends Construct {
     });
   }
 
-  private createOutputs(
-    environment: string,
-    api: apigateway.RestApi,
-  ): void {
+  private createOutputs(environment: string, api: apigateway.RestApi): void {
     // 後続で必要なOutputのみ追加
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: api.url,
