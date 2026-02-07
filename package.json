@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "presetup": "bash scripts/presetup.sh",
-    "postsetup": "bash scripts/postsetup.sh",
     "setup": "npm ci --workspaces --include-workspace-root",
+    "postsetup": "bash scripts/postsetup.sh",
     "dev": "npm run dev --workspaces --if-present",
     "build": "turbo run build",
     "start:local-db": "npm run deploy:local-db -w @attendance-kit/deploy",

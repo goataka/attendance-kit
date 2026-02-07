@@ -1,119 +1,61 @@
 import { test, expect } from '@playwright/test';
+import { ClockInOutPage } from './ClockInOutPage.page';
 
 test.describe('打刻ページ', () => {
   test('ログインフォームと打刻ボタンが表示されること', async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
     
-    // ページタイトルを確認
-    await expect(page.locator('h1')).toHaveText('勤怠打刻');
-    
-    // 出勤・退勤ボタンは常に表示され、未ログイン時も有効
-    await expect(page.getByRole('button', { name: '出勤' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '退勤' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '出勤' })).toBeEnabled();
-    await expect(page.getByRole('button', { name: '退勤' })).toBeEnabled();
-    
-    // フォーム要素を確認（ログイン前）
-    await expect(page.locator('#userId')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'ログイン' })).toBeVisible();
-    
-    // アニメーション完了を待つ
-    await page.waitForTimeout(500);
-    
-    // ビジュアルリグレッションテスト - ClockInOutPage.screenshot.pngに保存
-    
-    await expect(page).toHaveScreenshot(['ClockInOutPage.screenshot.png'], {
-      fullPage: true,
-    });
+    await clockInOutPage.goto();
+    await clockInOutPage.expectPageTitleToBe('勤怠打刻');
+    await clockInOutPage.expectClockButtonsVisible();
+    await clockInOutPage.expectClockButtonsEnabled();
+    await clockInOutPage.expectLoginFormVisible();
+    await clockInOutPage.waitForAnimation();
+    await clockInOutPage.takeScreenshot(['ClockInOutPage.screenshot.png']);
   });
 
   test('ログインが成功し打刻ボタンが有効になること', async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
     
-    // 認証情報を入力
-    await page.locator('#userId').fill('user001');
-    await page.locator('#password').fill('password123');
-    
-    // ログインボタンをクリック
-    await page.getByRole('button', { name: 'ログイン' }).click();
-    
-    // 成功メッセージを待つ
-    await expect(page.locator('.message.success')).toBeVisible();
-    await expect(page.locator('.message.success')).toContainText('Login successful');
-    
-    // ログイン後も打刻ボタンが有効
-    await expect(page.getByRole('button', { name: '出勤' })).toBeEnabled();
-    await expect(page.getByRole('button', { name: '退勤' })).toBeEnabled();
-    await expect(page.getByRole('button', { name: 'ログアウト' })).toBeVisible();
-    
-    // ログインフォームは非表示
-    await expect(page.locator('#userId')).not.toBeVisible();
-    await expect(page.locator('#password')).not.toBeVisible();
+    await clockInOutPage.goto();
+    await clockInOutPage.login('user001', 'password123');
+    await clockInOutPage.expectSuccessMessage('Login successful');
+    await clockInOutPage.expectClockButtonsEnabled();
+    await clockInOutPage.expectLogoutButtonVisible();
+    await clockInOutPage.expectLoginFormNotVisible();
   });
 
   test('未ログイン時にユーザーIDとパスワードで出勤打刻ができること', async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
     
-    // 認証情報を入力
-    await page.locator('#userId').fill('user001');
-    await page.locator('#password').fill('password123');
-    
-    // 出勤ボタンをクリック（ログインせずに直接打刻）
-    await page.getByRole('button', { name: '出勤' }).click();
-    
-    // 成功メッセージを待つ
-    await expect(page.locator('.message.success')).toBeVisible();
-    await expect(page.locator('.message.success')).toContainText(
-      'Clock in successful',
-    );
+    await clockInOutPage.goto();
+    await clockInOutPage.clockInWithoutLogin('user001', 'password123');
+    await clockInOutPage.expectSuccessMessage('Clock in successful');
   });
 
   test('ログイン後に出勤打刻ができること', async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
     
-    // まずログイン
-    await page.locator('#userId').fill('user001');
-    await page.locator('#password').fill('password123');
-    await page.getByRole('button', { name: 'ログイン' }).click();
-    await page.waitForSelector('.message.success');
-    
-    // 出勤ボタンをクリック
-    await page.getByRole('button', { name: '出勤' }).click();
-    
-    // 成功メッセージを待つ
-    await expect(page.locator('.message.success')).toBeVisible();
-    await expect(page.locator('.message.success')).toContainText(
-      'Clock in successful',
-    );
+    await clockInOutPage.goto();
+    await clockInOutPage.clockInWithLogin('user001', 'password123');
+    await clockInOutPage.expectSuccessMessage('Clock in successful');
   });
 
   test('入力フィールドが空の場合はエラーを表示すること', async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
     
-    // フィールドを入力せずにログインボタンをクリック
-    await page.getByRole('button', { name: 'ログイン' }).click();
-    
-    // エラーメッセージを待つ
-    await expect(page.locator('.message.error')).toBeVisible();
-    await expect(page.locator('.message.error')).toContainText(
-      'User ID and password are required',
-    );
+    await clockInOutPage.goto();
+    await clockInOutPage.clickLogin();
+    await clockInOutPage.expectErrorMessage('User ID and password are required');
   });
 
   test('打刻一覧ページへ遷移できること', async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
     
-    // まずログイン
-    await page.locator('#userId').fill('user001');
-    await page.locator('#password').fill('password123');
-    await page.getByRole('button', { name: 'ログイン' }).click();
-    await page.waitForSelector('.message.success');
+    await clockInOutPage.goto();
+    await clockInOutPage.login('user001', 'password123');
+    await clockInOutPage.clickClocksListLink();
     
-    // 打刻一覧へのリンクをクリック
-    await page.getByRole('link', { name: '打刻一覧を見る' }).click();
-    
-    // 打刻一覧ページに遷移するはず
     await expect(page).toHaveURL('/clocks');
     await expect(page.locator('h1')).toHaveText('打刻一覧');
   });
