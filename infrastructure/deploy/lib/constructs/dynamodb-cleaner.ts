@@ -24,6 +24,7 @@ export class DynamoDBCleaner extends Construct {
       entry: path.join(__dirname, '../../lambda/clear-table-data.ts'),
       environment: {
         TABLE_NAME: table.tableName,
+        DEPLOY_TIMESTAMP: new Date().toISOString(),
       },
       timeout: cdk.Duration.minutes(5),
     });
@@ -33,6 +34,7 @@ export class DynamoDBCleaner extends Construct {
     this.trigger = new Trigger(this, 'ClearTableTrigger', {
       handler: clearDataFunction,
       executeAfter: [table],
+      executeOnHandlerChange: true,
     });
   }
 }
