@@ -118,8 +118,6 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 │   └── SKILL.md                 # スキル定義ファイル
 ├── infrastructure-developer/    # Infrastructure開発スキル
 │   └── SKILL.md                 # スキル定義ファイル
-├── premerge-check/              # プレマージチェックスキル
-│   └── SKILL.md                 # スキル定義ファイル
 ├── rule-making/                 # ルール化スキル
 │   └── SKILL.md                 # スキル定義ファイル
 └── workflow-error-handler/      # ワークフローエラー対応スキル

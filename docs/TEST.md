@@ -74,19 +74,20 @@ npm test -w @attendance-kit/frontend
 
 ### プレマージチェック
 
-プルリクエスト作成前に、ローカル環境でCI/CDチェックを実行できます。
+プルリクエスト作成前に、以下のコマンドで主要なチェックを実行できます。
 
 ```bash
-# プレマージワークフローのローカル実行
-npm run premerge:local
+# Lint
+npm run lint
+
+# ユニットテスト
+npm test
+
+# ビルド
+npm run build
 ```
 
-このコマンドは以下を実行します：
-
-- Lint
-- ユニットテスト
-- ビルド
-- 統合テスト（LocalStack使用）
+統合テストやE2Eテストは、PRを作成することで自動的に実行されます。詳細は[.github/workflows/premerge.yml](../.github/workflows/premerge.yml)を参照してください。
 
 ## テストツール構成
 
