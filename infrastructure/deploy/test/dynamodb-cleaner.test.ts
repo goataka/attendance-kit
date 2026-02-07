@@ -86,7 +86,7 @@ describe('DynamoDBCleaner', () => {
     expect(dynamoStatement.Action).toContain('dynamodb:DeleteItem');
   });
 
-  test('Triggerがテーブルに依存し、ハンドラー変更時に実行される設定になっている', () => {
+  test('Triggerが依存関係付きで作成される', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
