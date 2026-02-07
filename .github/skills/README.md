@@ -60,18 +60,6 @@
 
 **詳細**: [infrastructure-developer/SKILL.md](./infrastructure-developer/SKILL.md)
 
-### premerge-check
-
-**説明**: プレマージワークフローをローカルで実行してCI/CDチェックを行います。
-
-**使用方法**:
-
-```bash
-npm run premerge:local
-```
-
-**詳細**: [premerge-check/SKILL.md](./premerge-check/SKILL.md)
-
 ### rule-making
 
 **説明**: 「ルール化してください」というリクエストに対応し、ルールの内容に応じて適切な記載箇所を特定します。
@@ -121,8 +109,6 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 ├── frontend-developer/          # Frontend開発スキル
 │   └── SKILL.md                 # スキル定義ファイル
 ├── infrastructure-developer/    # Infrastructure開発スキル
-│   └── SKILL.md                 # スキル定義ファイル
-├── premerge-check/              # プレマージチェックスキル
 │   └── SKILL.md                 # スキル定義ファイル
 ├── rule-making/                 # ルール化スキル
 │   └── SKILL.md                 # スキル定義ファイル

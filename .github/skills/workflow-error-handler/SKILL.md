@@ -643,6 +643,5 @@ get_job_logs({
 ## 参考資料
 
 - ワークフロー定義: `.github/workflows/`
-- プレマージチェックスキル: `premerge-check/SKILL.md`
 - GitHub Actions ドキュメント: https://docs.github.com/en/actions
 - Copilotインストラクション: `.github/copilot-instructions.md`
