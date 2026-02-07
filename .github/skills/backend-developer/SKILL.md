@@ -217,7 +217,7 @@ npm run test:integration -- <test-file-name>
 | `npm run build`     | `npm run build`                               |
 | `npm run test:unit` | `npm run test:unit`                           |
 | `npm run generate`  | `npm run generate`                            |
-| Backend統合テスト   | `cd apps/backend && npm run test:integration` |
+| Backend統合テスト   | `npm run test:integration --workspace=@attendance-kit/backend` |
 
 ## 参考資料
 

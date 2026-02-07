@@ -8,8 +8,10 @@ import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
 import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
+export type Environment = 'dev' | 'test' | 'eva' | 'stg' | 'prod';
+
 export interface AttendanceKitStackProps extends cdk.StackProps {
-  environment?: string; // 'dev' | 'staging' | 'test' | 'local' (デフォルト: 'dev')
+  environment?: Environment; // デフォルト: 'dev'
   jwtSecret?: string; // JWT secret from GitHub Secrets (required for full stack, optional for DynamoDB-only)
   deployOnlyDynamoDB?: boolean; // If true, deploy only DynamoDB table (for integration testing)
 }
@@ -23,9 +25,6 @@ export class AttendanceKitStack extends cdk.Stack {
     // 環境変数のデフォルト値設定
     const environment = props.environment || 'dev';
     const { jwtSecret, deployOnlyDynamoDB = false } = props;
-
-    // 環境変数のバリデーション（super呼び出し前）
-    AttendanceKitStack.validateEnvironmentStatic(environment);
 
     // Stack IDの生成
     const stackId = AttendanceKitStack.generateStackId(environment);
@@ -109,10 +108,18 @@ export class AttendanceKitStack extends cdk.Stack {
         api: this.backendApi.api,
       });
     } else {
-      // DynamoDBのみをデプロイする場合で、dev/local環境の場合はデータクリアとシード機能を追加
-      if (environment === 'dev' || environment === 'local') {
+      // DynamoDBのみをデプロイする場合
+      // データクリア: eva と stg 環境のみ
+      // シード: dev, test, eva, stg 環境（prodは本番環境のためシードなし）
+      if (environment === 'eva' || environment === 'stg') {
+        // AWS評価環境: データクリアとシード
         this.setupDataClearAndSeed();
       }
+      if (AttendanceKitStack.isLocalEnvironment(environment)) {
+        // ローカル環境 (dev, test): シードのみ
+        this.setupDataSeeder();
+      }
+      // 注: prod環境はDynamoDB-onlyモードで使用することを想定していない
     }
 
     // CloudFormation Outputs
@@ -148,19 +155,18 @@ export class AttendanceKitStack extends cdk.Stack {
     }
   }
 
-  private static validateEnvironmentStatic(environment: string): void {
-    const validEnvironments = ['dev', 'staging', 'test', 'local'];
-    if (!validEnvironments.includes(environment)) {
-      throw new Error(
-        `Invalid environment: ${environment}. Must be one of: ${validEnvironments.join(', ')}`,
-      );
-    }
+
+  private static isLocalEnvironment(environment: Environment): boolean {
+    const localEnvironments: Environment[] = ['dev', 'test'];
+    return localEnvironments.includes(environment);
   }
 
-  private validateFullStackDeployment(
-    environment: string,
-    jwtSecret?: string,
-  ): void {
+  private static isAwsEnvironment(environment: Environment): boolean {
+    const awsEnvironments: Environment[] = ['eva', 'stg', 'prod'];
+    return awsEnvironments.includes(environment);
+  }
+
+  private validateFullStackDeployment(environment: Environment, jwtSecret?: string): void {
     // JWT_SECRETが必須
     if (!jwtSecret) {
       throw new Error(
@@ -168,19 +174,10 @@ export class AttendanceKitStack extends cdk.Stack {
           'Please set jwtSecret in stack props.',
       );
     }
-
-    // test/local環境ではフルスタックデプロイは許可しない
-    if (environment === 'test' || environment === 'local') {
-      throw new Error(
-        `Full stack deployment is not allowed for '${environment}' environment. ` +
-          'Use deployOnlyDynamoDB: true for test/local environments.',
-      );
-    }
   }
 
-  private static generateStackId(environment: string): string {
-    const capitalizedEnv =
-      environment.charAt(0).toUpperCase() + environment.slice(1);
+  private static generateStackId(environment: Environment): string {
+    const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 

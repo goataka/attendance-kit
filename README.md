@@ -1,5 +1,9 @@
 # 勤怠管理キット
 
+[![Premerge Checks](https://github.com/goataka/attendance-kit/actions/workflows/premerge.yml/badge.svg)](https://github.com/goataka/attendance-kit/actions/workflows/premerge.yml)
+[![Deploy Environment Stack](https://github.com/goataka/attendance-kit/actions/workflows/deploy-environment-stack.yml/badge.svg)](https://github.com/goataka/attendance-kit/actions/workflows/deploy-environment-stack.yml)
+[![Deploy Account Stack](https://github.com/goataka/attendance-kit/actions/workflows/deploy-account-stack.yml/badge.svg)](https://github.com/goataka/attendance-kit/actions/workflows/deploy-account-stack.yml)
+
 このプロジェクトはエージェントのみで構築する勤怠管理システムです。
 
 ## 🌏 言語ポリシー
@@ -60,15 +64,7 @@ npm test
 
 # 全アプリケーションのLintチェック
 npm run lint
-
-# プレマージワークフローのローカル実行
-npm run premerge:local
 ```
-
-**プレマージワークフロー実行の必要条件**:
-
-- Docker が起動していること
-- [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 
 ### 個別アプリケーションでのコマンド実行
 
@@ -92,6 +88,19 @@ DevContainerを使用した一貫性のある開発環境を提供します。
 VS Codeでコマンドパレットから "Dev Containers: Reopen in Container" を実行してください。
 
 詳細は [.devcontainer/README.md](.devcontainer/README.md) を参照してください。
+
+### コミット前の自動チェック
+
+このプロジェクトでは、コミット前にlint-stagedとhuskyを使用して、ステージングエリアのファイルのみに対してコード品質チェックを実行します：
+
+- **Backend TypeScript**: ESLint（Prettier連携）
+- **Frontend TypeScript**: ESLint
+- **Shell Scripts**: shellcheck
+- **GitHub Actions YAML**: actionlint
+- **Markdown**: Prettier
+- **YAML**: Prettier
+
+コミット時に自動実行されるため、手動での実行は不要です。全体のlintチェックは `npm run lint` で実行できます。
 
 ## 🏗️ システム構成図
 

@@ -64,11 +64,7 @@
 
 **説明**: プレマージワークフローをローカルで実行してCI/CDチェックを行います。
 
-**使用方法**:
-
-```bash
-npm run premerge:local
-```
+**使用タイミング**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
 
 **詳細**: [premerge-check/SKILL.md](./premerge-check/SKILL.md)
 
@@ -121,8 +117,6 @@ Agent Skillsは、GitHub Copilot Agentが実行できる特定のタスクや機
 ├── frontend-developer/          # Frontend開発スキル
 │   └── SKILL.md                 # スキル定義ファイル
 ├── infrastructure-developer/    # Infrastructure開発スキル
-│   └── SKILL.md                 # スキル定義ファイル
-├── premerge-check/              # プレマージチェックスキル
 │   └── SKILL.md                 # スキル定義ファイル
 ├── rule-making/                 # ルール化スキル
 │   └── SKILL.md                 # スキル定義ファイル
