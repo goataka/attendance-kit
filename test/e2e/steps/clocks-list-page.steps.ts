@@ -1,15 +1,11 @@
 import { Then } from '@cucumber/cucumber';
-import { expect, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';
-import { TIMEOUTS, SELECTORS } from './constants';
-
-async function navigateToClocksListPage(page: Page): Promise<void> {
-  await page.getByRole('link', { name: SELECTORS.clockListLink }).click();
-  await page.waitForLoadState('networkidle');
-}
+import { TIMEOUTS } from './constants';
+import { ClocksListPage } from '../../../apps/frontend/src/ClocksListPage/__tests__/integration/ClocksListPage.page';
 
 async function verifyClockRecordInDynamoDB(userId: string): Promise<void> {
   const command = new ScanCommand({
@@ -29,13 +25,11 @@ Then('打刻一覧を確認する', async function (this: CustomWorld) {
     throw new Error('Page is not initialized');
   }
 
-  await navigateToClocksListPage(this.page);
+  const clocksListPage = new ClocksListPage(this.page);
+  await clocksListPage.navigateToPageViaLink();
 
   // Verify table is displayed
-  const table = await this.page.waitForSelector(SELECTORS.table, {
-    timeout: TIMEOUTS.NETWORK_IDLE,
-  });
-  expect(table).toBeDefined();
+  await clocksListPage.expectClockRecordsVisible();
 
   // Verify record exists in DynamoDB
   await verifyClockRecordInDynamoDB(TEST_USER_ID);
