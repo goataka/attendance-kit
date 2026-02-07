@@ -60,15 +60,7 @@ npm test
 
 # 全アプリケーションのLintチェック
 npm run lint
-
-# プレマージワークフローのローカル実行
-npm run premerge:local
 ```
-
-**プレマージワークフロー実行の必要条件**:
-
-- Docker が起動していること
-- [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 
 ### 個別アプリケーションでのコマンド実行
 
