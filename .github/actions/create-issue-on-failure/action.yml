@@ -1,5 +1,5 @@
 name: 'Create Issue on Workflow Failure'
-description: 'ワークフロー失敗時にIssueを作成し、Copilotにメンションする'
+description: 'ワークフロー失敗時にIssueを作成し、Copilotをアサインする'
 
 inputs:
   workflow-name:
@@ -33,4 +33,5 @@ runs:
           --repo "${REPO}" \
           --title "⚠️ ${WORKFLOW_NAME} デプロイエラー" \
           --body "${ISSUE_BODY}" \
-          --label "bug,deploy-error" || exit 0
+          --label "bug,deploy-error" \
+          --assignee "@copilot" || exit 0
