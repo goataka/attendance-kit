@@ -42,7 +42,7 @@ describe('DynamoDBCleaner', () => {
           TABLE_NAME: {
             Ref: 'TestTable5769773A',
           },
-          DEPLOY_TIMESTAMP: Match.anyValue(),
+          DEPLOY_ID: Match.anyValue(),
         },
       },
     });

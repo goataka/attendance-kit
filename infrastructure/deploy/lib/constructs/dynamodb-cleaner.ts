@@ -5,6 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Trigger } from 'aws-cdk-lib/triggers';
 import * as path from 'path';
+import { randomUUID } from 'crypto';
 
 export interface DynamoDBCleanerProps {
   table: dynamodb.ITable;
@@ -24,7 +25,8 @@ export class DynamoDBCleaner extends Construct {
       entry: path.join(__dirname, '../../lambda/clear-table-data.ts'),
       environment: {
         TABLE_NAME: table.tableName,
-        DEPLOY_TIMESTAMP: new Date().toISOString(),
+        // ランダムなUUIDを使用してデプロイごとにLambda関数を変更し、Triggerを毎回実行
+        DEPLOY_ID: randomUUID(),
       },
       timeout: cdk.Duration.minutes(5),
     });
@@ -34,7 +36,8 @@ export class DynamoDBCleaner extends Construct {
     this.trigger = new Trigger(this, 'ClearTableTrigger', {
       handler: clearDataFunction,
       executeAfter: [table],
-      executeOnHandlerChange: true,
+      // executeOnHandlerChange: trueはデフォルト値
+      // ハンドラー（環境変数を含む）が変更されるたびにTriggerを実行
     });
   }
 }
