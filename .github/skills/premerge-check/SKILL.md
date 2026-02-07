@@ -90,8 +90,7 @@ npm run test:unit
 ### 7. Backend統合テスト実行
 
 ```bash
-cd apps/backend
-npm run test:integration
+npm run test:integration --workspace=@attendance-kit/backend
 ```
 
 **必須**: Backend変更時は実行してください。
@@ -104,8 +103,7 @@ npm run test:integration
 ### 8. Frontend E2Eテスト実行
 
 ```bash
-cd apps/frontend
-npm run test:integration
+npm run test:integration --workspace=@attendance-kit/frontend
 ```
 
 **必須**: Frontend変更時は実行してください。
@@ -116,8 +114,7 @@ npm run test:integration
 ### 9. Infrastructure統合テスト実行
 
 ```bash
-cd infrastructure/deploy
-npm run test:integration
+npm run test:integration --workspace=@attendance-kit/deploy
 ```
 
 **必須**: Infrastructure変更時は実行してください。
@@ -157,9 +154,9 @@ npm run test:e2e:local
 3. `npm run format:check` - フォーマットチェック
 4. `npm run build` - ビルド確認
 5. `npm run test:unit` - ユニットテスト
-6. `cd apps/backend && npm run test:integration` - Backend統合テスト
-7. `cd apps/frontend && npm run test:integration` - Frontend E2Eテスト
-8. `cd infrastructure/deploy && npm run test:integration` - Infrastructure統合テスト
+6. `npm run test:integration --workspace=@attendance-kit/backend` - Backend統合テスト
+7. `npm run test:integration --workspace=@attendance-kit/frontend` - Frontend E2Eテスト
+8. `npm run test:integration --workspace=@attendance-kit/deploy` - Infrastructure統合テスト
 9. `npm run generate` - OpenAPI仕様生成
 10. `npm run test:e2e:local` - E2Eテスト（オプション）
 
@@ -203,9 +200,9 @@ npm run format:check
 npm run build
 
 # 個別にビルド
-cd apps/backend && npm run build
-cd apps/frontend && npm run build
-cd infrastructure/deploy && npm run build
+npm run build --workspace=@attendance-kit/backend
+npm run build --workspace=@attendance-kit/frontend
+npm run build --workspace=@attendance-kit/deploy
 ```
 
 - TypeScriptの型エラーを修正
@@ -219,9 +216,9 @@ cd infrastructure/deploy && npm run build
 npm test
 
 # 個別にテスト実行
-cd apps/backend && npm test
-cd apps/frontend && npm test
-cd infrastructure/deploy && npm test
+npm test --workspace=@attendance-kit/backend
+npm test --workspace=@attendance-kit/frontend
+npm test --workspace=@attendance-kit/deploy
 ```
 
 - テストロジックを確認
@@ -258,9 +255,9 @@ cd infrastructure/deploy && npm test
 | `npm run format:check`                 | `npm run format:check`                         |
 | `npm run build`                        | `npm run build`                                |
 | `npm run test:unit`                    | `npm run test:unit`                            |
-| Backend統合テスト                      | `cd apps/backend && npm run test:integration`  |
-| Frontend E2Eテスト                     | `cd apps/frontend && npm run test:integration` |
-| Infrastructure統合テスト               | `cd infrastructure/deploy && npm run test:integration` |
+| Backend統合テスト                      | `npm run test:integration --workspace=@attendance-kit/backend`  |
+| Frontend E2Eテスト                     | `npm run test:integration --workspace=@attendance-kit/frontend` |
+| Infrastructure統合テスト               | `npm run test:integration --workspace=@attendance-kit/deploy` |
 | `npm run generate`                     | `npm run generate`                             |
 | E2Eテスト                              | `npm run test:e2e:local`                       |
 
