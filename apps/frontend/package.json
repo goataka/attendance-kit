@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:unit": "vitest run",
+    "pretest:integration": "npx playwright install --with-deps chromium",
     "test:integration": "playwright test",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",

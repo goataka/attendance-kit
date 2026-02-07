@@ -327,14 +327,7 @@ npm run build
 
 #### 6.2 プレマージチェック（推奨）
 
-可能であれば、プレマージワークフローをローカルで実行:
-
-```bash
-# actツールがインストールされている場合
-npm run premerge:local
-```
-
-または、個別に各ステップを実行:
+ローカル環境で各ステップを実行:
 
 ```bash
 # 依存関係のクリーンインストール
@@ -643,6 +636,5 @@ get_job_logs({
 ## 参考資料
 
 - ワークフロー定義: `.github/workflows/`
-- プレマージチェックスキル: `premerge-check/SKILL.md`
 - GitHub Actions ドキュメント: https://docs.github.com/en/actions
 - Copilotインストラクション: `.github/copilot-instructions.md`

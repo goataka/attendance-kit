@@ -1,5 +1,9 @@
 # 勤怠管理キット
 
+[![Premerge Checks](https://github.com/goataka/attendance-kit/actions/workflows/premerge.yml/badge.svg)](https://github.com/goataka/attendance-kit/actions/workflows/premerge.yml)
+[![Deploy Environment Stack](https://github.com/goataka/attendance-kit/actions/workflows/deploy-environment-stack.yml/badge.svg)](https://github.com/goataka/attendance-kit/actions/workflows/deploy-environment-stack.yml)
+[![Deploy Account Stack](https://github.com/goataka/attendance-kit/actions/workflows/deploy-account-stack.yml/badge.svg)](https://github.com/goataka/attendance-kit/actions/workflows/deploy-account-stack.yml)
+
 このプロジェクトはエージェントのみで構築する勤怠管理システムです。
 
 ## 🌏 言語ポリシー
@@ -60,15 +64,7 @@ npm test
 
 # 全アプリケーションのLintチェック
 npm run lint
-
-# プレマージワークフローのローカル実行
-npm run premerge:local
 ```
-
-**プレマージワークフロー実行の必要条件**:
-
-- Docker が起動していること
-- [act](https://github.com/nektos/act) がインストールされていること（`brew install act` または [公式サイト](https://github.com/nektos/act)参照）
 
 ### 個別アプリケーションでのコマンド実行
 

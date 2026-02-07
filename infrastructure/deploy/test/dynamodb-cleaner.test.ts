@@ -1,4 +1,4 @@
-import { Template } from 'aws-cdk-lib/assertions';
+import { Template, Match } from 'aws-cdk-lib/assertions';
 import { Stack } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { DynamoDBCleaner } from '../lib/constructs/dynamodb-cleaner';
@@ -42,6 +42,7 @@ describe('DynamoDBCleaner', () => {
           TABLE_NAME: {
             Ref: 'TestTable5769773A',
           },
+          DEPLOY_ID: Match.anyValue(),
         },
       },
     });
@@ -85,7 +86,7 @@ describe('DynamoDBCleaner', () => {
     expect(dynamoStatement.Action).toContain('dynamodb:DeleteItem');
   });
 
-  test('Triggerがテーブルに依存する', () => {
+  test('Triggerが依存関係付きで作成される', () => {
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
