@@ -17,14 +17,8 @@ install_shellcheck() {
   fi
 }
 
-install_playwright_browsers() {
-  echo "Playwrightブラウザをインストールしています..."
-  npx playwright install --with-deps chromium
-}
-
 main() {
   install_shellcheck
-  install_playwright_browsers
 }
 
 main "$@"
