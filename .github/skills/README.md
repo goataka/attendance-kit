@@ -60,6 +60,14 @@
 
 **詳細**: [infrastructure-developer/SKILL.md](./infrastructure-developer/SKILL.md)
 
+### premerge-check
+
+**説明**: プレマージワークフローをローカルで実行してCI/CDチェックを行います。
+
+**使用タイミング**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
+
+**詳細**: [premerge-check/SKILL.md](./premerge-check/SKILL.md)
+
 ### rule-making
 
 **説明**: 「ルール化してください」というリクエストに対応し、ルールの内容に応じて適切な記載箇所を特定します。

@@ -5,6 +5,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Trigger } from 'aws-cdk-lib/triggers';
 import * as path from 'path';
+import { randomUUID } from 'crypto';
 
 export interface DynamoDBCleanerProps {
   table: dynamodb.ITable;
@@ -24,6 +25,8 @@ export class DynamoDBCleaner extends Construct {
       entry: path.join(__dirname, '../../lambda/clear-table-data.ts'),
       environment: {
         TABLE_NAME: table.tableName,
+        // デプロイごとにTriggerを実行
+        DEPLOY_ID: randomUUID(),
       },
       timeout: cdk.Duration.minutes(5),
     });
