@@ -1,6 +1,6 @@
 // スナップショットテストについて:
 // - CDKスタックの変更時、CloudFormationテンプレートが変わりスナップショットテストが失敗する
-// - package.jsonの`test:unit`スクリプトに`--updateSnapshot`フラグを含めることで自動更新
+// - `infrastructure/deploy/package.json`の`test:unit`スクリプトに`--updateSnapshot`フラグを含めることで自動更新
 // - CI/CDパイプラインの`.github/actions/commit-and-comment`がスナップショットを自動コミット
 // - この仕組みにより、開発効率とコードレビューの透明性を両立
 
