@@ -1,22 +1,25 @@
 import { test, expect } from '@playwright/test';
+import { ClockInOutPage } from '../../../ClockInOutPage/__tests__/integration/ClockInOutPage.page';
+import { ClocksListPage } from './ClocksListPage.page';
 
 test.describe('Clocks List Page', () => {
   // 各テストの前にデータをシード
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    const clockInOutPage = new ClockInOutPage(page);
+    
+    await clockInOutPage.goto();
     
     // ログイン
-    await page.locator('#userId').fill('user001');
-    await page.locator('#password').fill('password123');
-    await page.getByRole('button', { name: 'ログイン' }).click();
-    await page.waitForSelector('.message.success');
+    await clockInOutPage.login('user001', 'password123');
+    await clockInOutPage.expectSuccessMessage('Login successful');
     
     // 打刻データを追加
-    await page.getByRole('button', { name: '出勤' }).click();
-    await page.waitForSelector('.message.success');
+    await clockInOutPage.clickClockIn();
+    await clockInOutPage.expectSuccessMessage('Clock in successful');
     
     // 打刻一覧ページへ移動（リンクをクリックすることでsessionStorageが維持される）
-    await page.getByRole('link', { name: '打刻一覧を見る' }).click();
+    const clocksListPage = new ClocksListPage(page);
+    await clocksListPage.navigateToPageViaLink();
     await expect(page).toHaveURL('/clocks');
   });
 

@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ClocksListPage } from './ClocksListPage';
-import { api } from '../shared/api';
+import { ClocksListPage } from '../../ClocksListPage';
+import { api } from '../../../shared/api';
 
 // Mock the API - mock the index module which exports the api
-vi.mock('../shared/api', () => ({
+vi.mock('../../../shared/api', () => ({
   api: {
     getRecords: vi.fn(),
-    isAuthenticated: vi.fn(),
+    isAuthenticated: vi.fn(() => true),
   },
 }));
 
@@ -35,7 +35,7 @@ describe('ClocksListPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // デフォルトではログインしている状態
-    vi.mocked(api.isAuthenticated).mockReturnValue(true);
+    vi.mocked(api.isAuthenticated).mockImplementation(() => true);
   });
 
   it('打刻一覧ページが表示されること', async () => {

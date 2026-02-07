@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { ClockInOutPage } from './ClockInOutPage';
-import { api } from '../shared/api';
+import { ClockInOutPage } from '../../ClockInOutPage';
+import { api } from '../../../shared/api';
 
 // Mock the API - mock the index module which exports the api
-vi.mock('../shared/api', () => ({
+vi.mock('../../../shared/api', () => ({
   api: {
     clockInOut: vi.fn(),
     clockInOutWithToken: vi.fn(),
     login: vi.fn(),
-    isAuthenticated: vi.fn(),
+    isAuthenticated: vi.fn(() => false),
     logout: vi.fn(),
   },
 }));
@@ -23,7 +23,7 @@ describe('ClockInOutPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // デフォルトではログインしていない状態
-    vi.mocked(api.isAuthenticated).mockReturnValue(false);
+    vi.mocked(api.isAuthenticated).mockImplementation(() => false);
   });
 
   it('打刻ページが表示されること', () => {
@@ -82,7 +82,7 @@ describe('ClockInOutPage', () => {
   });
 
   it('ログイン済みの場合は打刻ボタンが有効でログインフォームは非表示', () => {
-    vi.mocked(api.isAuthenticated).mockReturnValue(true);
+    vi.mocked(api.isAuthenticated).mockImplementation(() => true);
     
     renderWithRouter(<ClockInOutPage />);
     
@@ -141,7 +141,7 @@ describe('ClockInOutPage', () => {
   });
 
   it('ログイン済みの場合はトークンで出勤打刻が成功すること', async () => {
-    vi.mocked(api.isAuthenticated).mockReturnValue(true);
+    vi.mocked(api.isAuthenticated).mockImplementation(() => true);
     const mockResponse = {
       success: true,
       record: {
@@ -166,7 +166,7 @@ describe('ClockInOutPage', () => {
   });
 
   it('出勤打刻が失敗すること', async () => {
-    vi.mocked(api.isAuthenticated).mockReturnValue(true);
+    vi.mocked(api.isAuthenticated).mockImplementation(() => true);
     const mockResponse = {
       success: false,
       message: 'Invalid credentials',
@@ -187,7 +187,7 @@ describe('ClockInOutPage', () => {
 
   it('ログイン成功後にフォームが非表示になりパスワードが保持されないこと', async () => {
     vi.mocked(api.login).mockResolvedValue('mock-token');
-    vi.mocked(api.isAuthenticated).mockReturnValue(false);
+    vi.mocked(api.isAuthenticated).mockImplementation(() => false);
     
     renderWithRouter(<ClockInOutPage />);
 
