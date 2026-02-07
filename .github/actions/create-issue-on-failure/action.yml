@@ -34,4 +34,4 @@ runs:
           --title "⚠️ ${WORKFLOW_NAME} デプロイエラー" \
           --body "${ISSUE_BODY}" \
           --label "bug,deploy-error" \
-          --assignee "copilot" || exit 0
+          --assignee "@copilot" || exit 0
