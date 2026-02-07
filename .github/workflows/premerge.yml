@@ -221,10 +221,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      - name: Playwrightブラウザと依存関係のインストール
-        working-directory: apps/frontend
-        run: npx playwright install --with-deps chromium
-
       - name: フロントエンド統合テストの実行
         working-directory: apps/frontend
         run: npm run test:integration
@@ -275,9 +271,6 @@ jobs:
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
-
-      - name: Playwrightブラウザのインストール
-        run: npx playwright install --with-deps chromium
 
       - name: 全ワークスペースのビルド
         run: npm run build

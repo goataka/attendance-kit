@@ -136,7 +136,7 @@ jobs:
     needs: deploy
     if: needs.deploy.outputs.environment == 'eva'
     environment: eva
-    
+
     steps:
       - name: コードのチェックアウト
         uses: actions/checkout@v4
@@ -149,9 +149,6 @@ jobs:
 
       - name: 依存関係のインストール
         run: npm run setup
-
-      - name: Playwrightブラウザのインストール
-        run: npx playwright install --with-deps chromium
 
       - name: AWS認証情報の設定（OIDC経由）
         uses: aws-actions/configure-aws-credentials@v4
