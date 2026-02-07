@@ -230,8 +230,9 @@ npx cdk synth --context stack=account
 | ------------------- | ------------------------------------------------------ |
 | `npm run setup`     | `npm run setup`                                        |
 | `npm run build`     | `cd infrastructure/deploy && npm run build`            |
-| `npm run test:unit` | `cd infrastructure/deploy && npm run test:unit`        |
-| CDK deploy test     | `npm run test:integration --workspace=@attendance-kit/deploy` または `npm run deploy:local-all --workspace=@attendance-kit/deploy` |
+| `npm run build`     | `npm run build --workspace=@attendance-kit/deploy`            |
+| `npm run test:unit` | `npm run test:unit --workspace=@attendance-kit/deploy`        |
+| CDK deploy test     | `npm run test:integration --workspace=@attendance-kit/deploy` |
 
 ## 参考資料
 
