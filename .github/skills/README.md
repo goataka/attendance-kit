@@ -64,11 +64,7 @@
 
 **説明**: プレマージワークフローをローカルで実行してCI/CDチェックを行います。
 
-**使用方法**:
-
-```bash
-npm run premerge:local
-```
+**使用タイミング**: PRを作成する前にローカルでCI/CDチェックを実行したい場合
 
 **詳細**: [premerge-check/SKILL.md](./premerge-check/SKILL.md)
 
