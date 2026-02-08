@@ -2,7 +2,7 @@ module.exports = {
   default: {
     paths: ['test/e2e/features/**/*.feature'],
     require: ['test/e2e/steps/**/*.ts'],
-    requireModule: ['ts-node/register'],
+    requireModule: ['ts-node/register', 'tsconfig-paths/register'],
     format: [
       'progress',
       'html:test/e2e/reports/cucumber-report.html',

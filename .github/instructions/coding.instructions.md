@@ -325,6 +325,27 @@ export default defineConfig({
 }
 ```
 
+**test/e2e/cucumber.js（Cucumber設定）**:
+
+```javascript
+module.exports = {
+  default: {
+    requireModule: ['ts-node/register', 'tsconfig-paths/register'],
+    // ... other config
+  },
+};
+```
+
+**package.json（root）**:
+
+```json
+{
+  "devDependencies": {
+    "tsconfig-paths": "^4.2.0"
+  }
+}
+```
+
 ### 使用方法
 
 ```typescript
@@ -343,10 +364,13 @@ import { ClockInOutPage } from '@/ClockInOutPage/tests/integration/ClockInOutPag
 
 ### 注意事項
 
-**重要**: Path Mappingを追加する際は、以下の3つのファイルすべてに追加が必要：
+**重要**: Path Mappingを追加する際は、以下の**5つのファイルすべて**に追加が必須：
 
-1. `apps/frontend/tsconfig.json` - フロントエンドのビルド用
-2. `apps/frontend/vite.config.ts` - Vite（開発サーバー・ビルドツール）用
-3. `tsconfig.json`（root） - Cucumberステップファイル等のルート実行用
+1. root/tsconfig.json
+2. apps/frontend/tsconfig.json
+3. apps/frontend/vite.config.ts
+4. test/e2e/cucumber.js（`tsconfig-paths/register`追加）
+5. package.json（`tsconfig-paths`パッケージ追加）
 
 **いずれか1つでも欠けると、ビルドエラーやテスト実行エラーが発生する**
+
