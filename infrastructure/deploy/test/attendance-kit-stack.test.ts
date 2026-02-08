@@ -1,3 +1,9 @@
+// スナップショットテストについて:
+// - CDKスタックの変更時、CloudFormationテンプレートが変わりスナップショットテストが失敗する
+// - `infrastructure/deploy/package.json`の`test:unit`スクリプトに`--updateSnapshot`フラグを含めることで自動更新
+// - CI/CDパイプラインの`.github/actions/commit-and-comment`がスナップショットを自動コミット
+// - この仕組みにより、開発効率とコードレビューの透明性を両立
+
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
