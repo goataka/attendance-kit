@@ -5,7 +5,7 @@ import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';
 import { TIMEOUTS } from './constants';
-import { ClocksListPage } from '../../../apps/frontend/src/ClocksListPage/tests/integration/ClocksListPage.page';
+import { ClocksListPage } from '@/ClocksListPage/tests/integration/ClocksListPage.page';
 
 async function verifyClockRecordInDynamoDB(userId: string): Promise<void> {
   const command = new ScanCommand({

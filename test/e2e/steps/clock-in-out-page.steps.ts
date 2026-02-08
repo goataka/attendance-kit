@@ -4,7 +4,7 @@ import { FRONTEND_URL } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
 import { TIMEOUTS } from './constants';
-import { ClockInOutPage } from '../../../apps/frontend/src/ClockInOutPage/tests/integration/ClockInOutPage.page';
+import { ClockInOutPage } from '@/ClockInOutPage/tests/integration/ClockInOutPage.page';
 
 async function performClockAction(
   world: CustomWorld,

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ClockInOutPage } from '../../../ClockInOutPage/__tests__/integration/ClockInOutPage.page';
+import { ClockInOutPage } from '@/ClockInOutPage/tests/integration/ClockInOutPage.page';
 import { ClocksListPage } from './ClocksListPage.page';
 
 test.describe('Clocks List Page', () => {
@@ -24,62 +24,58 @@ test.describe('Clocks List Page', () => {
   });
 
   test('should display records list', async ({ page }) => {
-    // ページタイトルを確認
+    // Given: 打刻データが存在する状態
+    
+    // When: 打刻一覧ページが表示される
     await expect(page.locator('h1')).toHaveText('打刻一覧');
     
-    // フィルター要素を確認
+    // Then: フィルター要素とテーブルが表示される
     await expect(page.locator('#filterUserId')).toBeVisible();
     await expect(page.locator('#filterType')).toBeVisible();
     await expect(page.locator('#filterStartDate')).toBeVisible();
     await expect(page.locator('#filterEndDate')).toBeVisible();
-    
-    // テーブル構造を確認
     await expect(page.locator('.records-table')).toBeVisible();
     await expect(page.locator('.records-table th').first()).toContainText('ID');
-    
-    // アニメーション完了を待つ
     await page.waitForTimeout(500);
-    
-    // ビジュアルリグレッションテスト - ClocksListPage.screenshot.pngに保存
     await expect(page).toHaveScreenshot(['ClocksListPage.screenshot.png'], {
       fullPage: true,
     });
   });
 
   test('should filter records by user ID', async ({ page }) => {
-    // 初期データの読み込みを待つ
+    // Given: 初期データが読み込まれている
     await page.waitForSelector('.records-table tbody tr');
     
-    // ユーザーIDでフィルタリング
+    // When: ユーザーIDでフィルタリング
     await page.locator('#filterUserId').fill('user001');
     await page.getByRole('button', { name: '検索' }).click();
-    
-    // フィルタリング結果を待つ
     await page.waitForTimeout(500);
     
-    // 結果にフィルタリングしたユーザーが含まれることを確認
+    // Then: フィルタリング結果が表示される
     const firstRow = page.locator('.records-table tbody tr').first();
     await expect(firstRow).toContainText('user001');
   });
 
   test('should reset filters', async ({ page }) => {
-    // フィルターを設定
+    // Given: フィルターを設定
     await page.locator('#filterUserId').fill('user001');
     await page.locator('#filterType').selectOption('clock-in');
     
-    // フィルターをリセット
+    // When: フィルターをリセット
     await page.getByRole('button', { name: 'リセット' }).click();
     
-    // フィルターがクリアされたことを確認
+    // Then: フィルターがクリアされる
     await expect(page.locator('#filterUserId')).toHaveValue('');
     await expect(page.locator('#filterType')).toHaveValue('all');
   });
 
   test('should navigate back to clock in page', async ({ page }) => {
-    // 打刻画面へのリンクをクリック
+    // Given: 打刻一覧ページを表示
+    
+    // When: 打刻画面へのリンクをクリック
     await page.getByRole('link', { name: '打刻画面に戻る' }).click();
     
-    // 戻ることを確認
+    // Then: 打刻画面に遷移する
     await expect(page).toHaveURL('/');
     await expect(page.locator('h1')).toHaveText('勤怠打刻');
   });

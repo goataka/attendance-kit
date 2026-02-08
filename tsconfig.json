@@ -7,7 +7,12 @@
     "skipLibCheck": true,
     "strict": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/ClockInOutPage/*": ["apps/frontend/src/ClockInOutPage/*"],
+      "@/ClocksListPage/*": ["apps/frontend/src/ClocksListPage/*"]
+    }
   },
   "ts-node": {
     "transpileOnly": true,

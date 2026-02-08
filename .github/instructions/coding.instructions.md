@@ -223,3 +223,59 @@ cd infrastructure/deploy && npm run test:unit
 - ドキュメント内のコマンド例
 - スキルファイル内の実行手順
 - シェルスクリプト内でのnpmコマンド実行
+
+## Given-When-Then テスト構造
+
+すべての自動テストは Given-When-Then 構造でコメントを記載する。
+
+### 構造
+
+- **Given**: 初期状態のセットアップ（前提条件）
+- **When**: ユーザー操作やシステムイベント（実行）
+- **Then**: 期待結果の検証（結果）
+
+### 適用対象
+
+- ユニットテスト（React Testing Library、Jest）
+- Integration E2Eテスト（Playwright）
+- Cucumberステップファイル
+
+### 例（ユニットテスト）
+
+```typescript
+test('ログインが成功すること', async () => {
+  // Given: 初期状態のセットアップ
+  vi.mocked(api.login).mockImplementation(async () => 'mock-token');
+  const page = new ClockInOutPageObject();
+  page.render();
+  
+  // When: ユーザーがログイン操作を実行
+  await page.login('user001', 'password123');
+  
+  // Then: ログイン成功メッセージが表示される
+  await page.expectSuccessMessage('Login successful');
+});
+```
+
+### 例（Integration E2E）
+
+```typescript
+test('ログインが成功し打刻ボタンが有効になること', async ({ page }) => {
+  // Given: 打刻ページを表示
+  const clockInOutPage = new ClockInOutPage(page);
+  await clockInOutPage.goto();
+  
+  // When: ログイン操作を実行
+  await clockInOutPage.login('user001', 'password123');
+  
+  // Then: ログイン成功状態を確認
+  await clockInOutPage.expectSuccessMessage('Login successful');
+  await clockInOutPage.expectClockButtonsEnabled();
+});
+```
+
+### 理由
+
+- テストの意図が明確になる（準備→実行→検証）
+- 各セクションの責任が明確で保守しやすい
+- BDD（振る舞い駆動開発）のベストプラクティスに準拠
