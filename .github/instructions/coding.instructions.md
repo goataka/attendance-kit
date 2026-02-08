@@ -330,11 +330,14 @@ export default defineConfig({
 ```javascript
 module.exports = {
   default: {
-    requireModule: ['ts-node/register', 'tsconfig-paths/register'],
+    import: ['test/e2e/steps/**/*.ts'],
+    loader: ['ts-node/esm', 'tsconfig-paths/register'],
     // ... other config
   },
 };
 ```
+
+**重要**: `apps/frontend/package.json`に`"type": "module"`が含まれているため、そのスコープ内の`.ts`ファイルはESモジュールとして扱われる。Cucumberでこれらをインポートする場合、`require`/`requireModule`ではなく`import`/`loader`を使用し、`ts-node/esm`を指定する必要がある。
 
 **package.json（root）**:
 
@@ -373,4 +376,3 @@ import { ClockInOutPage } from '@/ClockInOutPage/tests/integration/ClockInOutPag
 5. package.json（`tsconfig-paths`パッケージ追加）
 
 **いずれか1つでも欠けると、ビルドエラーやテスト実行エラーが発生する**
-
