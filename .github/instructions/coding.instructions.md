@@ -244,10 +244,10 @@ test('ログインが成功すること', async () => {
   vi.mocked(api.login).mockImplementation(async () => 'mock-token');
   const page = new ClockInOutPageObject();
   page.render();
-  
+
   // When: ユーザーがログイン操作を実行
   await page.login('user001', 'password123');
-  
+
   // Then: ログイン成功メッセージが表示される
   await page.expectSuccessMessage('Login successful');
 });
@@ -260,10 +260,10 @@ test('ログインが成功し打刻ボタンが有効になること', async ({
   // Given: 打刻ページを表示
   const clockInOutPage = new ClockInOutPage(page);
   await clockInOutPage.goto();
-  
+
   // When: ログイン操作を実行
   await clockInOutPage.login('user001', 'password123');
-  
+
   // Then: ログイン成功状態を確認
   await clockInOutPage.expectSuccessMessage('Login successful');
   await clockInOutPage.expectClockButtonsEnabled();
@@ -275,3 +275,78 @@ test('ログインが成功し打刻ボタンが有効になること', async ({
 - テストの意図が明確になる（準備→実行→検証）
 - 各セクションの責任が明確で保守しやすい
 - BDD（振る舞い駆動開発）のベストプラクティスに準拠
+
+## TypeScript Path Mapping
+
+TypeScript Path Mappingを使用してインポートパスを簡略化する。
+
+### 設定ファイル
+
+**apps/frontend/tsconfig.json**:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/ClockInOutPage/*": ["src/ClockInOutPage/*"],
+      "@/ClocksListPage/*": ["src/ClocksListPage/*"]
+    }
+  }
+}
+```
+
+**apps/frontend/vite.config.ts**:
+
+```typescript
+import path from 'path';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@/ClockInOutPage': path.resolve(__dirname, 'src/ClockInOutPage'),
+      '@/ClocksListPage': path.resolve(__dirname, 'src/ClocksListPage'),
+    },
+  },
+});
+```
+
+**tsconfig.json（root）**:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/ClockInOutPage/*": ["apps/frontend/src/ClockInOutPage/*"],
+      "@/ClocksListPage/*": ["apps/frontend/src/ClocksListPage/*"]
+    }
+  }
+}
+```
+
+### 使用方法
+
+```typescript
+// Before: 相対パス
+import { ClockInOutPage } from '../../../apps/frontend/src/ClockInOutPage/tests/integration/ClockInOutPage.page';
+
+// After: Path Mapping
+import { ClockInOutPage } from '@/ClockInOutPage/tests/integration/ClockInOutPage.page';
+```
+
+### 理由
+
+- インポートパスの簡略化によるリファクタリング耐性向上
+- ディレクトリ構造変更時の修正箇所削減
+- コードの可読性向上
+
+### 注意事項
+
+**重要**: Path Mappingを追加する際は、以下の3つのファイルすべてに追加が必要：
+
+1. `apps/frontend/tsconfig.json` - フロントエンドのビルド用
+2. `apps/frontend/vite.config.ts` - Vite（開発サーバー・ビルドツール）用
+3. `tsconfig.json`（root） - Cucumberステップファイル等のルート実行用
+
+**いずれか1つでも欠けると、ビルドエラーやテスト実行エラーが発生する**

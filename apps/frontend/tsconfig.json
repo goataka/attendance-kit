@@ -14,6 +14,13 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Path Mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/ClockInOutPage/*": ["src/ClockInOutPage/*"],
+      "@/ClocksListPage/*": ["src/ClocksListPage/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
