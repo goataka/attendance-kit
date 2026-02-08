@@ -39,10 +39,13 @@ describe('ClocksListPage', () => {
   });
 
   it('打刻一覧ページが表示されること', async () => {
+    // Given: 打刻データが存在する
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
 
+    // When: ページをレンダリング
     renderWithRouter(<ClocksListPage />);
 
+    // Then: タイトルとデータが表示される
     expect(screen.getByText('打刻一覧')).toBeInTheDocument();
 
     await waitFor(() => {
@@ -51,18 +54,24 @@ describe('ClocksListPage', () => {
   });
 
   it('初期状態ではローディング表示されること', () => {
+    // Given: APIがレスポンスを返さない
     vi.mocked(api.getRecords).mockImplementation(() => new Promise(() => {}));
 
+    // When: ページをレンダリング
     renderWithRouter(<ClocksListPage />);
 
+    // Then: ローディングが表示される
     expect(screen.getByText('Loading...')).toBeInTheDocument();
   });
 
   it('ロード後に打刻データが表示されること', async () => {
+    // Given: 打刻データが存在する
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
 
+    // When: ページをレンダリング
     renderWithRouter(<ClocksListPage />);
 
+    // Then: 打刻データが表示される
     await waitFor(() => {
       expect(screen.getByText('1')).toBeInTheDocument();
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
@@ -71,30 +80,35 @@ describe('ClocksListPage', () => {
   });
 
   it('データが空の場合はメッセージが表示されること', async () => {
+    // Given: 打刻データが空
     vi.mocked(api.getRecords).mockResolvedValue([]);
 
+    // When: ページをレンダリング
     renderWithRouter(<ClocksListPage />);
 
+    // Then: 空のメッセージが表示される
     await waitFor(() => {
       expect(screen.getByText('打刻データがありません')).toBeInTheDocument();
     });
   });
 
   it('ユーザーIDでフィルタリングできること', async () => {
+    // Given: 打刻データが存在する
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
-
     renderWithRouter(<ClocksListPage />);
 
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
     });
 
+    // When: ユーザーIDを入力して検索
     const userIdFilter = screen.getByLabelText('User ID');
     fireEvent.change(userIdFilter, { target: { value: 'user002' } });
 
     const searchButton = screen.getByText('検索');
     fireEvent.click(searchButton);
 
+    // Then: フィルタ条件でAPIが呼ばれる
     await waitFor(() => {
       expect(api.getRecords).toHaveBeenCalledWith(
         expect.objectContaining({ userId: 'user002' }),
@@ -103,20 +117,22 @@ describe('ClocksListPage', () => {
   });
 
   it('打刻種別でフィルタリングできること', async () => {
+    // Given: 打刻データが存在する
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
-
     renderWithRouter(<ClocksListPage />);
 
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
     });
 
+    // When: 打刻種別を選択して検索
     const typeFilter = screen.getByLabelText('打刻種別');
     fireEvent.change(typeFilter, { target: { value: 'clock-in' } });
 
     const searchButton = screen.getByText('検索');
     fireEvent.click(searchButton);
 
+    // Then: フィルタ条件でAPIが呼ばれる
     await waitFor(() => {
       expect(api.getRecords).toHaveBeenCalledWith(
         expect.objectContaining({ type: 'clock-in' }),
@@ -124,44 +140,52 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('resets filters', async () => {
+  it('フィルターをリセットできること', async () => {
+    // Given: 打刻データが存在する
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
-
     renderWithRouter(<ClocksListPage />);
 
     await waitFor(() => {
       expect(screen.getAllByText('user001').length).toBeGreaterThan(0);
     });
 
+    // When: フィルターを設定してリセット
     const userIdFilter = screen.getByLabelText('User ID') as HTMLInputElement;
     fireEvent.change(userIdFilter, { target: { value: 'user002' } });
 
     const resetButton = screen.getByText('リセット');
     fireEvent.click(resetButton);
 
+    // Then: フィルターがクリアされる
     await waitFor(() => {
       expect(userIdFilter.value).toBe('');
     });
   });
 
-  it('displays error message when API call fails', async () => {
+  it('API呼び出し失敗時に認証エラーメッセージが表示されること', async () => {
+    // Given: APIが認証エラーを返す
     const errorMessage = 'Authentication required. Please log in first.';
     vi.mocked(api.getRecords).mockRejectedValue(new Error(errorMessage));
 
+    // When: ページをレンダリング
     renderWithRouter(<ClocksListPage />);
 
+    // Then: エラーメッセージが表示される
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
   });
 
-  it('displays generic error message when fetch fails', async () => {
+  it('fetch失敗時に汎用エラーメッセージが表示されること', async () => {
+    // Given: APIがfetchエラーを返す
     vi.mocked(api.getRecords).mockRejectedValue(
       new Error('Failed to fetch records'),
     );
 
+    // When: ページをレンダリング
     renderWithRouter(<ClocksListPage />);
 
+    // Then: エラーメッセージが表示される
     await waitFor(() => {
       expect(screen.getByText('Failed to fetch records')).toBeInTheDocument();
     });
