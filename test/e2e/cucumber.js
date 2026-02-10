@@ -1,8 +1,8 @@
 module.exports = {
   default: {
     paths: ['test/e2e/features/**/*.feature'],
-    import: ['test/e2e/steps/**/*.ts'],
-    loader: ['ts-node/esm', 'tsconfig-paths/register'],
+    require: ['test/e2e/steps/**/*.ts'],
+    requireModule: ['ts-node/register', 'tsconfig-paths/register'],
     format: [
       'progress',
       'html:test/e2e/reports/cucumber-report.html',

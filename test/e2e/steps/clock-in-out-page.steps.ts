@@ -1,10 +1,17 @@
 import { When, Then } from '@cucumber/cucumber';
-import { expect } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 import { FRONTEND_URL } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
 import { TIMEOUTS } from './constants';
-import { ClockInOutPage } from '@/ClockInOutPage/tests/integration/ClockInOutPage.page';
+
+async function createClockInOutPage(page: Page) {
+  const { ClockInOutPage } = await import(
+    '@/ClockInOutPage/tests/integration/ClockInOutPage.page'
+  );
+
+  return new ClockInOutPage(page);
+}
 
 async function performClockAction(
   world: CustomWorld,
@@ -14,7 +21,7 @@ async function performClockAction(
     throw new Error('Page is not initialized');
   }
 
-  const clockInOutPage = new ClockInOutPage(world.page);
+  const clockInOutPage = await createClockInOutPage(world.page);
   await clockInOutPage.goto();
   await clockInOutPage.clockInWithoutLogin(
     TEST_USER_ID,
@@ -48,7 +55,7 @@ Then(
       throw new Error('Page is not initialized');
     }
 
-    const clockInOutPage = new ClockInOutPage(this.page);
+    const clockInOutPage = await createClockInOutPage(this.page);
     await clockInOutPage.expectSuccessMessage();
   },
 );
