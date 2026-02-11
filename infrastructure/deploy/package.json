@@ -14,7 +14,7 @@
     "cdk": "cdk",
     "deploy:local-all": "npm run cdklocal:setup && npm run cdklocal:bootstrap && npm run cdklocal:deploy-all",
     "deploy:local-db": "npm run cdklocal:setup && npm run cdklocal:bootstrap && npm run cdklocal:deploy-db",
-    "cdklocal:setup": "DISABLE_TELEMETRY=1 localstack stop || true; DISABLE_TELEMETRY=1 ANALYTICS_API=http://127.0.0.1 DISABLE_EVENTS=true LOCALSTACK_ANALYTICS=0 LOCALSTACK_DISABLE_EVENTS=1 localstack start -d && localstack wait -t 30",
+    "cdklocal:setup": "DISABLE_TELEMETRY=1 LOCALSTACK_DISABLE_EVENTS=1 DISABLE_EVENTS=1 LOCALSTACK_ANALYTICS_API=http://127.0.0.1 ANALYTICS_API=http://127.0.0.1 localstack stop || true; DISABLE_TELEMETRY=1 LOCALSTACK_DISABLE_EVENTS=1 DISABLE_EVENTS=1 LOCALSTACK_ANALYTICS_API=http://127.0.0.1 ANALYTICS_API=http://127.0.0.1 localstack start -d && localstack wait -t 30",
     "cdklocal:bootstrap": "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=ap-northeast-1 CDK_DEFAULT_ACCOUNT=000000000000 CDK_DEFAULT_REGION=ap-northeast-1 JWT_SECRET=test-secret-key npx cdklocal bootstrap aws://000000000000/ap-northeast-1 --force && sleep 3",
     "cdklocal:deploy-all": "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=ap-northeast-1 CDK_DEFAULT_ACCOUNT=000000000000 CDK_DEFAULT_REGION=ap-northeast-1 npx cdklocal deploy --context stack=environment --context environment=dev --require-approval never",
     "cdklocal:deploy-db": "AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_DEFAULT_REGION=ap-northeast-1 CDK_DEFAULT_ACCOUNT=000000000000 CDK_DEFAULT_REGION=ap-northeast-1 npx cdklocal deploy AttendanceKit-Test-Stack --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters",
