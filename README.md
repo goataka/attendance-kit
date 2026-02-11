@@ -79,6 +79,17 @@ npm test -w @attendance-kit/website
 
 このプロジェクトは、GitHub Copilot Agentが使用できるスキルを定義しています。詳細は [.github/skills/README.md](.github/skills/README.md) を参照してください。
 
+### GitHub Copilot Hooks
+
+エージェントの作業中に自動的に品質チェックを実行するhooksを設定しています：
+
+- **E2E実行の強制**: エージェントがドキュメント以外のファイルを変更した場合、自動的にE2Eテストが実行されます
+  - 設定: `.github/hooks/e2e-enforcement.json`
+  - スクリプト: `scripts/hooks/check-and-run-e2e.sh`
+  - ドキュメントのみの変更（\*.md、docs/など）の場合はスキップされます
+
+詳細は [GitHub Copilot Hooks ドキュメント](https://docs.github.com/ja/copilot/how-tos/use-copilot-agents/coding-agent/use-hooks) を参照してください。
+
 ## 🚀 開発環境セットアップ
 
 DevContainerを使用した一貫性のある開発環境を提供します。
