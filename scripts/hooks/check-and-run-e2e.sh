@@ -52,11 +52,6 @@ check_and_run_e2e() {
   
   # 変更されたファイルをチェック
   while IFS= read -r file; do
-    # 空行をスキップ
-    if [[ -z "${file}" ]]; then
-      continue
-    fi
-    
     if ! is_documentation_file "${file}"; then
       has_non_doc_changes=true
       echo "非ドキュメントファイルの変更を検出: ${file}" >&2
