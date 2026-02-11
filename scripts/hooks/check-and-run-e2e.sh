@@ -35,8 +35,10 @@ check_and_run_e2e() {
   local changed_files
   local has_non_doc_changes=false
   
-  # git diffで変更されたファイルを取得
+  # git diffで変更されたファイルを取得（working directoryとstaged changesの両方）
   changed_files=$(git diff --name-only HEAD 2>/dev/null || echo "")
+  changed_files="${changed_files}
+$(git diff --name-only --cached 2>/dev/null || echo "")"
   
   # 変更がない場合は終了
   if [[ -z "${changed_files}" ]]; then
