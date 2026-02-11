@@ -36,9 +36,14 @@ check_and_run_e2e() {
   local has_non_doc_changes=false
   
   # git diffで変更されたファイルを取得（working directoryとstaged changesの両方）
-  changed_files=$(git diff --name-only HEAD 2>/dev/null || echo "")
-  changed_files="${changed_files}
-$(git diff --name-only --cached 2>/dev/null || echo "")"
+  # 配列を使用して空行を適切に処理
+  local working_changes
+  local staged_changes
+  working_changes=$(git diff --name-only HEAD 2>/dev/null || echo "")
+  staged_changes=$(git diff --name-only --cached 2>/dev/null || echo "")
+  
+  # 両方の変更を結合し、空行を除去
+  changed_files=$(echo -e "${working_changes}\n${staged_changes}" | grep -v '^$' || echo "")
   
   # 変更がない場合は終了
   if [[ -z "${changed_files}" ]]; then
@@ -47,6 +52,11 @@ $(git diff --name-only --cached 2>/dev/null || echo "")"
   
   # 変更されたファイルをチェック
   while IFS= read -r file; do
+    # 空行をスキップ
+    if [[ -z "${file}" ]]; then
+      continue
+    fi
+    
     if ! is_documentation_file "${file}"; then
       has_non_doc_changes=true
       echo "非ドキュメントファイルの変更を検出: ${file}" >&2
