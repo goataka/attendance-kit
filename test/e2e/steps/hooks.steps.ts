@@ -7,7 +7,7 @@ import {
 } from '@cucumber/cucumber';
 import { chromium, Browser } from '@playwright/test';
 import { CustomWorld } from './world';
-import { verifyServicesRunning } from './services.helper';
+import { verifyServicesRunning, FRONTEND_URL } from './services.helper';
 import { TIMEOUTS } from './constants';
 
 setDefaultTimeout(TIMEOUTS.DEFAULT_STEP);
@@ -24,7 +24,9 @@ Before(async function (this: CustomWorld) {
   }
   this.browser = globalBrowser;
 
-  this.context = await this.browser.newContext();
+  this.context = await this.browser.newContext({
+    baseURL: FRONTEND_URL,
+  });
   this.page = await this.context.newPage();
 });
 
