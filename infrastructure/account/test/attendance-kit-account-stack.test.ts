@@ -5,7 +5,7 @@ import {
   AttendanceKitAccountStackProps,
 } from '../lib/attendance-kit-account-stack';
 
-describe('AttendanceKitAccountStack', () => {
+describe('AttendanceKitAccountStack（アカウントスタック）', () => {
   let app: App;
   let stack: AttendanceKitAccountStack;
   let template: Template;

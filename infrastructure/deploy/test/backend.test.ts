@@ -21,7 +21,7 @@ expect.addSnapshotSerializer({
   },
 });
 
-describe('AttendanceKitStack', () => {
+describe('AttendanceKitStack（統合スタック）', () => {
   let app: App;
   let template: Template;
 

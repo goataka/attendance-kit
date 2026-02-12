@@ -2,7 +2,7 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { Stack } from 'aws-cdk-lib';
 import { CostBudgetConstruct } from '../lib/constructs/cost-budget';
 
-describe('CostBudgetConstruct', () => {
+describe('CostBudgetConstruct（コスト予算）', () => {
   test('SNSトピックが作成されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
