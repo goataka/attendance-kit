@@ -8,7 +8,7 @@ import {
 import { chromium, Browser } from '@playwright/test';
 import { CustomWorld } from './world';
 import { TIMEOUTS } from './constants';
-import { FRONTEND_URL, BACKEND_URL } from './services.helper';
+import { FRONTEND_URL, verifyServicesRunning } from './services.helper';
 
 setDefaultTimeout(TIMEOUTS.DEFAULT_STEP);
 
@@ -18,18 +18,12 @@ let servicesAvailable = false;
 BeforeAll(async function () {
   // サービスが利用可能かチェック
   try {
-    const response = await fetch(FRONTEND_URL, {
-      method: 'GET',
-      signal: AbortSignal.timeout(5000),
-    });
-    servicesAvailable = response.ok;
-  } catch (error) {
-    console.warn('Frontend service not available, tests will be skipped');
-    servicesAvailable = false;
-  }
-
-  if (servicesAvailable) {
+    await verifyServicesRunning();
+    servicesAvailable = true;
     globalBrowser = await chromium.launch({ headless: true });
+  } catch (error) {
+    console.warn('Services not available, tests will be skipped:', error);
+    servicesAvailable = false;
   }
 });
 

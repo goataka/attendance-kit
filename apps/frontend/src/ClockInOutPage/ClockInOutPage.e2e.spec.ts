@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import ClockInOutPage from './page-objects/ClockInOutPage';
+import ClockInOutPage from './ClockInOutPage.page';
 
 test.describe('打刻ページ', () => {
   test('打刻フォームが表示されること', async ({ page }) => {

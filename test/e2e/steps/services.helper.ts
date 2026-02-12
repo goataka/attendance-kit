@@ -22,3 +22,39 @@ const dynamoConfig = IS_LOCAL
     };
 
 export const dynamoClient = new DynamoDBClient(dynamoConfig);
+
+async function verifyService(
+  name: string,
+  verifyFn: () => Promise<void>,
+): Promise<void> {
+  try {
+    await verifyFn();
+  } catch (error) {
+    throw new Error(`${name} verification failed: ${error}`);
+  }
+}
+
+async function verifyBackend(): Promise<void> {
+  await verifyService('Backend', async () => {
+    const response = await fetch(`${BACKEND_URL}/api/health`, {
+      method: 'GET',
+    });
+    if (!response.ok) {
+      throw new Error(`Health check failed with status: ${response.status}`);
+    }
+  });
+}
+
+async function verifyFrontend(): Promise<void> {
+  await verifyService('Frontend', async () => {
+    const response = await fetch(FRONTEND_URL, { method: 'GET' });
+    if (!response.ok) {
+      throw new Error(`Health check failed with status: ${response.status}`);
+    }
+  });
+}
+
+export async function verifyServicesRunning(): Promise<void> {
+  await verifyBackend();
+  await verifyFrontend();
+}
