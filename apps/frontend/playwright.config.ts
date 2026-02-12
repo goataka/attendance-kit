@@ -14,12 +14,6 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
-  expect: {
-    toHaveScreenshot: {
-      maxDiffPixelRatio: 0.02, // 2%の差分を許容（フォントレンダリングの差異対策）
-    },
-  },
-
   // Configure snapshot path to save screenshots in the same directory as the test
   // Using array format with {arg} and {ext} to properly handle dots in filenames
   snapshotPathTemplate: '{testDir}/{testFileDir}/{arg}{ext}',
