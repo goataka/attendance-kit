@@ -3,7 +3,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 
-describe('AuthService', () => {
+describe('AuthService（単体テスト）', () => {
   let service: AuthService;
   let jwtService: JwtService;
 

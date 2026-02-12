@@ -139,7 +139,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('resets filters', async () => {
+  it('フィルタをリセットできること', async () => {
     // Given: APIが打刻データを返し、フィルタが設定されている
     vi.mocked(api.getRecords).mockResolvedValue(mockRecords);
 
@@ -162,7 +162,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('displays error message when API call fails', async () => {
+  it('API呼び出しが失敗した場合はエラーメッセージが表示されること', async () => {
     // Given: APIが認証エラーを返すようモック設定
     const errorMessage = 'Authentication required. Please log in first.';
     vi.mocked(api.getRecords).mockRejectedValue(new Error(errorMessage));
@@ -176,7 +176,7 @@ describe('ClocksListPage', () => {
     });
   });
 
-  it('displays generic error message when fetch fails', async () => {
+  it('取得に失敗した場合は汎用エラーメッセージが表示されること', async () => {
     // Given: APIが汎用エラーを返すようモック設定
     vi.mocked(api.getRecords).mockRejectedValue(
       new Error('Failed to fetch records'),

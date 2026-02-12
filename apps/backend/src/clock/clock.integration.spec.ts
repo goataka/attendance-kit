@@ -24,7 +24,7 @@ try {
 }
 
 // LocalStack使用時は USE_LOCALSTACK=true を設定
-describe('ClockController (Integration)', () => {
+describe('ClockController（統合テスト）', () => {
   let app: INestApplication;
   let jwtService: JwtService;
   let authToken: string;

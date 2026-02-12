@@ -3,7 +3,7 @@ import { Stack } from 'aws-cdk-lib';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { DynamoDBCleaner } from '../lib/constructs/dynamodb-cleaner';
 
-describe('DynamoDBCleaner', () => {
+describe('DynamoDBCleaner（テーブルクリーナー）', () => {
   let stack: Stack;
   let table: dynamodb.Table;
 

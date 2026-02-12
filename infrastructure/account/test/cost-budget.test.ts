@@ -2,8 +2,8 @@ import { Template } from 'aws-cdk-lib/assertions';
 import { Stack } from 'aws-cdk-lib';
 import { CostBudgetConstruct } from '../lib/constructs/cost-budget';
 
-describe('CostBudgetConstruct', () => {
-  test('SNS Topic Created', () => {
+describe('CostBudgetConstruct（コスト予算）', () => {
+  test('SNSトピックが作成されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
@@ -23,7 +23,7 @@ describe('CostBudgetConstruct', () => {
     });
   });
 
-  test('SNS Email Subscription Created', () => {
+  test('SNSメールサブスクリプションが作成されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
@@ -43,7 +43,7 @@ describe('CostBudgetConstruct', () => {
     });
   });
 
-  test('Budget with Actual and Forecasted Alerts', () => {
+  test('実コストと予測コストのアラート付きBudgetが作成されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
@@ -69,7 +69,7 @@ describe('CostBudgetConstruct', () => {
     });
   });
 
-  test('Budget has SNS notification for actual cost', () => {
+  test('Budgetに実コストのSNS通知が設定されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
@@ -104,7 +104,7 @@ describe('CostBudgetConstruct', () => {
     );
   });
 
-  test('Budget has SNS notification for forecasted cost', () => {
+  test('Budgetに予測コストのSNS通知が設定されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {
@@ -131,7 +131,7 @@ describe('CostBudgetConstruct', () => {
     );
   });
 
-  test('SNS Topic has policy allowing AWS Budgets to publish', () => {
+  test('SNSトピックにAWS Budgetsからの発行を許可するポリシーが設定されること', () => {
     // Given: CostBudgetConstructの設定
     const stack = new Stack();
     new CostBudgetConstruct(stack, 'TestBudget', {

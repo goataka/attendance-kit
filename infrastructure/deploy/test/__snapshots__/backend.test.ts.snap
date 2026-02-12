@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AttendanceKitStack - Eva Environment Eva Stack Matches Snapshot 1`] = `
+exports[`AttendanceKitStack - Eva環境 Evaスタックがスナップショットと一致すること 1`] = `
 {
   "Description": "DynamoDB clock table for attendance-kit (eva environment)",
   "Outputs": {
@@ -1428,7 +1428,7 @@ exports[`AttendanceKitStack - Eva Environment Eva Stack Matches Snapshot 1`] = `
 }
 `;
 
-exports[`AttendanceKitStack Stack Matches Snapshot 1`] = `
+exports[`AttendanceKitStack（統合スタック） スタックがスナップショットと一致すること 1`] = `
 {
   "Description": "DynamoDB clock table for attendance-kit (eva environment)",
   "Outputs": {

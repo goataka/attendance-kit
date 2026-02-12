@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`App Snapshot > matches snapshot 1`] = `
+exports[`Appスナップショット > スナップショットと一致すること 1`] = `
 <div>
   <div
     class="clock-in-out-page"

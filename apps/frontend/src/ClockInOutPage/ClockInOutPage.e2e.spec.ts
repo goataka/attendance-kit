@@ -1,9 +1,8 @@
 import { test, expect } from '@playwright/test';
 import ClockInOutPage from '../shared/page-objects/ClockInOutPage';
 
-test.describe('Clock In/Out Page', () => {
-  test('should display clock in/out form', async ({ page }) => {
-    // Given: 打刻画面のページオブジェクトを作成
+test.describe('打刻ページ', () => {
+  test('打刻フォームが表示されること', async ({ page }) => {
     const clockInOutPage = new ClockInOutPage(page);
 
     // When: 打刻画面に遷移
@@ -22,8 +21,7 @@ test.describe('Clock In/Out Page', () => {
     });
   });
 
-  test('should handle clock in', async ({ page }) => {
-    // Given: 打刻画面のページオブジェクトを作成
+  test('出勤打刻ができること', async ({ page }) => {
     const clockInOutPage = new ClockInOutPage(page);
     await clockInOutPage.goto();
 
@@ -35,8 +33,7 @@ test.describe('Clock In/Out Page', () => {
     await clockInOutPage.expectSuccessMessage('Clock in successful');
   });
 
-  test('should show error for empty fields', async ({ page }) => {
-    // Given: 打刻画面のページオブジェクトを作成
+  test('入力が空の場合はエラーが表示されること', async ({ page }) => {
     const clockInOutPage = new ClockInOutPage(page);
     await clockInOutPage.goto();
 
@@ -47,8 +44,7 @@ test.describe('Clock In/Out Page', () => {
     await clockInOutPage.expectErrorMessage('User ID and password are required');
   });
 
-  test('should navigate to records list', async ({ page }) => {
-    // Given: 打刻画面のページオブジェクトを作成
+  test('打刻一覧ページに遷移できること', async ({ page }) => {
     const clockInOutPage = new ClockInOutPage(page);
     await clockInOutPage.goto();
 

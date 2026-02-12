@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import ClockInOutPage from '../shared/page-objects/ClockInOutPage';
 import ClocksListPage from '../shared/page-objects/ClocksListPage';
 
-test.describe('Clocks List Page', () => {
+test.describe('打刻一覧ページ', () => {
   // Seed data before each test
   test.beforeEach(async ({ page }) => {
     // Given: 打刻画面のページオブジェクトを作成してテストデータを準備
@@ -15,8 +15,9 @@ test.describe('Clocks List Page', () => {
     await clockInOutPage.expectSuccessMessage();
   });
 
-  test('should display records list', async ({ page }) => {
-    // Given: 打刻一覧画面のページオブジェクトを作成
+  test('打刻一覧が表示されること', async ({ page }) => {
+    // Given: 打刻画面のページオブジェクトを作成してテストデータを準備
+   
     const clocksListPage = new ClocksListPage(page);
 
     // When: 打刻一覧画面に遷移
@@ -37,11 +38,10 @@ test.describe('Clocks List Page', () => {
     });
   });
 
-  test('should filter records by user ID', async ({ page }) => {
+  test('ユーザーIDで絞り込みできること', async ({ page }) => {
     // Given: 打刻一覧画面のページオブジェクトを作成
     const clocksListPage = new ClocksListPage(page);
     await clocksListPage.goto();
-
     // When: 初期データの読み込みを待機してユーザーIDでフィルター
     await clocksListPage.waitForTableData();
     await clocksListPage.filterByUserId('user001');
@@ -50,7 +50,7 @@ test.describe('Clocks List Page', () => {
     await clocksListPage.expectFirstRowToContainText('user001');
   });
 
-  test('should reset filters', async ({ page }) => {
+  test('フィルタをリセットできること', async ({ page }) => {
     // Given: 打刻一覧画面のページオブジェクトを作成
     const clocksListPage = new ClocksListPage(page);
     await clocksListPage.goto();
@@ -65,7 +65,7 @@ test.describe('Clocks List Page', () => {
     await clocksListPage.expectFilterTypeToHaveValue('all');
   });
 
-  test('should navigate back to clock in page', async ({ page }) => {
+  test('打刻ページに戻れること', async ({ page }) => {
     // Given: 打刻一覧画面のページオブジェクトを作成
     const clocksListPage = new ClocksListPage(page);
     await clocksListPage.goto();

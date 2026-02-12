@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AttendanceKitAccountStack Stack Matches Snapshot 1`] = `
+exports[`AttendanceKitAccountStack（アカウントスタック） スタックがスナップショットと一致すること 1`] = `
 {
   "Description": "Account-level resources for attendance-kit (AWS Budget, SNS)",
   "Outputs": {

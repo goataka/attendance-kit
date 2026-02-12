@@ -5,7 +5,7 @@ import {
   AttendanceKitAccountStackProps,
 } from '../lib/attendance-kit-account-stack';
 
-describe('AttendanceKitAccountStack', () => {
+describe('AttendanceKitAccountStack（アカウントスタック）', () => {
   let app: App;
   let stack: AttendanceKitAccountStack;
   let template: Template;
@@ -36,7 +36,7 @@ describe('AttendanceKitAccountStack', () => {
     template = Template.fromStack(stack);
   });
 
-  test('Stack creates CostBudgetConstruct', () => {
+  test('スタックがCostBudgetConstructを作成すること', () => {
     // Given: AttendanceKitAccountStackが構築されている
     // When: CloudFormationテンプレートを確認
     // Then: CostBudgetConstructが正しく作成される
@@ -45,7 +45,7 @@ describe('AttendanceKitAccountStack', () => {
     template.resourceCountIs('AWS::SNS::Subscription', 1);
   });
 
-  test('Stack has correct outputs', () => {
+  test('スタックの出力が正しいこと', () => {
     // Given: AttendanceKitAccountStackが構築されている
     // When: CloudFormationテンプレートを確認
     // Then: BudgetNameとSnsTopicArnの出力が正しく設定される
@@ -64,7 +64,7 @@ describe('AttendanceKitAccountStack', () => {
     });
   });
 
-  test('Stack has correct tags', () => {
+  test('スタックのタグが正しいこと', () => {
     // Given: AttendanceKitAccountStackが構築されている
     // When: スタックを確認
     // Then: スタックが定義され、タグが適用されている
@@ -73,7 +73,7 @@ describe('AttendanceKitAccountStack', () => {
     expect(stack.tags).toBeDefined();
   });
 
-  test('Budget amount is configurable', () => {
+  test('予算額が設定可能であること', () => {
     // Given: カスタム予算額が設定されたスタック
     const customApp = new App();
     const stack = new AttendanceKitAccountStack(
@@ -98,7 +98,7 @@ describe('AttendanceKitAccountStack', () => {
     });
   });
 
-  test('Email endpoint is passed to CostBudgetConstruct', () => {
+  test('メールアドレスがCostBudgetConstructに渡されること', () => {
     // Given: カスタムメールアドレスが設定されたスタック
     const customApp = new App();
     const stack = new AttendanceKitAccountStack(
@@ -119,7 +119,7 @@ describe('AttendanceKitAccountStack', () => {
     });
   });
 
-  test('Stack Matches Snapshot', () => {
+  test('スタックがスナップショットと一致すること', () => {
     // Given: AttendanceKitAccountStackが構築されている
     // When: CloudFormationテンプレートを取得
     // Then: スナップショットと一致する

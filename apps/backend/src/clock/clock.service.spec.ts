@@ -6,7 +6,7 @@ import { ClockType } from './dto/clock.dto';
 jest.mock('@aws-sdk/client-dynamodb');
 jest.mock('@aws-sdk/lib-dynamodb');
 
-describe('ClockService', () => {
+describe('ClockService（単体テスト）', () => {
   let service: ClockService;
   let mockDocClient: any;
 
