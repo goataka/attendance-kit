@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Clock In/Out Page', () => {
-  test('should display clock in/out form', async ({ page }) => {
+test.describe('打刻ページ', () => {
+  test('打刻フォームが表示されること', async ({ page }) => {
     await page.goto('/');
 
     // Check page title
@@ -22,7 +22,7 @@ test.describe('Clock In/Out Page', () => {
     });
   });
 
-  test('should handle clock in', async ({ page }) => {
+  test('出勤打刻ができること', async ({ page }) => {
     await page.goto('/');
 
     // Fill in credentials
@@ -39,7 +39,7 @@ test.describe('Clock In/Out Page', () => {
     );
   });
 
-  test('should show error for empty fields', async ({ page }) => {
+  test('入力が空の場合はエラーが表示されること', async ({ page }) => {
     await page.goto('/');
 
     // Click clock in without filling fields
@@ -52,7 +52,7 @@ test.describe('Clock In/Out Page', () => {
     );
   });
 
-  test('should navigate to records list', async ({ page }) => {
+  test('打刻一覧ページに遷移できること', async ({ page }) => {
     await page.goto('/');
 
     // Click link to records

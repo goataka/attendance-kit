@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Clocks List Page', () => {
+test.describe('打刻一覧ページ', () => {
   // Seed data before each test
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -12,7 +12,7 @@ test.describe('Clocks List Page', () => {
     await page.waitForSelector('.message.success');
   });
 
-  test('should display records list', async ({ page }) => {
+  test('打刻一覧が表示されること', async ({ page }) => {
     await page.goto('/clocks');
 
     // Check page title
@@ -37,7 +37,7 @@ test.describe('Clocks List Page', () => {
     });
   });
 
-  test('should filter records by user ID', async ({ page }) => {
+  test('ユーザーIDで絞り込みできること', async ({ page }) => {
     await page.goto('/clocks');
 
     // Wait for initial data to load
@@ -55,7 +55,7 @@ test.describe('Clocks List Page', () => {
     await expect(firstRow).toContainText('user001');
   });
 
-  test('should reset filters', async ({ page }) => {
+  test('フィルタをリセットできること', async ({ page }) => {
     await page.goto('/clocks');
 
     // Set some filters
@@ -70,7 +70,7 @@ test.describe('Clocks List Page', () => {
     await expect(page.locator('#filterType')).toHaveValue('all');
   });
 
-  test('should navigate back to clock in page', async ({ page }) => {
+  test('打刻ページに戻れること', async ({ page }) => {
     await page.goto('/clocks');
 
     // Click link to clock in page

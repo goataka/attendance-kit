@@ -8,7 +8,7 @@ import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { AttendanceKitStack } from '../lib/attendance-kit-stack';
 
-describe('AttendanceKitStack - Environment Validation', () => {
+describe('AttendanceKitStack - 環境名の検証', () => {
   let app: App;
 
   beforeEach(() => {
@@ -56,7 +56,7 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 });
 
-describe('AttendanceKitStack - JWT Secret Validation', () => {
+describe('AttendanceKitStack - JWTシークレットの検証', () => {
   let app: App;
 
   beforeEach(() => {
@@ -92,7 +92,7 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
   });
 });
 
-describe('AttendanceKitStack - DynamoDB Only Mode', () => {
+describe('AttendanceKitStack - DynamoDB Onlyモード', () => {
   let app: App;
   let template: Template;
 
@@ -112,7 +112,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     template = Template.fromStack(stack);
   });
 
-  test('DynamoDB Table Created with test environment name', () => {
+  test('test環境でDynamoDBテーブルが作成されること', () => {
     // Given: test環境のDynamoDB-onlyモードスタック
     // When: CloudFormationテンプレートを確認
     // Then: テーブルが正しい設定で作成される
@@ -122,7 +122,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     });
   });
 
-  test('Table has DESTROY deletion policy for test environment', () => {
+  test('test環境でテーブルの削除ポリシーがDESTROYであること', () => {
     // Given: test環境のDynamoDB-onlyモードスタック
     // When: CloudFormationテンプレートを確認
     // Then: 削除ポリシーがDeleteに設定される
@@ -132,7 +132,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     });
   });
 
-  test('Table does not have point-in-time recovery in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードではポイントインタイムリカバリが無効であること', () => {
     const tables = template.findResources('AWS::DynamoDB::Table');
     const tableKeys = Object.keys(tables);
     expect(tableKeys.length).toBe(1);
@@ -141,7 +141,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     expect(table.Properties?.PointInTimeRecoverySpecification).toBeUndefined();
   });
 
-  test('Global Secondary Index Created in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードでグローバルセカンダリインデックスが作成されること', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       GlobalSecondaryIndexes: [
         {
@@ -164,21 +164,21 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     });
   });
 
-  test('Seeder Lambda is created for local environment in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードのローカル環境でSeeder Lambdaが作成されること', () => {
     // ローカル環境 (test) はシーダーのみ作成される: 1 Lambda function
     template.resourceCountIs('AWS::Lambda::Function', 1);
   });
 
-  test('Backend API is NOT created in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードではBackend APIが作成されないこと', () => {
     template.resourceCountIs('AWS::ApiGateway::RestApi', 0);
   });
 
-  test('Frontend (CloudFront + S3) is NOT created in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードではFrontend（CloudFront + S3）が作成されないこと', () => {
     template.resourceCountIs('AWS::CloudFront::Distribution', 0);
     template.resourceCountIs('AWS::S3::Bucket', 0);
   });
 
-  test('Stack outputs include TableName without export name', () => {
+  test('スタック出力にTableNameがエクスポート名なしで含まれること', () => {
     const outputs = template.findOutputs('TableName');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
@@ -187,7 +187,7 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     expect(output.Export).toBeUndefined();
   });
 
-  test('Stack outputs include TableArn without export name', () => {
+  test('スタック出力にTableArnがエクスポート名なしで含まれること', () => {
     const outputs = template.findOutputs('TableArn');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
@@ -196,17 +196,17 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
     expect(output.Export).toBeUndefined();
   });
 
-  test('Stack outputs do NOT include GSIName in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードではスタック出力にGSINameが含まれないこと', () => {
     const outputs = template.findOutputs('GSIName');
     expect(Object.keys(outputs).length).toBe(0);
   });
 
-  test('Stack outputs do NOT include Environment in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードではスタック出力にEnvironmentが含まれないこと', () => {
     const outputs = template.findOutputs('Environment');
     expect(Object.keys(outputs).length).toBe(0);
   });
 
-  test('IntegrationTest tag is added in DynamoDB-only mode', () => {
+  test('DynamoDB-onlyモードでIntegrationTestタグが追加されること', () => {
     const tables = template.findResources('AWS::DynamoDB::Table');
     const tableKeys = Object.keys(tables);
     expect(tableKeys.length).toBe(1);

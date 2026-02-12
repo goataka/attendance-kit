@@ -19,9 +19,9 @@ const client = new DynamoDBClient({
 
 const TABLE_NAME = 'attendance-kit-dev-clock';
 
-describe('DynamoDB LocalStack Integration Tests', () => {
-  describe('Table Creation', () => {
-    it('should list tables and find attendance-kit-dev-clock', async () => {
+describe('DynamoDB LocalStack統合テスト', () => {
+  describe('テーブル作成', () => {
+    it('テーブル一覧にattendance-kit-dev-clockが含まれること', async () => {
       // Given: LocalStackが起動している
       // When: テーブル一覧を取得
       const command = new ListTablesCommand({});
@@ -32,7 +32,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       expect(response.TableNames).toContain(TABLE_NAME);
     });
 
-    it('should describe table and verify structure', async () => {
+    it('テーブル構造が正しいこと', async () => {
       const command = new DescribeTableCommand({
         TableName: TABLE_NAME,
       });
@@ -58,13 +58,13 @@ describe('DynamoDB LocalStack Integration Tests', () => {
     });
   });
 
-  describe('CRUD Operations', () => {
+  describe('CRUD操作', () => {
     const testId = 'test-id-123';
     const testUserId = 'test-user';
     const testTimestamp = new Date().toISOString();
     const testDate = testTimestamp.split('T')[0];
 
-    it('should put an item into the table', async () => {
+    it('テーブルにアイテムを追加できること', async () => {
       // Given: テーブルとテストデータ
       const command = new PutItemCommand({
         TableName: TABLE_NAME,
@@ -84,7 +84,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       expect(response.$metadata.httpStatusCode).toBe(200);
     });
 
-    it('should get the item from the table', async () => {
+    it('テーブルからアイテムを取得できること', async () => {
       // Given: テーブルに保存されたアイテム
       const command = new GetItemCommand({
         TableName: TABLE_NAME,
@@ -105,7 +105,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
       expect(response.Item?.type?.S).toBe('clock-in');
     });
 
-    it('should scan the table and find items', async () => {
+    it('テーブルをスキャンしてアイテムを見つけられること', async () => {
       const command = new ScanCommand({
         TableName: TABLE_NAME,
       });
