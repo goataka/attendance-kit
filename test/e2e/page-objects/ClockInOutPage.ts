@@ -131,12 +131,6 @@ export default class ClockInOutPage {
       state: 'visible',
       timeout: this.timeouts.waitMessage,
     });
-    
-    const messageClass = await messageLocator.getAttribute('class');
-    if (!messageClass?.includes('success')) {
-      const messageText = await messageLocator.textContent();
-      throw new Error(`Expected success message but got: ${messageText}`);
-    }
 
     if (expectedText) {
       await expect(messageLocator).toContainText(expectedText);

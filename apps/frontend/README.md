@@ -86,7 +86,7 @@ npm run test:integration
 - `ClockInOutPage`: 打刻画面のページオブジェクト
 - `ClocksListPage`: 打刻一覧画面のページオブジェクト
 
-詳細は[E2E READMEを参照してください。
+詳細は[E2E README](../../../test/e2e/README.md)を参照してください。
 
 ## コマンド
 
