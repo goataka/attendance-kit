@@ -9,12 +9,7 @@ install_japanese_fonts() {
 setup_locale() {
   # localesパッケージがインストールされているか確認
   if ! command -v locale-gen >/dev/null 2>&1; then
-    if command -v apt-get >/dev/null 2>&1; then
-      sudo apt-get install -y locales
-    else
-      echo "警告: locale-genのインストールに失敗しました。apt-getが必要です。" >&2
-      return 1
-    fi
+    sudo apt-get install -y locales
   fi
 
   sudo locale-gen ja_JP.UTF-8

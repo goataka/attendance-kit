@@ -14,13 +14,11 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
-  expect: process.env.CI
-    ? {
-        toHaveScreenshot: {
-          maxDiffPixelRatio: 0.01, // CI実行時のみ1%の差分を許容（フォントレンダリングの差異対策）
-        },
-      }
-    : {},
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01, // 1%の差分を許容（フォントレンダリングの差異対策）
+    },
+  },
 
   // Configure snapshot path to save screenshots in the same directory as the test
   // Using array format with {arg} and {ext} to properly handle dots in filenames
