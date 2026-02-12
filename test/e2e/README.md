@@ -6,7 +6,47 @@
 
 - Feature files: `test/e2e/features/*.feature` (Gherkin形式)
 - Step definitions: `test/e2e/steps/*.ts` (Playwright)
+- Page objects: `test/e2e/page-objects/*.ts` (ページオブジェクトパターン)
 - Configuration: `test/e2e/cucumber.js`
+
+## ページオブジェクトパターン
+
+E2Eテストでは、ページオブジェクトパターンを使用してページ操作のロジックを抽象化しています。
+
+### ページオブジェクトの配置
+
+- **Cucumber E2E用**: `test/e2e/page-objects/`
+- **Playwright E2E用**: `apps/frontend/src/shared/page-objects/`
+
+### 利用可能なページオブジェクト
+
+#### ClockInOutPage
+
+打刻画面のページオブジェクト
+
+主な機能:
+
+- `fillLoginCredentials(userId, password)`: ログイン情報の入力
+- `clickClockIn()`: 出勤ボタンのクリック
+- `clickClockOut()`: 退勤ボタンのクリック
+- `expectSuccessMessage(text?)`: 成功メッセージの検証
+- `expectErrorMessage(text?)`: エラーメッセージの検証
+- `loginAndClockIn(userId, password)`: ログインして出勤を打刻（統合アクション）
+- `loginAndClockOut(userId, password)`: ログインして退勤を打刻（統合アクション）
+
+#### ClocksListPage
+
+打刻一覧画面のページオブジェクト
+
+主な機能:
+
+- `fillFilterUserId(userId)`: ユーザーIDフィルターの入力
+- `selectFilterType(type)`: タイプフィルターの選択
+- `clickSearch()`: 検索ボタンのクリック
+- `clickReset()`: リセットボタンのクリック
+- `expectTableToBeVisible()`: テーブル表示の検証
+- `filterByUserId(userId)`: ユーザーIDでフィルター（統合アクション）
+- `verifyRecordInDynamoDB(client, table, userId)`: DynamoDBレコードの検証
 
 ## 前提条件
 
