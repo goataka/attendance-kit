@@ -41,7 +41,7 @@ describe('AttendanceKitStack', () => {
     template = Template.fromStack(stack);
   });
 
-  test('DynamoDB Table Created', () => {
+  test('DynamoDBテーブルが作成されること', () => {
     // Given: eva環境のフルスタック
     // When: CloudFormationテンプレートを確認
     // Then: テーブルが正しい設定で作成される
@@ -54,7 +54,7 @@ describe('AttendanceKitStack', () => {
     });
   });
 
-  test('Table has correct Partition Key', () => {
+  test('テーブルのパーティションキーが正しいこと', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       KeySchema: [
         {
@@ -69,7 +69,7 @@ describe('AttendanceKitStack', () => {
     });
   });
 
-  test('Table has correct Attribute Definitions', () => {
+  test('テーブルの属性定義が正しいこと', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       AttributeDefinitions: [
         {
@@ -88,7 +88,7 @@ describe('AttendanceKitStack', () => {
     });
   });
 
-  test('Global Secondary Index Created', () => {
+  test('グローバルセカンダリインデックスが作成されること', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       GlobalSecondaryIndexes: [
         {
@@ -111,48 +111,48 @@ describe('AttendanceKitStack', () => {
     });
   });
 
-  test('Table has RETAIN deletion policy', () => {
+  test('テーブルの削除ポリシーがRETAINであること', () => {
     template.hasResource('AWS::DynamoDB::Table', {
       DeletionPolicy: 'Retain',
       UpdateReplacePolicy: 'Retain',
     });
   });
 
-  test('Table name includes environment', () => {
+  test('テーブル名に環境名が含まれること', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-eva-clock',
     });
   });
 
-  test('Stack outputs include TableName', () => {
+  test('スタック出力にTableNameが含まれること', () => {
     const outputs = template.findOutputs('TableName');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
   });
 
-  test('Stack outputs include TableArn', () => {
+  test('スタック出力にTableArnが含まれること', () => {
     const outputs = template.findOutputs('TableArn');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
   });
 
-  test('Stack outputs include GSIName', () => {
+  test('スタック出力にGSINameが含まれること', () => {
     const outputs = template.findOutputs('GSIName');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
   });
 
-  test('Stack outputs include Environment', () => {
+  test('スタック出力にEnvironmentが含まれること', () => {
     const outputs = template.findOutputs('Environment');
     expect(outputs).toBeDefined();
     expect(Object.keys(outputs).length).toBe(1);
   });
 
-  test('OIDC Provider is NOT created (managed by CloudFormation)', () => {
+  test('OIDCプロバイダーは作成されないこと（CloudFormationで管理）', () => {
     template.resourceCountIs('Custom::AWSCDKOpenIdConnectProvider', 0);
   });
 
-  test('GitHub Actions IAM Role is NOT created (managed by CloudFormation)', () => {
+  test('GitHub Actions IAMロールは作成されないこと（CloudFormationで管理）', () => {
     // Lambda関数が実行ロールを作成するが、GitHub Actions用ロールは作成されない
     // GitHub固有のトラストポリシーを持つロールが存在しないことを確認
     const roles = template.findResources('AWS::IAM::Role');
@@ -179,7 +179,7 @@ describe('AttendanceKitStack', () => {
     });
   });
 
-  test('Stack Matches Snapshot', () => {
+  test('スタックがスナップショットと一致すること', () => {
     // Given: eva環境のフルスタック
     // When: CloudFormationテンプレートを取得
     // Then: スナップショットと一致する
@@ -187,7 +187,7 @@ describe('AttendanceKitStack', () => {
   });
 });
 
-describe('AttendanceKitStack - Eva Environment', () => {
+describe('AttendanceKitStack - Eva環境', () => {
   let app: App;
   let template: Template;
 
@@ -207,13 +207,13 @@ describe('AttendanceKitStack - Eva Environment', () => {
     template = Template.fromStack(stack);
   });
 
-  test('Eva environment creates correct table name', () => {
+  test('Eva環境で正しいテーブル名が作成されること', () => {
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-eva-clock',
     });
   });
 
-  test('Eva Stack Matches Snapshot', () => {
+  test('Evaスタックがスナップショットと一致すること', () => {
     expect(template.toJSON()).toMatchSnapshot();
   });
 });
