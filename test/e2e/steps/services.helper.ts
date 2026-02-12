@@ -1,4 +1,4 @@
-import { DynamoDBClient, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
 // Constants
 export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
@@ -22,50 +22,3 @@ const dynamoConfig = IS_LOCAL
     };
 
 export const dynamoClient = new DynamoDBClient(dynamoConfig);
-
-async function verifyService(
-  name: string,
-  verifyFn: () => Promise<void>,
-): Promise<void> {
-  try {
-    await verifyFn();
-  } catch (error) {
-    throw new Error(`${name} verification failed: ${error}`);
-  }
-}
-
-async function verifyDynamoDB(): Promise<void> {
-  await verifyService('DynamoDB', async () => {
-    const command = new ScanCommand({ TableName: TABLE_NAME, Limit: 1 });
-    await dynamoClient.send(command);
-  });
-}
-
-async function verifyBackend(): Promise<void> {
-  await verifyService('Backend', async () => {
-    const response = await fetch(`${BACKEND_URL}/api/health`, {
-      method: 'GET',
-    });
-    if (!response.ok) {
-      throw new Error(`Health check failed with status: ${response.status}`);
-    }
-  });
-}
-
-async function verifyFrontend(): Promise<void> {
-  await verifyService('Frontend', async () => {
-    const response = await fetch(FRONTEND_URL, { method: 'GET' });
-    if (!response.ok) {
-      throw new Error(`Health check failed with status: ${response.status}`);
-    }
-  });
-}
-
-export async function verifyServicesRunning(): Promise<void> {
-  // DynamoDBの検証はローカル環境のみ（デプロイ環境ではバックエンド経由でアクセス）
-  if (IS_LOCAL) {
-    await verifyDynamoDB();
-  }
-  await verifyBackend();
-  await verifyFrontend();
-}
