@@ -42,6 +42,9 @@ describe('AttendanceKitStack', () => {
   });
 
   test('DynamoDB Table Created', () => {
+    // Given: eva環境のフルスタック
+    // When: CloudFormationテンプレートを確認
+    // Then: テーブルが正しい設定で作成される
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-eva-clock',
       BillingMode: 'PAY_PER_REQUEST',
@@ -177,6 +180,9 @@ describe('AttendanceKitStack', () => {
   });
 
   test('Stack Matches Snapshot', () => {
+    // Given: eva環境のフルスタック
+    // When: CloudFormationテンプレートを取得
+    // Then: スナップショットと一致する
     expect(template.toJSON()).toMatchSnapshot();
   });
 });

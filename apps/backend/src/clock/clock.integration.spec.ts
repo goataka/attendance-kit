@@ -63,6 +63,9 @@ describe('ClockController (Integration)', () => {
 
   describe('/api/clock/in (POST)', () => {
     it('出勤打刻が正常に記録されること', () => {
+      // Given: 認証済みのユーザーと打刻データ
+      // When: POST /api/clock/in を呼び出す
+      // Then: 201ステータスと出勤打刻データが返される
       return request(app.getHttpServer())
         .post('/api/clock/in')
         .set('Authorization', `Bearer ${authToken}`)
@@ -79,6 +82,9 @@ describe('ClockController (Integration)', () => {
     });
 
     it('認証なしでは401を返すこと', () => {
+      // Given: 認証トークンなしのリクエスト
+      // When: POST /api/clock/in を呼び出す
+      // Then: 401ステータスが返される
       return request(app.getHttpServer())
         .post('/api/clock/in')
         .send({
@@ -90,6 +96,9 @@ describe('ClockController (Integration)', () => {
 
   describe('/api/clock/out (POST)', () => {
     it('退勤打刻が正常に記録されること', () => {
+      // Given: 認証済みのユーザーと打刻データ
+      // When: POST /api/clock/out を呼び出す
+      // Then: 201ステータスと退勤打刻データが返される
       return request(app.getHttpServer())
         .post('/api/clock/out')
         .set('Authorization', `Bearer ${authToken}`)
@@ -106,6 +115,9 @@ describe('ClockController (Integration)', () => {
     });
 
     it('認証なしでは401を返すこと', () => {
+      // Given: 認証トークンなしのリクエスト
+      // When: POST /api/clock/out を呼び出す
+      // Then: 401ステータスが返される
       return request(app.getHttpServer())
         .post('/api/clock/out')
         .send({
@@ -117,6 +129,9 @@ describe('ClockController (Integration)', () => {
 
   describe('/api/clock/records (GET)', () => {
     it('打刻記録が正常に取得されること', () => {
+      // Given: 認証済みのユーザー
+      // When: GET /api/clock/records を呼び出す
+      // Then: 200ステータスと打刻記録の配列が返される
       return request(app.getHttpServer())
         .get('/api/clock/records')
         .set('Authorization', `Bearer ${authToken}`)
@@ -133,6 +148,9 @@ describe('ClockController (Integration)', () => {
     });
 
     it('認証なしでは401を返すこと', () => {
+      // Given: 認証トークンなしのリクエスト
+      // When: GET /api/clock/records を呼び出す
+      // Then: 401ステータスが返される
       return request(app.getHttpServer()).get('/api/clock/records').expect(401);
     });
   });

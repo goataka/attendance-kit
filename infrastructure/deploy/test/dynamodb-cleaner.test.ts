@@ -16,12 +16,15 @@ describe('DynamoDBCleaner', () => {
   });
 
   test('Lambda関数が作成される', () => {
+    // Given: DynamoDBCleanerコンストラクトの設定
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
 
+    // When: CloudFormationテンプレートを確認
     const template = Template.fromStack(stack);
-    // NodejsFunction creates 2 Lambda functions: 1 for the actual function, 1 for the Trigger custom resource
+
+    // Then: Lambda関数が正しく作成される
     template.resourceCountIs('AWS::Lambda::Function', 2);
     template.hasResourceProperties('AWS::Lambda::Function', {
       Runtime: 'nodejs24.x',
@@ -31,11 +34,15 @@ describe('DynamoDBCleaner', () => {
   });
 
   test('Lambda関数にTABLE_NAME環境変数が設定される', () => {
+    // Given: DynamoDBCleanerコンストラクトの設定
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
 
+    // When: CloudFormationテンプレートを確認
     const template = Template.fromStack(stack);
+
+    // Then: 環境変数が正しく設定される
     template.hasResourceProperties('AWS::Lambda::Function', {
       Environment: {
         Variables: {
@@ -49,11 +56,15 @@ describe('DynamoDBCleaner', () => {
   });
 
   test('Triggerが作成される', () => {
+    // Given: DynamoDBCleanerコンストラクトの設定
     new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
 
+    // When: CloudFormationテンプレートを確認
     const template = Template.fromStack(stack);
+
+    // Then: Triggerが作成される
     template.resourceCountIs('Custom::Trigger', 1);
   });
 
@@ -104,10 +115,13 @@ describe('DynamoDBCleaner', () => {
   });
 
   test('triggerプロパティが公開される', () => {
+    // Given: DynamoDBCleanerコンストラクトの作成
     const cleaner = new DynamoDBCleaner(stack, 'TestCleaner', {
       table,
     });
 
+    // When: triggerプロパティを確認
+    // Then: triggerが正しく公開される
     expect(cleaner.trigger).toBeDefined();
     expect(cleaner.trigger.node.id).toBe('ClearTableTrigger');
   });

@@ -21,8 +21,11 @@ describe('ClockInOutPage', () => {
   });
 
   it('打刻ページが表示されること', () => {
+    // Given: ClockInOutPageコンポーネント
+    // When: ClockInOutPageをレンダリング
     renderWithRouter(<ClockInOutPage />);
 
+    // Then: ページタイトルと入力フィールド、ボタンが表示される
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
     expect(screen.getByLabelText('User ID')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
@@ -31,11 +34,14 @@ describe('ClockInOutPage', () => {
   });
 
   it('入力フィールドが空の場合はエラーを表示すること', async () => {
+    // Given: 入力フィールドが空の状態
     renderWithRouter(<ClockInOutPage />);
 
+    // When: 出勤ボタンをクリック
     const clockInButton = screen.getByText('出勤');
     fireEvent.click(clockInButton);
 
+    // Then: エラーメッセージが表示される
     await waitFor(() => {
       expect(
         screen.getByText('User ID and password are required'),
@@ -44,6 +50,7 @@ describe('ClockInOutPage', () => {
   });
 
   it('出勤打刻が成功すること', async () => {
+    // Given: APIが成功レスポンスを返すようモック設定
     const mockResponse = {
       success: true,
       record: {
@@ -58,6 +65,7 @@ describe('ClockInOutPage', () => {
 
     renderWithRouter(<ClockInOutPage />);
 
+    // When: ユーザーIDとパスワードを入力して出勤ボタンをクリック
     const userIdInput = screen.getByLabelText('User ID');
     const passwordInput = screen.getByLabelText('Password');
     const clockInButton = screen.getByText('出勤');
@@ -66,12 +74,14 @@ describe('ClockInOutPage', () => {
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.click(clockInButton);
 
+    // Then: 成功メッセージが表示される
     await waitFor(() => {
       expect(screen.getByText(/Clock in successful/)).toBeInTheDocument();
     });
   });
 
   it('出勤打刻が失敗すること', async () => {
+    // Given: APIが失敗レスポンスを返すようモック設定
     const mockResponse = {
       success: false,
       message: 'Invalid credentials',
@@ -81,6 +91,7 @@ describe('ClockInOutPage', () => {
 
     renderWithRouter(<ClockInOutPage />);
 
+    // When: 無効な認証情報を入力して出勤ボタンをクリック
     const userIdInput = screen.getByLabelText('User ID');
     const passwordInput = screen.getByLabelText('Password');
     const clockInButton = screen.getByText('出勤');
@@ -89,12 +100,14 @@ describe('ClockInOutPage', () => {
     fireEvent.change(passwordInput, { target: { value: 'wrongpass' } });
     fireEvent.click(clockInButton);
 
+    // Then: エラーメッセージが表示される
     await waitFor(() => {
       expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
     });
   });
 
   it('成功後にパスワードがクリアされること', async () => {
+    // Given: APIが成功レスポンスを返すようモック設定
     const mockResponse = {
       success: true,
       record: {
@@ -113,10 +126,12 @@ describe('ClockInOutPage', () => {
     const passwordInput = screen.getByLabelText('Password') as HTMLInputElement;
     const clockInButton = screen.getByText('出勤');
 
+    // When: ユーザーIDとパスワードを入力して出勤ボタンをクリック
     fireEvent.change(userIdInput, { target: { value: 'user001' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.click(clockInButton);
 
+    // Then: パスワードがクリアされ、ユーザーIDは保持される
     await waitFor(() => {
       expect(passwordInput.value).toBe('');
       expect(userIdInput.value).toBe('user001');

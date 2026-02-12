@@ -37,18 +37,18 @@ describe('AttendanceKitAccountStack', () => {
   });
 
   test('Stack creates CostBudgetConstruct', () => {
-    // Verify SNS Topic exists
+    // Given: AttendanceKitAccountStackが構築されている
+    // When: CloudFormationテンプレートを確認
+    // Then: CostBudgetConstructが正しく作成される
     template.resourceCountIs('AWS::SNS::Topic', 1);
-
-    // Verify Budget exists
     template.resourceCountIs('AWS::Budgets::Budget', 1);
-
-    // Verify SNS Subscription exists
     template.resourceCountIs('AWS::SNS::Subscription', 1);
   });
 
   test('Stack has correct outputs', () => {
-    // Check for BudgetName output
+    // Given: AttendanceKitAccountStackが構築されている
+    // When: CloudFormationテンプレートを確認
+    // Then: BudgetNameとSnsTopicArnの出力が正しく設定される
     template.hasOutput('BudgetName', {
       Description: 'AWS Budget name for cost monitoring',
       Export: {
@@ -56,7 +56,6 @@ describe('AttendanceKitAccountStack', () => {
       },
     });
 
-    // Check for SnsTopicArn output
     template.hasOutput('SnsTopicArn', {
       Description: 'SNS Topic ARN for cost alerts',
       Export: {
@@ -66,16 +65,16 @@ describe('AttendanceKitAccountStack', () => {
   });
 
   test('Stack has correct tags', () => {
-    // Verify stack was created successfully
+    // Given: AttendanceKitAccountStackが構築されている
+    // When: スタックを確認
+    // Then: スタックが定義され、タグが適用されている
     expect(stack).toBeDefined();
     expect(stack.node.id).toBe('AttendanceKit-Account-Stack');
-
-    // Verify the stack has tags applied via Tags.of()
-    // Tags are applied at the stack level and inherited by resources
     expect(stack.tags).toBeDefined();
   });
 
   test('Budget amount is configurable', () => {
+    // Given: カスタム予算額が設定されたスタック
     const customApp = new App();
     const stack = new AttendanceKitAccountStack(
       customApp,
@@ -85,7 +84,10 @@ describe('AttendanceKitAccountStack', () => {
       }),
     );
 
+    // When: CloudFormationテンプレートを確認
     const customTemplate = Template.fromStack(stack);
+
+    // Then: 予算額が正しく設定される
     customTemplate.hasResourceProperties('AWS::Budgets::Budget', {
       Budget: {
         BudgetLimit: {
@@ -97,6 +99,7 @@ describe('AttendanceKitAccountStack', () => {
   });
 
   test('Email endpoint is passed to CostBudgetConstruct', () => {
+    // Given: カスタムメールアドレスが設定されたスタック
     const customApp = new App();
     const stack = new AttendanceKitAccountStack(
       customApp,
@@ -106,7 +109,10 @@ describe('AttendanceKitAccountStack', () => {
       }),
     );
 
+    // When: CloudFormationテンプレートを確認
     const customTemplate = Template.fromStack(stack);
+
+    // Then: メールアドレスが正しく設定される
     customTemplate.hasResourceProperties('AWS::SNS::Subscription', {
       Protocol: 'email',
       Endpoint: 'custom@example.com',
@@ -114,6 +120,9 @@ describe('AttendanceKitAccountStack', () => {
   });
 
   test('Stack Matches Snapshot', () => {
+    // Given: AttendanceKitAccountStackが構築されている
+    // When: CloudFormationテンプレートを取得
+    // Then: スナップショットと一致する
     expect(template.toJSON()).toMatchSnapshot();
   });
 });
