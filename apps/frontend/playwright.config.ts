@@ -14,6 +14,12 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
 
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.02, // 2%の差分を許容（フォントレンダリングの差異対策）
+    },
+  },
+
   // Configure snapshot path to save screenshots in the same directory as the test
   // Using array format with {arg} and {ext} to properly handle dots in filenames
   snapshotPathTemplate: '{testDir}/{testFileDir}/{arg}{ext}',
@@ -25,10 +31,14 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
         // Enable font rendering for Japanese characters
+        // Disable GPU to avoid GPU-related errors (V8 startup snapshot file, GPU process crash)
         launchOptions: {
           args: [
             '--font-render-hinting=none',
             '--disable-font-subpixel-positioning',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--no-sandbox',
           ],
         },
       },
