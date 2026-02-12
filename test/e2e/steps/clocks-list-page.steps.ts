@@ -1,42 +1,27 @@
 import { Then } from '@cucumber/cucumber';
-import { expect, Page } from '@playwright/test';
-import { ScanCommand } from '@aws-sdk/client-dynamodb';
+import { ClocksListPage } from '../page-objects';
 import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';
-import { TIMEOUTS, SELECTORS } from './constants';
-
-async function navigateToClocksListPage(page: Page): Promise<void> {
-  await page.getByRole('link', { name: SELECTORS.clockListLink }).click();
-  await page.waitForLoadState('networkidle');
-}
-
-async function verifyClockRecordInDynamoDB(userId: string): Promise<void> {
-  const command = new ScanCommand({
-    TableName: TABLE_NAME,
-    Limit: 10,
-  });
-  const result = await dynamoClient.send(command);
-
-  const clockRecord = result.Items?.find((item) => item.userId?.S === userId);
-
-  expect(clockRecord).toBeDefined();
-}
+import { SELECTORS } from './constants';
 
 // Step definitions
 Then('打刻一覧を確認する', async function (this: CustomWorld) {
+  // Given: ページが初期化されていることを確認
   if (!this.page) {
     throw new Error('Page is not initialized');
   }
 
-  await navigateToClocksListPage(this.page);
+  // When: 打刻一覧リンクをクリックして画面遷移
+  await this.page.getByRole('link', { name: SELECTORS.clockListLink }).click();
+  await this.page.waitForLoadState('networkidle');
 
-  // Verify table is displayed
-  const table = await this.page.waitForSelector(SELECTORS.table, {
-    timeout: TIMEOUTS.NETWORK_IDLE,
-  });
-  expect(table).toBeDefined();
+  // Then: 打刻一覧画面のページオブジェクトを使用して検証
+  const clocksListPage = new ClocksListPage(this.page);
 
-  // Verify record exists in DynamoDB
-  await verifyClockRecordInDynamoDB(TEST_USER_ID);
+  // テーブルが表示されることを検証
+  await clocksListPage.expectTableToBeVisible();
+
+  // DynamoDBにレコードが存在することを検証
+  await clocksListPage.verifyRecordInDynamoDB(dynamoClient, TABLE_NAME, TEST_USER_ID);
 });
