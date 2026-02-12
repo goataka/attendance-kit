@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { ClockInOutPage } from '../../../../../test/e2e/page-objects';
+import ClockInOutPage from '../shared/page-objects/ClockInOutPage';
 
 test.describe('Clock In/Out Page', () => {
   test('should display clock in/out form', async ({ page }) => {

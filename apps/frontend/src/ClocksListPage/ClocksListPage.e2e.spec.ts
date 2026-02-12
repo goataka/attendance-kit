@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { ClockInOutPage, ClocksListPage } from '../../../../../test/e2e/page-objects';
+import ClockInOutPage from '../shared/page-objects/ClockInOutPage';
+import ClocksListPage from '../shared/page-objects/ClocksListPage';
 
 test.describe('Clocks List Page', () => {
   // Seed data before each test

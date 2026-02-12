@@ -1,5 +1,5 @@
 import { Then } from '@cucumber/cucumber';
-import { ClocksListPage } from '../page-objects';
+import ClocksListPage from '../page-objects/ClocksListPage';
 import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';

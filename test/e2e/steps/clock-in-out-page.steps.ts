@@ -1,5 +1,5 @@
 import { When, Then } from '@cucumber/cucumber';
-import { ClockInOutPage } from '../page-objects';
+import ClockInOutPage from '../page-objects/ClockInOutPage';
 import { CustomWorld } from './world';
 import { TEST_USER_ID, TEST_PASSWORD } from './helpers';
 import { TIMEOUTS } from './constants';
