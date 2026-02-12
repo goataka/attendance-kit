@@ -25,10 +25,14 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         viewport: { width: 1280, height: 720 },
         // Enable font rendering for Japanese characters
+        // Disable GPU to avoid GPU-related errors (V8 startup snapshot file, GPU process crash)
         launchOptions: {
           args: [
             '--font-render-hinting=none',
             '--disable-font-subpixel-positioning',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--no-sandbox',
           ],
         },
       },
