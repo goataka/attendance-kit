@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import ClockInOutPage from '../shared/page-objects/ClockInOutPage';
+import ClockInOutPage from './page-objects/ClockInOutPage';
 
 test.describe('打刻ページ', () => {
   test('打刻フォームが表示されること', async ({ page }) => {
@@ -13,7 +13,7 @@ test.describe('打刻ページ', () => {
     await clockInOutPage.expectFormToBeVisible();
 
     // Wait for any animations to complete
-    await page.waitForTimeout(500);
+    await clockInOutPage.waitForAnimations();
 
     // Visual regression test - saves to ClockInOutPage.screenshot.png
     await expect(page).toHaveScreenshot(['ClockInOutPage.screenshot.png'], {

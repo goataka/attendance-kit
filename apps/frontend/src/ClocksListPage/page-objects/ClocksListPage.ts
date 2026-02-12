@@ -1,5 +1,4 @@
 import { Page, expect } from '@playwright/test';
-import { ScanCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
 /**
  * 打刻一覧画面のページオブジェクト
@@ -26,6 +25,8 @@ export default class ClocksListPage {
   private readonly timeouts = {
     networkIdle: 5000,
     dataLoad: 10000,
+    searchDelay: 500,
+    animationDelay: 500,
   };
 
   constructor(page: Page) {
@@ -150,7 +151,7 @@ export default class ClocksListPage {
   async filterByUserId(userId: string): Promise<void> {
     await this.fillFilterUserId(userId);
     await this.clickSearch();
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(this.timeouts.searchDelay);
   }
 
   /**
@@ -161,21 +162,9 @@ export default class ClocksListPage {
   }
 
   /**
-   * DynamoDBにレコードが存在することを検証する
+   * アニメーション完了を待機する
    */
-  async verifyRecordInDynamoDB(
-    dynamoClient: DynamoDBClient,
-    tableName: string,
-    userId: string,
-  ): Promise<void> {
-    const command = new ScanCommand({
-      TableName: tableName,
-      Limit: 10,
-    });
-    const result = await dynamoClient.send(command);
-
-    const clockRecord = result.Items?.find((item) => item.userId?.S === userId);
-
-    expect(clockRecord).toBeDefined();
+  async waitForAnimations(): Promise<void> {
+    await this.page.waitForTimeout(this.timeouts.animationDelay);
   }
 }

@@ -44,10 +44,15 @@ graph LR
 ```text
 apps/frontend/
 ├── src/
-│   ├── ClockInOutPage/          # 打刻画面
-│   ├── ClocksListPage/          # 打刻一覧画面
-│   ├── shared/
+│   ├── ClockInOutPage/
 │   │   ├── page-objects/        # E2Eテスト用ページオブジェクト
+│   │   ├── ClockInOutPage.tsx
+│   │   └── ...
+│   ├── ClocksListPage/
+│   │   ├── page-objects/        # E2Eテスト用ページオブジェクト
+│   │   ├── ClocksListPage.tsx
+│   │   └── ...
+│   ├── shared/
 │   │   ├── api/                 # API通信
 │   │   ├── types/               # 型定義
 │   │   └── constants/           # 定数
@@ -79,12 +84,10 @@ npm run test:integration
 
 テストコードの保守性向上のため、ページオブジェクトパターンを使用しています。
 
-配置場所: `src/shared/page-objects/`
+配置場所: 各コンポーネントの`page-objects/`ディレクトリ
 
-利用可能なページオブジェクト:
-
-- `ClockInOutPage`: 打刻画面のページオブジェクト
-- `ClocksListPage`: 打刻一覧画面のページオブジェクト
+- `ClockInOutPage/page-objects/ClockInOutPage.ts`: 打刻画面のページオブジェクト
+- `ClocksListPage/page-objects/ClocksListPage.ts`: 打刻一覧画面のページオブジェクト
 
 詳細は[E2E README](../../../test/e2e/README.md)を参照してください。
 

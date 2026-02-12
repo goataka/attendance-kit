@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import ClockInOutPage from '../shared/page-objects/ClockInOutPage';
-import ClocksListPage from '../shared/page-objects/ClocksListPage';
+import ClockInOutPage from '../ClockInOutPage/page-objects/ClockInOutPage';
+import ClocksListPage from './page-objects/ClocksListPage';
 
 test.describe('打刻一覧ページ', () => {
   // Seed data before each test
@@ -30,7 +30,7 @@ test.describe('打刻一覧ページ', () => {
     await clocksListPage.expectTableHeaderToContainText('ID');
 
     // Wait for any animations to complete
-    await page.waitForTimeout(500);
+    await clocksListPage.waitForAnimations();
 
     // Visual regression test - saves to ClocksListPage.screenshot.png
     await expect(page).toHaveScreenshot(['ClocksListPage.screenshot.png'], {

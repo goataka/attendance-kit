@@ -4,6 +4,7 @@ import { dynamoClient, TABLE_NAME } from './services.helper';
 import { CustomWorld } from './world';
 import { TEST_USER_ID } from './helpers';
 import { SELECTORS } from './constants';
+import { verifyRecordInDynamoDB } from '../helpers/database.helper';
 
 // Step definitions
 Then('打刻一覧を確認する', async function (this: CustomWorld) {
@@ -23,5 +24,5 @@ Then('打刻一覧を確認する', async function (this: CustomWorld) {
   await clocksListPage.expectTableToBeVisible();
 
   // DynamoDBにレコードが存在することを検証
-  await clocksListPage.verifyRecordInDynamoDB(dynamoClient, TABLE_NAME, TEST_USER_ID);
+  await verifyRecordInDynamoDB(dynamoClient, TABLE_NAME, TEST_USER_ID);
 });

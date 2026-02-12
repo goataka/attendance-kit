@@ -23,6 +23,7 @@ export default class ClockInOutPage {
   private readonly timeouts = {
     waitMessage: 15000,
     stateUpdate: 5000,
+    animationDelay: 500,
   };
 
   constructor(page: Page) {
@@ -167,6 +168,13 @@ export default class ClockInOutPage {
    */
   async clickClockListLink(): Promise<void> {
     await this.page.getByRole('link', { name: '打刻一覧を見る' }).click();
+  }
+
+  /**
+   * アニメーション完了を待機する
+   */
+  async waitForAnimations(): Promise<void> {
+    await this.page.waitForTimeout(this.timeouts.animationDelay);
   }
 
   /**
