@@ -22,9 +22,12 @@ const TABLE_NAME = 'attendance-kit-dev-clock';
 describe('DynamoDB LocalStack Integration Tests', () => {
   describe('Table Creation', () => {
     it('should list tables and find attendance-kit-dev-clock', async () => {
+      // Given: LocalStackが起動している
+      // When: テーブル一覧を取得
       const command = new ListTablesCommand({});
       const response = await client.send(command);
 
+      // Then: attendance-kit-dev-clockテーブルが存在する
       expect(response.TableNames).toBeDefined();
       expect(response.TableNames).toContain(TABLE_NAME);
     });
@@ -62,6 +65,7 @@ describe('DynamoDB LocalStack Integration Tests', () => {
     const testDate = testTimestamp.split('T')[0];
 
     it('should put an item into the table', async () => {
+      // Given: テーブルとテストデータ
       const command = new PutItemCommand({
         TableName: TABLE_NAME,
         Item: {
@@ -73,11 +77,15 @@ describe('DynamoDB LocalStack Integration Tests', () => {
         },
       });
 
+      // When: アイテムを追加
       const response = await client.send(command);
+
+      // Then: 正常に追加される
       expect(response.$metadata.httpStatusCode).toBe(200);
     });
 
     it('should get the item from the table', async () => {
+      // Given: テーブルに保存されたアイテム
       const command = new GetItemCommand({
         TableName: TABLE_NAME,
         Key: {
@@ -85,7 +93,10 @@ describe('DynamoDB LocalStack Integration Tests', () => {
         },
       });
 
+      // When: アイテムを取得
       const response = await client.send(command);
+
+      // Then: 正しいデータが取得される
       expect(response.Item).toBeDefined();
       expect(response.Item?.id?.S).toBe(testId);
       expect(response.Item?.userId?.S).toBe(testUserId);

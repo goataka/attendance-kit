@@ -47,7 +47,10 @@ describe('resolveBackendUrl', () => {
       期待値: 'http://localhost:3000',
     },
   ])('$ケース', ({ envUrl, isDev, windowOrigin, 期待値 }) => {
+    // Given: 環境変数、開発モード、windowのoriginの設定
+    // When: resolveBackendUrl関数を呼び出す
     const url = resolveBackendUrl(envUrl, isDev, windowOrigin);
+    // Then: 期待されるバックエンドURLが返される
     expect(url).toBe(期待値);
   });
 });

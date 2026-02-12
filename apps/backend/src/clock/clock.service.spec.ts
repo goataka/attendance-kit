@@ -25,19 +25,25 @@ describe('ClockService', () => {
   });
 
   it('サービスが定義されていること', () => {
+    // Given: ClockServiceのインスタンス
+    // When: サービスを確認
+    // Then: サービスが定義されている
     expect(service).toBeDefined();
   });
 
   describe('clockIn', () => {
     it('出勤打刻が正常に記録されること', async () => {
+      // Given: ユーザーID、場所、デバイスIDが提供される
       const userId = 'test-user';
       const location = 'Tokyo Office';
       const deviceId = 'device-123';
 
       mockDocClient.send.mockResolvedValue({});
 
+      // When: clockIn関数を呼び出す
       const result = await service.clockIn(userId, location, deviceId);
 
+      // Then: 出勤打刻が記録され、正しいデータが返される
       expect(result).toBeDefined();
       expect(result.userId).toBe(userId);
       expect(result.type).toBe(ClockType.CLOCK_IN);
@@ -49,12 +55,15 @@ describe('ClockService', () => {
     });
 
     it('オプションフィールドなしで出勤打刻が記録されること', async () => {
+      // Given: ユーザーIDのみ提供される
       const userId = 'test-user';
 
       mockDocClient.send.mockResolvedValue({});
 
+      // When: clockIn関数をオプションなしで呼び出す
       const result = await service.clockIn(userId);
 
+      // Then: 出勤打刻が記録され、オプションフィールドは未定義
       expect(result).toBeDefined();
       expect(result.userId).toBe(userId);
       expect(result.type).toBe(ClockType.CLOCK_IN);
@@ -65,14 +74,17 @@ describe('ClockService', () => {
 
   describe('clockOut', () => {
     it('退勤打刻が正常に記録されること', async () => {
+      // Given: ユーザーID、場所、デバイスIDが提供される
       const userId = 'test-user';
       const location = 'Tokyo Office';
       const deviceId = 'device-123';
 
       mockDocClient.send.mockResolvedValue({});
 
+      // When: clockOut関数を呼び出す
       const result = await service.clockOut(userId, location, deviceId);
 
+      // Then: 退勤打刻が記録され、正しいデータが返される
       expect(result).toBeDefined();
       expect(result.userId).toBe(userId);
       expect(result.type).toBe(ClockType.CLOCK_OUT);
@@ -86,6 +98,7 @@ describe('ClockService', () => {
 
   describe('getRecords', () => {
     it('打刻記録が正常に取得されること', async () => {
+      // Given: ユーザーIDと打刻記録データ
       const userId = 'test-user';
       const mockRecords = [
         {
@@ -106,8 +119,10 @@ describe('ClockService', () => {
 
       mockDocClient.send.mockResolvedValue({ Items: mockRecords });
 
+      // When: getRecords関数を呼び出す
       const result = await service.getRecords(userId);
 
+      // Then: 打刻記録が正常に取得される
       expect(result).toBeDefined();
       expect(result).toHaveLength(2);
       expect(result[0].userId).toBe(userId);
@@ -117,12 +132,15 @@ describe('ClockService', () => {
     });
 
     it('記録が存在しない場合は空配列を返すこと', async () => {
+      // Given: ユーザーIDと空の打刻記録
       const userId = 'test-user';
 
       mockDocClient.send.mockResolvedValue({ Items: [] });
 
+      // When: getRecords関数を呼び出す
       const result = await service.getRecords(userId);
 
+      // Then: 空の配列が返される
       expect(result).toBeDefined();
       expect(result).toHaveLength(0);
     });

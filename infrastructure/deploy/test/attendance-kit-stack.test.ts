@@ -16,10 +16,13 @@ describe('AttendanceKitStack - Environment Validation', () => {
   });
 
   test('environmentのデフォルト値がdevである', () => {
+    // Given: environmentを指定せずにスタックを作成
     const stack = new AttendanceKitStack(app, {
       deployOnlyDynamoDB: true,
     });
 
+    // When: CloudFormationテンプレートを生成
+    // Then: デフォルト環境名(dev)でテーブルが作成される
     expect(stack).toBeDefined();
     const template = Template.fromStack(stack);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
@@ -37,11 +40,14 @@ describe('AttendanceKitStack - Environment Validation', () => {
       expectedTableName: 'attendance-kit-eva-clock',
     },
   ])('有効な環境名: $environment', ({ environment, expectedTableName }) => {
+    // Given: 有効な環境名
     const stack = new AttendanceKitStack(app, {
       environment,
       deployOnlyDynamoDB: true,
     });
 
+    // When: CloudFormationテンプレートを生成
+    // Then: 環境名を含むテーブル名が設定される
     expect(stack).toBeDefined();
     const template = Template.fromStack(stack);
     template.hasResourceProperties('AWS::DynamoDB::Table', {
@@ -58,6 +64,9 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
   });
 
   test('フルスタックデプロイ時にjwtSecretが必須', () => {
+    // Given: deployOnlyDynamoDBがfalseでjwtSecretが未指定
+    // When: AttendanceKitStackを作成
+    // Then: エラーがスローされる
     expect(() => {
       new AttendanceKitStack(app, {
         environment: 'dev',
@@ -69,11 +78,14 @@ describe('AttendanceKitStack - JWT Secret Validation', () => {
   });
 
   test('DynamoDB-onlyモードではjwtSecretは不要', () => {
+    // Given: deployOnlyDynamoDBがtrueでjwtSecret未指定
     const stack = new AttendanceKitStack(app, {
       environment: 'test',
       deployOnlyDynamoDB: true,
     });
 
+    // When: スタックを確認
+    // Then: スタックとDynamoDBテーブルが作成され、Backend APIは作成されない
     expect(stack).toBeDefined();
     expect(stack.clockTable).toBeDefined();
     expect(stack.backendApi).toBeUndefined();
@@ -101,6 +113,9 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
   });
 
   test('DynamoDB Table Created with test environment name', () => {
+    // Given: test環境のDynamoDB-onlyモードスタック
+    // When: CloudFormationテンプレートを確認
+    // Then: テーブルが正しい設定で作成される
     template.hasResourceProperties('AWS::DynamoDB::Table', {
       TableName: 'attendance-kit-test-clock',
       BillingMode: 'PAY_PER_REQUEST',
@@ -108,6 +123,9 @@ describe('AttendanceKitStack - DynamoDB Only Mode', () => {
   });
 
   test('Table has DESTROY deletion policy for test environment', () => {
+    // Given: test環境のDynamoDB-onlyモードスタック
+    // When: CloudFormationテンプレートを確認
+    // Then: 削除ポリシーがDeleteに設定される
     template.hasResource('AWS::DynamoDB::Table', {
       DeletionPolicy: 'Delete',
       UpdateReplacePolicy: 'Delete',

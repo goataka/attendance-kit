@@ -4,7 +4,10 @@ import { App } from '../../App';
 
 describe('App Snapshot', () => {
   it('matches snapshot', () => {
+    // Given: Appコンポーネント
+    // When: Appコンポーネントをレンダリング
     const { container } = render(<App />);
+    // Then: スナップショットと一致する
     expect(container).toMatchSnapshot();
   });
 });
