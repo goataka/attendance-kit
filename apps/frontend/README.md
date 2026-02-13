@@ -44,21 +44,59 @@ graph LR
 ```text
 apps/frontend/
 ├── src/
-│   ├── ClockInOutPage/      # 打刻画面
-│   ├── ClocksListPage/      # 打刻一覧画面
-│   ├── shared/              # 共通リソース
+│   ├── ClockInOutPage/
+│   │   ├── page-objects/        # E2Eテスト用ページオブジェクト
+│   │   ├── ClockInOutPage.tsx
+│   │   └── ...
+│   ├── ClocksListPage/
+│   │   ├── page-objects/        # E2Eテスト用ページオブジェクト
+│   │   ├── ClocksListPage.tsx
+│   │   └── ...
+│   ├── shared/
+│   │   ├── api/                 # API通信
+│   │   ├── types/               # 型定義
+│   │   └── constants/           # 定数
 │   ├── App.tsx
 │   └── main.tsx
 ├── vite.config.ts
 └── playwright.config.ts
 ```
 
+## テスト
+
+### ユニットテスト
+
+Vitest + React Testing Libraryを使用したコンポーネントテスト
+
+```bash
+npm test
+```
+
+### E2Eテスト
+
+Playwrightを使用したブラウザテスト。ページオブジェクトパターンを採用しています。
+
+```bash
+npm run test:integration
+```
+
+#### ページオブジェクト
+
+テストコードの保守性向上のため、ページオブジェクトパターンを使用しています。
+
+配置場所: 各コンポーネントの`page-objects/`ディレクトリ
+
+- `ClockInOutPage/page-objects/ClockInOutPage.ts`: 打刻画面のページオブジェクト
+- `ClocksListPage/page-objects/ClocksListPage.ts`: 打刻一覧画面のページオブジェクト
+
+詳細は[E2E README](../../../test/e2e/README.md)を参照してください。
+
 ## コマンド
 
-| コマンド                   | 説明                                      |
-| -------------------------- | ----------------------------------------- |
+| コマンド                   | 説明                                        |
+| -------------------------- | ------------------------------------------- |
 | `npm run dev`              | 開発サーバー起動（<http://localhost:5173>） |
-| `npm run build`            | プロダクションビルド                      |
-| `npm test`                 | ユニットテスト                            |
-| `npm run test:integration` | E2Eテスト                                 |
-| `npm run lint`             | Lintチェック                              |
+| `npm run build`            | プロダクションビルド                        |
+| `npm test`                 | ユニットテスト                              |
+| `npm run test:integration` | E2Eテスト                                   |
+| `npm run lint`             | Lintチェック                                |
