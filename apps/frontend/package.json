@@ -20,7 +20,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "test:e2e": "npx playwright test",
-    "test:visual": "npx playwright test --update-snapshots"
+    "test:visual:update": "npx playwright test --update-snapshots"
   },
   "keywords": [
     "frontend",

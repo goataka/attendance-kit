@@ -97,11 +97,19 @@ E2Eテストではビジュアルリグレッションテストのためにス�
 
 スクリーンショットは`.gitignore`で除外され、テスト実行時に自動生成されます。
 
-初回テスト実行時またはスクリーンショットを更新する場合:
+**通常のテスト実行**（既存のスクリーンショットと比較）:
 
 ```bash
-npm run test:integration -- --update-snapshots
+npm run test:integration
 ```
+
+**スクリーンショットの更新**（ベースラインの意図的な更新時）:
+
+```bash
+npm run test:visual:update
+```
+
+**CI環境**: CI環境では常に`--update-snapshots`オプションでスクリーンショットを生成し、ビジュアルリグレッションチェックを実行します。
 
 ## コマンド
 
