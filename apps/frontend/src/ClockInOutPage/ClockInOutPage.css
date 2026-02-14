@@ -79,8 +79,12 @@
 
 .button-group {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+.btn-login {
+  grid-column: 1 / -1;
 }
 
 .btn {

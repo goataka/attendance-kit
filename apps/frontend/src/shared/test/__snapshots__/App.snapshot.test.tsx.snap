@@ -50,17 +50,17 @@ exports[`Appスナップショット > スナップショットと一致する�
           <button
             class="btn btn-primary"
           >
-            ログイン
-          </button>
-          <button
-            class="btn btn-primary"
-          >
             出勤
           </button>
           <button
             class="btn btn-secondary"
           >
             退勤
+          </button>
+          <button
+            class="btn btn-primary btn-login"
+          >
+            ログイン
           </button>
         </div>
       </div>

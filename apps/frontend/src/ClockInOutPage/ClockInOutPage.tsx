@@ -117,13 +117,6 @@ export function ClockInOutPage() {
           <div className="button-group">
             <button
               className="btn btn-primary"
-              onClick={handleLogin}
-              disabled={loading}
-            >
-              ログイン
-            </button>
-            <button
-              className="btn btn-primary"
               onClick={() => handleClockInOut('clock-in')}
               disabled={loading}
             >
@@ -135,6 +128,13 @@ export function ClockInOutPage() {
               disabled={loading}
             >
               退勤
+            </button>
+            <button
+              className="btn btn-primary btn-login"
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              ログイン
             </button>
           </div>
         </div>
