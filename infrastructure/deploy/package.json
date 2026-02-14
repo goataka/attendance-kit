@@ -3,13 +3,18 @@
   "version": "1.0.0",
   "description": "AWS CDK infrastructure for attendance-kit clock table",
   "scripts": {
+    "postinstall": "pip3 install localstack==4.12 awscli-local",
     "setup": "npm run setup --prefix ../..",
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
     "test:unit": "jest --updateSnapshot",
     "format": "prettier --write \"lib/**/*.ts\" \"bin/**/*.ts\" \"test/**/*.ts\"",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy:local-db": "npm run cdklocal:setup && npm run cdklocal:bootstrap && npm run cdklocal:deploy-db",
+    "cdklocal:setup": "localstack start -d && localstack wait -t 30",
+    "cdklocal:bootstrap": "npx cdklocal bootstrap aws://000000000000/ap-northeast-1 --force && sleep 3",
+    "cdklocal:deploy-db": "npx cdklocal deploy AttendanceKit-Test-Stack --context stack=dynamodb --context environment=test --require-approval never --no-previous-parameters"
   },
   "keywords": [
     "aws",
@@ -20,9 +25,13 @@
   "license": "MIT",
   "devDependencies": {
     "@aws-sdk/client-cloudfront": "^3.972.0",
+    "@aws-sdk/client-dynamodb": "^3.972.0",
+    "@aws-sdk/client-s3": "^3.972.0",
+    "@aws-sdk/lib-dynamodb": "^3.972.0",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.x",
     "aws-cdk": "^2.x",
+    "aws-cdk-local": "^2.x",
     "jest": "^29.5.0",
     "prettier": "^3.0.0",
     "ts-jest": "^29.1.0",
