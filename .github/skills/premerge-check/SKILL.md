@@ -95,10 +95,8 @@ npm run test:integration --workspace=@attendance-kit/backend
 
 **必須**: Backend変更時は実行してください。
 
-- DynamoDBとの統合テスト（LocalStack使用）
+- aws-sdk-client-mockを使用した統合テスト
 - エンドポイントの動作確認
-
-**注**: `pretest:integration`フックにより、テスト実行前にLocalStackが自動的に起動・セットアップされます。
 
 ### 8. Frontend E2Eテスト実行
 

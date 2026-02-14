@@ -42,7 +42,7 @@ npm run test:unit -- --coverage
 - **Jest**: テストフレームワーク
 - **Supertest**: HTTPリクエストテスト
 - **NestJS Testing Module**: DIコンテナとモジュールのテスト
-- **LocalStack**: ローカルDynamoDB環境
+- **aws-sdk-client-mock**: AWS SDKのモックライブラリ
 
 ## 参考資料
 
