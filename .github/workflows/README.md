@@ -2,12 +2,25 @@
 
 ## ワークフロー一覧
 
-| ワークフロー                                                   | 説明                       | トリガー                |
-| -------------------------------------------------------------- | -------------------------- | ----------------------- |
-| [premerge.yml](./premerge.yml)                                 | PR時のテストとチェック     | PR作成・更新時          |
-| [deploy-environment-stack.yml](./deploy-environment-stack.yml) | 環境スタックデプロイ       | mainマージ時/手動       |
-| [deploy-account-stack.yml](./deploy-account-stack.yml)         | アカウントスタックデプロイ | mainマージ時/手動       |
-| [copilot-setup-steps.yml](./copilot-setup-steps.yml)           | Copilotセットアップ検証    | 手動/ワークフロー変更時 |
+| ワークフロー                                                   | 説明                              | トリガー                |
+| -------------------------------------------------------------- | --------------------------------- | ----------------------- |
+| [premerge.yml](./premerge.yml)                                 | PR時のテストとチェック            | PR作成・更新時          |
+| [pr-deploy-and-e2e.yml](./pr-deploy-and-e2e.yml)               | PR環境デプロイとE2Eテスト         | PR作成・更新時          |
+| [pr-cleanup.yml](./pr-cleanup.yml)                             | PR環境クリーンアップ              | PRクローズ時            |
+| [deploy-environment-stack.yml](./deploy-environment-stack.yml) | 環境スタックデプロイ              | mainマージ時/手動       |
+| [deploy-account-stack.yml](./deploy-account-stack.yml)         | アカウントスタックデプロイ        | mainマージ時/手動       |
+| [copilot-setup-steps.yml](./copilot-setup-steps.yml)           | Copilotセットアップ検証           | 手動/ワークフロー変更時 |
+
+## E2Eテスト実行環境
+
+E2Eテストは実際のAWS環境にデプロイして実行されます:
+
+- **PR環境**: PR作成時に個別の環境（`pr-123`形式）がデプロイされ、その環境に対してE2Eテストが実行されます
+  - デプロイとテスト実行: [pr-deploy-and-e2e.yml](./pr-deploy-and-e2e.yml)
+  - PRクローズ時に自動クリーンアップ: [pr-cleanup.yml](./pr-cleanup.yml)
+
+- **Eva環境**: mainブランチマージ後、eva環境に対してE2Eテストが実行されます
+  - デプロイとテスト実行: [deploy-environment-stack.yml](./deploy-environment-stack.yml)
 
 ## 必須設定
 

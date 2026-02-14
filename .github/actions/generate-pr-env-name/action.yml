@@ -1,0 +1,42 @@
+name: PRの環境名生成
+description: PRのブランチ名から環境名を生成します
+
+inputs:
+  branch-name:
+    description: 'ブランチ名'
+    required: true
+  pr-number:
+    description: 'PR番号'
+    required: true
+
+outputs:
+  environment-name:
+    description: '生成された環境名（例: pr-123）'
+    value: ${{ steps.generate.outputs.environment-name }}
+  sanitized-branch-name:
+    description: 'サニタイズされたブランチ名'
+    value: ${{ steps.generate.outputs.sanitized-branch-name }}
+
+runs:
+  using: composite
+  steps:
+    - name: 環境名の生成
+      id: generate
+      shell: bash
+      run: |
+        # PR番号ベースの環境名を生成
+        ENV_NAME="pr-${{ inputs.pr-number }}"
+        
+        # ブランチ名をサニタイズ（英数字とハイフンのみ、小文字化、最大20文字）
+        SANITIZED_BRANCH=$(echo "${{ inputs.branch-name }}" | \
+          tr '[:upper:]' '[:lower:]' | \
+          sed 's/[^a-z0-9-]/-/g' | \
+          sed 's/--*/-/g' | \
+          sed 's/^-//;s/-$//' | \
+          cut -c1-20)
+        
+        echo "environment-name=${ENV_NAME}" >> $GITHUB_OUTPUT
+        echo "sanitized-branch-name=${SANITIZED_BRANCH}" >> $GITHUB_OUTPUT
+        
+        echo "Generated environment name: ${ENV_NAME}"
+        echo "Sanitized branch name: ${SANITIZED_BRANCH}"

@@ -144,15 +144,12 @@ jobs:
           failure-message: 'バックエンド統合テストに失敗しました。LocalStackのセットアップまたはテストのエラーを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  deploy-integration-test:
+  cdk-synth-test:
     runs-on: ubuntu-latest
     needs: check-changes
     if: needs.check-changes.outputs.should-run-tests == 'true'
 
     env:
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
-      AWS_DEFAULT_REGION: ap-northeast-1
       JWT_SECRET: test-secret-key
 
     steps:
@@ -181,16 +178,17 @@ jobs:
       - name: 全ワークスペースのビルド
         run: npm run build
 
-      - name: LocalStackへのデプロイ
+      - name: CDK Synthテスト
         working-directory: infrastructure/deploy
-        run: npm run deploy:local-all
+        run: |
+          npx cdk synth --context stack=environment --context environment=test
 
       - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
-          workflow-name: 'Premerge - Deploy Integration Test'
-          failure-message: 'デプロイ統合テストに失敗しました。LocalStackへのデプロイエラーを確認してください。'
+          workflow-name: 'Premerge - CDK Synth Test'
+          failure-message: 'CDK Synthテストに失敗しました。インフラストラクチャコードのエラーを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   frontend-integration-test:
@@ -233,82 +231,4 @@ jobs:
           failure-message: 'フロントエンド統合テストに失敗しました。Playwrightテストのエラーを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  e2e-test:
-    runs-on: ubuntu-latest
-    needs: check-changes
-    if: needs.check-changes.outputs.should-run-tests == 'true'
 
-    env:
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
-      AWS_DEFAULT_REGION: ap-northeast-1
-      JWT_SECRET: test-secret-key
-      VITE_BACKEND_URL: http://localhost:3000
-      FRONTEND_URL: http://localhost:5173
-      BACKEND_URL: http://localhost:3000
-      NODE_ENV: test
-      DYNAMODB_ENDPOINT: http://localhost:4566
-
-    steps:
-      - name: コードのチェックアウト
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.CHECKOUT_REF }}
-
-      - name: Node.jsのセットアップ
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'npm'
-
-      - name: 依存関係のインストール
-        run: npm run setup
-
-      - name: TurboRepoキャッシュの設定
-        uses: actions/cache@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-
-
-      - name: 全ワークスペースのビルド
-        run: npm run build
-
-      - name: E2Eテストの実行
-        run: npm run test:e2e:local
-        timeout-minutes: 5
-
-      - name: E2Eテストレポートのアップロード
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-test-reports
-          path: test/e2e/reports/
-          retention-days: 30
-          if-no-files-found: warn
-
-      - name: PRへのE2Eテスト結果コメント
-        if: always() && github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: e2e-test-results
-          recreate: true
-          message: |
-            ## E2Eテスト結果
-
-            📊 **テストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-            レポートの確認方法：
-            1. 上記のリンクをクリック
-            2. Artifacts セクションから `e2e-test-reports` をダウンロード
-            3. `cucumber-report.html` をブラウザで開く
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 失敗時のコメント
-        if: failure()
-        uses: ./.github/actions/comment-on-failure
-        with:
-          workflow-name: 'Premerge - E2E Test'
-          failure-message: 'E2Eテストに失敗しました。Playwrightテストのエラーを確認してください。'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
