@@ -14,13 +14,13 @@
     "test": "vitest run",
     "test:unit": "vitest run",
     "pretest:integration": "npx playwright install --with-deps chromium",
-    "test:integration": "playwright test",
+    "test:integration": "npx playwright test",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
-    "test:e2e": "playwright test",
-    "test:visual": "playwright test --update-snapshots"
+    "test:e2e": "npx playwright test",
+    "test:visual": "npx playwright test --update-snapshots"
   },
   "keywords": [
     "frontend",
