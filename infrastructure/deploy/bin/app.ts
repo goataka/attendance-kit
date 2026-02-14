@@ -8,14 +8,15 @@ const app = new cdk.App();
 // Determine which stack to deploy from context
 // Valid values:
 //   - 'environment': Deploy only Environment Stack (requires environment context)
-//   - 'dynamodb': Deploy only DynamoDB Stack (for integration testing)
+//   - 'dynamodb': Deploy only DynamoDB Stack (for local development)
 const stackType =
   app.node.tryGetContext('stack') || process.env.STACK_TYPE || 'environment';
 
-const LOCALSTACK_ACCOUNT_ID = '000000000000';
+// Default account ID for local development
+const DEFAULT_ACCOUNT_ID = '000000000000';
 
 const env = {
-  account: process.env.CDK_DEFAULT_ACCOUNT || LOCALSTACK_ACCOUNT_ID,
+  account: process.env.CDK_DEFAULT_ACCOUNT || DEFAULT_ACCOUNT_ID,
   region: process.env.CDK_DEFAULT_REGION || 'ap-northeast-1',
 };
 

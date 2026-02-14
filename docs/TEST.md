@@ -13,7 +13,7 @@
 | **AWS CDK** | Unit        | 規約遵守     | ・セキュリティ設定（暗号化等）の有無<br>・必須タグ付与の確認<br>・スタック分割の妥当性                         | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
 | **AWS CDK** | Integration | 構築妥当性   | ・cdklocalによるリソース作成成功<br>・循環参照や依存関係エラーの検知<br>・パラメータ同期の確認                 | Jest                    | 実装中・プレマージ      | LocalStack               |
 | **NestJS**  | Unit        | ロジック保証 | ・ビジネスルールの計算正当性<br>・入力値バリデーションの分岐<br>・例外処理のハンドリング                       | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
-| **NestJS**  | Integration | データ整合性 | ・DynamoDBへのCRUD操作<br>・GSI/LSIを利用した検索挙動<br>・SDK v3の型定義整合性                                | Jest + Supertest        | 実装中・プレマージ      | LocalStack<br>(DynamoDB) |
+| **NestJS**  | Integration | データ整合性 | ・DynamoDBへのCRUD操作<br>・GSI/LSIを利用した検索挙動<br>・SDK v3の型定義整合性                                | Jest + Supertest + aws-sdk-client-mock        | 実装中・プレマージ      | なし<br>(Mock) |
 | **React**   | Unit        | 独立性検証   | ・Custom Hooksの戻り値<br>・純粋な関数（Utils）の出力<br>・UI非依存のステート管理ロジック                      | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
 | **React**   | Integration | 表示・連携   | ・コンポーネント間のProps受け渡し<br>・APIレスポンス別のUI表示切替<br>・MSWによる擬似的な通信エラー対応        | Playwright + MSW        | 実装中・プレマージ      | なし<br>(Mock)           |
 | **System**  | API         | 接続・権限   | ・エンドポイントの疎通（HTTP 200）<br>・IAMロール/ポリシーの権限不足確認<br>・CORS設定の妥当性                 | Playwright<br>(Request) | デプロイ前 / デプロイ後 | Local / AWS              |

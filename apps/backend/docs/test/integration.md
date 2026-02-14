@@ -23,10 +23,10 @@
 
 ## 使用ツール
 
-### Jest + Supertest
+### Jest + Supertest + aws-sdk-client-mock
 
 - SupertestでHTTPリクエストをシミュレート
-- LocalStackのDynamoDBを使用
+- aws-sdk-client-mockでAWS DynamoDBをモック化
 
 ## 実行タイミング
 
@@ -35,7 +35,7 @@
 
 ## 接続先
 
-LocalStack（DynamoDB）
+なし（aws-sdk-client-mockを使用してDynamoDBをモック化）
 
 ## 実行方法
 

@@ -86,10 +86,8 @@ npm run test:integration
 
 **必須**: API関連のコード変更時は実行してください。
 
-- DynamoDBとの統合テスト（LocalStack使用）
+- aws-sdk-client-mockを使用した統合テスト
 - エンドポイントの動作確認
-
-**注**: `pretest:integration`フックにより、テスト実行前にLocalStackが自動的に起動・セットアップされます。手動でLocalStackを起動する必要はありません。
 
 ### 7. OpenAPI仕様の生成
 
@@ -172,10 +170,8 @@ npm run test:integration -- <test-file-name>
 ```
 
 - テストロジックを確認
-- DynamoDBとの接続を確認
-- LocalStackの自動起動が失敗している場合は、ログを確認してください
-
-**注**: LocalStackは`pretest:integration`フックで自動的に起動されます。手動での起動は通常不要です。
+- モックの設定を確認
+- DynamoDBのモック動作を確認
 
 ## ベストプラクティス
 
@@ -203,7 +199,7 @@ npm run test:integration -- <test-file-name>
 - **ランタイム**: Node.js 24.x以上
 - **データベース**: DynamoDB (AWS SDK v3)
 - **認証**: JWT (Passport)
-- **テスト**: Jest + Supertest
+- **テスト**: Jest + Supertest + aws-sdk-client-mock
 - **ビルドツール**: NestJS CLI
 
 ## Premergeワークフローとの対応
