@@ -5,7 +5,11 @@ import { AppModule } from '../app.module';
 import { JwtService } from '@nestjs/jwt';
 import { ClockType } from './dto/clock.dto';
 import { mockClient } from 'aws-sdk-client-mock';
-import { DynamoDBDocumentClient, PutCommand, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import {
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+} from '@aws-sdk/lib-dynamodb';
 
 // 統合テスト用の環境変数をモジュール読み込み前に設定
 process.env.AWS_REGION = 'ap-northeast-1';
@@ -124,16 +128,8 @@ describe('ClockController（統合テスト）', () => {
 
   describe('/api/clock/records (GET)', () => {
     it('打刻記録が正常に取得されること', () => {
-      // Given: 認証済みのユーザーとモックデータ
+      // Given: 認証済みのユーザーとモックデータ（降順：最新が先頭）
       const mockRecords = [
-        {
-          id: 'test-id-1',
-          userId: 'test-user',
-          timestamp: '2025-12-25T09:00:00Z',
-          date: '2025-12-25',
-          type: ClockType.CLOCK_IN,
-          location: 'Tokyo Office',
-        },
         {
           id: 'test-id-2',
           userId: 'test-user',
@@ -142,11 +138,19 @@ describe('ClockController（統合テスト）', () => {
           type: ClockType.CLOCK_OUT,
           location: 'Tokyo Office',
         },
+        {
+          id: 'test-id-1',
+          userId: 'test-user',
+          timestamp: '2025-12-25T09:00:00Z',
+          date: '2025-12-25',
+          type: ClockType.CLOCK_IN,
+          location: 'Tokyo Office',
+        },
       ];
       ddbMock.on(QueryCommand).resolves({ Items: mockRecords });
 
       // When: GET /api/clock/records を呼び出す
-      // Then: 200ステータスと打刻記録の配列が返される
+      // Then: 200ステータスと打刻記録の配列が返される（降順）
       return request(app.getHttpServer())
         .get('/api/clock/records')
         .set('Authorization', `Bearer ${authToken}`)
@@ -157,8 +161,9 @@ describe('ClockController（統合テスト）', () => {
           expect(res.body[0]).toHaveProperty('userId');
           expect(res.body[0]).toHaveProperty('timestamp');
           expect(res.body[0]).toHaveProperty('type');
-          expect(res.body[0].type).toBe(ClockType.CLOCK_IN);
-          expect(res.body[1].type).toBe(ClockType.CLOCK_OUT);
+          // 降順なので最新のCLOCK_OUTが先頭
+          expect(res.body[0].type).toBe(ClockType.CLOCK_OUT);
+          expect(res.body[1].type).toBe(ClockType.CLOCK_IN);
         });
     });
 
