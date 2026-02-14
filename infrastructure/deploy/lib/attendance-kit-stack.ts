@@ -8,7 +8,7 @@ import { DynamoDBSeeder, Seeds } from '@cloudcomponents/cdk-dynamodb-seeder';
 import * as path from 'path';
 import { DynamoDBCleaner } from './constructs/dynamodb-cleaner';
 
-export type Environment = 'dev' | 'test' | 'eva' | 'stg' | 'prod';
+export type Environment = 'dev' | 'test' | 'eva' | 'stg' | 'prod' | string;
 
 export interface AttendanceKitStackProps extends cdk.StackProps {
   environment?: Environment; // デフォルト: 'dev'
@@ -177,7 +177,9 @@ export class AttendanceKitStack extends cdk.Stack {
   }
 
   private static generateStackId(environment: Environment): string {
-    const capitalizedEnv = environment.charAt(0).toUpperCase() + environment.slice(1);
+    // ハイフンをアンダースコアに変換し、最初の文字を大文字にする
+    const sanitizedEnv = environment.replace(/-/g, '_');
+    const capitalizedEnv = sanitizedEnv.charAt(0).toUpperCase() + sanitizedEnv.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 
