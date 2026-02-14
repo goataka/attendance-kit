@@ -121,6 +121,7 @@ jobs:
           BACKEND_URL: ${{ steps.deploy-outputs.outputs.api_url }}
           NODE_ENV: ${{ steps.env-name.outputs.environment-name }}
           AWS_REGION: ap-northeast-1
+          DYNAMODB_TABLE_NAME: attendance-kit-${{ steps.env-name.outputs.environment-name }}-clock
         run: npm run test:e2e
         timeout-minutes: 10
 
@@ -141,22 +142,22 @@ jobs:
           recreate: true
           message: |
             ## PR環境デプロイとE2Eテスト結果
-            
+
             **環境名**: `${{ steps.env-name.outputs.environment-name }}`
-            
+
             **デプロイ結果**: ${{ job.status == 'success' && '✅ 成功' || '❌ 失敗' }}
-            
+
             **アクセスURL**:
             - 🌐 Frontend: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
             - 🔌 Backend API: ${{ steps.deploy-outputs.outputs.api_url }}
-            
+
             **E2Eテストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
+
             レポートの確認方法：
             1. 上記のリンクをクリック
             2. Artifacts セクションから `e2e-pr-${{ github.event.pull_request.number }}-test-reports` をダウンロード
             3. `cucumber-report.html` をブラウザで開く
-            
+
             ---
             💡 このPR環境はPRがクローズされた時に自動的に削除されます。
 

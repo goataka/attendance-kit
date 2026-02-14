@@ -163,7 +163,8 @@ jobs:
           BACKEND_URL: ${{ needs.deploy.outputs.api_url }}
           NODE_ENV: ${{ needs.deploy.outputs.environment }}
           AWS_REGION: ap-northeast-1
-        run: npm run test:e2e:eva
+          DYNAMODB_TABLE_NAME: attendance-kit-${{ needs.deploy.outputs.environment }}-clock
+        run: npm run test:e2e
         timeout-minutes: 5
 
       - name: E2Eテストレポートのアップロード
