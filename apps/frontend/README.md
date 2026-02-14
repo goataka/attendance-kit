@@ -91,6 +91,18 @@ npm run test:integration
 
 詳細は[E2E README](../../../test/e2e/README.md)を参照してください。
 
+#### スクリーンショット
+
+E2Eテストではビジュアルリグレッションテストのためにスクリーンショットを使用します。
+
+スクリーンショットは`.gitignore`で除外され、テスト実行時に自動生成されます。
+
+初回テスト実行時またはスクリーンショットを更新する場合:
+
+```bash
+npm run test:integration -- --update-snapshots
+```
+
 ## コマンド
 
 | コマンド                   | 説明                                        |
