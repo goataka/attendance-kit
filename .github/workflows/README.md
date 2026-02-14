@@ -4,7 +4,8 @@
 
 | ワークフロー                                                   | 説明                                           | トリガー                |
 | -------------------------------------------------------------- | ---------------------------------------------- | ----------------------- |
-| [premerge.yml](./premerge.yml)                                 | PR時のテスト、デプロイ、E2Eテスト             | PR作成・更新時          |
+| [premerge.yml](./premerge.yml)                                 | PR時のテストとチェック                         | PR作成・更新時          |
+| [pr-e2e-test.yml](./pr-e2e-test.yml)                           | PR環境デプロイとE2Eテスト                      | PR作成・更新時          |
 | [pr-cleanup.yml](./pr-cleanup.yml)                             | PR環境クリーンアップ                           | PRクローズ時            |
 | [deploy-environment-stack.yml](./deploy-environment-stack.yml) | 環境スタックデプロイ                           | mainマージ時/手動       |
 | [deploy-account-stack.yml](./deploy-account-stack.yml)         | アカウントスタックデプロイ                     | mainマージ時/手動       |
@@ -15,7 +16,7 @@
 E2Eテストは実際のAWS環境にデプロイして実行されます:
 
 - **PR環境**: PR作成時に個別の環境（`pr-123`形式）がデプロイされ、その環境に対してE2Eテストが実行されます
-  - デプロイとテスト実行: [premerge.yml](./premerge.yml)の`deploy-and-e2e-test`ジョブ
+  - デプロイとテスト実行: [pr-e2e-test.yml](./pr-e2e-test.yml)
   - PRクローズ時に自動クリーンアップ: [pr-cleanup.yml](./pr-cleanup.yml)
 
 - **Eva環境**: mainブランチマージ後、eva環境に対してE2Eテストが実行されます

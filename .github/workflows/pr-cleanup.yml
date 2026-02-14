@@ -73,15 +73,16 @@ jobs:
           echo "Stack name: ${STACK_NAME}"
 
           # スタックが存在するか確認
-          if aws cloudformation describe-stacks --stack-name ${STACK_NAME} 2>/dev/null; then
-            echo "Stack found. Proceeding with destruction..."
-            npx cdk destroy ${STACK_NAME} --force \
-              --context stack=environment \
-              --context environment=${ENVIRONMENT}
-            echo "Stack destroyed successfully"
-          else
+          if ! aws cloudformation describe-stacks --stack-name ${STACK_NAME} 2>/dev/null; then
             echo "Stack not found in CloudFormation. Nothing to destroy."
+            exit 0
           fi
+          
+          echo "Stack found. Proceeding with destruction..."
+          npx cdk destroy ${STACK_NAME} --force \
+            --context stack=environment \
+            --context environment=${ENVIRONMENT}
+          echo "Stack destroyed successfully"
 
       - name: PRへのクリーンアップ完了コメント
         if: github.event_name == 'pull_request' && always()

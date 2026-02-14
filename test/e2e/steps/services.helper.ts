@@ -3,8 +3,12 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 // Constants
 export const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 export const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
+
+// DynamoDB table name generation from NODE_ENV
+// Format: attendance-kit-{environment}-clock
+const environment = process.env.NODE_ENV || 'test';
 export const TABLE_NAME =
-  process.env.DYNAMODB_TABLE_NAME || 'attendance-kit-test-clock';
+  process.env.DYNAMODB_TABLE_NAME || `attendance-kit-${environment}-clock`;
 export const IS_LOCAL = process.env.E2E_ENV !== 'deployed';
 
 // DynamoDB client configuration (LocalStackまたはAWS)

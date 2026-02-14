@@ -1,7 +1,8 @@
-name: Deploy Environment Stack to AWS
+name: PR環境E2Eテスト
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - main
     paths:
@@ -11,18 +12,18 @@ on:
       - 'infrastructure/deploy/**'
       - 'package.json'
       - 'package-lock.json'
-      - '.github/workflows/deploy-environment-stack.yml'
+      - 'test/e2e/**'
+      - '.github/workflows/pr-e2e-test.yml'
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment to deploy'
+      pr-number:
+        description: 'PR番号'
         required: true
-        default: 'eva'
-        type: choice
-        options:
-          - eva
-          - stg
-          - prod
+        type: number
+
+concurrency:
+  group: pr-e2e-${{ github.event.pull_request.number || inputs.pr-number }}
+  cancel-in-progress: true
 
 permissions:
   id-token: write # OIDC認証に必要
@@ -33,7 +34,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment || 'eva' }}
+    environment: eva # PR環境のデプロイにはeva環境の認証情報を使用
     outputs:
       cloudfront_url: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
       api_url: ${{ steps.deploy-outputs.outputs.api_url }}
@@ -64,20 +65,20 @@ jobs:
       - name: CDK Bootstrapの実行
         working-directory: infrastructure/deploy
         env:
-          ENVIRONMENT: ${{ inputs.environment || 'eva' }}
+          ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           echo "Running CDK bootstrap (idempotent operation)..."
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
           npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=environment
 
-      - name: CDK Deploy環境スタック
+      - name: CDK Deploy PR環境スタック
         working-directory: infrastructure/deploy
         env:
-          ENVIRONMENT: ${{ inputs.environment || 'eva' }}
+          ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/')-Stack"
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-/_/g' | sed 's/./\U&/')-Stack"
           echo "Deploying environment stack: ${STACK_NAME}"
           npx cdk deploy ${STACK_NAME} --require-approval never \
             --context stack=environment \
@@ -86,12 +87,12 @@ jobs:
       - name: デプロイ結果の出力
         id: deploy-outputs
         env:
-          ENVIRONMENT: ${{ inputs.environment || 'eva' }}
+          ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
         run: |
           echo "Deployment completed successfully for environment: ${ENVIRONMENT}"
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/')-Stack"
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-/_/g' | sed 's/./\U&/')-Stack"
 
-          # スタック出力を一度だけ取得
+          # スタック出力を取得
           STACK_OUTPUTS=$(aws cloudformation describe-stacks \
             --stack-name ${STACK_NAME} \
             --query 'Stacks[0].Outputs' \
@@ -100,11 +101,10 @@ jobs:
           echo "Stack outputs:"
           echo "${STACK_OUTPUTS}" | jq -r '.[] | "\(.OutputKey): \(.OutputValue)"'
 
-          # jqで必要な値を抽出（CDKがConstructで生成するサフィックス付きのキー名に対応）
+          # 必要な値を抽出
           CLOUDFRONT_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey | contains("CloudFrontUrl")) | .OutputValue')
           API_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey | contains("ApiUrl")) | .OutputValue')
 
-          # 必須のスタック出力が存在しない場合はエラー終了
           if [ -z "${CLOUDFRONT_URL}" ] || [ -z "${API_URL}" ]; then
             echo "Error: Required stack outputs not found"
             echo "CLOUDFRONT_URL: ${CLOUDFRONT_URL}"
@@ -120,21 +120,20 @@ jobs:
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
-          workflow-name: 'Deploy Environment Stack'
-          failure-message: '環境スタックのデプロイに失敗しました。ログを確認してください。'
+          workflow-name: 'PR環境デプロイ'
+          failure-message: 'PR環境スタックのデプロイに失敗しました。ログを確認してください。'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 失敗時のIssue作成
         if: failure()
         uses: ./.github/actions/create-issue-on-failure
         with:
-          workflow-name: 'Deploy Environment Stack'
+          workflow-name: 'PR環境デプロイ'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
   e2e-test:
     runs-on: ubuntu-latest
     needs: deploy
-    if: needs.deploy.outputs.environment == 'eva'
     environment: eva
 
     steps:
@@ -164,27 +163,55 @@ jobs:
           NODE_ENV: ${{ needs.deploy.outputs.environment }}
           AWS_REGION: ap-northeast-1
         run: npm run test:e2e
-        timeout-minutes: 5
+        timeout-minutes: 10
 
       - name: E2Eテストレポートのアップロード
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-eva-test-reports
+          name: e2e-pr-${{ github.event.pull_request.number || inputs.pr-number }}-test-reports
           path: test/e2e/reports/
           retention-days: 30
           if-no-files-found: warn
+
+      - name: PRへのE2Eテスト結果コメント
+        if: always() && github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-e2e-test-results
+          recreate: true
+          message: |
+            ## PR環境E2Eテスト結果
+
+            **環境名**: `${{ needs.deploy.outputs.environment }}`
+
+            **テスト結果**: ${{ job.status == 'success' && '✅ 成功' || '❌ 失敗' }}
+
+            **アクセスURL**:
+            - 🌐 Frontend: ${{ needs.deploy.outputs.cloudfront_url }}
+            - 🔌 Backend API: ${{ needs.deploy.outputs.api_url }}
+
+            **E2Eテストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            レポートの確認方法：
+            1. 上記のリンクをクリック
+            2. Artifacts セクションから `e2e-pr-${{ github.event.pull_request.number }}-test-reports` をダウンロード
+            3. `cucumber-report.html` をブラウザで開く
+
+            ---
+            💡 このPR環境はPRがクローズされた時に自動的に削除されます。
 
       - name: 失敗時のコメント
         if: failure()
         uses: ./.github/actions/comment-on-failure
         with:
-          workflow-name: 'E2E Test - Eva Environment'
-          failure-message: 'Eva環境に対するE2Eテストに失敗しました。テストログを確認してください。'
+          workflow-name: 'PR環境E2Eテスト'
+          failure-message: 'PR環境に対するE2Eテストに失敗しました。テストログを確認してください。'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 失敗時のIssue作成
         if: failure()
         uses: ./.github/actions/create-issue-on-failure
         with:
-          workflow-name: 'E2E Test - Eva Environment'
+          workflow-name: 'PR環境E2Eテスト'
           github-token: ${{ secrets.GITHUB_TOKEN }}
