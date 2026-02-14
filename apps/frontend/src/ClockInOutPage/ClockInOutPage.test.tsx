@@ -7,6 +7,7 @@ import { api } from '../shared/api';
 // Mock the API - mock the index module which exports the api
 vi.mock('../shared/api', () => ({
   api: {
+    login: vi.fn(),
     clockInOut: vi.fn(),
   },
 }));
@@ -29,8 +30,30 @@ describe('ClockInOutPage', () => {
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
     expect(screen.getByLabelText('User ID')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
+    expect(screen.getByText('ログイン')).toBeInTheDocument();
     expect(screen.getByText('出勤')).toBeInTheDocument();
     expect(screen.getByText('退勤')).toBeInTheDocument();
+  });
+
+  it('ログインが成功すること', async () => {
+    // Given: APIがログイン成功を返すようモック設定
+    vi.mocked(api.login).mockResolvedValue(true);
+
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ユーザーIDとパスワードを入力してログインボタンをクリック
+    const userIdInput = screen.getByLabelText('User ID');
+    const passwordInput = screen.getByLabelText('Password');
+    const loginButton = screen.getByText('ログイン');
+
+    fireEvent.change(userIdInput, { target: { value: 'user001' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.click(loginButton);
+
+    // Then: 成功メッセージが表示される
+    await waitFor(() => {
+      expect(screen.getByText('Login successful')).toBeInTheDocument();
+    });
   });
 
   it('入力フィールドが空の場合はエラーを表示すること', async () => {

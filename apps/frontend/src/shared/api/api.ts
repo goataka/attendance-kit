@@ -72,6 +72,7 @@ const clearToken = (): void => {
 const login = async (
   userId: string,
   password: string,
+  shouldStoreToken: boolean = false,
 ): Promise<string | null> => {
   try {
     const response = await fetch(`${BACKEND_URL}${API_BASE_PATH}/auth/login`, {
@@ -89,7 +90,7 @@ const login = async (
     const data = await response.json();
     const token = data.accessToken;
 
-    if (token) {
+    if (token && shouldStoreToken) {
       storeToken(token);
     }
 
@@ -101,6 +102,13 @@ const login = async (
 };
 
 export const api = {
+  login: async (userId: string, password: string): Promise<boolean> => {
+    const token = await login(userId, password, true);
+    return Boolean(token);
+  },
+
+  hasSession: (): boolean => Boolean(getStoredToken()),
+
   clockInOut: async (
     request: ClockInOutRequest,
   ): Promise<ClockInOutResponse> => {

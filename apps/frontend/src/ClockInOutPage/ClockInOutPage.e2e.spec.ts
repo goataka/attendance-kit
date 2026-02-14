@@ -48,7 +48,10 @@ test.describe('打刻ページ', () => {
     const clockInOutPage = new ClockInOutPage(page);
     await clockInOutPage.goto();
 
-    // When: 打刻一覧リンクをクリック
+    // When: ログインしてから打刻一覧リンクをクリック
+    await clockInOutPage.fillLoginCredentials('user001', 'password123');
+    await clockInOutPage.clickLogin();
+    await clockInOutPage.expectSuccessMessage('Login successful');
     await clockInOutPage.clickClockListLink();
 
     // Then: 打刻一覧ページに遷移する

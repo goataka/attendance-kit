@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { api } from '../shared/api';
 import { ClockRecord, RecordsFilter } from '../shared/types';
 import { DEFAULT_FILTER } from '../shared/constants';
@@ -75,6 +75,10 @@ export function ClocksListPage() {
       minute: '2-digit',
     });
   };
+
+  if (!api.hasSession()) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="clocks-list-page">

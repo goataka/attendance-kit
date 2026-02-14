@@ -52,6 +52,34 @@ export function ClockInOutPage() {
     }
   };
 
+  const handleLogin = async () => {
+    if (!userId || !password) {
+      setMessage({ type: 'error', text: 'User ID and password are required' });
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const success = await api.login(userId, password);
+
+      if (success) {
+        setMessage({ type: 'success', text: 'Login successful' });
+        setPassword('');
+      } else {
+        setMessage({ type: 'error', text: 'Login failed' });
+      }
+    } catch {
+      setMessage({
+        type: 'error',
+        text: 'An error occurred. Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="clock-in-out-page">
       <div className="container">
@@ -87,6 +115,13 @@ export function ClockInOutPage() {
           )}
 
           <div className="button-group">
+            <button
+              className="btn btn-primary"
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              ログイン
+            </button>
             <button
               className="btn btn-primary"
               onClick={() => handleClockInOut('clock-in')}
