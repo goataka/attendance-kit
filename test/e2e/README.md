@@ -58,21 +58,42 @@ E2Eテストでは、ページオブジェクトパターンを使用してペ�
 
 - `verifyRecordInDynamoDB(client, table, userId)`: DynamoDBレコードの検証
 
-## 前提条件
+## テスト実行環境
 
-以下が起動している必要があります:
+E2Eテストは実際のAWS環境にデプロイされたアプリケーションに対して実行されます:
 
-1. LocalStack (DynamoDBテーブル)
-2. Backend server (`http://localhost:3000`)
-3. Frontend server (`http://localhost:5173`)
+- **PR環境**: PR作成時に自動的にデプロイされた環境（`pr-123`形式）
+- **Eva環境**: mainブランチマージ後の開発環境
+
+## 環境変数
+
+E2Eテストは以下の環境変数を使用します:
+
+- `E2E_ENV`: テスト環境タイプ（`deployed` または未設定）
+- `FRONTEND_URL`: フロントエンドのURL（CloudFront URL）
+- `BACKEND_URL`: バックエンドAPIのURL（API Gateway URL）
+- `NODE_ENV`: 環境名（`pr-123`、`eva`など）
+- `AWS_REGION`: AWSリージョン（デフォルト: `ap-northeast-1`）
 
 ## テスト実行
 
-```bash
-# LocalStack起動
-docker run -d --name localstack -p 4566:4566 localstack/localstack
+### CI環境でのテスト実行
 
-# DynamoDBテーブルデプロイ
+E2Eテストは以下のワークフローで自動実行されます:
+
+- **PR環境**: `.github/workflows/pr-deploy-and-e2e.yml`
+  - PR作成/更新時に自動実行
+  - PR専用環境にデプロイしてテスト実行
+- **Eva環境**: `.github/workflows/deploy-environment-stack.yml`
+  - mainマージ時に自動実行
+  - Eva環境に対してテスト実行
+
+### ローカル環境でのテスト実行
+
+ローカルでのE2Eテストは、backend統合テストと同様にLocalStackを使用します:
+
+```bash
+# LocalStack起動とDynamoDBテーブルデプロイ
 cd infrastructure/deploy && npm run deploy:local-db
 
 # バックエンド起動
@@ -84,3 +105,5 @@ cd apps/frontend && npm run dev
 # E2Eテスト実行
 npm run test:e2e
 ```
+
+**注意**: ローカル実行はバックエンド開発者の統合テストのみを想定しています。完全なE2EテストはCI環境で実施されます。
