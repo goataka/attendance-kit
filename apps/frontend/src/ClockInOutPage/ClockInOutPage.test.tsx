@@ -56,6 +56,50 @@ describe('ClockInOutPage', () => {
     });
   });
 
+  it('ログインが失敗した場合はエラーを表示すること', async () => {
+    // Given: APIがログイン失敗を返すようモック設定
+    vi.mocked(api.login).mockResolvedValue(false);
+
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ユーザーIDとパスワードを入力してログインボタンをクリック
+    fireEvent.change(screen.getByLabelText('User ID'), {
+      target: { value: 'user001' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'wrong-password' },
+    });
+    fireEvent.click(screen.getByText('ログイン'));
+
+    // Then: エラーメッセージが表示される
+    await waitFor(() => {
+      expect(screen.getByText('Login failed')).toBeInTheDocument();
+    });
+  });
+
+  it('ログインで例外が発生した場合は汎用エラーを表示すること', async () => {
+    // Given: APIが例外をスローするようモック設定
+    vi.mocked(api.login).mockRejectedValue(new Error('network error'));
+
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ユーザーIDとパスワードを入力してログインボタンをクリック
+    fireEvent.change(screen.getByLabelText('User ID'), {
+      target: { value: 'user001' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'password123' },
+    });
+    fireEvent.click(screen.getByText('ログイン'));
+
+    // Then: 汎用エラーメッセージが表示される
+    await waitFor(() => {
+      expect(
+        screen.getByText('An error occurred. Please try again.'),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('入力フィールドが空の場合はエラーを表示すること', async () => {
     // Given: 入力フィールドが空の状態
     renderWithRouter(<ClockInOutPage />);
@@ -70,6 +114,22 @@ describe('ClockInOutPage', () => {
         screen.getByText('User ID and password are required'),
       ).toBeInTheDocument();
     });
+  });
+
+  it('ログイン時に入力が空の場合はエラーを表示すること', async () => {
+    // Given: 入力フィールドが空の状態
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ログインボタンをクリック
+    fireEvent.click(screen.getByText('ログイン'));
+
+    // Then: エラーメッセージが表示され、APIは呼ばれない
+    await waitFor(() => {
+      expect(
+        screen.getByText('User ID and password are required'),
+      ).toBeInTheDocument();
+    });
+    expect(api.login).not.toHaveBeenCalled();
   });
 
   it('出勤打刻が成功すること', async () => {

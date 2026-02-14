@@ -11,7 +11,6 @@ export default class ClockInOutPage {
     title: 'h1',
     userIdInput: '#userId',
     passwordInput: '#password',
-    loginButton: 'button:has-text("ログイン")',
     clockInButton: 'button:has-text("出勤")',
     clockOutButton: 'button:has-text("退勤")',
     message: '.message',
@@ -192,6 +191,9 @@ export default class ClockInOutPage {
   async loginAndClockIn(userId: string, password: string): Promise<void> {
     await this.goto();
     await this.fillLoginCredentials(userId, password);
+    await this.clickLogin();
+    // ログイン成功時にパスワードがクリアされる仕様のため再入力する
+    await this.fillPassword(password);
     await this.performClockIn();
     await this.expectSuccessMessage();
   }
@@ -202,6 +204,9 @@ export default class ClockInOutPage {
   async loginAndClockOut(userId: string, password: string): Promise<void> {
     await this.goto();
     await this.fillLoginCredentials(userId, password);
+    await this.clickLogin();
+    // ログイン成功時にパスワードがクリアされる仕様のため再入力する
+    await this.fillPassword(password);
     await this.performClockOut();
     await this.expectSuccessMessage();
   }
