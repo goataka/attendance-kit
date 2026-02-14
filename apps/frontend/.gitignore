@@ -13,9 +13,6 @@ playwright-report/
 # Playwright snapshots (auto-generated)
 **/*-snapshots/
 
-# Playwright screenshots (auto-generated during tests)
-**/*.screenshot.png
-
 # Logs
 *.log
 npm-debug.log*

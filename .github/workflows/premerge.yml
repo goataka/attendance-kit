@@ -223,7 +223,7 @@ jobs:
 
       - name: フロントエンド統合テストの実行
         working-directory: apps/frontend
-        run: npm run test:integration -- --update-snapshots
+        run: npm run test:integration
 
       - name: 失敗時のコメント
         if: failure()
