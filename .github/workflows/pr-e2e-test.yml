@@ -3,6 +3,8 @@ name: PR環境E2Eテスト
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    branches-ignore:
+      - main
     paths:
       - 'apps/backend/**'
       - 'apps/frontend/**'
@@ -76,7 +78,7 @@ jobs:
           ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-/_/g' | sed 's/./\U&/')-Stack"
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-//g' | sed 's/./\U&/')-Stack"
           echo "Deploying environment stack: ${STACK_NAME}"
           npx cdk deploy ${STACK_NAME} --require-approval never \
             --context stack=environment \
@@ -88,7 +90,7 @@ jobs:
           ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
         run: |
           echo "Deployment completed successfully for environment: ${ENVIRONMENT}"
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-/_/g' | sed 's/./\U&/')-Stack"
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-//g' | sed 's/./\U&/')-Stack"
 
           # スタック出力を取得
           STACK_OUTPUTS=$(aws cloudformation describe-stacks \

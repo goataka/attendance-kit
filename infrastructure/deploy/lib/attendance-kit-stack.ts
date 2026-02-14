@@ -177,8 +177,8 @@ export class AttendanceKitStack extends cdk.Stack {
   }
 
   private static generateStackId(environment: Environment): string {
-    // ハイフンをアンダースコアに変換し、最初の文字を大文字にする
-    const sanitizedEnv = environment.replace(/-/g, '_');
+    // ハイフンを削除し、最初の文字を大文字にする
+    const sanitizedEnv = environment.replace(/-/g, '');
     const capitalizedEnv = sanitizedEnv.charAt(0).toUpperCase() + sanitizedEnv.slice(1);
     return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
