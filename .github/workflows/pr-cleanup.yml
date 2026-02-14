@@ -1,0 +1,100 @@
+name: PR環境クリーンアップ
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: 'クリーンアップするPR番号'
+        required: true
+        type: number
+
+permissions:
+  id-token: write # OIDC認証に必要
+  contents: read
+  pull-requests: write # PRコメントに必要
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    environment: eva # PR環境のクリーンアップにはeva環境の認証情報を使用
+
+    steps:
+      - name: コードのチェックアウト
+        uses: actions/checkout@v4
+
+      - name: PR番号の取得
+        id: pr-info
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            PR_NUMBER="${{ inputs.pr-number }}"
+          else
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          fi
+          ENV_NAME="pr-${PR_NUMBER}"
+          echo "pr-number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "environment-name=${ENV_NAME}" >> $GITHUB_OUTPUT
+          echo "PR Number: ${PR_NUMBER}"
+          echo "Environment Name: ${ENV_NAME}"
+
+      - name: Node.js 24のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: 依存関係のインストール
+        run: npm run setup
+
+      - name: AWS認証情報の設定（OIDC経由）
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+
+      - name: CDK Destroy PR環境スタック
+        working-directory: infrastructure/deploy
+        env:
+          ENVIRONMENT: ${{ steps.pr-info.outputs.environment-name }}
+        run: |
+          echo "Destroying PR environment for: ${ENVIRONMENT}"
+          
+          # CDK出力からスタック名を取得
+          STACK_NAME=$(npx cdk list --context stack=environment --context environment=${ENVIRONMENT} 2>/dev/null | head -1)
+          
+          if [ -z "${STACK_NAME}" ]; then
+            echo "No stack found for environment ${ENVIRONMENT}"
+            exit 0
+          fi
+          
+          echo "Stack name: ${STACK_NAME}"
+
+          # スタックが存在するか確認
+          if ! aws cloudformation describe-stacks --stack-name ${STACK_NAME} 2>/dev/null; then
+            echo "Stack not found in CloudFormation. Nothing to destroy."
+            exit 0
+          fi
+          
+          echo "Stack found. Proceeding with destruction..."
+          npx cdk destroy ${STACK_NAME} --force \
+            --context stack=environment \
+            --context environment=${ENVIRONMENT}
+          echo "Stack destroyed successfully"
+
+      - name: PRへのクリーンアップ完了コメント
+        if: github.event_name == 'pull_request' && always()
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-cleanup-result
+          recreate: true
+          message: |
+            ## PR環境クリーンアップ完了
+
+            **環境名**: `${{ steps.pr-info.outputs.environment-name }}`
+
+            **クリーンアップ結果**: ${{ job.status == 'success' && '✅ 成功' || '❌ 失敗' }}
+
+            PR環境のAWSリソースが削除されました。
