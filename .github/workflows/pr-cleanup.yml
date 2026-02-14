@@ -34,8 +34,11 @@ jobs:
           else
             PR_NUMBER="${{ github.event.pull_request.number }}"
           fi
+          ENV_NAME="pr-${PR_NUMBER}"
           echo "pr-number=${PR_NUMBER}" >> $GITHUB_OUTPUT
+          echo "environment-name=${ENV_NAME}" >> $GITHUB_OUTPUT
           echo "PR Number: ${PR_NUMBER}"
+          echo "Environment Name: ${ENV_NAME}"
 
       - name: Node.js 24のセットアップ
         uses: actions/setup-node@v4
@@ -46,6 +49,12 @@ jobs:
       - name: 依存関係のインストール
         run: npm run setup
 
+      - name: スタック名の生成
+        id: stack-name
+        uses: ./.github/actions/generate-stack-name
+        with:
+          environment-name: ${{ steps.pr-info.outputs.environment-name }}
+
       - name: AWS認証情報の設定（OIDC経由）
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -55,11 +64,11 @@ jobs:
       - name: CDK Destroy PR環境スタック
         working-directory: infrastructure/deploy
         env:
-          ENVIRONMENT: pr-${{ steps.pr-info.outputs.pr-number }}
+          ENVIRONMENT: ${{ steps.pr-info.outputs.environment-name }}
+          STACK_NAME: ${{ steps.stack-name.outputs.stack-name }}
         run: |
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/' | sed 's/-/_/g')-Stack"
           echo "Destroying PR environment stack: ${STACK_NAME}"
-          
+
           # スタックが存在するか確認
           if aws cloudformation describe-stacks --stack-name ${STACK_NAME} 2>/dev/null; then
             echo "Stack found. Proceeding with destruction..."
@@ -79,9 +88,9 @@ jobs:
           recreate: true
           message: |
             ## PR環境クリーンアップ完了
-            
+
             **環境名**: `pr-${{ steps.pr-info.outputs.pr-number }}`
-            
+
             **クリーンアップ結果**: ${{ job.status == 'success' && '✅ 成功' || '❌ 失敗' }}
-            
+
             PR環境のAWSリソースが削除されました。

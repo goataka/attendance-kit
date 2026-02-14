@@ -61,6 +61,12 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ap-northeast-1
 
+      - name: スタック名の生成
+        id: stack-name
+        uses: ./.github/actions/generate-stack-name
+        with:
+          environment-name: ${{ steps.env-name.outputs.environment-name }}
+
       - name: CDK Bootstrapの実行
         working-directory: infrastructure/deploy
         env:
@@ -75,9 +81,9 @@ jobs:
         working-directory: infrastructure/deploy
         env:
           ENVIRONMENT: ${{ steps.env-name.outputs.environment-name }}
+          STACK_NAME: ${{ steps.stack-name.outputs.stack-name }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/' | sed 's/-/_/g')-Stack"
           echo "Deploying PR environment stack: ${STACK_NAME}"
           npx cdk deploy ${STACK_NAME} --require-approval never \
             --context stack=environment \
@@ -86,10 +92,9 @@ jobs:
       - name: デプロイ結果の出力
         id: deploy-outputs
         env:
-          ENVIRONMENT: ${{ steps.env-name.outputs.environment-name }}
+          STACK_NAME: ${{ steps.stack-name.outputs.stack-name }}
         run: |
-          echo "Deployment completed successfully for PR environment: ${ENVIRONMENT}"
-          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/./\U&/' | sed 's/-/_/g')-Stack"
+          echo "Deployment completed successfully for PR environment"
 
           # スタック出力を取得
           STACK_OUTPUTS=$(aws cloudformation describe-stacks \
