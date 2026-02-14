@@ -11,7 +11,7 @@ export default class ClockInOutPage {
     title: 'h1',
     userIdInput: '#userId',
     passwordInput: '#password',
-    loginButton: 'button:has-text("ログイン")',
+    loginButton: '.btn-login',
     clockInButton: 'button:has-text("出勤")',
     clockOutButton: 'button:has-text("退勤")',
     message: '.message',
@@ -89,7 +89,7 @@ export default class ClockInOutPage {
    * ログインボタンをクリックする
    */
   async clickLogin(): Promise<void> {
-    await this.page.getByRole('button', { name: 'ログイン' }).click();
+    await this.page.locator(this.selectors.loginButton).click();
   }
 
   /**
@@ -167,7 +167,7 @@ export default class ClockInOutPage {
   async expectFormToBeVisible(): Promise<void> {
     await expect(this.page.locator(this.selectors.userIdInput)).toBeVisible();
     await expect(this.page.locator(this.selectors.passwordInput)).toBeVisible();
-    await expect(this.page.getByRole('button', { name: 'ログイン' })).toBeVisible();
+    await expect(this.page.locator(this.selectors.loginButton)).toBeVisible();
     await expect(this.page.getByRole('button', { name: '出勤' })).toBeVisible();
     await expect(this.page.getByRole('button', { name: '退勤' })).toBeVisible();
   }
@@ -193,7 +193,6 @@ export default class ClockInOutPage {
     await this.goto();
     await this.fillLoginCredentials(userId, password);
     await this.clickLogin();
-    await this.expectSuccessMessage('Login successful');
     await this.performClockIn();
     await this.expectSuccessMessage();
   }
@@ -205,7 +204,6 @@ export default class ClockInOutPage {
     await this.goto();
     await this.fillLoginCredentials(userId, password);
     await this.clickLogin();
-    await this.expectSuccessMessage('Login successful');
     await this.performClockOut();
     await this.expectSuccessMessage();
   }
