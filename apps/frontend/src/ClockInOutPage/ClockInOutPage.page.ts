@@ -85,6 +85,13 @@ export default class ClockInOutPage {
   }
 
   /**
+   * ログインボタンをクリックする
+   */
+  async clickLogin(): Promise<void> {
+    await this.page.getByRole('button', { name: 'ログイン' }).click();
+  }
+
+  /**
    * 出勤ボタンをクリックする
    */
   async clickClockIn(): Promise<void> {
@@ -159,6 +166,7 @@ export default class ClockInOutPage {
   async expectFormToBeVisible(): Promise<void> {
     await expect(this.page.locator(this.selectors.userIdInput)).toBeVisible();
     await expect(this.page.locator(this.selectors.passwordInput)).toBeVisible();
+    await expect(this.page.getByRole('button', { name: 'ログイン' })).toBeVisible();
     await expect(this.page.getByRole('button', { name: '出勤' })).toBeVisible();
     await expect(this.page.getByRole('button', { name: '退勤' })).toBeVisible();
   }
@@ -183,6 +191,9 @@ export default class ClockInOutPage {
   async loginAndClockIn(userId: string, password: string): Promise<void> {
     await this.goto();
     await this.fillLoginCredentials(userId, password);
+    await this.clickLogin();
+    // ログイン成功時にパスワードがクリアされる仕様のため再入力する
+    await this.fillPassword(password);
     await this.performClockIn();
     await this.expectSuccessMessage();
   }
@@ -193,6 +204,9 @@ export default class ClockInOutPage {
   async loginAndClockOut(userId: string, password: string): Promise<void> {
     await this.goto();
     await this.fillLoginCredentials(userId, password);
+    await this.clickLogin();
+    // ログイン成功時にパスワードがクリアされる仕様のため再入力する
+    await this.fillPassword(password);
     await this.performClockOut();
     await this.expectSuccessMessage();
   }

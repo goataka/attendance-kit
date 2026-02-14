@@ -1,12 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, MemoryRouter, Route, Routes } from 'react-router-dom';
 import { ClocksListPage } from './ClocksListPage';
 import { api } from '../shared/api';
 
 // Mock the API - mock the index module which exports the api
 vi.mock('../shared/api', () => ({
   api: {
+    hasSession: vi.fn(),
     getRecords: vi.fn(),
   },
 }));
@@ -33,6 +34,27 @@ describe('ClocksListPage', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(api.hasSession).mockReturnValue(true);
+  });
+
+  it('セッションがない場合は打刻画面にリダイレクトすること', async () => {
+    // Given: セッションが存在しない状態
+    vi.mocked(api.hasSession).mockReturnValue(false);
+
+    // When: 打刻一覧画面にアクセスする
+    render(
+      <MemoryRouter initialEntries={['/clocks']}>
+        <Routes>
+          <Route path="/" element={<div>打刻画面</div>} />
+          <Route path="/clocks" element={<ClocksListPage />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    // Then: 打刻画面にリダイレクトされる
+    await waitFor(() => {
+      expect(screen.getByText('打刻画面')).toBeInTheDocument();
+    });
   });
 
   it('打刻一覧ページが表示されること', async () => {
