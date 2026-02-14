@@ -11,10 +11,11 @@ test.describe('打刻一覧ページ', () => {
     // When: テストデータを追加（出勤を打刻）
     await clockInOutPage.goto();
     await clockInOutPage.fillLoginCredentials('user001', 'password123');
-    await clockInOutPage.clickLogin();
-    await clockInOutPage.expectSuccessMessage('Login successful');
     await clockInOutPage.performClockIn();
     await clockInOutPage.expectSuccessMessage();
+    await clockInOutPage.fillLoginCredentials('user001', 'password123');
+    await clockInOutPage.clickLogin();
+    await clockInOutPage.expectSuccessMessage('Login successful');
   });
 
   test('打刻一覧が表示されること', async ({ page }) => {

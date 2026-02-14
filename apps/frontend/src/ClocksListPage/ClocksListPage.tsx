@@ -12,6 +12,10 @@ export function ClocksListPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!api.hasSession()) {
+      return;
+    }
+
     const fetchRecords = async () => {
       setLoading(true);
       setError(null);

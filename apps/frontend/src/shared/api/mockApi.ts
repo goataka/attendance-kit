@@ -39,7 +39,22 @@ const mockUsers: Record<string, string> = {
   user002: 'password456',
 };
 
+const TOKEN_STORAGE_KEY = 'attendance-kit-token';
+
 export const mockApi = {
+  login: async (userId: string, password: string): Promise<boolean> => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    if (!mockUsers[userId] || mockUsers[userId] !== password) {
+      return false;
+    }
+
+    sessionStorage.setItem(TOKEN_STORAGE_KEY, `mock-token-${userId}`);
+    return true;
+  },
+
+  hasSession: (): boolean => Boolean(sessionStorage.getItem(TOKEN_STORAGE_KEY)),
+
   // Clock in or out
   clockInOut: async (
     request: ClockInOutRequest,
