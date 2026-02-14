@@ -163,6 +163,8 @@ jobs:
           BACKEND_URL: ${{ needs.deploy.outputs.api_url }}
           NODE_ENV: ${{ needs.deploy.outputs.environment }}
           AWS_REGION: ap-northeast-1
+          # DynamoDB table naming convention: attendance-kit-{environment}-clock
+          # This must match the table name pattern in infrastructure/deploy/lib/attendance-kit-stack.ts
           DYNAMODB_TABLE_NAME: attendance-kit-${{ needs.deploy.outputs.environment }}-clock
         run: npm run test:e2e
         timeout-minutes: 5

@@ -19,9 +19,9 @@ runs:
       shell: bash
       run: |
         # 環境名を受け取り、スタック名を生成
-        # 1. 最初の文字を大文字化
-        # 2. ハイフンをアンダースコアに変換
+        # 1. ハイフンをアンダースコアに変換
+        # 2. 最初の文字を大文字化
         # 3. AttendanceKit-{環境名}-Stack の形式で生成
-        STACK_NAME="AttendanceKit-$(echo "${{ inputs.environment-name }}" | sed 's/./\U&/' | sed 's/-/_/g')-Stack"
+        STACK_NAME="AttendanceKit-$(echo "${{ inputs.environment-name }}" | sed 's/-/_/g' | sed 's/./\U&/')-Stack"
         echo "stack-name=${STACK_NAME}" >> $GITHUB_OUTPUT
         echo "Generated stack name: ${STACK_NAME}"

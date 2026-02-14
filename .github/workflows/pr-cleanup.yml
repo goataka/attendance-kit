@@ -89,7 +89,7 @@ jobs:
           message: |
             ## PR環境クリーンアップ完了
 
-            **環境名**: `pr-${{ steps.pr-info.outputs.pr-number }}`
+            **環境名**: `${{ steps.pr-info.outputs.environment-name }}`
 
             **クリーンアップ結果**: ${{ job.status == 'success' && '✅ 成功' || '❌ 失敗' }}
 
