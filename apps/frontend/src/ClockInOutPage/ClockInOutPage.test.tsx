@@ -7,6 +7,7 @@ import { api } from '../shared/api';
 // Mock the API - mock the index module which exports the api
 vi.mock('../shared/api', () => ({
   api: {
+    login: vi.fn(),
     clockInOut: vi.fn(),
   },
 }));
@@ -29,8 +30,74 @@ describe('ClockInOutPage', () => {
     expect(screen.getByText('勤怠打刻')).toBeInTheDocument();
     expect(screen.getByLabelText('User ID')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
+    expect(screen.getByText('ログイン')).toBeInTheDocument();
     expect(screen.getByText('出勤')).toBeInTheDocument();
     expect(screen.getByText('退勤')).toBeInTheDocument();
+  });
+
+  it('ログインが成功すること', async () => {
+    // Given: APIがログイン成功を返すようモック設定
+    vi.mocked(api.login).mockResolvedValue(true);
+
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ユーザーIDとパスワードを入力してログインボタンをクリック
+    const userIdInput = screen.getByLabelText('User ID');
+    const passwordInput = screen.getByLabelText('Password');
+    const loginButton = screen.getByText('ログイン');
+
+    fireEvent.change(userIdInput, { target: { value: 'user001' } });
+    fireEvent.change(passwordInput, { target: { value: 'password123' } });
+    fireEvent.click(loginButton);
+
+    // Then: 成功メッセージが表示される
+    await waitFor(() => {
+      expect(screen.getByText('Login successful')).toBeInTheDocument();
+    });
+  });
+
+  it('ログインが失敗した場合はエラーを表示すること', async () => {
+    // Given: APIがログイン失敗を返すようモック設定
+    vi.mocked(api.login).mockResolvedValue(false);
+
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ユーザーIDとパスワードを入力してログインボタンをクリック
+    fireEvent.change(screen.getByLabelText('User ID'), {
+      target: { value: 'user001' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'wrong-password' },
+    });
+    fireEvent.click(screen.getByText('ログイン'));
+
+    // Then: エラーメッセージが表示される
+    await waitFor(() => {
+      expect(screen.getByText('Login failed')).toBeInTheDocument();
+    });
+  });
+
+  it('ログインで例外が発生した場合は汎用エラーを表示すること', async () => {
+    // Given: APIが例外をスローするようモック設定
+    vi.mocked(api.login).mockRejectedValue(new Error('network error'));
+
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ユーザーIDとパスワードを入力してログインボタンをクリック
+    fireEvent.change(screen.getByLabelText('User ID'), {
+      target: { value: 'user001' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'password123' },
+    });
+    fireEvent.click(screen.getByText('ログイン'));
+
+    // Then: 汎用エラーメッセージが表示される
+    await waitFor(() => {
+      expect(
+        screen.getByText('An error occurred. Please try again.'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('入力フィールドが空の場合はエラーを表示すること', async () => {
@@ -47,6 +114,22 @@ describe('ClockInOutPage', () => {
         screen.getByText('User ID and password are required'),
       ).toBeInTheDocument();
     });
+  });
+
+  it('ログイン時に入力が空の場合はエラーを表示すること', async () => {
+    // Given: 入力フィールドが空の状態
+    renderWithRouter(<ClockInOutPage />);
+
+    // When: ログインボタンをクリック
+    fireEvent.click(screen.getByText('ログイン'));
+
+    // Then: エラーメッセージが表示され、APIは呼ばれない
+    await waitFor(() => {
+      expect(
+        screen.getByText('User ID and password are required'),
+      ).toBeInTheDocument();
+    });
+    expect(api.login).not.toHaveBeenCalled();
   });
 
   it('出勤打刻が成功すること', async () => {
