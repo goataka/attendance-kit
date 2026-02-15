@@ -59,7 +59,7 @@ jobs:
           ENVIRONMENT: ${{ steps.pr-info.outputs.environment-name }}
         run: |
           echo "Destroying PR environment for: ${ENVIRONMENT}"
-          
+
           # スタック名を生成（pr-e2e-test.ymlと同じロジック）
           STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-//g' | sed 's/./\U&/')-Stack"
           echo "Stack name: ${STACK_NAME}"
@@ -69,7 +69,7 @@ jobs:
             echo "Stack not found in CloudFormation. Nothing to destroy."
             exit 0
           fi
-          
+
           echo "Stack found. Proceeding with destruction..."
           npx cdk destroy ${STACK_NAME} --force \
             --context stack=environment \
