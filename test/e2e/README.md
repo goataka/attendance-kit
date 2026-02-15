@@ -88,22 +88,60 @@ E2Eテストは以下のワークフローで自動実行されます:
   - mainマージ時に自動実行
   - Eva環境に対してテスト実行
 
-### ローカル環境でのテスト実行
+## テスト実行
 
-ローカルでのE2Eテストは、backend統合テストと同様にLocalStackを使用します:
+### CI環境での自動実行
+
+E2Eテストは以下のタイミングで自動実行されます：
+
+- **PR環境**: PR作成/更新時に自動実行
+- **Eva環境**: mainマージ時に自動実行
+
+### ローカル環境からのephemeral環境デプロイ
+
+ローカル開発時も、CI E2Eテストと同じ方式でAWS環境にデプロイしてテストできます：
 
 ```bash
-# LocalStack起動とDynamoDBテーブルデプロイ
-cd infrastructure/deploy && npm run deploy:local-db
+# 1. AWS認証情報の設定（必須）
+# 方法A: AWS CLIで設定
+aws configure
 
-# バックエンド起動
-cd apps/backend && npm run dev
+# 方法B: 環境変数で設定
+export AWS_ACCESS_KEY_ID=your-key
+export AWS_SECRET_ACCESS_KEY=your-secret
+export AWS_REGION=ap-northeast-1
 
-# フロントエンド起動
-cd apps/frontend && npm run dev
+# 2. JWT Secretの設定（必須）
+export JWT_SECRET=your-jwt-secret
 
-# E2Eテスト実行
+# 3. 環境名の設定（オプション、デフォルト: local-<username>）
+export ENVIRONMENT=local-myname
+
+# 4. Ephemeral環境のデプロイ
+npm run deploy:ephemeral
+
+# 5. E2Eテストの実行
+# deploy:ephemeralの出力に表示されるコマンドを実行
+export E2E_ENV=deployed
+export FRONTEND_URL=<CloudFront URL>
+export BACKEND_URL=<API Gateway URL>
+export NODE_ENV=<environment>
 npm run test:e2e
+
+# 6. 環境の削除（テスト終了後）
+# deploy:ephemeralの出力に表示されるdestroyコマンドを使用
+cd infrastructure/deploy
+# 例: npx cdk destroy AttendanceKit-LocalMyname-Stack --context stack=environment --context environment=local-myname
 ```
 
-**注意**: ローカル実行はバックエンド開発者の統合テストのみを想定しています。完全なE2EテストはCI環境で実施されます。
+**環境の削除について**:
+
+- デプロイスクリプトの最後に、環境を削除するための正確なコマンドが表示されます
+- 環境名に基づいてスタック名が自動生成されるため、出力されたコマンドをコピーして使用してください
+
+**注意事項**:
+
+- Ephemeral環境のデプロイにはAWS認証情報が必要です
+- デプロイには数分かかります
+- コストが発生するため、使用後は必ず環境を削除してください
+- CI環境と同じ方式でデプロイされるため、本番環境に近い状態でテストできます

@@ -36,11 +36,6 @@ build/
 .env
 .env.local
 
-# LocalStack
-infrastructure/deploy/localstack-data/
-infrastructure/deploy/node_modules/
-infrastructure/account/node_modules/
-
 # CDK
 infrastructure/deploy/cdk.out/
 infrastructure/account/cdk.out/

@@ -9,21 +9,11 @@ export const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:3000';
 const environment = process.env.NODE_ENV || 'test';
 export const TABLE_NAME =
   process.env.DYNAMODB_TABLE_NAME || `attendance-kit-${environment}-clock`;
-export const IS_LOCAL = process.env.E2E_ENV !== 'deployed';
 
-// DynamoDB client configuration (LocalStackまたはAWS)
-const dynamoConfig = IS_LOCAL
-  ? {
-      region: 'ap-northeast-1',
-      endpoint: process.env.DYNAMODB_ENDPOINT || 'http://localhost:4566',
-      credentials: {
-        accessKeyId: 'test',
-        secretAccessKey: 'test',
-      },
-    }
-  : {
-      region: process.env.AWS_REGION || 'ap-northeast-1',
-    };
+// DynamoDB client configuration (AWS)
+const dynamoConfig = {
+  region: process.env.AWS_REGION || 'ap-northeast-1',
+};
 
 export const dynamoClient = new DynamoDBClient(dynamoConfig);
 

@@ -63,7 +63,7 @@ Resources:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/GitHubActionsDeployRole'
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:oidc-provider/token.actions.githubusercontent.com'
-        - PolicyName: CDKAssumeRolePermission
+        - PolicyName: CDKDeployPermission
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -74,6 +74,45 @@ Resources:
                   - sts:AssumeRole
                 Resource:
                   - !Sub 'arn:aws:iam::${AWS::AccountId}:role/cdk-*'
+              # CloudFormation operations for CDK deploy
+              - Effect: Allow
+                Action:
+                  - cloudformation:CreateStack
+                  - cloudformation:UpdateStack
+                  - cloudformation:DeleteStack
+                  - cloudformation:DescribeStacks
+                  - cloudformation:DescribeStackEvents
+                  - cloudformation:DescribeStackResources
+                  - cloudformation:GetTemplate
+                  - cloudformation:ValidateTemplate
+                  - cloudformation:CreateChangeSet
+                  - cloudformation:DescribeChangeSet
+                  - cloudformation:ExecuteChangeSet
+                  - cloudformation:DeleteChangeSet
+                  - cloudformation:ListStacks
+                  - cloudformation:GetStackPolicy
+                  - cloudformation:SetStackPolicy
+                Resource:
+                  - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/AttendanceKit-*/*'
+                  - !Sub 'arn:aws:cloudformation:*:${AWS::AccountId}:stack/CDKToolkit/*'
+              # S3 operations for CDK assets
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:ListBucket
+                  - s3:GetBucketLocation
+                  - s3:GetBucketPolicy
+                Resource:
+                  - !Sub 'arn:aws:s3:::cdk-*-assets-${AWS::AccountId}-*'
+                  - !Sub 'arn:aws:s3:::cdk-*-assets-${AWS::AccountId}-*/*'
+              # SSM Parameter Store for CDK context
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                  - ssm:GetParameters
+                Resource:
+                  - !Sub 'arn:aws:ssm:*:${AWS::AccountId}:parameter/cdk-bootstrap/*'
       Description: Role for GitHub Actions to deploy infrastructure
       Tags:
         - Key: Project

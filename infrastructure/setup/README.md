@@ -4,7 +4,10 @@
 
 このセットアップでは、以下の2つのIAM Roleを作成します：
 
-1. **GitHubActionsDeployRole**: デプロイ用の権限を持つRole（PowerUserAccess）
+1. **GitHubActionsDeployRole**: デプロイ用の権限を持つRole
+   - PowerUserAccess（管理者以外のほぼすべての権限）
+   - CDKデプロイに必要な追加権限（CloudFormation、S3、SSM等）
+   - IAMロール管理権限
 2. **GitHubCopilotInvestigationRole**: 調査用の読み取り専用Role（ReadOnlyAccess）
 
 ## ステップ1: OIDCプロバイダーとIAMロール作成
