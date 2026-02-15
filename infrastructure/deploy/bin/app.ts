@@ -25,7 +25,9 @@ const environment =
 const jwtSecret = process.env.JWT_SECRET;
 const deployOnlyDynamoDB = stackType === 'dynamodb';
 
-new AttendanceKitStack(app, {
+const stackName = generateStackName(environment);
+
+new AttendanceKitStack(app, stackName, {
   env,
   environment,
   jwtSecret,
@@ -33,3 +35,11 @@ new AttendanceKitStack(app, {
 });
 
 app.synth();
+
+function generateStackName(environment: string): string {
+  const sanitizedEnvironment = environment.replace(/-/g, '');
+  const capitalizedEnvironment =
+    sanitizedEnvironment.charAt(0).toUpperCase() + sanitizedEnvironment.slice(1);
+
+  return `AttendanceKit-${capitalizedEnvironment}-Stack`;
+}

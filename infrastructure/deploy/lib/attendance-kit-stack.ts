@@ -21,15 +21,12 @@ export class AttendanceKitStack extends cdk.Stack {
   public readonly backendApi?: BackendConstruct;
   public readonly frontend?: FrontendConstruct;
 
-  constructor(scope: Construct, props: AttendanceKitStackProps = {}) {
+  constructor(scope: Construct, id: string, props: AttendanceKitStackProps = {}) {
     // 環境変数のデフォルト値設定
     const environment = props.environment || 'dev';
     const { jwtSecret, deployOnlyDynamoDB = false } = props;
 
-    // Stack IDの生成
-    const stackId = AttendanceKitStack.generateStackId(environment);
-
-    super(scope, stackId, props);
+    super(scope, id, props);
 
     // NOTE: OIDC Provider and IAM Role are managed by CloudFormation
     // (infrastructure/setup/attendance-kit-setup.yaml)
@@ -174,13 +171,6 @@ export class AttendanceKitStack extends cdk.Stack {
           'Please set jwtSecret in stack props.',
       );
     }
-  }
-
-  private static generateStackId(environment: Environment): string {
-    // ハイフンを削除し、最初の文字を大文字にする
-    const sanitizedEnv = environment.replace(/-/g, '');
-    const capitalizedEnv = sanitizedEnv.charAt(0).toUpperCase() + sanitizedEnv.slice(1);
-    return `AttendanceKit-${capitalizedEnv}-Stack`;
   }
 
   private setupDataClear(): DynamoDBCleaner {

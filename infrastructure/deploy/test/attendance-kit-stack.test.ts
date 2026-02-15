@@ -6,7 +6,19 @@
 
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { AttendanceKitStack } from '../lib/attendance-kit-stack';
+import {
+  AttendanceKitStack,
+  Environment,
+} from '../lib/attendance-kit-stack';
+
+const createStackId = (environment?: Environment): string => {
+  const targetEnvironment = environment ?? 'dev';
+  const sanitizedEnvironment = targetEnvironment.replace(/-/g, '');
+  const capitalizedEnvironment =
+    sanitizedEnvironment.charAt(0).toUpperCase() + sanitizedEnvironment.slice(1);
+
+  return `AttendanceKit-${capitalizedEnvironment}-Stack`;
+};
 
 describe('AttendanceKitStack - 環境名の検証', () => {
   let app: App;
@@ -17,7 +29,7 @@ describe('AttendanceKitStack - 環境名の検証', () => {
 
   test('environmentのデフォルト値がdevである', () => {
     // Given: environmentを指定せずにスタックを作成
-    const stack = new AttendanceKitStack(app, {
+    const stack = new AttendanceKitStack(app, createStackId(), {
       deployOnlyDynamoDB: true,
     });
 
@@ -41,7 +53,7 @@ describe('AttendanceKitStack - 環境名の検証', () => {
     },
   ])('有効な環境名: $environment', ({ environment, expectedTableName }) => {
     // Given: 有効な環境名
-    const stack = new AttendanceKitStack(app, {
+    const stack = new AttendanceKitStack(app, createStackId(environment), {
       environment,
       deployOnlyDynamoDB: true,
     });
@@ -68,7 +80,7 @@ describe('AttendanceKitStack - JWTシークレットの検証', () => {
     // When: AttendanceKitStackを作成
     // Then: エラーがスローされる
     expect(() => {
-      new AttendanceKitStack(app, {
+      new AttendanceKitStack(app, createStackId('dev'), {
         environment: 'dev',
         deployOnlyDynamoDB: false,
       });
@@ -79,7 +91,7 @@ describe('AttendanceKitStack - JWTシークレットの検証', () => {
 
   test('DynamoDB-onlyモードではjwtSecretは不要', () => {
     // Given: deployOnlyDynamoDBがtrueでjwtSecret未指定
-    const stack = new AttendanceKitStack(app, {
+    const stack = new AttendanceKitStack(app, createStackId('test'), {
       environment: 'test',
       deployOnlyDynamoDB: true,
     });
@@ -98,7 +110,7 @@ describe('AttendanceKitStack - DynamoDB Onlyモード', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, {
+    const stack = new AttendanceKitStack(app, createStackId('test'), {
       environment: 'test',
       deployOnlyDynamoDB: true,
       description: 'DynamoDB Clock Table for integration testing (test)',

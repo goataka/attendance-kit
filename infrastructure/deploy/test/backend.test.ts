@@ -1,6 +1,17 @@
 import { App } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { AttendanceKitStack } from '../lib/attendance-kit-stack';
+import {
+  AttendanceKitStack,
+  Environment,
+} from '../lib/attendance-kit-stack';
+
+const createStackId = (environment: Environment): string => {
+  const sanitizedEnvironment = environment.replace(/-/g, '');
+  const capitalizedEnvironment =
+    sanitizedEnvironment.charAt(0).toUpperCase() + sanitizedEnvironment.slice(1);
+
+  return `AttendanceKit-${capitalizedEnvironment}-Stack`;
+};
 
 // S3Key値を固定文字列に置換するスナップショットシリアライザー
 //
@@ -27,7 +38,7 @@ describe('AttendanceKitStack（統合スタック）', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, {
+    const stack = new AttendanceKitStack(app, createStackId('eva'), {
       environment: 'eva',
       jwtSecret: 'test-jwt-secret',
       description: 'DynamoDB clock table for attendance-kit (eva environment)',
@@ -193,7 +204,7 @@ describe('AttendanceKitStack - Eva環境', () => {
 
   beforeEach(() => {
     app = new App();
-    const stack = new AttendanceKitStack(app, {
+    const stack = new AttendanceKitStack(app, createStackId('eva'), {
       environment: 'eva',
       jwtSecret: 'test-jwt-secret',
       description: 'DynamoDB clock table for attendance-kit (eva environment)',
