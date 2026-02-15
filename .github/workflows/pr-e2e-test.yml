@@ -147,6 +147,12 @@ jobs:
       - name: 依存関係のインストール
         run: npm run setup
 
+      - name: AWS認証情報の設定（OIDC経由）
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+
       - name: デプロイ済み環境に対するE2Eテストの実行
         env:
           E2E_ENV: deployed

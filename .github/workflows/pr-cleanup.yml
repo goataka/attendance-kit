@@ -3,8 +3,6 @@ name: PR環境クリーンアップ
 on:
   pull_request:
     types: [closed]
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       pr-number:
@@ -20,7 +18,7 @@ permissions:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
-    environment: eva # PR環境のクリーンアップにはeva環境の認証情報を使用
+    environment: test # PR環境のクリーンアップにはtest環境の認証情報を使用
 
     steps:
       - name: コードのチェックアウト

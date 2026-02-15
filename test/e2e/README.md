@@ -81,7 +81,7 @@ E2Eテストは以下の環境変数を使用します:
 
 E2Eテストは以下のワークフローで自動実行されます:
 
-- **PR環境**: `.github/workflows/pr-deploy-and-e2e.yml`
+- **PR環境**: `.github/workflows/pr-e2e-test.yml`
   - PR作成/更新時に自動実行
   - PR専用環境にデプロイしてテスト実行
 - **Eva環境**: `.github/workflows/deploy-environment-stack.yml`
