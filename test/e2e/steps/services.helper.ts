@@ -10,7 +10,7 @@ const environment = process.env.NODE_ENV || 'test';
 export const TABLE_NAME =
   process.env.DYNAMODB_TABLE_NAME || `attendance-kit-${environment}-clock`;
 
-// DynamoDB client configuration
+// DynamoDB client configuration (AWS)
 const dynamoConfig = {
   region: process.env.AWS_REGION || 'ap-northeast-1',
 };

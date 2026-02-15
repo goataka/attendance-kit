@@ -9,7 +9,8 @@
     "test": "jest",
     "test:unit": "jest --updateSnapshot",
     "format": "prettier --write \"lib/**/*.ts\" \"bin/**/*.ts\" \"test/**/*.ts\"",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy:ephemeral": "bash scripts/deploy-ephemeral.sh"
   },
   "keywords": [
     "aws",

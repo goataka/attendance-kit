@@ -97,6 +97,25 @@ npm run test:integration
 - CDKデプロイのシミュレーション
 - リソース作成の検証
 
+### 7. Ephemeral環境デプロイ（オプション）
+
+実際のAWS環境でテストしたい場合：
+
+```bash
+# AWS認証情報の設定
+export AWS_ACCESS_KEY_ID=your-key
+export AWS_SECRET_ACCESS_KEY=your-secret
+export AWS_REGION=ap-northeast-1
+
+# JWT Secretの設定
+export JWT_SECRET=your-jwt-secret
+
+# Ephemeral環境のデプロイ
+npm run deploy:ephemeral
+```
+
+**注意**: 実際のAWSリソースが作成されるため、コストが発生します。使用後は必ず削除してください。
+
 ## 実行順序
 
 **推奨される実行順序**:
@@ -216,10 +235,10 @@ npx cdk synth --context stack=account
 
 このスキルの検証項目は、GitHub ActionsのPremergeワークフローと対応しています:
 
-| Premergeステップ    | ローカル検証コマンド                                   |
-| ------------------- | ------------------------------------------------------ |
-| `npm run setup`     | `npm run setup`                                        |
-| `npm run build`     | `cd infrastructure/deploy && npm run build`            |
+| Premergeステップ    | ローカル検証コマンド                                          |
+| ------------------- | ------------------------------------------------------------- |
+| `npm run setup`     | `npm run setup`                                               |
+| `npm run build`     | `cd infrastructure/deploy && npm run build`                   |
 | `npm run build`     | `npm run build --workspace=@attendance-kit/deploy`            |
 | `npm run test:unit` | `npm run test:unit --workspace=@attendance-kit/deploy`        |
 | CDK deploy test     | `npm run test:integration --workspace=@attendance-kit/deploy` |

@@ -90,4 +90,52 @@ E2Eテストは以下のワークフローで自動実行されます:
 
 ## テスト実行
 
-E2Eテストは主にCI環境で自動実行されます。
+### CI環境での自動実行
+
+E2Eテストは以下のタイミングで自動実行されます：
+
+- **PR環境**: PR作成/更新時に自動実行
+- **Eva環境**: mainマージ時に自動実行
+
+### ローカル環境からのephemeral環境デプロイ
+
+ローカル開発時も、CI E2Eテストと同じ方式でAWS環境にデプロイしてテストできます：
+
+```bash
+# 1. AWS認証情報の設定（必須）
+# 方法A: AWS CLIで設定
+aws configure
+
+# 方法B: 環境変数で設定
+export AWS_ACCESS_KEY_ID=your-key
+export AWS_SECRET_ACCESS_KEY=your-secret
+export AWS_REGION=ap-northeast-1
+
+# 2. JWT Secretの設定（必須）
+export JWT_SECRET=your-jwt-secret
+
+# 3. 環境名の設定（オプション、デフォルト: local-<username>）
+export ENVIRONMENT=local-myname
+
+# 4. Ephemeral環境のデプロイ
+npm run deploy:ephemeral
+
+# 5. E2Eテストの実行
+# deploy:ephemeralの出力に表示されるコマンドを実行
+export E2E_ENV=deployed
+export FRONTEND_URL=<CloudFront URL>
+export BACKEND_URL=<API Gateway URL>
+export NODE_ENV=<environment>
+npm run test:e2e
+
+# 6. 環境の削除（テスト終了後）
+cd infrastructure/deploy
+npx cdk destroy <Stack Name> --context stack=environment --context environment=<environment>
+```
+
+**注意事項**:
+
+- Ephemeral環境のデプロイにはAWS認証情報が必要です
+- デプロイには数分かかります
+- コストが発生するため、使用後は必ず環境を削除してください
+- CI環境と同じ方式でデプロイされるため、本番環境に近い状態でテストできます
