@@ -60,14 +60,8 @@ jobs:
         run: |
           echo "Destroying PR environment for: ${ENVIRONMENT}"
           
-          # CDK出力からスタック名を取得
-          STACK_NAME=$(npx cdk list --context stack=environment --context environment=${ENVIRONMENT} 2>/dev/null | head -1)
-          
-          if [ -z "${STACK_NAME}" ]; then
-            echo "No stack found for environment ${ENVIRONMENT}"
-            exit 0
-          fi
-          
+          # スタック名を生成（pr-e2e-test.ymlと同じロジック）
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-//g' | sed 's/./\U&/')-Stack"
           echo "Stack name: ${STACK_NAME}"
 
           # スタックが存在するか確認
