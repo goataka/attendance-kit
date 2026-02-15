@@ -1,0 +1,215 @@
+name: PR環境E2Eテスト
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'apps/backend/**'
+      - 'apps/frontend/**'
+      - '!apps/website/**'
+      - 'infrastructure/deploy/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'test/e2e/**'
+      - '.github/workflows/pr-e2e-test.yml'
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: 'PR番号'
+        required: true
+        type: number
+
+concurrency:
+  group: pr-e2e-${{ github.event.pull_request.number || inputs.pr-number }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write # OIDC認証に必要
+  contents: read
+  pull-requests: write # PRコメントに必要
+  issues: write # Issue作成に必要
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: test # PR環境のデプロイにはtest環境の認証情報を使用
+    outputs:
+      cloudfront_url: ${{ steps.deploy-outputs.outputs.cloudfront_url }}
+      api_url: ${{ steps.deploy-outputs.outputs.api_url }}
+      environment: ${{ steps.deploy-outputs.outputs.environment }}
+
+    steps:
+      - name: コードのチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js 24のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: 依存関係のインストール
+        run: npm run setup
+
+      - name: 全ワークスペースのビルド
+        run: npm run build --workspaces --if-present
+
+      - name: AWS認証情報の設定（OIDC経由）
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+
+      - name: CDK Bootstrapの実行
+        working-directory: infrastructure/deploy
+        env:
+          ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          echo "Running CDK bootstrap (idempotent operation)..."
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          npx cdk bootstrap aws://${ACCOUNT_ID}/ap-northeast-1 --context stack=environment
+
+      - name: CDK Deploy PR環境スタック
+        working-directory: infrastructure/deploy
+        env:
+          ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        run: |
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-//g' | sed 's/./\U&/')-Stack"
+          echo "Deploying environment stack: ${STACK_NAME}"
+          npx cdk deploy ${STACK_NAME} --require-approval never \
+            --context stack=environment \
+            --context environment=${ENVIRONMENT}
+
+      - name: デプロイ結果の出力
+        id: deploy-outputs
+        env:
+          ENVIRONMENT: pr-${{ github.event.pull_request.number || inputs.pr-number }}
+        run: |
+          echo "Deployment completed successfully for environment: ${ENVIRONMENT}"
+          STACK_NAME="AttendanceKit-$(echo ${ENVIRONMENT} | sed 's/-//g' | sed 's/./\U&/')-Stack"
+
+          # スタック出力を取得
+          STACK_OUTPUTS=$(aws cloudformation describe-stacks \
+            --stack-name ${STACK_NAME} \
+            --query 'Stacks[0].Outputs' \
+            --output json)
+
+          echo "Stack outputs:"
+          echo "${STACK_OUTPUTS}" | jq -r '.[] | "\(.OutputKey): \(.OutputValue)"'
+
+          # 必要な値を抽出
+          CLOUDFRONT_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey | contains("CloudFrontUrl")) | .OutputValue')
+          API_URL=$(echo "${STACK_OUTPUTS}" | jq -r '.[] | select(.OutputKey | contains("ApiUrl")) | .OutputValue')
+
+          if [ -z "${CLOUDFRONT_URL}" ] || [ -z "${API_URL}" ]; then
+            echo "Error: Required stack outputs not found"
+            echo "CLOUDFRONT_URL: ${CLOUDFRONT_URL}"
+            echo "API_URL: ${API_URL}"
+            exit 1
+          fi
+
+          echo "cloudfront_url=${CLOUDFRONT_URL}" >> $GITHUB_OUTPUT
+          echo "api_url=${API_URL}" >> $GITHUB_OUTPUT
+          echo "environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+
+      - name: 失敗時のコメント
+        if: failure()
+        uses: ./.github/actions/comment-on-failure
+        with:
+          workflow-name: 'PR環境デプロイ'
+          failure-message: 'PR環境スタックのデプロイに失敗しました。ログを確認してください。'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 失敗時のIssue作成
+        if: failure()
+        uses: ./.github/actions/create-issue-on-failure
+        with:
+          workflow-name: 'PR環境デプロイ'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  e2e-test:
+    runs-on: ubuntu-latest
+    needs: deploy
+    environment: test
+
+    steps:
+      - name: コードのチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js 24のセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: 依存関係のインストール
+        run: npm run setup
+
+      - name: AWS認証情報の設定（OIDC経由）
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ap-northeast-1
+
+      - name: デプロイ済み環境に対するE2Eテストの実行
+        env:
+          E2E_ENV: deployed
+          FRONTEND_URL: ${{ needs.deploy.outputs.cloudfront_url }}
+          BACKEND_URL: ${{ needs.deploy.outputs.api_url }}
+          NODE_ENV: ${{ needs.deploy.outputs.environment }}
+          AWS_REGION: ap-northeast-1
+        run: npm run test:e2e
+        timeout-minutes: 10
+
+      - name: E2Eテストレポートのアップロード
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-pr-${{ github.event.pull_request.number || inputs.pr-number }}-test-reports
+          path: test/e2e/reports/
+          retention-days: 30
+          if-no-files-found: warn
+
+      - name: PRへのE2Eテスト結果コメント
+        if: always() && github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-e2e-test-results
+          recreate: true
+          message: |
+            ## PR環境E2Eテスト結果
+
+            **環境名**: `${{ needs.deploy.outputs.environment }}`
+
+            **テスト結果**: ${{ job.status == 'success' && '✅ 成功' || '❌ 失敗' }}
+
+            **アクセスURL**:
+            - 🌐 Frontend: ${{ needs.deploy.outputs.cloudfront_url }}
+            - 🔌 Backend API: ${{ needs.deploy.outputs.api_url }}
+
+            **E2Eテストレポート**: [Artifactsからダウンロード](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            レポートの確認方法：
+            1. 上記のリンクをクリック
+            2. Artifacts セクションから `e2e-pr-${{ github.event.pull_request.number }}-test-reports` をダウンロード
+            3. `cucumber-report.html` をブラウザで開く
+
+            ---
+            💡 このPR環境はPRがクローズされた時に自動的に削除されます。
+
+      - name: 失敗時のコメント
+        if: failure()
+        uses: ./.github/actions/comment-on-failure
+        with:
+          workflow-name: 'PR環境E2Eテスト'
+          failure-message: 'PR環境に対するE2Eテストに失敗しました。テストログを確認してください。'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 失敗時のIssue作成
+        if: failure()
+        uses: ./.github/actions/create-issue-on-failure
+        with:
+          workflow-name: 'PR環境E2Eテスト'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
