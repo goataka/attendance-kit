@@ -88,22 +88,6 @@ E2Eテストは以下のワークフローで自動実行されます:
   - mainマージ時に自動実行
   - Eva環境に対してテスト実行
 
-### ローカル環境でのテスト実行
+## テスト実行
 
-ローカルでのE2Eテストは、backend統合テストと同様にLocalStackを使用します:
-
-```bash
-# LocalStack起動とDynamoDBテーブルデプロイ
-cd infrastructure/deploy && npm run deploy:local-db
-
-# バックエンド起動
-cd apps/backend && npm run dev
-
-# フロントエンド起動
-cd apps/frontend && npm run dev
-
-# E2Eテスト実行
-npm run test:e2e
-```
-
-**注意**: ローカル実行はバックエンド開発者の統合テストのみを想定しています。完全なE2EテストはCI環境で実施されます。
+E2Eテストは主にCI環境で自動実行されます。

@@ -65,41 +65,16 @@ npm run build
 ### 5. E2Eテスト実行
 
 ```bash
-npm run test:e2e:local
+npm run test:e2e
 ```
 
 **必須**: E2Eテスト変更時は実行してください。
 
-- `pretest:e2e:local`フックにより、テスト実行前にLocalStackが自動的に起動・セットアップされます
-- BackendとFrontendのサーバーは手動で起動する必要があります（後述の手順を参照）
-
-**注**: `test:e2e:local`は以下を含みます:
-
-- LocalStackの自動起動（pretest:e2e:localフック）
 - Cucumber + Playwrightによる統合テスト
 
 ### 6. E2Eテストの詳細な実行手順
 
-E2Eテストを完全に実行するには、以下の手順が必要です:
-
-```bash
-# 1. LocalStackは自動起動されます（pretest:e2e:localフック）
-# 手動起動は不要です
-
-# 2. バックエンドサーバーの起動（別ターミナル）
-cd apps/backend
-npm run dev
-# サーバーが起動するまで待機（約10秒）
-
-# 3. フロントエンドサーバーの起動（別ターミナル）
-cd apps/frontend
-npm run dev
-# サーバーが起動するまで待機（約10秒）
-
-# 4. E2Eテストの実行（元のターミナル）
-cd /home/runner/work/attendance-kit/attendance-kit
-npm run test:e2e:local
-```
+E2Eテストは主にCI環境で自動実行されます。
 
 ## 実行順序
 
@@ -108,8 +83,7 @@ npm run test:e2e:local
 1. `npm run setup` - 依存関係インストール
 2. `npx playwright install --with-deps chromium` - Playwrightブラウザのインストール
 3. `npm run build` - 全ワークスペースのビルド
-4. サーバー起動（Backend、Frontend）
-5. `npm run test:e2e:local` - E2Eテスト実行
+4. `npm run test:e2e` - E2Eテスト実行
 
 ## エラー対応
 
@@ -153,24 +127,14 @@ npx cucumber-js test/e2e/features/<feature-name>.feature
 
 **一般的なエラーと対処**:
 
-1. **サーバーが起動していない**
-   - Backendサーバー（http://localhost:3000）の起動を確認
-   - Frontendサーバー（http://localhost:5173）の起動を確認
-   - `curl http://localhost:3000/api/health` でBackendの状態を確認
+1. **環境変数の問題**
+   - `FRONTEND_URL`, `BACKEND_URL`, `JWT_SECRET`などが設定されているか確認
+   - `.env`ファイルの設定を確認
 
-2. **LocalStackの問題**
-   - LocalStackは`pretest:e2e:local`で自動起動されます
-   - 手動確認: `docker ps | grep localstack`
-   - DynamoDBテーブルの作成を確認
-
-3. **Playwrightのエラー**
+2. **Playwrightのエラー**
    - ブラウザのインストールを確認: `npx playwright install --with-deps chromium`
    - セレクターが正しいか確認
    - 非同期処理の待機を確認
-
-4. **環境変数の問題**
-   - `FRONTEND_URL`, `BACKEND_URL`, `JWT_SECRET`などが設定されているか確認
-   - `.env`ファイルの設定を確認
 
 ### スクリーンショット確認
 
@@ -188,7 +152,6 @@ E2Eテスト実行後、以下を確認してください:
 1. **変更前に既存のテストを実行**: 既存の問題を把握
 2. **小さな変更を頻繁にテスト**: エラーの早期発見
 3. **すべての検証を通過させる**: Premergeワークフローと同じ基準
-4. **サーバーの状態を確認**: Backend、Frontendが正常に起動していることを確認
 
 ### 検証のスキップ条件
 
@@ -237,8 +200,7 @@ E2Eテスト実行後、以下を確認してください:
 | `npm run setup`                               | `npm run setup`                               |
 | `npx playwright install --with-deps chromium` | `npx playwright install --with-deps chromium` |
 | `npm run build --workspaces --if-present`     | `npm run build`                               |
-| Backend/Frontend起動                          | 手動でサーバー起動                            |
-| `npm run test:e2e:local`                      | `npm run test:e2e:local`                      |
+| `npm run test:e2e`                            | `npm run test:e2e`                            |
 
 ## 参考資料
 

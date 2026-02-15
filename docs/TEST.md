@@ -11,13 +11,13 @@
 | ターゲット  | テスト種類  | テスト目的   | テスト内容                                                                                                     | 使用ツール              | 実行タイミング          | 接続先                   |
 | ----------- | ----------- | ------------ | -------------------------------------------------------------------------------------------------------------- | ----------------------- | ----------------------- | ------------------------ |
 | **AWS CDK** | Unit        | 規約遵守     | ・セキュリティ設定（暗号化等）の有無<br>・必須タグ付与の確認<br>・スタック分割の妥当性                         | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
-| **AWS CDK** | Integration | 構築妥当性   | ・cdklocalによるリソース作成成功<br>・循環参照や依存関係エラーの検知<br>・パラメータ同期の確認                 | Jest                    | 実装中・プレマージ      | LocalStack               |
+| **AWS CDK** | Integration | 構築妥当性   | ・cdkによるリソース作成成功<br>・循環参照や依存関係エラーの検知<br>・パラメータ同期の確認                 | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
 | **NestJS**  | Unit        | ロジック保証 | ・ビジネスルールの計算正当性<br>・入力値バリデーションの分岐<br>・例外処理のハンドリング                       | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
 | **NestJS**  | Integration | データ整合性 | ・DynamoDBへのCRUD操作<br>・GSI/LSIを利用した検索挙動<br>・SDK v3の型定義整合性                                | Jest + Supertest + aws-sdk-client-mock        | 実装中・プレマージ      | なし<br>(Mock) |
 | **React**   | Unit        | 独立性検証   | ・Custom Hooksの戻り値<br>・純粋な関数（Utils）の出力<br>・UI非依存のステート管理ロジック                      | Jest                    | 実装中・プレマージ      | なし<br>(Mock)           |
 | **React**   | Integration | 表示・連携   | ・コンポーネント間のProps受け渡し<br>・APIレスポンス別のUI表示切替<br>・MSWによる擬似的な通信エラー対応        | Playwright + MSW        | 実装中・プレマージ      | なし<br>(Mock)           |
-| **System**  | API         | 接続・権限   | ・エンドポイントの疎通（HTTP 200）<br>・IAMロール/ポリシーの権限不足確認<br>・CORS設定の妥当性                 | Playwright<br>(Request) | デプロイ前 / デプロイ後 | Local / AWS              |
-| **System**  | E2E         | 体験保証     | ・ユーザー導線の完結（ログイン〜保存）<br>・ブラウザ間の表示・挙動差異<br>・システム全体のパフォーマンス・疎通 | Playwright<br>(Browser) | デプロイ前 / デプロイ後 | Local / AWS              |
+| **System**  | API         | 接続・権限   | ・エンドポイントの疎通（HTTP 200）<br>・IAMロール/ポリシーの権限不足確認<br>・CORS設定の妥当性                 | Playwright<br>(Request) | デプロイ後 | AWS              |
+| **System**  | E2E         | 体験保証     | ・ユーザー導線の完結（ログイン〜保存）<br>・ブラウザ間の表示・挙動差異<br>・システム全体のパフォーマンス・疎通 | Playwright<br>(Browser) | デプロイ後 | AWS              |
 
 ## ターゲット別テスト詳細
 
@@ -114,13 +114,11 @@ npm run build
 
 - **OS**: Linux、macOS、Windows（WSL2）
 - **Node.js**: 24.0.0以上
-- **Docker**: 20.10以上（LocalStack使用時）
 - **ブラウザ**: Chromium、Firefox、WebKit（Playwright使用時）
 
 ### CI/CD環境
 
 - **GitHub Actions**: Ubuntu Latest
-- **LocalStack**: Dockerコンテナ
 - **ブラウザ**: Playwrightがインストールするブラウザ
 
 ## 参考資料
@@ -130,5 +128,4 @@ npm run build
 - [Testing Library](https://testing-library.com/)
 - [MSW公式ドキュメント](https://mswjs.io/)
 - [Playwright公式ドキュメント](https://playwright.dev/)
-- [LocalStack公式ドキュメント](https://docs.localstack.cloud/)
 - [AWS CDK Testing Best Practices](https://docs.aws.amazon.com/cdk/v2/guide/testing.html)

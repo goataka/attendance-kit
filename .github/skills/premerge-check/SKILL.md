@@ -117,7 +117,6 @@ npm run test:integration --workspace=@attendance-kit/deploy
 
 **必須**: Infrastructure変更時は実行してください。
 
-- LocalStackを使用した統合テスト
 - CDKデプロイのシミュレーション
 
 ### 10. OpenAPI仕様の生成
@@ -133,13 +132,12 @@ npm run generate
 ### 11. E2Eテスト実行（オプション）
 
 ```bash
-npm run test:e2e:local
+npm run test:e2e
 ```
 
 **推奨**: フロントエンドとバックエンドの統合動作を完全にテストする場合に実行してください。
 
 - Cucumber + Playwrightによる統合テスト
-- LocalStack、Backend、Frontendサーバーの起動が必要
 
 **注**: E2Eテストは実行に時間がかかるため、必要な場合のみ実行してください。
 
@@ -156,7 +154,7 @@ npm run test:e2e:local
 7. `npm run test:integration --workspace=@attendance-kit/frontend` - Frontend E2Eテスト
 8. `npm run test:integration --workspace=@attendance-kit/deploy` - Infrastructure統合テスト
 9. `npm run generate` - OpenAPI仕様生成
-10. `npm run test:e2e:local` - E2Eテスト（オプション）
+10. `npm run test:e2e` - E2Eテスト（オプション）
 
 ## エラー対応
 
@@ -257,7 +255,7 @@ npm test --workspace=@attendance-kit/deploy
 | Frontend E2Eテスト                     | `npm run test:integration --workspace=@attendance-kit/frontend` |
 | Infrastructure統合テスト               | `npm run test:integration --workspace=@attendance-kit/deploy` |
 | `npm run generate`                     | `npm run generate`                             |
-| E2Eテスト                              | `npm run test:e2e:local`                       |
+| E2Eテスト                              | `npm run test:e2e`                             |
 
 ## 参考資料
 

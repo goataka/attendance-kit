@@ -94,15 +94,8 @@ npm run test:integration
 
 **必須**: スタック構成変更時は実行してください。
 
-- LocalStackを使用した統合テスト
 - CDKデプロイのシミュレーション
 - リソース作成の検証
-
-**LocalStackのセットアップ**:
-統合テストや手動でのローカルDB起動が必要な場合、以下のコマンドが利用可能です:
-
-- `npm run start:local-db` (プロジェクトルートから) - LocalStackを起動してDynamoDBをデプロイ
-- `npm run deploy:local-db` (infrastructure/deployから) - LocalStackのセットアップとブートストラップを含む完全なデプロイ
 
 ## 実行順序
 
@@ -171,9 +164,6 @@ npm test -- <test-file-name>
 - スナップショットを確認
 - CDK Constructのプロパティを確認
 - テストの期待値を確認
-- LocalStackの状態を確認
-
-**注**: 統合テストでLocalStackが必要な場合は、`npm run deploy:local-db`でセットアップされます。このコマンドには`cdklocal:setup`が含まれ、LocalStackを自動的に起動します。
 
 ## ベストプラクティス
 
