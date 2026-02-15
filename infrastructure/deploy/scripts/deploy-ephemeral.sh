@@ -39,7 +39,9 @@ main() {
   echo ""
   
   # スタック名の生成（PR環境と同じ形式）
-  local -r stack_name="AttendanceKit-$(echo "${environment}" | sed 's/-//g' | sed 's/./\U&/')-Stack"
+  # bashの組み込み機能を使用してハイフンを削除し、大文字に変換
+  local environment_normalized="${environment//-/}"
+  local -r stack_name="AttendanceKit-${environment_normalized^}-Stack"
   
   # CDK Deploy
   echo "🏗️  環境スタックをデプロイします: ${stack_name}"
@@ -56,13 +58,33 @@ main() {
   echo "📋 デプロイ情報:"
   echo "=================="
   
+  # jqコマンドの確認
+  if ! command -v jq > /dev/null 2>&1; then
+    echo "⚠️  警告: jqコマンドが見つかりません。URLの抽出をスキップします。"
+    echo ""
+    echo "💡 E2Eテストを実行するには、以下のコマンドで出力を確認してください:"
+    echo "   aws cloudformation describe-stacks --stack-name ${stack_name} --query 'Stacks[0].Outputs'"
+    echo ""
+    echo "💡 環境を削除するには:"
+    echo "   npx cdk destroy ${stack_name} --context stack=environment --context environment=${environment}"
+    return 0
+  fi
+  
   local -r stack_outputs="$(aws cloudformation describe-stacks \
     --stack-name "${stack_name}" \
     --query 'Stacks[0].Outputs' \
-    --output json)"
+    --output json 2>/dev/null)"
   
-  local -r cloudfront_url="$(echo "${stack_outputs}" | jq -r '.[] | select(.OutputKey | contains("CloudFrontUrl")) | .OutputValue')"
-  local -r api_url="$(echo "${stack_outputs}" | jq -r '.[] | select(.OutputKey | contains("ApiUrl")) | .OutputValue')"
+  if [ -z "${stack_outputs}" ] || [ "${stack_outputs}" = "null" ]; then
+    echo "⚠️  警告: スタック出力を取得できませんでした。"
+    echo ""
+    echo "💡 環境を削除するには:"
+    echo "   npx cdk destroy ${stack_name} --context stack=environment --context environment=${environment}"
+    return 0
+  fi
+  
+  local -r cloudfront_url="$(echo "${stack_outputs}" | jq -r '.[] | select(.OutputKey | contains("CloudFrontUrl")) | .OutputValue' 2>/dev/null)"
+  local -r api_url="$(echo "${stack_outputs}" | jq -r '.[] | select(.OutputKey | contains("ApiUrl")) | .OutputValue' 2>/dev/null)"
   
   if [ -n "${cloudfront_url}" ]; then
     echo "🌐 Frontend URL: ${cloudfront_url}"
@@ -72,13 +94,21 @@ main() {
     echo "🔌 Backend API URL: ${api_url}"
   fi
   
+  if [ -z "${cloudfront_url}" ] && [ -z "${api_url}" ]; then
+    echo "⚠️  警告: URLを抽出できませんでした。スタック出力を確認してください。"
+  fi
+  
   echo ""
   echo "💡 E2Eテストを実行するには:"
-  echo "   export E2E_ENV=deployed"
-  echo "   export FRONTEND_URL=${cloudfront_url}"
-  echo "   export BACKEND_URL=${api_url}"
-  echo "   export NODE_ENV=${environment}"
-  echo "   npm run test:e2e"
+  if [ -n "${cloudfront_url}" ] && [ -n "${api_url}" ]; then
+    echo "   export E2E_ENV=deployed"
+    echo "   export FRONTEND_URL=${cloudfront_url}"
+    echo "   export BACKEND_URL=${api_url}"
+    echo "   export NODE_ENV=${environment}"
+    echo "   npm run test:e2e"
+  else
+    echo "   上記の警告を確認し、URLを手動で設定してください"
+  fi
   echo ""
   echo "💡 環境を削除するには:"
   echo "   npx cdk destroy ${stack_name} --context stack=environment --context environment=${environment}"

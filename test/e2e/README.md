@@ -129,9 +129,15 @@ export NODE_ENV=<environment>
 npm run test:e2e
 
 # 6. 環境の削除（テスト終了後）
+# deploy:ephemeralの出力に表示されるdestroyコマンドを使用
 cd infrastructure/deploy
-npx cdk destroy <Stack Name> --context stack=environment --context environment=<environment>
+# 例: npx cdk destroy AttendanceKit-LocalMyname-Stack --context stack=environment --context environment=local-myname
 ```
+
+**環境の削除について**:
+
+- デプロイスクリプトの最後に、環境を削除するための正確なコマンドが表示されます
+- 環境名に基づいてスタック名が自動生成されるため、出力されたコマンドをコピーして使用してください
 
 **注意事項**:
 
