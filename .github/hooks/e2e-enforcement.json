@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "./scripts/hooks/check-and-run-e2e.sh",
+        "cwd": ".",
+        "timeoutSec": 300,
+        "comment": "非ドキュメントファイル変更時のE2Eテスト実行"
+      }
+    ]
+  }
+}
