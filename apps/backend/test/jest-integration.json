@@ -4,6 +4,7 @@
   "testEnvironment": "node",
   "testRegex": ".integration.spec.ts$",
   "transform": {
-    "^.+\\.(t|j)s$": "ts-jest"
-  }
+    "^.+\\.(t|j)s$": ["ts-jest", { "useESM": true, "tsconfig": { "module": "ESNext" } }]
+  },
+  "extensionsToTreatAsEsm": [".ts"]
 }

@@ -1,10 +1,7 @@
+import { jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClockService } from './clock.service';
 import { ClockType } from './dto/clock.dto';
-
-// Mock DynamoDB client
-jest.mock('@aws-sdk/client-dynamodb');
-jest.mock('@aws-sdk/lib-dynamodb');
 
 describe('ClockService（単体テスト）', () => {
   let service: ClockService;

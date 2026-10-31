@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AttendanceKitStack - Eva環境 Evaスタックがスナップショットと一致すること 1`] = `
 {
@@ -755,6 +755,9 @@ exports[`AttendanceKitStack - Eva環境 Evaスタックがスナップショッ�
         "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
       ],
       "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
         "Code": {
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
@@ -772,6 +775,7 @@ exports[`AttendanceKitStack - Eva環境 Evaスタックがスナップショッ�
             "Ref": "FrontendDeployFrontendAwsCliLayerFC92B55B",
           },
         ],
+        "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
             "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
@@ -947,7 +951,7 @@ exports[`AttendanceKitStack - Eva環境 Evaスタックがスナップショッ�
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",
@@ -2183,6 +2187,9 @@ exports[`AttendanceKitStack（統合スタック） スタックがスナップ�
         "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
       ],
       "Properties": {
+        "Architectures": [
+          "arm64",
+        ],
         "Code": {
           "S3Bucket": {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
@@ -2200,6 +2207,7 @@ exports[`AttendanceKitStack（統合スタック） スタックがスナップ�
             "Ref": "FrontendDeployFrontendAwsCliLayerFC92B55B",
           },
         ],
+        "MemorySize": 1024,
         "Role": {
           "Fn::GetAtt": [
             "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265",
@@ -2375,7 +2383,7 @@ exports[`AttendanceKitStack（統合スタック） スタックがスナップ�
             "Arn",
           ],
         },
-        "Runtime": "nodejs22.x",
+        "Runtime": "nodejs24.x",
         "Timeout": 900,
       },
       "Type": "AWS::Lambda::Function",

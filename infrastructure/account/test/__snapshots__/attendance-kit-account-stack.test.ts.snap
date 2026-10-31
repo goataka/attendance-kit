@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AttendanceKitAccountStack（アカウントスタック） スタックがスナップショットと一致すること 1`] = `
 {
@@ -135,6 +135,24 @@ exports[`AttendanceKitAccountStack（アカウントスタック） スタック
                 "SubscriptionType": "SNS",
               },
             ],
+          },
+        ],
+        "ResourceTags": [
+          {
+            "Key": "CostCenter",
+            "Value": "Engineering",
+          },
+          {
+            "Key": "ManagedBy",
+            "Value": "CDK",
+          },
+          {
+            "Key": "Project",
+            "Value": "attendance-kit",
+          },
+          {
+            "Key": "ResourceLevel",
+            "Value": "Account",
           },
         ],
       },

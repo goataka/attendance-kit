@@ -84,6 +84,7 @@ exports[`Appスナップショット > スナップショットと一致する�
       >
         <a
           class="link"
+          data-discover="true"
           href="/clocks"
         >
           打刻一覧を見る →
