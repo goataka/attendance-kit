@@ -3,24 +3,20 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { Context, Handler } from 'aws-lambda';
-import { createServer, proxy } from '@vendia/serverless-express';
-import { eventContext } from '@vendia/serverless-express/middleware';
+import serverlessExpress from '@codegenie/serverless-express';
 import express from 'express';
 import { AppModule } from './app.module';
-import { Server } from 'http';
 
-let cachedServer: Server;
+let cachedHandler: Handler | undefined;
 
-async function bootstrapServer(): Promise<Server> {
-  if (!cachedServer) {
+async function bootstrapServer(): Promise<Handler> {
+  if (!cachedHandler) {
     const expressApp = express();
     const nestApp = await NestFactory.create(
       AppModule,
       new ExpressAdapter(expressApp),
     );
-
     nestApp.enableCors();
-    nestApp.use(eventContext());
     nestApp.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
@@ -30,12 +26,20 @@ async function bootstrapServer(): Promise<Server> {
     nestApp.setGlobalPrefix('api');
 
     await nestApp.init();
-    cachedServer = createServer(expressApp);
+    cachedHandler = serverlessExpress({ app: expressApp });
   }
-  return cachedServer;
+  return cachedHandler;
 }
 
 export const handler: Handler = async (event: any, context: Context) => {
-  const server = await bootstrapServer();
-  return proxy(server, event, context, 'PROMISE').promise;
+  const serverlessHandler = await bootstrapServer();
+  return new Promise((resolve, reject) => {
+    serverlessHandler(event, context, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result);
+      }
+    });
+  });
 };

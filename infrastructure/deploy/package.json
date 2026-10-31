@@ -24,24 +24,24 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@aws-sdk/client-cloudfront": "^3.972.0",
-    "@aws-sdk/client-dynamodb": "^3.972.0",
-    "@aws-sdk/client-s3": "^3.972.0",
-    "@aws-sdk/lib-dynamodb": "^3.972.0",
-    "@types/jest": "^29.5.0",
-    "@types/node": "^20.x",
+    "@aws-sdk/client-cloudfront": "^3.1161.0",
+    "@aws-sdk/client-dynamodb": "^3.1161.0",
+    "@aws-sdk/client-s3": "^3.1161.0",
+    "@aws-sdk/lib-dynamodb": "^3.1161.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.x",
     "aws-cdk": "^2.x",
-    "aws-cdk-local": "^2.x",
-    "jest": "^29.5.0",
-    "prettier": "^3.0.0",
-    "ts-jest": "^29.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "~5.3.0"
+    "aws-cdk-local": "^3.x",
+    "jest": "^30.5.2",
+    "prettier": "^3.9.10",
+    "ts-jest": "^29.4.15",
+    "ts-node": "^10.9.2",
+    "typescript": "~6.0.3"
   },
   "dependencies": {
     "@cloudcomponents/cdk-dynamodb-seeder": "^2.4.0",
     "aws-cdk-lib": "^2.x",
-    "constructs": "^10.0.0",
+    "constructs": "^10.8.1",
     "source-map-support": "^0.5.21"
   },
   "engines": {

@@ -45,6 +45,7 @@ export class BackendConstruct extends Construct {
     const lambdaFunction = new NodejsFunction(this, 'ApiFunction', {
       functionName: `attendance-kit-${environment}-api`,
       runtime: lambda.Runtime.NODEJS_24_X,
+      projectRoot: path.join(__dirname, '../../../..'),
       entry: path.join(backendDir, 'src/lambda.ts'),
       handler: 'index.handler',
       bundling: {
@@ -56,6 +57,8 @@ export class BackendConstruct extends Construct {
           '@nestjs/microservices',
           '@nestjs/microservices/microservices-module',
           '@nestjs/websockets/socket-module',
+          '@nestjs/websockets/socket-module.js',
+          '@fastify/static',
           'class-transformer/storage',
         ],
       },
